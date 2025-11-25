@@ -7,8 +7,8 @@ class MyBottomSheetTheme {
 
   static const lightBottomSheetTheme = BottomSheetThemeData(
     showDragHandle: true,
-    backgroundColor: MyColors.white,
-    modalBackgroundColor: MyColors.white,
+    backgroundColor: MyColors.primaryShade50,
+    modalBackgroundColor: MyColors.primaryShade50,
     constraints: BoxConstraints(minWidth: double.infinity),
     shape: RoundedRectangleBorder(
       borderRadius: BorderRadius.only(
@@ -20,8 +20,8 @@ class MyBottomSheetTheme {
 
   static const darkBottomSheetTheme = BottomSheetThemeData(
     showDragHandle: true,
-    backgroundColor:MyColors.darker,
-    modalBackgroundColor:MyColors.darker,
+    backgroundColor: MyColors.darker,
+    modalBackgroundColor: MyColors.darker,
     constraints: BoxConstraints(minWidth: double.infinity),
     shape: RoundedRectangleBorder(
       borderRadius: BorderRadius.only(

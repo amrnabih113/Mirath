@@ -4,21 +4,34 @@ class MyColors {
   MyColors._();
 
   // App basic Colors
-  static const Color primaryColor = Color(0xFFFFAA19);
-  static const Color secondaryColor = Color(0xFF3BA8D1);
+  static const Color primaryColor = Color(0xFFB9A082);
 
-  //Gradient Colors
-  static const Gradient orangeGradient = LinearGradient(
-    begin: Alignment.centerRight,
-    end: Alignment.centerLeft,
-    colors: [Color(0xffF68B3F), Color(0xffF6C63F)],
-  );
+  // Primary Color Shades (from darkest to lightest)
+  static const Color primaryShade900 = Color(0xFF5C5041);
+  static const Color primaryShade800 = Color(0xFF7A6857);
+  static const Color primaryShade700 = Color(0xFF9A846D);
+  static const Color primaryShade600 = Color(0xFFAC9277);
+  static const Color primaryShade500 = Color(0xFFB9A082); // Base primary color
+  static const Color primaryShade400 = Color(0xFFC4AD91);
+  static const Color primaryShade300 = Color(0xFFD0BCA7);
+  static const Color primaryShade200 = Color(0xFFDECFBE);
+  static const Color primaryShade100 = Color(0xFFEBE3D6);
+  static const Color primaryShade50 = Color(0xFFF7F3EF);
 
-  static const Gradient blueGradient = LinearGradient(
-    begin: Alignment.centerRight,
-    end: Alignment.centerLeft,
-    colors: [Color(0xff1A73BD), Color.fromRGBO(90, 219, 228, 1)],
-  );
+  static const Color secondaryColor = primaryShade700;
+
+  // //Gradient Colors
+  // static const Gradient orangeGradient = LinearGradient(
+  //   begin: Alignment.centerRight,
+  //   end: Alignment.centerLeft,
+  //   colors: [Color(0xffF68B3F), Color(0xffF6C63F)],
+  // );
+
+  // static const Gradient blueGradient = LinearGradient(
+  //   begin: Alignment.centerRight,
+  //   end: Alignment.centerLeft,
+  //   colors: [Color(0xff1A73BD), Color.fromRGBO(90, 219, 228, 1)],
+  // );
 
   static LinearGradient customGradient(MaterialColor color) {
     return LinearGradient(
@@ -55,25 +68,25 @@ class MyColors {
   }
 
   // Text Colors
-  static const Color textPrimary = Color(0xFF4B4C4D);
-  static Color textSecondary = Color(0xFF4B4C4D).withValues(alpha: 0.8);
+  static const Color textPrimary = primaryShade900;
+  static Color textSecondary = primaryShade900.withValues(alpha: 0.8);
   static const Color textWhite = Colors.white;
 
   // Background Colors
-  static const Color light = Color(0xFFFFFDFB);
+  static const Color light = primaryShade100;
   static const Color dark = Color(0xFF4B4C4D);
   static const Color darker = Color(0xFF535455);
 
   //Background container Colors
-  static const Color lightContainer = Color(0xFFFFFFFF);
+  static Color lightContainer = Color(0xFF6F604E).withValues(alpha: 0.05);
   static const Color darkContainer = Color(0xff3F4041);
 
   //Background container Colors
-  static const Color lightNav = Color(0xFF263238);
+  static const Color lightNav = primaryShade500;
   static const Color darkNav = Color(0xff232424);
 
   // Button Colors
-  // static const Color primaryButton = MyColors.primaryColor;
+  static const Color primaryButton = primaryShade500;
   static const Color secondaryButton = Color(0xff6c757d);
   static const Color disabledButton = Color.fromARGB(255, 40, 32, 32);
 
@@ -92,7 +105,7 @@ class MyColors {
   static const Color lightGrey = Color(0xFFF9F9F9);
   static const Color white = Color(0xFFFFFFFF);
   static const Color transparent = Colors.transparent;
-  
+
   // Utility method to get Color from string
   static Color? getColor(String value) {
     switch (value) {

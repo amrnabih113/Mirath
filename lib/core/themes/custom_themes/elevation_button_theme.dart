@@ -6,22 +6,24 @@ class MyElevationButtonTheme {
   MyElevationButtonTheme._();
 
   static final lightelevatedButtonTheme = ElevatedButtonThemeData(
-      style: ElevatedButton.styleFrom(
-    elevation: 0,
-    foregroundColor: Colors.white,
-    backgroundColor: MyColors.primaryColor,
-    disabledBackgroundColor: Colors.grey,
-    disabledForegroundColor: Colors.grey,
-    side: BorderSide.none,
-    padding: const EdgeInsets.symmetric(vertical: 18),
-    textStyle: const TextStyle(
+    style: ElevatedButton.styleFrom(
+      elevation: 0,
+      foregroundColor: Colors.white,
+      backgroundColor: MyColors.primaryColor,
+      disabledBackgroundColor: Colors.grey,
+      disabledForegroundColor: Colors.grey,
+      side: BorderSide.none,
+      padding: const EdgeInsets.symmetric(vertical: 12),
+      textStyle: const TextStyle(
         fontSize: 16,
         fontWeight: FontWeight.w400,
-        color: MyColors.dark,
-        fontFamily: 'Poppins'),
-    shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.all(Radius.circular(60))),
-  ));
+        color: MyColors.textPrimary,
+      ),
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.all(Radius.circular(20)),
+      ),
+    ),
+  );
 
   static final darkElevatedButtonTheme = ElevatedButtonThemeData(
     style: ElevatedButton.styleFrom(
@@ -31,14 +33,15 @@ class MyElevationButtonTheme {
       disabledBackgroundColor: Colors.grey,
       disabledForegroundColor: Colors.grey,
       side: BorderSide.none,
-      padding: const EdgeInsets.symmetric(vertical: 18),
+      padding: const EdgeInsets.symmetric(vertical: 12),
       textStyle: const TextStyle(
-          fontSize: 16,
-          fontWeight: FontWeight.w400,
-          color: MyColors.dark,
-          fontFamily: 'Poppins'),
+        fontSize: 16,
+        fontWeight: FontWeight.w400,
+        color: MyColors.textPrimary,
+      ),
       shape: const RoundedRectangleBorder(
-          borderRadius: BorderRadius.all(Radius.circular(60))),
+        borderRadius: BorderRadius.all(Radius.circular(20)),
+      ),
     ),
   );
 }

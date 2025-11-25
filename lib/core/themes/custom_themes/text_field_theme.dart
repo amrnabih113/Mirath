@@ -1,77 +1,55 @@
 import 'package:flutter/material.dart';
 
+import '../../utils/my_colors.dart';
+
 class MyTextFieldTheme {
   MyTextFieldTheme._();
 
   static final InputDecorationTheme lightInputDecorationTheme =
       InputDecorationTheme(
         errorMaxLines: 3,
-        prefixIconColor: Colors.grey,
-        suffixIconColor: Colors.grey,
+        prefixIconColor: MyColors.primaryShade700,
+        suffixIconColor: MyColors.primaryShade700,
         labelStyle: const TextStyle().copyWith(
           fontSize: 14,
-          color: Colors.black,
+          color: MyColors.textPrimary,
         ),
-        hintStyle: const TextStyle().copyWith(fontSize: 14, color: Colors.grey),
+        hintStyle: const TextStyle().copyWith(
+          fontSize: 14,
+          color: MyColors.primaryShade700,
+        ),
         errorStyle: const TextStyle().copyWith(fontStyle: FontStyle.normal),
         floatingLabelStyle: const TextStyle().copyWith(
-          color: Colors.black.withValues(alpha: 0.8),
+          color: MyColors.textPrimary.withValues(alpha: 0.8),
         ),
-        border: const OutlineInputBorder().copyWith(
-          borderRadius: BorderRadius.circular(14),
-          borderSide: const BorderSide(width: 1, color: Colors.grey),
-        ),
-        enabledBorder: const OutlineInputBorder().copyWith(
-          borderRadius: BorderRadius.circular(14),
-          borderSide: const BorderSide(width: 1, color: Colors.grey),
-        ),
-        focusedBorder: const OutlineInputBorder().copyWith(
-          borderRadius: BorderRadius.circular(14),
-          borderSide: const BorderSide(width: 1, color: Colors.black12),
-        ),
-        errorBorder: const OutlineInputBorder().copyWith(
-          borderRadius: BorderRadius.circular(14),
-          borderSide: const BorderSide(width: 1, color: Colors.red),
-        ),
-        focusedErrorBorder: const OutlineInputBorder().copyWith(
-          borderRadius: BorderRadius.circular(14),
-          borderSide: const BorderSide(width: 1, color: Colors.orange),
-        ),
+        border: InputBorder.none,
+        enabledBorder: InputBorder.none,
+        focusedBorder: InputBorder.none,
+        errorBorder: InputBorder.none,
+        focusedErrorBorder: InputBorder.none,
       );
 
   static final InputDecorationTheme darkInputDecorationTheme =
       InputDecorationTheme(
         errorMaxLines: 3,
-        prefixIconColor: Colors.grey,
-        suffixIconColor: Colors.grey,
+        prefixIconColor: MyColors.primaryShade700,
+        suffixIconColor: MyColors.primaryShade700,
         labelStyle: const TextStyle().copyWith(
           fontSize: 14,
-          color: Colors.white,
+          color: MyColors.textPrimary,
         ),
-        hintStyle: const TextStyle().copyWith(fontSize: 14, color: Colors.grey),
+        hintStyle: const TextStyle().copyWith(
+          fontSize: 14,
+          color: MyColors.primaryShade700,
+        ),
         errorStyle: const TextStyle().copyWith(fontStyle: FontStyle.normal),
         floatingLabelStyle: const TextStyle().copyWith(
-          color: Colors.white.withValues(alpha: 0.8),
+          color: MyColors.textPrimary.withValues(alpha: 0.8),
         ),
-        border: const OutlineInputBorder().copyWith(
-          borderRadius: BorderRadius.circular(14),
-          borderSide: const BorderSide(width: 1, color: Colors.grey),
-        ),
-        enabledBorder: const OutlineInputBorder().copyWith(
-          borderRadius: BorderRadius.circular(14),
-          borderSide: const BorderSide(width: 1, color: Colors.grey),
-        ),
-        focusedBorder: const OutlineInputBorder().copyWith(
-          borderRadius: BorderRadius.circular(14),
-          borderSide: const BorderSide(width: 1, color: Colors.white12),
-        ),
-        errorBorder: const OutlineInputBorder().copyWith(
-          borderRadius: BorderRadius.circular(14),
-          borderSide: const BorderSide(width: 1, color: Colors.red),
-        ),
-        focusedErrorBorder: const OutlineInputBorder().copyWith(
-          borderRadius: BorderRadius.circular(14),
-          borderSide: const BorderSide(width: 1, color: Colors.orange),
-        ),
+        border: InputBorder.none,
+        enabledBorder: InputBorder.none,
+        focusedBorder: InputBorder.none,
+        errorBorder: InputBorder.none,
+        focusedErrorBorder: InputBorder.none,
       );
 }
