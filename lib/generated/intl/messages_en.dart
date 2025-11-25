@@ -21,5 +21,21 @@ class MessageLookup extends MessageLookupByLibrary {
   String get localeName => 'en';
 
   final messages = _notInlinedMessages(_notInlinedMessages);
-  static Map<String, Function> _notInlinedMessages(_) => <String, Function>{};
+  static Map<String, Function> _notInlinedMessages(_) => <String, Function>{
+        "get_started": MessageLookupByLibrary.simpleMessage("Get Started"),
+        "next": MessageLookupByLibrary.simpleMessage("Next"),
+        "onboarding_description_1": MessageLookupByLibrary.simpleMessage(
+            "You can search by keywords, authors, titles, or even paste a block of text to find the exact paper you need."),
+        "onboarding_description_2": MessageLookupByLibrary.simpleMessage(
+            "Enhance your learning by highlighting key passages. Write linked notes, track your insights on a separate page, and create your own summaries."),
+        "onboarding_description_3": MessageLookupByLibrary.simpleMessage(
+            "Start teams to share resources and notes. Use AI to refine your writing and check journal formatting."),
+        "onboarding_title_1":
+            MessageLookupByLibrary.simpleMessage("Instantly Find Any Research"),
+        "onboarding_title_2": MessageLookupByLibrary.simpleMessage(
+            "Master Your Papers with Active Notes"),
+        "onboarding_title_3": MessageLookupByLibrary.simpleMessage(
+            "Collaborate and Write with Confidence"),
+        "skip": MessageLookupByLibrary.simpleMessage("Skip")
+      };
 }

@@ -14,11 +14,7 @@ class MyElevationButtonTheme {
       disabledForegroundColor: Colors.grey,
       side: BorderSide.none,
       padding: const EdgeInsets.symmetric(vertical: 12),
-      textStyle: const TextStyle(
-        fontSize: 16,
-        fontWeight: FontWeight.w400,
-        color: MyColors.textPrimary,
-      ),
+      textStyle: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.all(Radius.circular(20)),
       ),
@@ -30,15 +26,11 @@ class MyElevationButtonTheme {
       elevation: 0,
       foregroundColor: Colors.white,
       backgroundColor: MyColors.primaryColor,
-      disabledBackgroundColor: Colors.grey,
+      disabledBackgroundColor: MyColors.primaryShade300,
       disabledForegroundColor: Colors.grey,
       side: BorderSide.none,
       padding: const EdgeInsets.symmetric(vertical: 12),
-      textStyle: const TextStyle(
-        fontSize: 16,
-        fontWeight: FontWeight.w400,
-        color: MyColors.textPrimary,
-      ),
+      textStyle: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.all(Radius.circular(20)),
       ),

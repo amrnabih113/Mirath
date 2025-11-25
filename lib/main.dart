@@ -2,10 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:mirath/features/onboarding/presentation/screens/onboarding_screen.dart';
 
-import 'core/helpers/my_helper_functions.dart';
 import 'core/network/network_manager.dart';
 import 'core/themes/my_theme.dart';
-import 'core/utils/my_extenstions.dart';
 import 'core/utils/my_logger.dart';
 import 'generated/l10n.dart';
 import 'injection/injection_container.dart';

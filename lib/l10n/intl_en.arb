@@ -1,1 +1,12 @@
-{}
+{
+    "@@locale": "en",
+    "onboarding_title_1": "Instantly Find Any Research",
+    "onboarding_description_1": "You can search by keywords, authors, titles, or even paste a block of text to find the exact paper you need.",
+    "onboarding_title_2": "Master Your Papers with Active Notes",
+    "onboarding_description_2": "Enhance your learning by highlighting key passages. Write linked notes, track your insights on a separate page, and create your own summaries.",
+    "onboarding_title_3": "Collaborate and Write with Confidence",
+    "onboarding_description_3": "Start teams to share resources and notes. Use AI to refine your writing and check journal formatting.",
+    "skip": "Skip",
+    "next": "Next",
+    "get_started": "Get Started"
+}
