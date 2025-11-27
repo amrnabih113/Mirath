@@ -45,6 +45,7 @@ dependencies:
   go_router: ^17.0.0
   google_fonts: ^6.3.2
   iconsax: ^0.0.8
+  hugeicons: ^1.1.1
   intl: ^0.20.2
   logger: ^2.6.2
 

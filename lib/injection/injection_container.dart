@@ -12,6 +12,9 @@ import 'package:mirath/features/auth/domain/usecases/signup_usecase.dart';
 import 'package:mirath/features/auth/domain/usecases/verify_account_usecase.dart';
 import 'package:mirath/features/auth/domain/usecases/verify_reset_password_otp_usecase.dart';
 import 'package:mirath/features/auth/presentation/cubit/auth_cubit.dart';
+import 'package:mirath/features/splash/presentation/cubit/splash_cubit.dart';
+import 'package:mirath/features/auth/data/repositories/fake_auth_repository_impl.dart';
+import 'package:mirath/features/auth/domain/repositories/auth_repository.dart';
 
 final sl = GetIt.instance;
 
@@ -20,10 +23,18 @@ class DI {
     // Core
 
     //! Features
+
+    //================ Splash ========================
+    /// Splash Cubit ///
+    sl.registerFactory(
+      () => SplashCubit(isSignedInUseCase: sl(), isVerifiedUseCase: sl()),
+    );
+
     //================ Authentication ========================
 
     /// Auth Repository ///
-    //sl.registerLazySingleton(() => AuthRepositoryImpl(sl(), sl(), sl(), sl(), sl()));
+    sl.registerLazySingleton<AuthRepository>(() => FakeAuthRepositoryImpl());
+
     /// Auth UseCases ///
     sl.registerLazySingleton(() => SignInUseCase(sl()));
     sl.registerLazySingleton(() => SignUpUseCase(sl()));
@@ -37,6 +48,7 @@ class DI {
     sl.registerLazySingleton(() => VerifyResetPasswordOTPUseCase(sl()));
     sl.registerLazySingleton(() => ResetPasswordUseCase(sl()));
     sl.registerLazySingleton(() => IsVerifiedUseCase(sl()));
+
     /// Auth Cubit ///
     sl.registerFactory(
       () => AuthCubit(

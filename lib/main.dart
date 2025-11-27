@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
-import 'package:mirath/features/onboarding/presentation/screens/onboarding_screen.dart';
 import 'package:mirath/app_router.dart';
 
 import 'core/network/network_manager.dart';
@@ -26,6 +25,7 @@ class MirathApp extends StatelessWidget {
       title: 'Mirath App',
       debugShowCheckedModeBanner: false,
       themeMode: ThemeMode.dark,
+      locale: const Locale('en'),
       routerConfig: appRouter,
       theme: MyTheme.lightTheme(context, const Locale('en')),
       darkTheme: MyTheme.darkTheme(context, const Locale('en')),

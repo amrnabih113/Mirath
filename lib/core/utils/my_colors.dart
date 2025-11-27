@@ -7,13 +7,13 @@ class MyColors {
   static const Color primaryColor = Color(0xFFB9A082);
 
   // Primary Color Shades (from darkest to lightest)
-  static const Color primaryShade900 = Color(0xFF5C5041);
-  static const Color primaryShade800 = Color(0xFF7A6857);
-  static const Color primaryShade700 = Color(0xFF9A846D);
-  static const Color primaryShade600 = Color(0xFFAC9277);
+  static const Color primaryShade900 = Color(0xFF25201A);
+  static const Color primaryShade800 = Color(0xFF4A4034);
+  static const Color primaryShade700 = Color(0xFF6F604E);
+  static const Color primaryShade600 = Color(0xFF948068);
   static const Color primaryShade500 = Color(0xFFB9A082); // Base primary color
-  static const Color primaryShade400 = Color(0xFFC4AD91);
-  static const Color primaryShade300 = Color(0xFFD0BCA7);
+  static const Color primaryShade400 = Color(0xFFC7B39B);
+  static const Color primaryShade300 = Color(0xFFD5C6B4);
   static const Color primaryShade200 = Color(0xFFDECFBE);
   static const Color primaryShade100 = Color(0xFFEBE3D6);
   static const Color primaryShade50 = Color(0xFFF7F3EF);
