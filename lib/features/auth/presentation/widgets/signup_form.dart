@@ -188,7 +188,7 @@ class _SignupFormState extends State<SignupForm> {
                           child: CircularProgressIndicator(
                             strokeWidth: 2,
                             valueColor: AlwaysStoppedAnimation<Color>(
-                              MyColors.textPrimary,
+                              MyColors.primaryShade50,
                             ),
                           ),
                         )

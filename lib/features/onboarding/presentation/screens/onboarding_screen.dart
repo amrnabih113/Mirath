@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'package:mirath/core/helpers/responsive_helper.dart';
 import 'package:mirath/core/utils/my_sizes.dart';
 import 'package:mirath/features/common/widgets/screen_decoration.dart';
 import 'package:mirath/features/onboarding/presentation/cubit/onboarding_cubit.dart';
@@ -52,70 +53,88 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
           return Scaffold(
             body: ScreenDecoration(
               child: SafeArea(
-                child: Column(
-                  children: [
-                    // PageView
-                    Expanded(
-                      child: PageView.builder(
-                        controller: _pageController,
-                        onPageChanged: (index) {
-                          context.read<OnboardingCubit>().goToPage(index);
-                        },
-                        itemCount: widget.pages.length,
-                        itemBuilder: (context, index) {
-                          return OnboardingPageWidget(
-                            page: widget.pages[index],
-                          );
-                        },
-                      ),
-                    ),
+                child: LayoutBuilder(
+                  builder: (context, constraints) {
+                    return ConstrainedBox(
+                      constraints: BoxConstraints(maxWidth: 850),
+                      child: Center(
+                        child: Column(
+                          children: [
+                            // PageView
+                            Expanded(
+                              child: PageView.builder(
+                                controller: _pageController,
+                                onPageChanged: (index) {
+                                  context.read<OnboardingCubit>().goToPage(
+                                    index,
+                                  );
+                                },
+                                itemCount: widget.pages.length,
+                                itemBuilder: (context, index) {
+                                  return OnboardingPageWidget(
+                                    page: widget.pages[index],
+                                  );
+                                },
+                              ),
+                            ),
 
-                    Padding(
-                      padding: EdgeInsets.all(MySizes.spaceLg(context)),
-                      child: Column(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          // Page indicator
-                          PageIndicator(
-                            currentPage: state.currentPage,
-                            totalPages: state.totalPages,
-                          ),
-                          SizedBox(height: MySizes.spaceXl(context)),
-                          // Navigation button
-                          Row(
-                            mainAxisAlignment: .spaceBetween,
-                            children: [
-                              Row(
-                                mainAxisAlignment: .end,
+                            Padding(
+                              padding: EdgeInsets.all(MySizes.spaceLg(context)),
+                              child: Column(
+                                mainAxisSize: MainAxisSize.min,
                                 children: [
-                                  if (!state.isLastPage)
-                                    SkipButton(
-                                      onPressed: () => context
-                                          .read<OnboardingCubit>()
-                                          .skipOnboarding(),
+                                  // Page indicator
+                                  PageIndicator(
+                                    currentPage: state.currentPage,
+                                    totalPages: state.totalPages,
+                                  ),
+                                  SizedBox(
+                                    height: ResponsiveHelper.responsiveValue(
+                                      context,
+                                      20,
                                     ),
+                                  ),
+                                  // Navigation button
+                                  Row(
+                                    mainAxisAlignment: .spaceBetween,
+                                    children: [
+                                      Row(
+                                        mainAxisAlignment: .end,
+                                        children: [
+                                          if (!state.isLastPage)
+                                            SkipButton(
+                                              onPressed: () => context
+                                                  .read<OnboardingCubit>()
+                                                  .skipOnboarding(),
+                                            ),
+                                        ],
+                                      ),
+                                      SizedBox(
+                                        width: MySizes.buttonWidth(context),
+                                        height: MySizes.buttonHeight(context),
+                                        child: ElevatedButton(
+                                          onPressed: () {
+                                            context
+                                                .read<OnboardingCubit>()
+                                                .nextPage();
+                                          },
+                                          child: Text(
+                                            state.isLastPage
+                                                ? S.of(context).get_started
+                                                : S.of(context).next,
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
                                 ],
                               ),
-                              SizedBox(
-                                width: MySizes.buttonWidth(context),
-                                height: MySizes.buttonHeight(context),
-                                child: ElevatedButton(
-                                  onPressed: () {
-                                    context.read<OnboardingCubit>().nextPage();
-                                  },
-                                  child: Text(
-                                    state.isLastPage
-                                        ? S.of(context).get_started
-                                        : S.of(context).next,
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
-                        ],
+                            ),
+                          ],
+                        ),
                       ),
-                    ),
-                  ],
+                    );
+                  },
                 ),
               ),
             ),

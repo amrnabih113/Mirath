@@ -1,39 +1,55 @@
 import 'package:flutter/material.dart';
-
 import '../../utils/my_colors.dart';
+import '../../utils/my_sizes.dart';
 
 class MyElevationButtonTheme {
   MyElevationButtonTheme._();
 
-  static final lightelevatedButtonTheme = ElevatedButtonThemeData(
-    style: ElevatedButton.styleFrom(
-      shadowColor: MyColors.primaryColor.withAlpha(128),
-      foregroundColor: Colors.white,
-      backgroundColor: MyColors.primaryColor,
-      disabledBackgroundColor: MyColors.lightGrey,
-      disabledForegroundColor: Colors.grey,
-      side: BorderSide.none,
-      padding: const EdgeInsets.symmetric(vertical: 12),
-      textStyle: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.all(Radius.circular(20)),
-      ),
-    ),
-  );
+  static ElevatedButtonThemeData lightElevatedButtonTheme(
+    BuildContext context,
+  ) {
+    final double fontSize = MySizes.bodyMedium(context); // responsive
+    final double verticalPadding = MySizes.spaceMd(
+      context,
+    ); // responsive padding
 
-  static final darkElevatedButtonTheme = ElevatedButtonThemeData(
-    style: ElevatedButton.styleFrom(
-      shadowColor: MyColors.primaryColor.withAlpha(128),
-      foregroundColor: Colors.white,
-      backgroundColor: MyColors.primaryColor,
-      disabledBackgroundColor: MyColors.lightGrey,
-      disabledForegroundColor: Colors.grey,
-      side: BorderSide.none,
-      padding: const EdgeInsets.symmetric(vertical: 12),
-      textStyle: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.all(Radius.circular(20)),
+    return ElevatedButtonThemeData(
+      style: ElevatedButton.styleFrom(
+        shadowColor: MyColors.primaryColor.withAlpha(128),
+        foregroundColor: Colors.white,
+        backgroundColor: MyColors.primaryColor,
+        disabledBackgroundColor: MyColors.primaryShade300,
+        disabledForegroundColor: MyColors.primaryShade50,
+        side: BorderSide.none,
+        padding: EdgeInsets.symmetric(vertical: verticalPadding),
+        textStyle: TextStyle(fontSize: fontSize, fontWeight: FontWeight.bold),
+        shape: const RoundedRectangleBorder(
+          borderRadius: BorderRadius.all(Radius.circular(20)),
+        ),
       ),
-    ),
-  );
+    );
+  }
+
+  static ElevatedButtonThemeData darkElevatedButtonTheme(BuildContext context) {
+    final double fontSize = MySizes.bodyMedium(context); // responsive
+    final double verticalPadding = MySizes.spaceMd(
+      context,
+    ); // responsive padding
+
+    return ElevatedButtonThemeData(
+      style: ElevatedButton.styleFrom(
+        shadowColor: MyColors.primaryColor.withAlpha(128),
+        foregroundColor: Colors.white,
+        backgroundColor: MyColors.primaryColor,
+        disabledBackgroundColor: MyColors.primaryShade300,
+        disabledForegroundColor: MyColors.primaryShade50,
+        side: BorderSide.none,
+        padding: EdgeInsets.symmetric(vertical: verticalPadding),
+        textStyle: TextStyle(fontSize: fontSize, fontWeight: FontWeight.bold),
+        shape: const RoundedRectangleBorder(
+          borderRadius: BorderRadius.all(Radius.circular(20)),
+        ),
+      ),
+    );
+  }
 }

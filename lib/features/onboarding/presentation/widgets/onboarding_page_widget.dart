@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:mirath/core/utils/my_extenstions.dart';
-import 'package:mirath/core/utils/my_sizes.dart';
-import 'package:mirath/features/onboarding/domain/entities/onboarding_entity.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:mirath/core/utils/my_sizes.dart';
+import 'package:mirath/core/utils/my_extenstions.dart';
+import 'package:mirath/features/onboarding/domain/entities/onboarding_entity.dart';
 
 class OnboardingPageWidget extends StatelessWidget {
   final OnboardingEntity page;
@@ -11,32 +11,50 @@ class OnboardingPageWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final height = MediaQuery.of(context).size.height;
+
+    // Scale image and spacing based on height
+    final imageHeight =
+        MySizes.imageLarge(context) * (height / 800).clamp(0.7, 1.0);
+    final spacing = MySizes.spaceMd(context) * (height / 800).clamp(0.5, 1.0);
+
     return Padding(
       padding: MySizes.paddingLg(context),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           // Image
-          Center(
+          Flexible(
+            flex: 4,
             child: SvgPicture.asset(
               page.imagePath,
-              height: MySizes.imageXl(context),
+              height: imageHeight,
               fit: BoxFit.contain,
             ),
           ),
-          SizedBox(height: MySizes.spaceXl(context) * 1.5),
+
+          SizedBox(height: spacing),
+
           // Title
-          Text(
-            page.title,
-            style: context.headlineLarge,
-            textAlign: TextAlign.center,
+          Flexible(
+            flex: 2,
+            child: Text(
+              page.title,
+              style: context.headlineLarge,
+              textAlign: TextAlign.center,
+            ),
           ),
-          SizedBox(height: MySizes.spaceMd(context)),
+
+          SizedBox(height: spacing / 2),
+
           // Description
-          Text(
-            page.description,
-            style: context.bodyMedium,
-            textAlign: TextAlign.center,
+          Flexible(
+            flex: 2,
+            child: Text(
+              page.description,
+              style: context.bodyMedium,
+              textAlign: TextAlign.center,
+            ),
           ),
         ],
       ),

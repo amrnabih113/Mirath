@@ -1,43 +1,56 @@
 import 'package:flutter/material.dart';
 import 'package:mirath/core/helpers/my_helper_functions.dart';
-
 import '../../../core/utils/my_colors.dart';
+import '../../../core/helpers/responsive_helper.dart';
 
 class ScreenDecoration extends StatelessWidget {
   const ScreenDecoration({super.key, required this.child, this.dark = true});
+
   final Widget child;
   final bool dark;
+
   @override
   Widget build(BuildContext context) {
     final isDark = MyHelperFunctions.isDarkMode(context);
+
+    // Make circles responsive
+    final largeCircleSize = ResponsiveHelper.responsiveValue(context, 635);
+    final smallCircleSize = ResponsiveHelper.responsiveValue(context, 496);
+
+    final largeCircleLeft = ResponsiveHelper.responsiveValue(context, 148);
+    final largeCircleTop = ResponsiveHelper.responsiveValue(context, -327);
+
+    final smallCircleLeft = ResponsiveHelper.responsiveValue(context, 57);
+    final smallCircleTop = ResponsiveHelper.responsiveValue(context, -142);
+
     return Stack(
       children: [
         Positioned(
-          left: 148,
-          top: -327,
+          left: largeCircleLeft,
+          top: largeCircleTop,
           child: Container(
-            width: 635,
-            height: 635,
+            width: largeCircleSize,
+            height: largeCircleSize,
             decoration: ShapeDecoration(
               color: dark
-                  ? const Color(0x7F6F604E) /* Circle-color-dark */
+                  ? const Color(0x7F6F604E)
                   : isDark
                   ? MyColors.primaryShade900
-                  : MyColors.primaryShade100 /* Circle-color-light */,
-              shape: OvalBorder(),
+                  : MyColors.primaryShade50,
+              shape: const OvalBorder(),
             ),
           ),
         ),
         Positioned(
-          left: 57,
-          top: -142,
+          left: smallCircleLeft,
+          top: smallCircleTop,
           child: Container(
-            width: 496,
-            height: 496,
+            width: smallCircleSize,
+            height: smallCircleSize,
             decoration: ShapeDecoration(
               shape: OvalBorder(
                 side: BorderSide(
-                  width: 3,
+                  width: ResponsiveHelper.responsiveValue(context, 3),
                   color: dark
                       ? const Color(0x7F6F604E)
                       : isDark

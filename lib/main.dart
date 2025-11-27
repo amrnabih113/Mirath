@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:mirath/app_router.dart';
+import 'package:device_preview/device_preview.dart';
 
 import 'core/network/network_manager.dart';
 import 'core/themes/my_theme.dart';
@@ -13,7 +14,14 @@ void main() async {
   NetworkManager.instance.initialize();
   await DI.init();
   MyLogger.info('App Started');
-  runApp(const MirathApp());
+  runApp(
+    DevicePreview(
+      enabled: !const bool.fromEnvironment(
+        'dart.vm.product',
+      ), // Disable in release mode
+      builder: (context) => const MirathApp(),
+    ),
+  );
 }
 
 class MirathApp extends StatelessWidget {
@@ -24,7 +32,7 @@ class MirathApp extends StatelessWidget {
     return MaterialApp.router(
       title: 'Mirath App',
       debugShowCheckedModeBanner: false,
-      themeMode: ThemeMode.dark,
+      themeMode: ThemeMode.light,
       locale: const Locale('en'),
       routerConfig: appRouter,
       theme: MyTheme.lightTheme(context, const Locale('en')),

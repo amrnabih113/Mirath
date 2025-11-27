@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:mirath/core/helpers/responsive_helper.dart';
 import 'package:mirath/core/utils/my_colors.dart';
-import 'package:mirath/core/utils/my_sizes.dart';
 
 class PageIndicator extends StatelessWidget {
   final int currentPage;
@@ -22,9 +22,9 @@ class PageIndicator extends StatelessWidget {
           duration: const Duration(milliseconds: 300),
           margin: const EdgeInsets.symmetric(horizontal: 4),
           width: currentPage == index
-              ? MySizes.spaceXl(context) * 2.3
-              : MySizes.spaceXl(context),
-          height: MySizes.spaceXs(context),
+              ? ResponsiveHelper.responsiveValue(context, 80)
+              : ResponsiveHelper.responsiveValue(context, 40),
+          height: ResponsiveHelper.responsiveValue(context, 7),
           decoration: BoxDecoration(
             color: currentPage == index
                 ? MyColors.primaryShade700

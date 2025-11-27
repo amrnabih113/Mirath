@@ -1,191 +1,101 @@
 import 'package:flutter/material.dart';
-
-import '../helpers/responsive_helper.dart'; // the file that has ResponsiveHelper
+import '../helpers/responsive_helper.dart';
 
 class MySizes {
-  MySizes._(); // prevent instantiation
+  MySizes._();
 
   /// ---------- TEXT SIZES ----------
   static double headlineLarge(BuildContext context) =>
-      ResponsiveHelper.responsiveText(context, web: 42, tablet: 36, mobile: 30);
+      ResponsiveHelper.responsiveValue(context, 30); // 32 → 30
 
   static double headlineMedium(BuildContext context) =>
-      ResponsiveHelper.responsiveText(context, web: 36, tablet: 30, mobile: 24);
+      ResponsiveHelper.responsiveValue(context, 26); // 28 → 26
 
   static double headlineSmall(BuildContext context) =>
-      ResponsiveHelper.responsiveText(context, web: 30, tablet: 26, mobile: 22);
+      ResponsiveHelper.responsiveValue(context, 22); // 24 → 22
 
   static double titleLarge(BuildContext context) =>
-      ResponsiveHelper.responsiveText(context, web: 26, tablet: 24, mobile: 22);
+      ResponsiveHelper.responsiveValue(context, 20); // 22 → 20
 
   static double titleMedium(BuildContext context) =>
-      ResponsiveHelper.responsiveText(context, web: 24, tablet: 22, mobile: 20);
+      ResponsiveHelper.responsiveValue(context, 18); // 20 → 18
 
   static double titleSmall(BuildContext context) =>
-      ResponsiveHelper.responsiveText(context, web: 22, tablet: 20, mobile: 18);
+      ResponsiveHelper.responsiveValue(context, 16); // 18 → 16
 
   /// ---------- BODY ----------
   static double bodyLarge(BuildContext context) =>
-      ResponsiveHelper.responsiveText(context, web: 22, tablet: 20, mobile: 18);
+      ResponsiveHelper.responsiveValue(context, 16); // 18 → 16
 
   static double bodyMedium(BuildContext context) =>
-      ResponsiveHelper.responsiveText(context, web: 20, tablet: 18, mobile: 16);
+      ResponsiveHelper.responsiveValue(context, 14); // 16 → 14
 
   static double bodySmall(BuildContext context) =>
-      ResponsiveHelper.responsiveText(context, web: 18, tablet: 16, mobile: 14);
+      ResponsiveHelper.responsiveValue(context, 13); // 14 → 13
 
   /// ---------- ICONS ----------
-  static double iconLarge(BuildContext context) => ResponsiveHelper.responsive(
-    context,
-    web: 48.0,
-    tablet: 40.0,
-    mobile: 32.0,
-  );
+  static double iconLarge(BuildContext context) =>
+      ResponsiveHelper.responsiveValue(context, 36); // 40 → 36
 
-  static double iconMedium(BuildContext context) => ResponsiveHelper.responsive(
-    context,
-    web: 40.0,
-    tablet: 32.0,
-    mobile: 24.0,
-  );
+  static double iconMedium(BuildContext context) =>
+      ResponsiveHelper.responsiveValue(context, 26); // 28 → 26
 
-  static double iconSmall(BuildContext context) => ResponsiveHelper.responsive(
-    context,
-    web: 32.0,
-    tablet: 24.0,
-    mobile: 20.0,
-  );
+  static double iconSmall(BuildContext context) =>
+      ResponsiveHelper.responsiveValue(context, 22); // 24 → 22
 
   /// ---------- SPACING ----------
-  static double spaceXs(BuildContext context) => ResponsiveHelper.responsive(
-    context,
-    web: 12.0,
-    tablet: 10.0,
-    mobile: 8.0,
-  );
+  static double spaceXs(BuildContext context) =>
+      ResponsiveHelper.responsiveGap(context, 7); // 8 → 7
 
-  static double spaceSm(BuildContext context) => ResponsiveHelper.responsive(
-    context,
-    web: 16.0,
-    tablet: 14.0,
-    mobile: 12.0,
-  );
+  static double spaceSm(BuildContext context) =>
+      ResponsiveHelper.responsiveGap(context, 11); // 12 → 11
 
-  static double spaceMd(BuildContext context) => ResponsiveHelper.responsive(
-    context,
-    web: 20.0,
-    tablet: 18.0,
-    mobile: 16.0,
-  );
+  static double spaceMd(BuildContext context) =>
+      ResponsiveHelper.responsiveGap(context, 14); // 16 → 14
 
-  static double spaceLg(BuildContext context) => ResponsiveHelper.responsive(
-    context,
-    web: 32.0,
-    tablet: 28.0,
-    mobile: 24.0,
-  );
+  static double spaceLg(BuildContext context) =>
+      ResponsiveHelper.responsiveGap(context, 22); // 24 → 22
 
-  static double spaceXl(BuildContext context) => ResponsiveHelper.responsive(
-    context,
-    web: 40.0,
-    tablet: 36.0,
-    mobile: 32.0,
-  );
+  static double spaceXl(BuildContext context) =>
+      ResponsiveHelper.responsiveGap(context, 30); // 32 → 30
 
   /// ---------- PADDING ----------
-  static EdgeInsetsGeometry paddingSm(BuildContext context) =>
-      ResponsiveHelper.responsivePadding(
-        context,
-        web: EdgeInsets.all(20),
-        tablet: EdgeInsets.all(16),
-        mobile: EdgeInsets.all(12),
-      );
+  static EdgeInsets paddingSm(BuildContext context) =>
+      ResponsiveHelper.responsivePadding(context, 11); // 12 → 11
 
-  static EdgeInsetsGeometry paddingMd(BuildContext context) =>
-      ResponsiveHelper.responsivePadding(
-        context,
-        web: EdgeInsets.all(32),
-        tablet: EdgeInsets.all(28),
-        mobile: EdgeInsets.all(24),
-      );
+  static EdgeInsets paddingMd(BuildContext context) =>
+      ResponsiveHelper.responsivePadding(context, 18); // 20 → 18
 
-  static EdgeInsetsGeometry paddingLg(BuildContext context) =>
-      ResponsiveHelper.responsivePadding(
-        context,
-        web: EdgeInsets.all(40),
-        tablet: EdgeInsets.all(36),
-        mobile: EdgeInsets.all(32),
-      );
+  static EdgeInsets paddingLg(BuildContext context) =>
+      ResponsiveHelper.responsivePadding(context, 26); // 28 → 26
 
   /// ---------- BUTTON ----------
   static double buttonHeight(BuildContext context) =>
-      ResponsiveHelper.responsive(
-        context,
-        web: 72.0,
-        tablet: 64.0,
-        mobile: 56.0,
-      );
+      ResponsiveHelper.responsiveValue(context, 52); // 56 → 52
 
   static double buttonWidth(BuildContext context) =>
-      ResponsiveHelper.responsive(
-        context,
-        web: 240.0,
-        tablet: 240.0,
-        mobile: 200.0,
-      );
+      ResponsiveHelper.responsiveValue(context, 160); // 200 → 190
 
   /// ---------- RADIUS ----------
   static double borderRadiusSm(BuildContext context) =>
-      ResponsiveHelper.responsive(
-        context,
-        web: 16.0,
-        tablet: 14.0,
-        mobile: 12.0,
-      );
+      ResponsiveHelper.responsiveValue(context, 11); // 12 → 11
 
   static double borderRadiusMd(BuildContext context) =>
-      ResponsiveHelper.responsive(
-        context,
-        web: 20.0,
-        tablet: 16.0,
-        mobile: 14.0,
-      );
+      ResponsiveHelper.responsiveValue(context, 15); // 16 → 15
 
   static double borderRadiusLg(BuildContext context) =>
-      ResponsiveHelper.responsive(
-        context,
-        web: 24.0,
-        tablet: 20.0,
-        mobile: 16.0,
-      );
+      ResponsiveHelper.responsiveValue(context, 18); // 20 → 18
 
   /// ---------- IMAGE SIZES ----------
-  static double imageXl(BuildContext context) => ResponsiveHelper.responsive(
-    context,
-    web: 480.0,
-    tablet: 400.0,
-    mobile: 400.0,
-  );
+  static double imageXl(BuildContext context) =>
+      ResponsiveHelper.responsiveValue(context, 400); // 420 → 400
 
-  static double imageLarge(BuildContext context) => ResponsiveHelper.responsive(
-    context,
-    web: 400.0,
-    tablet: 320.0,
-    mobile: 280.0,
-  );
+  static double imageLarge(BuildContext context) =>
+      ResponsiveHelper.responsiveValue(context, 330); // 350 → 330
 
   static double imageMedium(BuildContext context) =>
-      ResponsiveHelper.responsive(
-        context,
-        web: 280.0,
-        tablet: 240.0,
-        mobile: 220.0,
-      );
+      ResponsiveHelper.responsiveValue(context, 240); // 250 → 240
 
-  static double imageSmall(BuildContext context) => ResponsiveHelper.responsive(
-    context,
-    web: 200.0,
-    tablet: 180.0,
-    mobile: 160.0,
-  );
+  static double imageSmall(BuildContext context) =>
+      ResponsiveHelper.responsiveValue(context, 170); // 180 → 170
 }
