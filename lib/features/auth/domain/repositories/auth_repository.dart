@@ -8,10 +8,12 @@ abstract class AuthRepository {
   Future<Either<Failure, void>> signUp(SignupData signupData);
   Future<Either<Failure, void>> signOut();
   Future<Either<Failure, bool>> isSignedIn();
+  Future<Either<Failure, bool>> isVerified();
   Future<Either<Failure, void>> signinWithGoogle();
   Future<Either<Failure, void>> signinWithApple();
-  Future<Either<Failure, void>> sendOTP();
-  Future<Either<Failure, void>> verifyOTP(String otp);
-  Future<Either<Failure, void>> resetPassword();
-  Future<Either<Failure, String?>> getUserEmail();
+  Future<Either<Failure, void>> sendVerificationOTP();
+  Future<Either<Failure, void>> verifyAccount(String otp);
+  Future<Either<Failure, void>> forgetPassword();
+  Future<Either<Failure, void>> verifyResetPasswordOTP(String otp);
+  Future<Either<Failure, void>> resetPassword(String newPassword);
 }

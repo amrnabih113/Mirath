@@ -40,30 +40,3 @@ class MirathApp extends StatelessWidget {
     );
   }
 }
-
-// class MirathHome extends StatefulWidget {
-//   const MirathHome({super.key});
-
-//   @override
-//   State<MirathHome> createState() => _MirathHomeState();
-// }
-
-// class _MirathHomeState extends State<MirathHome> {
-//   @override
-//   Widget build(BuildContext context) {
-//     return Scaffold(
-//       body: Center(
-//         child: InkWell(
-//           onTap: () {
-//             MyHelperFunctions.showAlertDialog(
-//               title: 'Title',
-//               message: "Message",
-//               context,
-//             );
-//           },
-//           child: Text('Mirath App', style: context.headlineMedium),
-//         ),
-//       ),
-//     );
-//   }
-// }

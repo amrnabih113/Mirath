@@ -4,13 +4,13 @@ import 'package:mirath/core/usecases/no_params.dart';
 import 'package:mirath/core/usecases/usecase.dart';
 import 'package:mirath/features/auth/domain/repositories/auth_repository.dart';
 
-class SendOTPUseCase implements UseCase<void, NoParams> {
+class IsVerifiedUseCase implements UseCase<bool, NoParams> {
   final AuthRepository repository;
 
-  SendOTPUseCase(this.repository);
+  IsVerifiedUseCase(this.repository);
 
   @override
-  Future<Either<Failure, void>> call(NoParams params) async {
-    return await repository.sendOTP();
+  Future<Either<Failure, bool>> call(NoParams params) async {
+    return await repository.isVerified();
   }
 }

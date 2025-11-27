@@ -3,13 +3,13 @@ import 'package:mirath/core/error/failuors.dart';
 import 'package:mirath/core/usecases/usecase.dart';
 import 'package:mirath/features/auth/domain/repositories/auth_repository.dart';
 
-class VerifyOTPUseCase implements UseCase<void, String> {
+class VerifyResetPasswordOTPUseCase implements UseCase<void, String> {
   final AuthRepository repository;
 
-  VerifyOTPUseCase(this.repository);
+  VerifyResetPasswordOTPUseCase(this.repository);
 
   @override
   Future<Either<Failure, void>> call(String otp) async {
-    return await repository.verifyOTP(otp);
+    return await repository.verifyResetPasswordOTP(otp);
   }
 }
