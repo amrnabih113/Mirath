@@ -1,12 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 
 class PageTransitions {
   PageTransitions._();
 
   /// Fade transition
-  static Route fadeTransition(Widget page) {
-    return PageRouteBuilder(
-      pageBuilder: (context, animation, secondaryAnimation) => page,
+  static Page fadeTransition(Widget page, {LocalKey? key, String? name}) {
+    return CustomTransitionPage(
+      key: key,
+      name: name,
+      child: page,
       transitionsBuilder: (context, animation, secondaryAnimation, child) {
         return FadeTransition(opacity: animation, child: child);
       },
@@ -15,9 +18,11 @@ class PageTransitions {
   }
 
   /// Slide from right transition
-  static Route slideFromRight(Widget page) {
-    return PageRouteBuilder(
-      pageBuilder: (context, animation, secondaryAnimation) => page,
+  static Page slideFromRight(Widget page, {LocalKey? key, String? name}) {
+    return CustomTransitionPage(
+      key: key,
+      name: name,
+      child: page,
       transitionsBuilder: (context, animation, secondaryAnimation, child) {
         const begin = Offset(1.0, 0.0);
         const end = Offset.zero;
@@ -35,9 +40,11 @@ class PageTransitions {
   }
 
   /// Slide from bottom transition
-  static Route slideFromBottom(Widget page) {
-    return PageRouteBuilder(
-      pageBuilder: (context, animation, secondaryAnimation) => page,
+  static Page slideFromBottom(Widget page, {LocalKey? key, String? name}) {
+    return CustomTransitionPage(
+      key: key,
+      name: name,
+      child: page,
       transitionsBuilder: (context, animation, secondaryAnimation, child) {
         const begin = Offset(0.0, 1.0);
         const end = Offset.zero;
@@ -55,9 +62,11 @@ class PageTransitions {
   }
 
   /// Scale transition
-  static Route scaleTransition(Widget page) {
-    return PageRouteBuilder(
-      pageBuilder: (context, animation, secondaryAnimation) => page,
+  static Page scaleTransition(Widget page, {LocalKey? key, String? name}) {
+    return CustomTransitionPage(
+      key: key,
+      name: name,
+      child: page,
       transitionsBuilder: (context, animation, secondaryAnimation, child) {
         const curve = Curves.easeInOut;
 
@@ -84,9 +93,11 @@ class PageTransitions {
   }
 
   /// Fade and slide transition (combined)
-  static Route fadeSlideTransition(Widget page) {
-    return PageRouteBuilder(
-      pageBuilder: (context, animation, secondaryAnimation) => page,
+  static Page fadeSlideTransition(Widget page, {LocalKey? key, String? name}) {
+    return CustomTransitionPage(
+      key: key,
+      name: name,
+      child: page,
       transitionsBuilder: (context, animation, secondaryAnimation, child) {
         const begin = Offset(0.0, 0.05);
         const end = Offset.zero;
@@ -115,9 +126,11 @@ class PageTransitions {
   }
 
   /// Rotation transition
-  static Route rotationTransition(Widget page) {
-    return PageRouteBuilder(
-      pageBuilder: (context, animation, secondaryAnimation) => page,
+  static Page rotationTransition(Widget page, {LocalKey? key, String? name}) {
+    return CustomTransitionPage(
+      key: key,
+      name: name,
+      child: page,
       transitionsBuilder: (context, animation, secondaryAnimation, child) {
         const curve = Curves.easeInOut;
 
@@ -143,10 +156,12 @@ class PageTransitions {
     );
   }
 
-  /// Custom smooth transition (recommended for general use)
-  static Route smoothTransition(Widget page) {
-    return PageRouteBuilder(
-      pageBuilder: (context, animation, secondaryAnimation) => page,
+  /// Custom smooth transition (recommended for general use with GoRouter)
+  static Page smoothTransition(Widget page, {LocalKey? key, String? name}) {
+    return CustomTransitionPage(
+      key: key,
+      name: name,
+      child: page,
       transitionsBuilder: (context, animation, secondaryAnimation, child) {
         const begin = Offset(0.03, 0.0);
         const end = Offset.zero;

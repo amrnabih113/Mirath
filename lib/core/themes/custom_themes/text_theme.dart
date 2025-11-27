@@ -9,7 +9,7 @@ class MyTextTheme {
 
   static TextTheme getLightTextTheme(BuildContext context, Locale? locale) {
     final isArabic = locale?.languageCode == 'ar';
-    final font = isArabic ? GoogleFonts.balooBhai2 : GoogleFonts.roboto;
+    final font = isArabic ? GoogleFonts.balooBhai2 : GoogleFonts.sourceSans3;
 
     return TextTheme(
       headlineLarge: font(
@@ -17,6 +17,7 @@ class MyTextTheme {
         fontWeight: FontWeight.bold,
         color: MyColors.textPrimary,
       ),
+
       headlineMedium: font(
         fontSize: MySizes.headlineMedium(context),
         fontWeight: FontWeight.w600,
@@ -83,62 +84,62 @@ class MyTextTheme {
       headlineLarge: font(
         fontSize: MySizes.headlineLarge(context),
         fontWeight: FontWeight.bold,
-        color: Colors.white,
+        color: MyColors.primaryShade50,
       ),
       headlineMedium: font(
         fontSize: MySizes.headlineMedium(context),
         fontWeight: FontWeight.w600,
-        color: Colors.white,
+        color: MyColors.primaryShade50,
       ),
       headlineSmall: font(
         fontSize: MySizes.headlineSmall(context),
         fontWeight: FontWeight.w500,
-        color: Colors.white,
+        color: MyColors.primaryShade50,
       ),
       titleLarge: font(
         fontSize: MySizes.titleLarge(context),
         fontWeight: FontWeight.w600,
-        color: Colors.white,
+        color: MyColors.primaryShade50,
       ),
       titleMedium: font(
         fontSize: MySizes.titleMedium(context),
         fontWeight: FontWeight.w500,
-        color: Colors.white,
+        color: MyColors.primaryShade50,
       ),
       titleSmall: font(
         fontSize: MySizes.titleSmall(context),
         fontWeight: FontWeight.w500,
-        color: Colors.white,
+        color: MyColors.primaryShade50,
       ),
       bodyLarge: font(
         fontSize: MySizes.bodyLarge(context),
         fontWeight: FontWeight.w500,
-        color: Colors.white70,
+        color: MyColors.primaryShade50,
       ),
       bodyMedium: font(
         fontSize: MySizes.bodyMedium(context),
         fontWeight: FontWeight.normal,
-        color: Colors.white70,
+        color: MyColors.primaryShade50,
       ),
       bodySmall: font(
         fontSize: MySizes.bodySmall(context),
         fontWeight: FontWeight.w500,
-        color: Colors.white70.withValues(alpha: 0.5),
+        color: MyColors.primaryShade50.withValues(alpha: 0.5),
       ),
       labelLarge: font(
         fontSize: MySizes.titleSmall(context) - 2,
         fontWeight: FontWeight.normal,
-        color: Colors.white70,
+        color: MyColors.primaryShade50,
       ),
       labelMedium: font(
         fontSize: MySizes.titleSmall(context) - 2,
         fontWeight: FontWeight.normal,
-        color: Colors.white70.withValues(alpha: 0.5),
+        color: MyColors.primaryShade50.withValues(alpha: 0.5),
       ),
       labelSmall: font(
         fontSize: MySizes.titleSmall(context) - 2,
         fontWeight: FontWeight.normal,
-        color: Colors.white70.withValues(alpha: 0.5),
+        color: MyColors.primaryShade50.withValues(alpha: 0.5),
       ),
     );
   }

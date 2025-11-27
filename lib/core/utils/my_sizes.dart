@@ -130,8 +130,8 @@ class MySizes {
       ResponsiveHelper.responsive(
         context,
         web: 240.0,
-        tablet: 200.0,
-        mobile: 160.0,
+        tablet: 240.0,
+        mobile: 200.0,
       );
 
   /// ---------- RADIUS ----------
