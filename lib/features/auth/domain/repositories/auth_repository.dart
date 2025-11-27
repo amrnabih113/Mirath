@@ -13,7 +13,7 @@ abstract class AuthRepository {
   Future<Either<Failure, void>> signinWithApple();
   Future<Either<Failure, void>> sendVerificationOTP();
   Future<Either<Failure, void>> verifyAccount(String otp);
-  Future<Either<Failure, void>> forgetPassword();
+  Future<Either<Failure, void>> forgetPassword(String email);
   Future<Either<Failure, void>> verifyResetPasswordOTP(String otp);
   Future<Either<Failure, void>> resetPassword(String newPassword);
 }

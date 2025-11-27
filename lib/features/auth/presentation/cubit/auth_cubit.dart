@@ -258,9 +258,9 @@ class AuthCubit extends Cubit<AuthState> {
   }
 
   // ===================== FORGET PASSWORD =====================
-  Future<void> forgetPassword() async {
+  Future<void> forgetPassword({required String email}) async {
     emit(state.copyWith(status: AuthStatus.loading));
-    final result = await forgetPasswordUseCase(const NoParams());
+    final result = await forgetPasswordUseCase(email);
 
     result.fold(
       (f) => emit(state.copyWith(status: AuthStatus.error, message: f.message)),

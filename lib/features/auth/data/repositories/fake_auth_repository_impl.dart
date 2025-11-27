@@ -156,7 +156,7 @@ class FakeAuthRepositoryImpl implements AuthRepository {
   }
 
   @override
-  Future<Either<Failure, void>> forgetPassword() async {
+  Future<Either<Failure, void>> forgetPassword(String email) async {
     // Simulate sending password reset OTP
     await Future.delayed(const Duration(seconds: 1));
 
