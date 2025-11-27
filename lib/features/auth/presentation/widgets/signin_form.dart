@@ -21,7 +21,7 @@ class _SigninFormState extends State<SigninForm> {
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
   bool _obscurePassword = true;
-
+  AutovalidateMode _autovalidateMode = AutovalidateMode.disabled;
   @override
   void dispose() {
     _emailController.dispose();
@@ -30,6 +30,9 @@ class _SigninFormState extends State<SigninForm> {
   }
 
   void _handleSignIn() {
+    setState(() {
+      _autovalidateMode = AutovalidateMode.onUserInteraction;
+    });
     if (_formKey.currentState!.validate()) {
       context.read<AuthCubit>().signIn(
         _emailController.text.trim(),
@@ -42,6 +45,7 @@ class _SigninFormState extends State<SigninForm> {
   Widget build(BuildContext context) {
     return Form(
       key: _formKey,
+      autovalidateMode: _autovalidateMode,
       child: Column(
         children: [
           TextFormField(
