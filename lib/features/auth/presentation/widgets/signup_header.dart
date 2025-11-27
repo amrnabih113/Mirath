@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:mirath/core/utils/my_colors.dart';
 import 'package:mirath/core/utils/my_extenstions.dart';
 import 'package:mirath/core/utils/my_sizes.dart';
 
@@ -12,9 +11,9 @@ class SignupHeader extends StatelessWidget {
       children: [
         Text(
           "Create Account",
-          style: context.displayMedium.copyWith(
+          style: context.headlineLarge.copyWith(
             fontWeight: FontWeight.bold,
-            color: MyColors.textPrimary,
+            fontSize: 40,
           ),
         ),
         SizedBox(height: MySizes.spaceMd(context)),

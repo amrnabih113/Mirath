@@ -89,7 +89,10 @@ class _SignupFormState extends State<SignupForm> {
             decoration: InputDecoration(
               hintText: "Password",
               suffixIcon: IconButton(
-                icon: Icon(_obscurePassword ? Iconsax.eye_slash : Iconsax.eye),
+                icon: Icon(
+                  _obscurePassword ? Iconsax.eye_slash : Iconsax.eye,
+                  color: MyColors.textSecondary,
+                ),
                 onPressed: () {
                   setState(() {
                     _obscurePassword = !_obscurePassword;
@@ -109,6 +112,7 @@ class _SignupFormState extends State<SignupForm> {
               suffixIcon: IconButton(
                 icon: Icon(
                   _obscureConfirmPassword ? Iconsax.eye_slash : Iconsax.eye,
+                  color: MyColors.textSecondary,
                 ),
                 onPressed: () {
                   setState(() {

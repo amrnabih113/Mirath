@@ -24,7 +24,7 @@ class MirathApp extends StatelessWidget {
     return MaterialApp.router(
       title: 'Mirath App',
       debugShowCheckedModeBanner: false,
-      themeMode: ThemeMode.light,
+      themeMode: ThemeMode.dark,
       locale: const Locale('en'),
       routerConfig: appRouter,
       theme: MyTheme.lightTheme(context, const Locale('en')),

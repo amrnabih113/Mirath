@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:mirath/core/helpers/my_helper_functions.dart';
 
 import '../../../core/utils/my_colors.dart';
 
@@ -8,6 +9,7 @@ class ScreenDecoration extends StatelessWidget {
   final bool dark;
   @override
   Widget build(BuildContext context) {
+    final isDark = MyHelperFunctions.isDarkMode(context);
     return Stack(
       children: [
         Positioned(
@@ -19,7 +21,9 @@ class ScreenDecoration extends StatelessWidget {
             decoration: ShapeDecoration(
               color: dark
                   ? const Color(0x7F6F604E) /* Circle-color-dark */
-                  : MyColors.primaryShade50 /* Circle-color-light */,
+                  : isDark
+                  ? MyColors.primaryShade900
+                  : MyColors.primaryShade100 /* Circle-color-light */,
               shape: OvalBorder(),
             ),
           ),
@@ -36,6 +40,8 @@ class ScreenDecoration extends StatelessWidget {
                   width: 3,
                   color: dark
                       ? const Color(0x7F6F604E)
+                      : isDark
+                      ? MyColors.primaryShade900
                       : MyColors.primaryShade50,
                 ),
               ),
