@@ -26,5 +26,5 @@ final class OnboardingPageChanged extends OnboardingState {
 
 final class OnboardingCompleted extends OnboardingState {
   const OnboardingCompleted({required super.totalPages})
-    : super(currentPage: 0);
+    : super(currentPage: totalPages - 1);
 }

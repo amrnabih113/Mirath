@@ -72,18 +72,32 @@ class MyColors {
   static Color textSecondary = primaryShade900.withValues(alpha: 0.8);
   static const Color textWhite = Colors.white;
 
+  // Dark Mode Text Colors
+  static const Color textPrimaryDark = Color(
+    0xFFF5F1ED,
+  ); // Warm white for dark mode
+  static Color textSecondaryDark = Color(
+    0xFFD4C9BD,
+  ).withValues(alpha: 0.9); // Muted warm text
+
   // Background Colors
   static const Color light = primaryShade100;
-  static const Color dark = Color(0xFF4B4C4D);
-  static const Color darker = Color(0xFF535455);
+  static const Color dark = Color(
+    0xFF2D2926,
+  ); // Medium-dark with warm undertone
+  static const Color darker = Color(0xFF252220); // Slightly deeper warm dark
 
   //Background container Colors
   static Color lightContainer = Color(0xFF6F604E).withValues(alpha: 0.05);
-  static const Color darkContainer = Color(0xff3F4041);
+  static const Color darkContainer = Color(
+    0xFF3A3530,
+  ); // Elevated container for medium-dark mode
 
-  //Background container Colors
+  //Navigation Colors
   static const Color lightNav = primaryShade500;
-  static const Color darkNav = Color(0xff232424);
+  static const Color darkNav = Color(
+    0xFF332E2A,
+  ); // Navigation bar for medium-dark mode
 
   // Button Colors
   static const Color primaryButton = primaryShade500;

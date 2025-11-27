@@ -15,9 +15,9 @@ class MyChipTheme {
 
   static final darkChipTheme = ChipThemeData(
     disabledColor: Colors.grey.withValues(alpha: 0.4),
-    labelStyle: const TextStyle(color: Colors.white),
+    labelStyle: const TextStyle(color: MyColors.textPrimaryDark),
     selectedColor: MyColors.primaryColor,
     padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
-    checkmarkColor: Colors.white,
+    checkmarkColor: MyColors.textPrimaryDark,
   );
 }

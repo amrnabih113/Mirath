@@ -83,62 +83,62 @@ class MyTextTheme {
       headlineLarge: font(
         fontSize: MySizes.headlineLarge(context),
         fontWeight: FontWeight.bold,
-        color: Colors.white,
+        color: MyColors.textPrimaryDark,
       ),
       headlineMedium: font(
         fontSize: MySizes.headlineMedium(context),
         fontWeight: FontWeight.w600,
-        color: Colors.white,
+        color: MyColors.textPrimaryDark,
       ),
       headlineSmall: font(
         fontSize: MySizes.headlineSmall(context),
         fontWeight: FontWeight.w500,
-        color: Colors.white,
+        color: MyColors.textPrimaryDark,
       ),
       titleLarge: font(
         fontSize: MySizes.titleLarge(context),
         fontWeight: FontWeight.w600,
-        color: Colors.white,
+        color: MyColors.textPrimaryDark,
       ),
       titleMedium: font(
         fontSize: MySizes.titleMedium(context),
         fontWeight: FontWeight.w500,
-        color: Colors.white,
+        color: MyColors.textPrimaryDark,
       ),
       titleSmall: font(
         fontSize: MySizes.titleSmall(context),
         fontWeight: FontWeight.w500,
-        color: Colors.white,
+        color: MyColors.textPrimaryDark,
       ),
       bodyLarge: font(
         fontSize: MySizes.bodyLarge(context),
         fontWeight: FontWeight.w500,
-        color: Colors.white70,
+        color: MyColors.textSecondaryDark,
       ),
       bodyMedium: font(
         fontSize: MySizes.bodyMedium(context),
         fontWeight: FontWeight.normal,
-        color: Colors.white70,
+        color: MyColors.textSecondaryDark,
       ),
       bodySmall: font(
         fontSize: MySizes.bodySmall(context),
         fontWeight: FontWeight.w500,
-        color: Colors.white70.withValues(alpha: 0.5),
+        color: MyColors.textSecondaryDark.withValues(alpha: 0.6),
       ),
       labelLarge: font(
         fontSize: MySizes.titleSmall(context) - 2,
         fontWeight: FontWeight.normal,
-        color: Colors.white70,
+        color: MyColors.textSecondaryDark,
       ),
       labelMedium: font(
         fontSize: MySizes.titleSmall(context) - 2,
         fontWeight: FontWeight.normal,
-        color: Colors.white70.withValues(alpha: 0.5),
+        color: MyColors.textSecondaryDark.withValues(alpha: 0.7),
       ),
       labelSmall: font(
         fontSize: MySizes.titleSmall(context) - 2,
         fontWeight: FontWeight.normal,
-        color: Colors.white70.withValues(alpha: 0.5),
+        color: MyColors.textSecondaryDark.withValues(alpha: 0.6),
       ),
     );
   }
