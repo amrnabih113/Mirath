@@ -23,9 +23,13 @@ class MyTheme {
       bottomSheetTheme: MyBottomSheetTheme.lightBottomSheetTheme,
       checkboxTheme: MyCheckboxTheme.lightCheckboxTheme,
       chipTheme: MyChipTheme.lightChipTheme,
-      elevatedButtonTheme: MyElevationButtonTheme.lightelevatedButtonTheme,
+      elevatedButtonTheme: MyElevationButtonTheme.lightElevatedButtonTheme(
+        context,
+      ),
       outlinedButtonTheme: MyOutlinedButtonTheme.lightTheme,
-      inputDecorationTheme: MyTextFieldTheme.lightInputDecorationTheme,
+      inputDecorationTheme: MyTextFieldTheme.lightInputDecorationThemeData(
+        context,
+      ),
     );
   }
 
@@ -40,9 +44,13 @@ class MyTheme {
       bottomSheetTheme: MyBottomSheetTheme.darkBottomSheetTheme,
       checkboxTheme: MyCheckboxTheme.darkCheckboxTheme,
       chipTheme: MyChipTheme.darkChipTheme,
-      elevatedButtonTheme: MyElevationButtonTheme.darkElevatedButtonTheme,
+      elevatedButtonTheme: MyElevationButtonTheme.darkElevatedButtonTheme(
+        context,
+      ),
       outlinedButtonTheme: MyOutlinedButtonTheme.darkTheme,
-      inputDecorationTheme: MyTextFieldTheme.darkInputDecorationTheme,
+      inputDecorationTheme: MyTextFieldTheme.darkInputDecorationThemeData(
+        context,
+      ),
     );
   }
 }

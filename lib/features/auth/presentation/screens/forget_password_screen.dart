@@ -51,91 +51,110 @@ class _ForgetPasswordScreenState extends State<ForgetPasswordScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final screenHeight = MediaQuery.of(context).size.height;
+
     return Scaffold(
       extendBodyBehindAppBar: true,
       appBar: AppBar(leading: MyBackIcon()),
       body: ScreenDecoration(
         dark: false,
-        child: SafeArea(
-          child: Padding(
-            padding: MySizes.paddingLg(context),
-            child: Column(
-              children: [
-                Text(
-                  "Forget Password",
-                  style: context.headlineLarge.copyWith(
-                    fontWeight: FontWeight.bold,
-                    fontSize: 40,
-                  ),
-                ),
+        child: LayoutBuilder(
+          builder: (context, constraints) {
+            final topGap = screenHeight * 0.05; // ~12% of screen height
 
-                SizedBox(height: MySizes.spaceMd(context)),
+            return SafeArea(
+              child: Padding(
+                padding: MySizes.paddingLg(context),
+                child: Center(
+                  child: ConstrainedBox(
+                    constraints: BoxConstraints(maxWidth: 850),
+                    child: Column(
+                      children: [
+                        SizedBox(height: topGap),
+                        Text(
+                          "Forget Password",
+                          style: context.headlineLarge.copyWith(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 40,
+                          ),
+                        ),
 
-                Text(
-                  "Enter your email to receive a reset OTP.",
-                  style: context.titleMedium,
-                ),
+                        SizedBox(height: MySizes.spaceMd(context)),
 
-                SizedBox(height: MySizes.spaceXl(context)),
-                Form(
-                  key: _formKey,
-                  child: TextFormField(
-                    controller: _emailController,
-                    validator: MyValidator.validateEmail,
-                    cursorColor: MyColors.primaryColor,
-                    decoration: InputDecoration(hintText: "Email Address"),
-                    keyboardType: TextInputType.emailAddress,
-                  ),
-                ),
+                        Text(
+                          "Enter your email to receive a reset OTP.",
+                          style: context.titleMedium,
+                        ),
 
-                SizedBox(height: MySizes.spaceLg(context)),
+                        SizedBox(height: MySizes.spaceXl(context)),
+                        Form(
+                          key: _formKey,
+                          child: TextFormField(
+                            controller: _emailController,
+                            validator: MyValidator.validateEmail,
+                            cursorColor: MyColors.primaryColor,
+                            decoration: InputDecoration(
+                              hintText: "Email Address",
+                            ),
+                            keyboardType: TextInputType.emailAddress,
+                          ),
+                        ),
 
-                BlocListener<AuthCubit, AuthState>(
-                  listener: (context, state) {
-                    if (state.status == AuthStatus.resetPasswordRequested) {
-                      context.pushReplacement('/otpScreen');
-                    } else if (state.status == AuthStatus.error) {
-                      MyLoaders.errorSnackBar(
-                        context: context,
-                        title: "Oh no!",
-                        message: state.message ?? "Something went wrong.",
-                      );
-                    }
-                  },
-                  child: SizedBox(
-                    width: MySizes.buttonWidth(context),
+                        SizedBox(height: MySizes.spaceLg(context)),
 
-                    child: BlocBuilder<AuthCubit, AuthState>(
-                      buildWhen: (previous, current) =>
-                          previous.status !=
-                          current.status, // prevents useless rebuilds
+                        BlocListener<AuthCubit, AuthState>(
+                          listener: (context, state) {
+                            if (state.status ==
+                                AuthStatus.resetPasswordRequested) {
+                              context.pushReplacement('/otpScreen');
+                            } else if (state.status == AuthStatus.error) {
+                              MyLoaders.errorSnackBar(
+                                context: context,
+                                title: "Oh no!",
+                                message:
+                                    state.message ?? "Something went wrong.",
+                              );
+                            }
+                          },
+                          child: SizedBox(
+                            width: MySizes.buttonWidth(context),
 
-                      builder: (context, state) {
-                        final isLoading = state.status == AuthStatus.loading;
+                            child: BlocBuilder<AuthCubit, AuthState>(
+                              buildWhen: (previous, current) =>
+                                  previous.status !=
+                                  current.status, // prevents useless rebuilds
 
-                        return ElevatedButton(
-                          onPressed: isButtonEnabled
-                              ? _handleForgetPassword
-                              : null,
+                              builder: (context, state) {
+                                final isLoading =
+                                    state.status == AuthStatus.loading;
 
-                          child: isLoading
-                              ? const SizedBox(
-                                  height: 22,
-                                  width: 22,
-                                  child: CircularProgressIndicator(
-                                    strokeWidth: 2,
-                                    color: MyColors.light,
-                                  ),
-                                )
-                              : const Text("Reset Password"),
-                        );
-                      },
+                                return ElevatedButton(
+                                  onPressed: isButtonEnabled
+                                      ? _handleForgetPassword
+                                      : null,
+
+                                  child: isLoading
+                                      ? const SizedBox(
+                                          height: 22,
+                                          width: 22,
+                                          child: CircularProgressIndicator(
+                                            strokeWidth: 2,
+                                            color: MyColors.light,
+                                          ),
+                                        )
+                                      : const Text("Reset Password"),
+                                );
+                              },
+                            ),
+                          ),
+                        ),
+                      ],
                     ),
                   ),
                 ),
-              ],
-            ),
-          ),
+              ),
+            );
+          },
         ),
       ),
     );

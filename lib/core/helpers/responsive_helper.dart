@@ -1,72 +1,70 @@
 import 'package:flutter/widgets.dart';
 
-import '../utils/my_enums.dart';
-
-const double _tabletMinWidth = 600; // >= 600 -> tablet
-const double _webMinWidth = 1024; // >= 1024 -> web
-
-/// Returns the device type based on the available width.
-DeviceType deviceTypeFromContext(BuildContext context) {
-  final w = MediaQuery.of(context).size.width;
-  if (w >= _webMinWidth) return DeviceType.web;
-  if (w >= _tabletMinWidth) return DeviceType.tablet;
-  return DeviceType.mobile;
-}
+enum DeviceType { smallPhone, phone, tablet, largeTablet, desktop }
 
 class ResponsiveHelper {
   ResponsiveHelper._();
 
-  /// Choose a value depending on the device: [webValue], [tabletValue], [mobileValue].
-  ///
-  /// Example: `ResponsiveHelper.responsive(context, web: 24.0, tablet: 20.0, mobile: 16.0)`
-  static T responsive<T>(
-    BuildContext context, {
-    required T web,
-    required T tablet,
-    required T mobile,
-  }) {
+  /// Determine device type using width
+  static DeviceType deviceTypeFromContext(BuildContext context) {
+    final w = MediaQuery.of(context).size.width;
+
+    if (w >= 1200) return DeviceType.desktop; // Large web screens
+    if (w >= 900) return DeviceType.largeTablet; // Large tablets / iPad Pro
+    if (w >= 600) return DeviceType.tablet; // Tablets
+    if (w >= 360) return DeviceType.phone; // Normal phones
+    return DeviceType.smallPhone; // Very small phones
+  }
+
+  /// Scale factor based on width and height (for better tall screen support)
+  static double scale(BuildContext context) {
+    final w = MediaQuery.of(context).size.width;
+    final h = MediaQuery.of(context).size.height;
+
+    double widthScale;
     switch (deviceTypeFromContext(context)) {
-      case DeviceType.web:
-        return web;
+      case DeviceType.smallPhone:
+        widthScale = 0.85;
+        break;
+      case DeviceType.phone:
+        widthScale = 1;
+        break;
       case DeviceType.tablet:
-        return tablet;
-      case DeviceType.mobile:
-        return mobile;
+        widthScale = 1.15;
+        break;
+      case DeviceType.largeTablet:
+        widthScale = 1.4;
+        break;
+      case DeviceType.desktop:
+        widthScale = 1.35;
+        break;
     }
-    // All DeviceType cases return above; no-op here.
+
+    // Also consider height scaling
+    double heightScale = (h / 800).clamp(0.8, 1.5);
+
+    return widthScale * heightScale;
   }
 
-  /// Responsive padding example that scales with shortestSide.
-  static EdgeInsetsGeometry responsivePadding(
-    BuildContext context, {
-    EdgeInsetsGeometry? web,
-    EdgeInsetsGeometry? tablet,
-    EdgeInsetsGeometry? mobile,
-  }) {
-    return responsive<EdgeInsetsGeometry>(
-      context,
-      web: web ?? const EdgeInsets.all(24),
-      tablet: tablet ?? const EdgeInsets.all(16),
-      mobile: mobile ?? const EdgeInsets.all(12),
-    );
+  /// General responsive value
+  static double responsiveValue(BuildContext context, double baseValue) {
+    return baseValue * scale(context);
   }
 
-  /// Responsive text size helper using a base size then scaling per device.
-  static double responsiveText(
-    BuildContext context, {
-    required double web,
-    required double tablet,
-    required double mobile,
-  }) {
-    return responsive<double>(
-      context,
-      web: web,
-      tablet: tablet,
-      mobile: mobile,
-    );
+  /// Responsive padding
+  static EdgeInsets responsivePadding(BuildContext context, double base) {
+    final s = scale(context);
+    return EdgeInsets.all(base * s);
   }
 
-  /// Helper to check if layout should be treated as compact (mobile) or expanded (tablet/web).
-  static bool isCompact(BuildContext context) =>
-      deviceTypeFromContext(context) == DeviceType.mobile;
+  /// Responsive GAP (reduces on short screens, increases on tall screens)
+  static double responsiveGap(BuildContext context, double baseGap) {
+    final h = MediaQuery.of(context).size.height;
+    double scaled = baseGap * scale(context);
+
+    if (h < 650) return scaled * 0.25; // very small screens
+    if (h < 750) return scaled * 0.5; // small phones
+
+    return scaled; // normal / tall screens
+  }
 }

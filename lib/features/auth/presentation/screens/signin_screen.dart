@@ -14,6 +14,8 @@ class SigninScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final screenHeight = MediaQuery.of(context).size.height;
+
     return Scaffold(
       body: BlocListener<AuthCubit, AuthState>(
         listener: (context, state) {
@@ -30,18 +32,35 @@ class SigninScreen extends StatelessWidget {
           }
         },
         child: ScreenDecoration(
-          child: SingleChildScrollView(
-            padding: MySizes.paddingLg(context),
-            child: Column(
-              children: [
-                SizedBox(height: 180),
-                const LoginHeader(),
-                SizedBox(height: MySizes.spaceXl(context) * 2),
-                const SigninForm(),
-                SizedBox(height: MySizes.spaceLg(context)),
-                SocialButtons(),
-              ],
-            ),
+          child: LayoutBuilder(
+            builder: (context, constraints) {
+              // Scale gaps dynamically based on screen height
+              final topGap = screenHeight * 0.20; // ~12% of screen height
+              final formGap = screenHeight * 0.03; // ~3% of screen height
+              final socialGap = screenHeight * 0.02; // ~2% of screen height
+
+              return SingleChildScrollView(
+                padding: MySizes.paddingLg(context),
+                child: Center(
+                  child: ConstrainedBox(
+                    constraints: BoxConstraints(
+                      maxWidth: 850, 
+                    ),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        SizedBox(height: topGap),
+                        const LoginHeader(),
+                        SizedBox(height: formGap),
+                        const SigninForm(),
+                        SizedBox(height: socialGap),
+                        SocialButtons(),
+                      ],
+                    ),
+                  ),
+                ),
+              );
+            },
           ),
         ),
       ),

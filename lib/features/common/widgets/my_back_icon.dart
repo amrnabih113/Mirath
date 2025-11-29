@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:mirath/core/helpers/my_helper_functions.dart';
 import 'package:mirath/core/utils/my_colors.dart';
+import 'package:mirath/core/utils/my_sizes.dart';
 
 class MyBackIcon extends StatelessWidget {
   const MyBackIcon({super.key});
@@ -10,11 +11,15 @@ class MyBackIcon extends StatelessWidget {
   Widget build(BuildContext context) {
     final isDark = MyHelperFunctions.isDarkMode(context);
 
-    return GestureDetector(
+    return InkWell(
       onTap: () => context.pop(),
-      child: Icon(
-        Icons.arrow_back_ios,
-        color: !isDark ? MyColors.textPrimary : MyColors.textPrimaryDark,
+      child: Padding(
+        padding: EdgeInsets.symmetric(horizontal: MySizes.spaceLg(context)),
+        child: Icon(
+          Icons.arrow_back_ios,
+          size: MySizes.iconMedium(context),
+          color: !isDark ? MyColors.textPrimary : MyColors.textPrimaryDark,
+        ),
       ),
     );
   }
