@@ -1,11 +1,14 @@
-import 'package:flutter/material.dart';
-import 'package:flutter_localizations/flutter_localizations.dart';
-import 'package:mirath/app_router.dart';
 import 'package:device_preview/device_preview.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:mirath/core/services/local_storage_service.dart';
 
+import 'app_router.dart';
 import 'core/network/network_manager.dart';
 import 'core/themes/my_theme.dart';
 import 'core/utils/my_logger.dart';
+import 'features/auth/presentation/cubit/auth_cubit.dart';
 import 'generated/l10n.dart';
 import 'injection/injection_container.dart';
 
@@ -19,7 +22,10 @@ void main() async {
       enabled: !const bool.fromEnvironment(
         'dart.vm.product',
       ), // Disable in release mode
-      builder: (context) => const MirathApp(),
+      builder: (context) => BlocProvider(
+        create: (context) => sl<AuthCubit>()..checkAuthStatus(),
+        child: const MirathApp(),
+      ),
     ),
   );
 }

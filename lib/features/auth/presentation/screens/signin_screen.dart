@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
-import 'package:mirath/core/helpers/my_loaders.dart';
-import 'package:mirath/core/utils/my_sizes.dart';
-import 'package:mirath/features/auth/presentation/cubit/auth_cubit.dart';
-import 'package:mirath/features/auth/presentation/widgets/login_header.dart';
-import 'package:mirath/features/auth/presentation/widgets/signin_form.dart';
-import 'package:mirath/features/auth/presentation/widgets/signin_social_buttons.dart';
-import 'package:mirath/features/common/widgets/screen_decoration.dart';
+import '../../../../core/helpers/my_loaders.dart';
+import '../../../../core/utils/my_sizes.dart';
+import '../cubit/auth_cubit.dart';
+import '../widgets/login_header.dart';
+import '../widgets/signin_form.dart';
+import '../widgets/signin_social_buttons.dart';
+import '../../../common/widgets/screen_decoration.dart';
 
 class SigninScreen extends StatelessWidget {
   const SigninScreen({super.key});

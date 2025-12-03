@@ -1,14 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
-import 'package:mirath/core/helpers/responsive_helper.dart';
-import 'package:mirath/core/utils/my_sizes.dart';
-import 'package:mirath/features/common/widgets/screen_decoration.dart';
-import 'package:mirath/features/onboarding/presentation/cubit/onboarding_cubit.dart';
-import 'package:mirath/features/onboarding/presentation/widgets/onboarding_page_widget.dart';
-import 'package:mirath/features/onboarding/presentation/widgets/page_indicator.dart';
-import 'package:mirath/features/onboarding/presentation/widgets/skip_button.dart';
-import 'package:mirath/generated/l10n.dart';
+import '../../../../core/helpers/responsive_helper.dart';
+import '../../../../core/services/local_storage_service.dart';
+import '../../../../core/utils/my_sizes.dart';
+import '../../../../injection/injection_container.dart';
+import '../../../common/widgets/screen_decoration.dart';
+import '../cubit/onboarding_cubit.dart';
+import '../widgets/onboarding_page_widget.dart';
+import '../widgets/page_indicator.dart';
+import '../widgets/skip_button.dart';
+import '../../../../generated/l10n.dart';
 
 class OnboardingScreen extends StatefulWidget {
   final List pages;
@@ -40,6 +42,8 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
       body: BlocConsumer<OnboardingCubit, OnboardingState>(
         listener: (context, state) {
           if (state is OnboardingCompleted) {
+            // Mark onboarding as seen in local storage
+            sl<LocalStorageService>().setOnboardingSeen(true);
             context.go('/signin');
           } else if (state is OnboardingPageChanged) {
             _pageController.animateToPage(

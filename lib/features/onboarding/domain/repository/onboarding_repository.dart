@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:mirath/features/onboarding/domain/entities/onboarding_entity.dart';
-import 'package:mirath/generated/l10n.dart';
 
 import '../../../../core/utils/my_images.dart';
+import '../../../../generated/l10n.dart';
+import '../entities/onboarding_entity.dart';
 
 class OnboardingRepository {
   OnboardingRepository._();

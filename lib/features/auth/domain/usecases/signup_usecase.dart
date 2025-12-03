@@ -1,8 +1,9 @@
 import 'package:dartz/dartz.dart';
-import 'package:mirath/core/error/failuors.dart';
-import 'package:mirath/core/usecases/usecase.dart';
-import 'package:mirath/features/auth/domain/entities/signup_data.dart';
-import 'package:mirath/features/auth/domain/repositories/auth_repository.dart';
+
+import '../../../../core/error/failuors.dart';
+import '../../../../core/usecases/usecase.dart';
+import '../entities/signup_data.dart';
+import '../repositories/auth_repository.dart';
 
 class SignUpUseCase implements UseCase<void, SignupData> {
   final AuthRepository repository;

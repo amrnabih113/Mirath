@@ -1,5 +1,5 @@
 import 'package:dartz/dartz.dart';
-import 'package:mirath/features/auth/domain/repositories/auth_repository.dart';
+import '../repositories/auth_repository.dart';
 
 import '../../../../core/error/failuors.dart';
 import '../../../../core/usecases/no_params.dart';

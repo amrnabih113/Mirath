@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:mirath/core/helpers/my_helper_functions.dart';
-import 'package:mirath/core/utils/my_colors.dart';
-import 'package:mirath/core/utils/my_sizes.dart';
+
+import '../../../core/helpers/my_helper_functions.dart';
+import '../../../core/utils/my_colors.dart';
+import '../../../core/utils/my_sizes.dart';
 
 class MyBackIcon extends StatelessWidget {
   const MyBackIcon({super.key});

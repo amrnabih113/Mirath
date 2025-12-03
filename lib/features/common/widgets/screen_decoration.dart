@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:mirath/core/helpers/my_helper_functions.dart';
-import '../../../core/utils/my_colors.dart';
+
+import '../../../core/helpers/my_helper_functions.dart';
 import '../../../core/helpers/responsive_helper.dart';
+import '../../../core/utils/my_colors.dart';
 
 class ScreenDecoration extends StatelessWidget {
   const ScreenDecoration({super.key, required this.child, this.dark = true});

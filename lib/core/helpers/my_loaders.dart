@@ -1,7 +1,8 @@
-import 'my_helper_functions.dart';
 import 'package:flutter/material.dart';
 import 'package:iconsax/iconsax.dart';
+
 import '../utils/my_colors.dart';
+import 'my_helper_functions.dart';
 
 class MyLoaders {
   MyLoaders._();
