@@ -1,21 +1,24 @@
 import 'package:bloc/bloc.dart';
-
-import 'package:mirath/core/usecases/no_params.dart';
-import 'package:mirath/features/auth/domain/entities/signin_data.dart';
-import 'package:mirath/features/auth/domain/entities/signup_data.dart';
-import 'package:mirath/features/auth/domain/usecases/forget_password_usecase.dart';
-import 'package:mirath/features/auth/domain/usecases/is_signed_in_usecase.dart';
-import 'package:mirath/features/auth/domain/usecases/is_verified_usecase.dart';
-import 'package:mirath/features/auth/domain/usecases/reset_password_usecase.dart';
-import 'package:mirath/features/auth/domain/usecases/send_verification_otp_usecase.dart';
-import 'package:mirath/features/auth/domain/usecases/signin_usecase.dart';
-import 'package:mirath/features/auth/domain/usecases/signin_with_apple_usecase.dart';
-import 'package:mirath/features/auth/domain/usecases/signin_with_google_usecase.dart';
-import 'package:mirath/features/auth/domain/usecases/signout_usecase.dart';
-import 'package:mirath/features/auth/domain/usecases/signup_usecase.dart';
-import 'package:mirath/features/auth/domain/usecases/verify_account_usecase.dart';
-import 'package:mirath/features/auth/domain/usecases/verify_reset_password_otp_usecase.dart';
 import 'package:equatable/equatable.dart';
+
+import '../../../../core/usecases/no_params.dart';
+import '../../../../core/utils/my_logger.dart';
+import '../../domain/entities/signin_data.dart';
+import '../../domain/entities/signup_data.dart';
+import '../../domain/entities/user_profile.dart';
+import '../../domain/usecases/forget_password_usecase.dart';
+import '../../domain/usecases/is_signed_in_usecase.dart';
+import '../../domain/usecases/is_verified_usecase.dart';
+import '../../domain/usecases/reset_password_usecase.dart';
+import '../../domain/usecases/send_verification_otp_usecase.dart';
+import '../../domain/usecases/set_up_profile_usecase.dart';
+import '../../domain/usecases/signin_usecase.dart';
+import '../../domain/usecases/signin_with_apple_usecase.dart';
+import '../../domain/usecases/signin_with_google_usecase.dart';
+import '../../domain/usecases/signout_usecase.dart';
+import '../../domain/usecases/signup_usecase.dart';
+import '../../domain/usecases/verify_account_usecase.dart';
+import '../../domain/usecases/verify_reset_password_otp_usecase.dart';
 
 part 'auth_state.dart';
 
@@ -32,6 +35,7 @@ class AuthCubit extends Cubit<AuthState> {
   final VerifyResetPasswordOTPUseCase verifyResetPasswordOTPUseCase;
   final ResetPasswordUseCase resetPasswordUseCase;
   final IsVerifiedUseCase isVerifiedUseCase;
+  final SetUpProfileUseCase setUpProfileUseCase;
 
   AuthCubit({
     required this.signInUseCase,
@@ -46,6 +50,7 @@ class AuthCubit extends Cubit<AuthState> {
     required this.verifyResetPasswordOTPUseCase,
     required this.resetPasswordUseCase,
     required this.isVerifiedUseCase,
+    required this.setUpProfileUseCase,
   }) : super(AuthState.initial());
 
   // ===================== SIGN IN =====================
@@ -94,8 +99,27 @@ class AuthCubit extends Cubit<AuthState> {
       ),
       (_) => emit(
         state.copyWith(
-          status: AuthStatus.unverified, 
+          status: AuthStatus.unverified,
           message: "Account created. Please verify your email.",
+        ),
+      ),
+    );
+  }
+
+  // ====================== SET UP PROFILE =====================
+  Future<void> setUpProfile(UserProfile userProfile) async {
+    emit(state.copyWith(status: AuthStatus.loading, clearMessage: true));
+
+    final result = await setUpProfileUseCase(userProfile);
+
+    result.fold(
+      (failure) => emit(
+        state.copyWith(status: AuthStatus.error, message: failure.message),
+      ),
+      (_) => emit(
+        state.copyWith(
+          status: AuthStatus.success,
+          message: "Profile set up successfully",
         ),
       ),
     );
@@ -137,14 +161,26 @@ class AuthCubit extends Cubit<AuthState> {
 
   // ===================== CHECK AUTH STATUS =====================
   Future<void> checkAuthStatus() async {
+    MyLogger.info('[AuthCubit] Starting auth status check...');
+
+    // Small delay to ensure the app is fully initialized
+    await Future.delayed(const Duration(milliseconds: 100));
+
     final result = await isSignedInUseCase(const NoParams());
 
     await result.fold(
-      (_) async => emit(
-        state.copyWith(status: AuthStatus.unauthenticated, clearMessage: true),
-      ),
+      (_) async {
+        MyLogger.info('[AuthCubit] Not signed in → unauthenticated');
+        emit(
+          state.copyWith(
+            status: AuthStatus.unauthenticated,
+            clearMessage: true,
+          ),
+        );
+      },
       (loggedIn) async {
         if (!loggedIn) {
+          MyLogger.info('[AuthCubit] User not logged in → unauthenticated');
           emit(
             state.copyWith(
               status: AuthStatus.unauthenticated,
@@ -152,21 +188,34 @@ class AuthCubit extends Cubit<AuthState> {
             ),
           );
         } else {
+          MyLogger.info('[AuthCubit] User logged in, checking verification...');
           // Check verification status
           final verifiedResult = await isVerifiedUseCase(const NoParams());
           verifiedResult.fold(
-            (_) => emit(state.copyWith(status: AuthStatus.authenticated)),
-            (isVerified) => emit(
-              state.copyWith(
-                status: isVerified
-                    ? AuthStatus.authenticated
-                    : AuthStatus.unverified,
-              ),
-            ),
+            (_) {
+              MyLogger.info(
+                '[AuthCubit] Verification check failed → authenticated',
+              );
+              emit(state.copyWith(status: AuthStatus.authenticated));
+            },
+            (isVerified) {
+              MyLogger.info(
+                '[AuthCubit] Verification status: $isVerified → ${isVerified ? "authenticated" : "unverified"}',
+              );
+              emit(
+                state.copyWith(
+                  status: isVerified
+                      ? AuthStatus.authenticated
+                      : AuthStatus.unverified,
+                ),
+              );
+            },
           );
         }
       },
     );
+
+    MyLogger.info('[AuthCubit] Auth status check completed: ${state.status}');
   }
 
   // ===================== SIGN IN WITH GOOGLE =====================

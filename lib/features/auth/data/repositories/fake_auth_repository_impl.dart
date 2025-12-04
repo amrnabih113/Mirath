@@ -1,7 +1,9 @@
 import 'package:dartz/dartz.dart';
+
 import '../../../../core/error/failuors.dart';
 import '../../domain/entities/signin_data.dart';
 import '../../domain/entities/signup_data.dart';
+import '../../domain/entities/user_profile.dart';
 import '../../domain/repositories/auth_repository.dart';
 
 /// Fake implementation of AuthRepository for testing purposes
@@ -9,7 +11,7 @@ import '../../domain/repositories/auth_repository.dart';
 class FakeAuthRepositoryImpl implements AuthRepository {
   // Simulate user state
   bool _isSignedIn = false;
-  bool _isVerified = false;
+  bool _isVerified = true;
   bool _otpSent = false;
   bool _resetOtpSent = false;
   String? _currentEmail;
@@ -30,7 +32,7 @@ class FakeAuthRepositoryImpl implements AuthRepository {
     if (signinData.email == validEmail &&
         signinData.password == validPassword) {
       _isSignedIn = true;
-      _isVerified = false; // New sign-ins are unverified
+      _isVerified = true; // New sign-ins are unverified
       _currentEmail = signinData.email;
       _currentPassword = signinData.password;
       return const Right(null);
@@ -51,7 +53,7 @@ class FakeAuthRepositoryImpl implements AuthRepository {
 
     // Simulate successful signup
     _isSignedIn = true;
-    _isVerified = false;
+    _isVerified = true;
     _currentEmail = signupData.email;
     _currentPassword = signupData.password;
     return const Right(null);
@@ -223,5 +225,18 @@ class FakeAuthRepositoryImpl implements AuthRepository {
     if (isSignedIn != null) _isSignedIn = isSignedIn;
     if (isVerified != null) _isVerified = isVerified;
     if (email != null) _currentEmail = email;
+  }
+
+  @override
+  Future<Either<Failure, void>> setUpProfile(UserProfile userProfile) async {
+    await Future.delayed(const Duration(seconds: 1)); // Simulate network delay
+  
+    if (!_isSignedIn) {
+      return Left(ServerFailure('User not authenticated'));
+    }
+
+    // In a real implementation, this would save to a database
+    // For now, we just simulate success
+    return const Right(null);
   }
 }

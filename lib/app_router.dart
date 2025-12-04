@@ -1,20 +1,22 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
-import 'package:mirath/core/utils/page_transitions.dart';
-import 'package:mirath/features/auth/presentation/cubit/auth_cubit.dart';
-import 'package:mirath/features/auth/presentation/screens/forget_password_screen.dart';
-import 'package:mirath/features/auth/presentation/screens/otp_screen.dart';
-import 'package:mirath/features/auth/presentation/screens/reset_password_screen.dart';
-import 'package:mirath/features/auth/presentation/screens/signin_screen.dart';
-import 'package:mirath/features/auth/presentation/screens/signup_screen.dart';
-import 'package:mirath/features/auth/presentation/screens/verify_account_screen.dart';
-import 'package:mirath/features/onboarding/domain/repository/onboarding_repository.dart';
-import 'package:mirath/features/onboarding/presentation/cubit/onboarding_cubit.dart';
-import 'package:mirath/features/onboarding/presentation/screens/onboarding_screen.dart';
-import 'package:mirath/features/splash/presentation/cubit/splash_cubit.dart';
-import 'package:mirath/features/splash/presentation/screens/splash_screen.dart';
-import 'package:mirath/injection/injection_container.dart';
+import 'features/auth/presentation/screens/set_up_profile_screen.dart';
+import 'core/services/local_storage_service.dart';
+import 'core/utils/my_logger.dart';
+import 'core/utils/page_transitions.dart';
+import 'features/auth/presentation/cubit/auth_cubit.dart';
+import 'features/auth/presentation/screens/forget_password_screen.dart';
+import 'features/auth/presentation/screens/otp_screen.dart';
+import 'features/auth/presentation/screens/reset_password_screen.dart';
+import 'features/auth/presentation/screens/signin_screen.dart';
+import 'features/auth/presentation/screens/signup_screen.dart';
+import 'features/auth/presentation/screens/verify_account_screen.dart';
+import 'features/onboarding/domain/repository/onboarding_repository.dart';
+import 'features/onboarding/presentation/cubit/onboarding_cubit.dart';
+import 'features/onboarding/presentation/screens/onboarding_screen.dart';
+import 'features/splash/presentation/screens/splash_screen.dart';
+import 'injection/injection_container.dart';
 
 // Helper class to make AuthCubit work with GoRouter's refreshListenable
 class _AuthStateNotifier extends ChangeNotifier {
@@ -33,9 +35,16 @@ final appRouter = GoRouter(
 
   redirect: (context, state) {
     final authStatus = sl<AuthCubit>().state.status;
+    final localStorage = sl<LocalStorageService>();
     final currentLocation = state.matchedLocation;
 
-    // Auth flow paths
+    MyLogger.info(
+      '[Router] Redirect check - Current: $currentLocation, AuthStatus: $authStatus',
+    );
+
+    final hasSeenOnboarding = localStorage.hasSeenOnboarding();
+    final hasSetupProfile = localStorage.hasSetupProfile();
+
     const authPaths = [
       '/signin',
       '/signup',
@@ -45,67 +54,107 @@ final appRouter = GoRouter(
       '/reset-password',
     ];
 
-    // Public paths that don't require authentication
     const publicPaths = ['/splash', '/onboarding', ...authPaths];
 
-    // Don't interfere with splash screen - it handles its own navigation
-    if (currentLocation == '/splash') {
+    // If auth is still initializing, stay on splash or current page
+    if (authStatus == AuthStatus.initial) {
+      if (currentLocation != '/splash') {
+        MyLogger.info('[Router] Auth not ready → redirecting to /splash');
+        return '/splash';
+      }
+      MyLogger.debug('[Router] Auth initializing - staying on splash');
       return null;
     }
 
-    // Initial state - only redirect to splash if not on a public path
-    if (authStatus == AuthStatus.initial) {
-      // Allow onboarding and other public paths
-      if (publicPaths.contains(currentLocation)) return null;
-      return '/splash';
+    // On splash - auth is ready, redirect based on status
+    if (currentLocation == '/splash') {
+      if (authStatus == AuthStatus.unauthenticated) {
+        if (!hasSeenOnboarding) {
+          MyLogger.info('[Router] Splash → /onboarding (first time user)');
+          return '/onboarding';
+        }
+        MyLogger.info('[Router] Splash → /signin (unauthenticated)');
+        return '/signin';
+      }
+
+      if (authStatus == AuthStatus.unverified) {
+        MyLogger.info('[Router] Splash → /verify-account');
+        return '/verify-account';
+      }
+
+      if (authStatus == AuthStatus.authenticated) {
+        if (!hasSetupProfile) {
+          MyLogger.info('[Router] Splash → /set-up-profile');
+          return '/set-up-profile';
+        }
+        MyLogger.info('[Router] Splash → /home');
+        return '/home';
+      }
+
+      MyLogger.debug('[Router] On splash - no redirect needed');
+      return null;
     }
 
-    // Unauthenticated - allow access to auth screens
+    // Unauthenticated flow
     if (authStatus == AuthStatus.unauthenticated) {
-      // If already on an auth screen or onboarding, stay there
-      if (authPaths.contains(currentLocation) ||
-          currentLocation == '/onboarding')
-        return null;
-      // Otherwise redirect to signin
-      return '/signin';
+      if (!hasSeenOnboarding && currentLocation != '/onboarding') {
+        MyLogger.info('[Router] Redirecting to /onboarding');
+        return '/onboarding';
+      }
+      if (!authPaths.contains(currentLocation)) {
+        MyLogger.info('[Router] Redirecting to /signin');
+        return '/signin';
+      }
+      return null;
     }
 
-    // Unverified - redirect to verification screen
-    if (authStatus == AuthStatus.unverified) {
-      if (currentLocation == '/verify-account') return null;
+    // Email unverified
+    if (authStatus == AuthStatus.unverified &&
+        currentLocation != '/verify-account') {
+      MyLogger.info('[Router] Redirecting to /verify-account');
       return '/verify-account';
     }
 
-    // OTP sent for password reset - redirect to OTP screen
-    if (authStatus == AuthStatus.resetPasswordRequested) {
-      if (currentLocation == '/verify-reset-otp') return null;
+    // Password reset flow
+    if (authStatus == AuthStatus.resetPasswordRequested &&
+        currentLocation != '/verify-reset-otp') {
+      MyLogger.info('[Router] Redirecting to /verify-reset-otp');
       return '/verify-reset-otp';
     }
 
-    // OTP verified for password reset - redirect to reset password screen
-    if (authStatus == AuthStatus.resetPasswordVerified) {
-      if (currentLocation == '/reset-password') return null;
+    if (authStatus == AuthStatus.resetPasswordVerified &&
+        currentLocation != '/reset-password') {
+      MyLogger.info('[Router] Redirecting to /reset-password');
       return '/reset-password';
     }
 
-    // Authenticated - redirect away from auth screens to home
+    // Authenticated user handling
     if (authStatus == AuthStatus.authenticated) {
-      if (publicPaths.contains(currentLocation)) return '/home';
+      if (!hasSetupProfile && currentLocation != '/set-up-profile') {
+        MyLogger.info('[Router] Redirecting to /set-up-profile');
+        return '/set-up-profile';
+      }
+
+      // Block navigation to public/auth pages
+      if (publicPaths.contains(currentLocation)) {
+        MyLogger.info(
+          '[Router] Redirecting to /home (block public page access)',
+        );
+        return '/home';
+      }
+
       return null;
     }
 
     return null;
   },
+
   routes: [
     // ===================== SPLASH SCREEN =====================
     GoRoute(
       path: '/splash',
-      pageBuilder: (context, state) => PageTransitions.smoothTransition(
-        BlocProvider(
-          create: (context) => sl<SplashCubit>(),
-          child: const SplashScreen(),
-        ),
-      ),
+      pageBuilder: (context, state) =>
+          PageTransitions.smoothTransition(const SplashScreen()),
     ),
 
     // ===================== ONBOARDING =====================
@@ -129,71 +178,58 @@ final appRouter = GoRouter(
 
     GoRoute(
       path: '/home',
-      pageBuilder: (context, state) => PageTransitions.smoothTransition(
-        // TODO: Replace with actual home screen
-        const Scaffold(body: Center(child: Text('Home Screen - TODO'))),
-      ),
+      pageBuilder: (context, state) =>
+          PageTransitions.smoothTransition(const Scaffold()),
     ),
 
     // ===================== AUTH ROUTES =====================
     GoRoute(
       path: '/signin',
-      pageBuilder: (context, state) => PageTransitions.smoothTransition(
-        BlocProvider(
-          create: (context) => sl<AuthCubit>(),
-          child: const SigninScreen(),
-        ),
-      ),
+      pageBuilder: (context, state) =>
+          PageTransitions.smoothTransition(const SigninScreen()),
     ),
 
     GoRoute(
       path: '/signup',
-      pageBuilder: (context, state) => PageTransitions.smoothTransition(
-        BlocProvider(
-          create: (context) => sl<AuthCubit>(),
-          child: const SignupScreen(),
-        ),
-      ),
+      pageBuilder: (context, state) =>
+          PageTransitions.smoothTransition(const SignupScreen()),
     ),
 
     GoRoute(
       path: '/verify-account',
-      pageBuilder: (context, state) => PageTransitions.smoothTransition(
-        BlocProvider(
-          create: (context) => sl<AuthCubit>(),
-          child: const VerifyAccountScreen(),
-        ),
-      ),
+      pageBuilder: (context, state) =>
+          PageTransitions.smoothTransition(const VerifyAccountScreen()),
     ),
 
     GoRoute(
       path: '/forget-password',
-      pageBuilder: (context, state) => PageTransitions.smoothTransition(
-        BlocProvider(
-          create: (context) => sl<AuthCubit>(),
-          child: const ForgetPasswordScreen(),
-        ),
-      ),
+      pageBuilder: (context, state) =>
+          PageTransitions.smoothTransition(const ForgetPasswordScreen()),
     ),
 
     GoRoute(
       path: '/verify-reset-otp',
-      pageBuilder: (context, state) => PageTransitions.smoothTransition(
-        BlocProvider(
-          create: (context) => sl<AuthCubit>(),
-          child: const OtpScreen(),
-        ),
-      ),
+      pageBuilder: (context, state) =>
+          PageTransitions.smoothTransition(const OtpScreen()),
     ),
 
     GoRoute(
       path: '/reset-password',
-      pageBuilder: (context, state) => PageTransitions.smoothTransition(
-        BlocProvider(
-          create: (context) => sl<AuthCubit>(),
-          child: const ResetPasswordScreen(),
-        ),
-      ),
+      pageBuilder: (context, state) =>
+          PageTransitions.smoothTransition(const ResetPasswordScreen()),
+    ),
+
+    GoRoute(
+      path: '/set-up-profile',
+
+      pageBuilder: (context, state) {
+        final user = UserEntity(
+          username: 'username1',
+          email: 'test@example.com',
+        );
+          return PageTransitions.smoothTransition(SetUpProfileScreen(
+            userEntity: user,
+          ));}
     ),
   ],
 );

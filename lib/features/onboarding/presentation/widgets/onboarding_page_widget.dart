@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:mirath/core/utils/my_sizes.dart';
-import 'package:mirath/core/utils/my_extenstions.dart';
-import 'package:mirath/features/onboarding/domain/entities/onboarding_entity.dart';
+import '../../../../core/utils/my_sizes.dart';
+import '../../../../core/utils/my_extenstions.dart';
+import '../../domain/entities/onboarding_entity.dart';
 
 class OnboardingPageWidget extends StatelessWidget {
   final OnboardingEntity page;

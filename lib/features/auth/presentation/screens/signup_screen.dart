@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
-import 'package:mirath/core/helpers/my_loaders.dart';
-import 'package:mirath/core/utils/my_sizes.dart';
-import 'package:mirath/features/auth/presentation/cubit/auth_cubit.dart';
-import 'package:mirath/features/common/widgets/my_back_icon.dart';
-import 'package:mirath/features/common/widgets/screen_decoration.dart';
-import 'package:mirath/features/auth/presentation/widgets/signup_header.dart';
-import 'package:mirath/features/auth/presentation/widgets/signup_form.dart';
+import '../../../../core/helpers/my_loaders.dart';
+import '../../../../core/utils/my_sizes.dart';
+import '../cubit/auth_cubit.dart';
+import '../../../common/widgets/my_back_icon.dart';
+import '../../../common/widgets/screen_decoration.dart';
+import '../widgets/signup_header.dart';
+import '../widgets/signup_form.dart';
 
 class SignupScreen extends StatelessWidget {
   const SignupScreen({super.key});

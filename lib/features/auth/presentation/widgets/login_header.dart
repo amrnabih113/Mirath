@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:mirath/core/utils/my_extenstions.dart';
-import 'package:mirath/core/utils/my_sizes.dart';
+
+import '../../../../core/utils/my_extenstions.dart';
+import '../../../../core/utils/my_sizes.dart';
 
 class LoginHeader extends StatelessWidget {
   const LoginHeader({super.key});

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:mirath/core/utils/my_extenstions.dart';
-import 'package:mirath/generated/l10n.dart';
+import '../../../../core/utils/my_extenstions.dart';
+import '../../../../generated/l10n.dart';
 
 class SkipButton extends StatelessWidget {
   final VoidCallback onPressed;

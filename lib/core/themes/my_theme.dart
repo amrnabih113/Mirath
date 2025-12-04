@@ -1,13 +1,14 @@
 import 'package:flutter/material.dart';
-import 'package:mirath/core/themes/custom_themes/appbar_theme.dart';
-import 'package:mirath/core/themes/custom_themes/bottom_sheet_theme.dart';
-import 'package:mirath/core/themes/custom_themes/checkbox_theme.dart';
-import 'package:mirath/core/themes/custom_themes/chip_theme.dart';
-import 'package:mirath/core/themes/custom_themes/elevation_button_theme.dart';
-import 'package:mirath/core/themes/custom_themes/outlined_buttom_theme.dart';
-import 'package:mirath/core/themes/custom_themes/text_field_theme.dart';
-import 'package:mirath/core/themes/custom_themes/text_theme.dart';
-import 'package:mirath/core/utils/my_colors.dart';
+import 'custom_themes/appbar_theme.dart';
+import 'custom_themes/bottom_sheet_theme.dart';
+import 'custom_themes/checkbox_theme.dart';
+import 'custom_themes/chip_theme.dart';
+import 'custom_themes/dropdown_menu_theme.dart';
+import 'custom_themes/elevation_button_theme.dart';
+import 'custom_themes/outlined_buttom_theme.dart';
+import 'custom_themes/text_field_theme.dart';
+import 'custom_themes/text_theme.dart';
+import '../utils/my_colors.dart';
 
 class MyTheme {
   MyTheme._();
@@ -30,6 +31,9 @@ class MyTheme {
       inputDecorationTheme: MyTextFieldTheme.lightInputDecorationThemeData(
         context,
       ),
+      dropdownMenuTheme: MyDropdownMenuTheme.lightDropdownMenuTheme(context),
+      popupMenuTheme: MyDropdownMenuTheme.lightPopupMenuTheme(context),
+      menuTheme: MyDropdownMenuTheme.lightMenuTheme(context),
     );
   }
 
@@ -51,6 +55,9 @@ class MyTheme {
       inputDecorationTheme: MyTextFieldTheme.darkInputDecorationThemeData(
         context,
       ),
+      dropdownMenuTheme: MyDropdownMenuTheme.darkDropdownMenuTheme(context),
+      popupMenuTheme: MyDropdownMenuTheme.darkPopupMenuTheme(context),
+      menuTheme: MyDropdownMenuTheme.darkMenuTheme(context),
     );
   }
 }

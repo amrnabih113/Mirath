@@ -80,6 +80,7 @@ class MyColors {
     0xFFD4C9BD,
   ).withValues(alpha: 0.9); // Muted warm text
 
+  static const Color cardColor = Color.fromARGB(255, 227, 217, 205);
   // Background Colors
   static const Color light = primaryShade100;
   static const Color dark = Color(
