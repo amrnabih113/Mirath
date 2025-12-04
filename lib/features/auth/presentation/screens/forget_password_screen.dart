@@ -106,7 +106,7 @@ class _ForgetPasswordScreenState extends State<ForgetPasswordScreen> {
                           listener: (context, state) {
                             if (state.status ==
                                 AuthStatus.resetPasswordRequested) {
-                              context.pushReplacement('/otpScreen');
+                              context.pushReplacement('/verify-reset-otp');
                             } else if (state.status == AuthStatus.error) {
                               MyLoaders.errorSnackBar(
                                 context: context,
