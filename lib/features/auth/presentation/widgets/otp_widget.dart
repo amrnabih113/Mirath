@@ -129,7 +129,7 @@ class _OtpWidgetState extends State<OtpWidget> {
                     ? MyColors.primaryShade500
                     : MyColors.primaryShade300,
               ),
-              onPressed: state.status == AuthStatus.loading
+              onPressed: state.status == AuthStatus.otpSent
                   ? null
                   : () {
                       if (otpCode.length == 6) {
