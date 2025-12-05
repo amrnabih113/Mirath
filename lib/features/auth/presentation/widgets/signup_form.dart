@@ -169,6 +169,7 @@ class _SignupFormState extends State<SignupForm> {
           ),
           SizedBox(height: MySizes.spaceLg(context)),
           BlocBuilder<AuthCubit, AuthState>(
+            buildWhen: (previous, current) => previous.status != current.status,
             builder: (context, state) {
               final isLoading = state.status == AuthStatus.loading;
               return SizedBox(

@@ -2,7 +2,6 @@ import 'package:device_preview/device_preview.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
-import 'package:mirath/core/services/local_storage_service.dart';
 
 import 'app_router.dart';
 import 'core/network/network_manager.dart';

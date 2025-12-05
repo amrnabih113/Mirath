@@ -12,6 +12,9 @@ class MyElevationButtonTheme {
     final double verticalPadding = MySizes.spaceMd(
       context,
     ); // responsive padding
+    final double horizontalPadding = MySizes.spaceLg(
+      context,
+    ); // responsive padding
 
     return ElevatedButtonThemeData(
       style: ElevatedButton.styleFrom(
@@ -21,7 +24,10 @@ class MyElevationButtonTheme {
         disabledBackgroundColor: MyColors.primaryShade300,
         disabledForegroundColor: MyColors.primaryShade50,
         side: BorderSide.none,
-        padding: EdgeInsets.symmetric(vertical: verticalPadding),
+        padding: EdgeInsets.symmetric(
+          vertical: verticalPadding,
+          horizontal: horizontalPadding,
+        ),
         textStyle: TextStyle(fontSize: fontSize, fontWeight: FontWeight.bold),
         shape: const RoundedRectangleBorder(
           borderRadius: BorderRadius.all(Radius.circular(20)),

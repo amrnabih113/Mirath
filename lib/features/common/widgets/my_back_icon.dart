@@ -12,7 +12,7 @@ class MyBackIcon extends StatelessWidget {
   Widget build(BuildContext context) {
     final isDark = MyHelperFunctions.isDarkMode(context);
 
-    return InkWell(
+    return GestureDetector(
       onTap: () => context.pop(),
       child: Padding(
         padding: EdgeInsets.symmetric(horizontal: MySizes.spaceLg(context)),

@@ -23,7 +23,7 @@ class SigninScreen extends StatelessWidget {
             context.pushReplacement('/home');
           } else if (state.status == AuthStatus.unverified) {
             context.pushReplacement('/verify-account');
-          } else if (state.message != null && state.message!.isNotEmpty) {
+          } else if (state.status == AuthStatus.error) {
             MyLoaders.errorSnackBar(
               context: context,
               title: "Oh no! ",
@@ -43,9 +43,7 @@ class SigninScreen extends StatelessWidget {
                 padding: MySizes.paddingLg(context),
                 child: Center(
                   child: ConstrainedBox(
-                    constraints: BoxConstraints(
-                      maxWidth: 850, 
-                    ),
+                    constraints: BoxConstraints(maxWidth: 850),
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
