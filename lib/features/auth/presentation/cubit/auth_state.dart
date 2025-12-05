@@ -8,8 +8,7 @@ enum AuthStatus {
   unauthenticated, // User logged out
   otpSent, // OTP sent for verification
   otpVerified, // OTP verified successfully
-  resetPasswordRequested, // Forgot password OTP sent
-  resetPasswordVerified, // OTP for reset verified
+
   success, // Generic success message
   error, // Generic error message
 }

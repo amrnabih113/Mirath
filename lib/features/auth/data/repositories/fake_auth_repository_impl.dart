@@ -11,8 +11,8 @@ import '../../domain/repositories/auth_repository.dart';
 class FakeAuthRepositoryImpl implements AuthRepository {
   // Simulate user state
   bool _isSignedIn = false;
-  bool _isVerified = true;
-  bool _otpSent = false;
+  bool _isVerified = false;
+  bool _otpSent = true;
   bool _resetOtpSent = false;
   String? _currentEmail;
   // ignore: unused_field
@@ -32,7 +32,7 @@ class FakeAuthRepositoryImpl implements AuthRepository {
     if (signinData.email == validEmail &&
         signinData.password == validPassword) {
       _isSignedIn = true;
-      _isVerified = true; // New sign-ins are unverified
+      _isVerified = false; // New sign-ins are unverified
       _currentEmail = signinData.email;
       _currentPassword = signinData.password;
       return const Right(null);
@@ -162,9 +162,13 @@ class FakeAuthRepositoryImpl implements AuthRepository {
     // Simulate sending password reset OTP
     await Future.delayed(const Duration(seconds: 1));
 
-    if (_currentEmail == null) {
+    // if (_currentEmail == null) {
+    //   return Left(ServerFailure('Email not found'));
+    // }
+    if (email != validEmail) {
       return Left(ServerFailure('Email not found'));
     }
+    _currentEmail = email;
 
     _resetOtpSent = true;
     // In real app, OTP would be sent to email
@@ -230,7 +234,7 @@ class FakeAuthRepositoryImpl implements AuthRepository {
   @override
   Future<Either<Failure, void>> setUpProfile(UserProfile userProfile) async {
     await Future.delayed(const Duration(seconds: 1)); // Simulate network delay
-  
+
     if (!_isSignedIn) {
       return Left(ServerFailure('User not authenticated'));
     }

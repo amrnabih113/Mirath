@@ -315,7 +315,7 @@ class AuthCubit extends Cubit<AuthState> {
       (f) => emit(state.copyWith(status: AuthStatus.error, message: f.message)),
       (_) => emit(
         state.copyWith(
-          status: AuthStatus.resetPasswordRequested,
+          status: AuthStatus.success,
           message: "Password reset code sent to your email",
         ),
       ),
@@ -331,7 +331,7 @@ class AuthCubit extends Cubit<AuthState> {
       (f) => emit(state.copyWith(status: AuthStatus.error, message: f.message)),
       (_) => emit(
         state.copyWith(
-          status: AuthStatus.resetPasswordVerified,
+          status: AuthStatus.success,
           message: "OTP verified. You can now reset your password",
         ),
       ),

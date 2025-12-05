@@ -58,72 +58,65 @@ class _ForgetPasswordScreenState extends State<ForgetPasswordScreen> {
       appBar: AppBar(leading: MyBackIcon()),
       body: ScreenDecoration(
         dark: false,
-        child: LayoutBuilder(
-          builder: (context, constraints) {
-            final topGap = screenHeight * 0.05; // ~12% of screen height
+        child: BlocListener<AuthCubit, AuthState>(
+          listener: (context, state) {
+            if (state.status == AuthStatus.success) {
+              context.push('/verify-reset-otp');
+            } else if (state.status == AuthStatus.error) {
+              MyLoaders.warningSnackBar(
+                context: context,
+                title: "",
+                message: state.message ?? "Something went wrong.",
+              );
+            }
+          },
+          child: LayoutBuilder(
+            builder: (context, constraints) {
+              final topGap = screenHeight * 0.05; // ~12% of screen height
 
-            return SafeArea(
-              child: Padding(
-                padding: MySizes.paddingLg(context),
-                child: Center(
-                  child: ConstrainedBox(
-                    constraints: BoxConstraints(maxWidth: 850),
-                    child: Column(
-                      children: [
-                        SizedBox(height: topGap),
-                        Text(
-                          "Forget Password",
-                          style: context.headlineLarge.copyWith(
-                            fontWeight: FontWeight.bold,
-                            fontSize: 40,
-                          ),
-                        ),
-
-                        SizedBox(height: MySizes.spaceMd(context)),
-
-                        Text(
-                          "Enter your email to receive a reset OTP.",
-                          style: context.titleMedium,
-                        ),
-
-                        SizedBox(height: MySizes.spaceXl(context)),
-                        Form(
-                          key: _formKey,
-                          child: TextFormField(
-                            controller: _emailController,
-                            validator: MyValidator.validateEmail,
-                            cursorColor: MyColors.primaryColor,
-                            decoration: InputDecoration(
-                              hintText: "Email Address",
+              return SafeArea(
+                child: Padding(
+                  padding: MySizes.paddingLg(context),
+                  child: Center(
+                    child: ConstrainedBox(
+                      constraints: BoxConstraints(maxWidth: 850),
+                      child: Column(
+                        children: [
+                          SizedBox(height: topGap),
+                          Text(
+                            "Forget Password",
+                            style: context.headlineLarge.copyWith(
+                              fontWeight: FontWeight.bold,
+                              fontSize: 40,
                             ),
-                            keyboardType: TextInputType.emailAddress,
                           ),
-                        ),
 
-                        SizedBox(height: MySizes.spaceLg(context)),
+                          SizedBox(height: MySizes.spaceMd(context)),
 
-                        BlocListener<AuthCubit, AuthState>(
-                          listener: (context, state) {
-                            if (state.status ==
-                                AuthStatus.resetPasswordRequested) {
-                              context.pushReplacement('/verify-reset-otp');
-                            } else if (state.status == AuthStatus.error) {
-                              MyLoaders.errorSnackBar(
-                                context: context,
-                                title: "Oh no!",
-                                message:
-                                    state.message ?? "Something went wrong.",
-                              );
-                            }
-                          },
-                          child: SizedBox(
+                          Text(
+                            "Enter your email to receive a reset OTP.",
+                            style: context.titleMedium,
+                          ),
+
+                          SizedBox(height: MySizes.spaceXl(context)),
+                          Form(
+                            key: _formKey,
+                            child: TextFormField(
+                              controller: _emailController,
+                              validator: MyValidator.validateEmail,
+                              cursorColor: MyColors.primaryColor,
+                              decoration: InputDecoration(
+                                hintText: "Email Address",
+                              ),
+                              keyboardType: TextInputType.emailAddress,
+                            ),
+                          ),
+
+                          SizedBox(height: MySizes.spaceLg(context)),
+
+                          SizedBox(
                             width: MySizes.buttonWidth(context),
-
                             child: BlocBuilder<AuthCubit, AuthState>(
-                              buildWhen: (previous, current) =>
-                                  previous.status !=
-                                  current.status, // prevents useless rebuilds
-
                               builder: (context, state) {
                                 final isLoading =
                                     state.status == AuthStatus.loading;
@@ -147,14 +140,14 @@ class _ForgetPasswordScreenState extends State<ForgetPasswordScreen> {
                               },
                             ),
                           ),
-                        ),
-                      ],
+                        ],
+                      ),
                     ),
                   ),
                 ),
-              ),
-            );
-          },
+              );
+            },
+          ),
         ),
       ),
     );

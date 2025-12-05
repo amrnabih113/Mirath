@@ -16,13 +16,7 @@ class OtpScreen extends StatelessWidget {
     final screenHeight = MediaQuery.of(context).size.height;
     return BlocListener<AuthCubit, AuthState>(
       listener: (context, state) {
-        if (state.status == AuthStatus.otpSent) {
-          MyLoaders.successSnackBar(
-            context: context,
-            title: "Success!",
-            message: state.message ?? "otp sent successfully.",
-          );
-        } else if (state.status == AuthStatus.otpVerified) {
+        if (state.status == AuthStatus.success) {
           MyLoaders.successSnackBar(
             context: context,
             title: "Verified!",
@@ -31,9 +25,9 @@ class OtpScreen extends StatelessWidget {
           // Navigate to reset password screen
           context.pushReplacement('/reset-password');
         } else if (state.status == AuthStatus.error) {
-          MyLoaders.errorSnackBar(
+          MyLoaders.warningSnackBar(
             context: context,
-            title: "Oh no!",
+            title: "",
             message: state.message ?? "Something went wrong.",
           );
         }

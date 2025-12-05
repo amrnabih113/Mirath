@@ -22,26 +22,20 @@ class MessageLookup extends MessageLookupByLibrary {
 
   final messages = _notInlinedMessages(_notInlinedMessages);
   static Map<String, Function> _notInlinedMessages(_) => <String, Function>{
-    "get_started": MessageLookupByLibrary.simpleMessage("ابدأ الآن"),
-    "next": MessageLookupByLibrary.simpleMessage("التالي"),
-    "onboarding_description_1": MessageLookupByLibrary.simpleMessage(
-      "يمكنك البحث بالكلمات المفتاحية أو المؤلفين أو العناوين أو حتى لصق نص للعثور على الورقة البحثية التي تحتاجها.",
-    ),
-    "onboarding_description_2": MessageLookupByLibrary.simpleMessage(
-      "عزز تعلمك من خلال تمييز المقاطع الرئيسية. اكتب ملاحظات مرتبطة وتتبع أفكارك في صفحة منفصلة وأنشئ ملخصاتك الخاصة.",
-    ),
-    "onboarding_description_3": MessageLookupByLibrary.simpleMessage(
-      "ابدأ فرقًا لمشاركة الموارد والملاحظات. استخدم الذكاء الاصطناعي لتحسين كتابتك والتحقق من تنسيق المجلة.",
-    ),
-    "onboarding_title_1": MessageLookupByLibrary.simpleMessage(
-      "ابحث عن أي بحث على الفور",
-    ),
-    "onboarding_title_2": MessageLookupByLibrary.simpleMessage(
-      "أتقن أوراقك البحثية بملاحظات نشطة",
-    ),
-    "onboarding_title_3": MessageLookupByLibrary.simpleMessage(
-      "تعاون واكتب بثقة",
-    ),
-    "skip": MessageLookupByLibrary.simpleMessage("تخطي"),
-  };
+        "get_started": MessageLookupByLibrary.simpleMessage("ابدأ الآن"),
+        "next": MessageLookupByLibrary.simpleMessage("التالي"),
+        "onboarding_description_1": MessageLookupByLibrary.simpleMessage(
+            "يمكنك البحث بالكلمات المفتاحية أو المؤلفين أو العناوين أو حتى لصق نص للعثور على الورقة البحثية التي تحتاجها."),
+        "onboarding_description_2": MessageLookupByLibrary.simpleMessage(
+            "عزز تعلمك من خلال تمييز المقاطع الرئيسية. اكتب ملاحظات مرتبطة وتتبع أفكارك في صفحة منفصلة وأنشئ ملخصاتك الخاصة."),
+        "onboarding_description_3": MessageLookupByLibrary.simpleMessage(
+            "ابدأ فرقًا لمشاركة الموارد والملاحظات. استخدم الذكاء الاصطناعي لتحسين كتابتك والتحقق من تنسيق المجلة."),
+        "onboarding_title_1":
+            MessageLookupByLibrary.simpleMessage("ابحث عن أي بحث على الفور"),
+        "onboarding_title_2": MessageLookupByLibrary.simpleMessage(
+            "أتقن أوراقك البحثية بملاحظات نشطة"),
+        "onboarding_title_3":
+            MessageLookupByLibrary.simpleMessage("تعاون واكتب بثقة"),
+        "skip": MessageLookupByLibrary.simpleMessage("تخطي")
+      };
 }

@@ -50,12 +50,8 @@ dependencies:
   iconsax: ^0.0.8
   intl: ^0.20.2
   logger: ^2.6.2
-<<<<<<< HEAD
-  device_preview: ^1.3.1
   pin_code_fields: ^8.0.1
-=======
   shared_preferences: ^2.3.4
->>>>>>> 441a755cc99390c02fe08fe935a5a0129ca28e17
 
 dev_dependencies:
   flutter_lints: ^6.0.0

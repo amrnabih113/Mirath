@@ -115,18 +115,18 @@ final appRouter = GoRouter(
       return '/verify-account';
     }
 
-    // Password reset flow
-    if (authStatus == AuthStatus.resetPasswordRequested &&
-        currentLocation != '/verify-reset-otp') {
-      MyLogger.info('[Router] Redirecting to /verify-reset-otp');
-      return '/verify-reset-otp';
-    }
+    // // Password reset flow
+    // if (authStatus == AuthStatus.resetPasswordRequested &&
+    //     currentLocation != '/verify-reset-otp') {
+    //   MyLogger.info('[Router] Redirecting to /verify-reset-otp');
+    //   return '/verify-reset-otp';
+    // }
 
-    if (authStatus == AuthStatus.resetPasswordVerified &&
-        currentLocation != '/reset-password') {
-      MyLogger.info('[Router] Redirecting to /reset-password');
-      return '/reset-password';
-    }
+    // if (authStatus == AuthStatus.resetPasswordVerified &&
+    //     currentLocation != '/reset-password') {
+    //   MyLogger.info('[Router] Redirecting to /reset-password');
+    //   return '/reset-password';
+    // }
 
     // Authenticated user handling
     if (authStatus == AuthStatus.authenticated) {
@@ -227,9 +227,10 @@ final appRouter = GoRouter(
           username: 'username1',
           email: 'test@example.com',
         );
-          return PageTransitions.smoothTransition(SetUpProfileScreen(
-            userEntity: user,
-          ));}
+        return PageTransitions.smoothTransition(
+          SetUpProfileScreen(userEntity: user),
+        );
+      },
     ),
   ],
 );
