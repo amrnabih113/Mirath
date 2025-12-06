@@ -198,7 +198,7 @@ final appRouter = GoRouter(
     GoRoute(
       path: '/verify-account',
       pageBuilder: (context, state) =>
-          PageTransitions.smoothTransition(const VerifyAccountScreen()),
+          PageTransitions.smoothTransition(VerifyAccountScreen()),
     ),
 
     GoRoute(
@@ -210,7 +210,7 @@ final appRouter = GoRouter(
     GoRoute(
       path: '/verify-reset-otp',
       pageBuilder: (context, state) =>
-          PageTransitions.smoothTransition(const OtpScreen()),
+          PageTransitions.smoothTransition(OtpScreen()),
     ),
 
     GoRoute(

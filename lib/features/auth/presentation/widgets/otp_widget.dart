@@ -13,11 +13,11 @@ class OtpWidget extends StatefulWidget {
     super.key,
     required this.title,
     required this.description,
-    required this.btnName,
+    required this.onOtpCompleted,
   });
   final String title;
   final String description;
-  final String btnName;
+  final Function(String) onOtpCompleted;
 
   @override
   State<OtpWidget> createState() => _OtpWidgetState();
@@ -25,42 +25,6 @@ class OtpWidget extends StatefulWidget {
 
 class _OtpWidgetState extends State<OtpWidget> {
   String otpCode = '';
-  int secondsLeft = 60;
-  Timer? countdownTimer;
-  bool canResend = false;
-
-  @override
-  void initState() {
-    super.initState();
-    startTimer();
-  }
-
-  void startTimer() {
-    countdownTimer?.cancel();
-    setState(() {
-      canResend = false;
-      secondsLeft = 60;
-    });
-
-    countdownTimer = Timer.periodic(Duration(seconds: 1), (timer) {
-      if (secondsLeft == 0) {
-        setState(() {
-          canResend = true;
-        });
-        timer.cancel();
-      } else {
-        setState(() {
-          secondsLeft--;
-        });
-      }
-    });
-  }
-
-  @override
-  void dispose() {
-    countdownTimer?.cancel();
-    super.dispose();
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -123,84 +87,10 @@ class _OtpWidgetState extends State<OtpWidget> {
             setState(() {
               otpCode = value;
             });
+            widget.onOtpCompleted(value);
           },
         ),
         SizedBox(height: MySizes.spaceLg(context)),
-
-        BlocBuilder<AuthCubit, AuthState>(
-          builder: (context, state) {
-            return SizedBox(
-              width: MySizes.buttonWidth(context),
-              child: ElevatedButton(
-                style: ElevatedButton.styleFrom(
-                  disabledForegroundColor: Colors.white.withAlpha(128),
-                  foregroundColor: MyColors.black,
-                ),
-                onPressed: otpCode.length == 6
-                    ? () {
-                        if (widget.btnName == "Verify email") {
-                          context.read<AuthCubit>().verifyAccount(otpCode);
-                        } else if (widget.btnName == "Verify code") {
-                          context.read<AuthCubit>().verifyResetPasswordOTP(
-                            otpCode,
-                          );
-                        }
-                      }
-                    : null,
-                child: state.status == AuthStatus.loading
-                    ? SizedBox(
-                        height: 20,
-                        width: 20,
-                        child: CircularProgressIndicator(
-                          strokeWidth: 2,
-                          valueColor: AlwaysStoppedAnimation<Color>(
-                            MyColors.primaryShade50,
-                          ),
-                        ),
-                      )
-                    : Text(widget.btnName),
-              ),
-            );
-          },
-        ),
-
-        SizedBox(height: MySizes.spaceXl(context)),
-
-        Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Text(
-              canResend
-                  ? "Haven’t got the email yet? "
-                  : "Resend code in $secondsLeft s",
-              style: context.bodyMedium,
-            ),
-            BlocBuilder<AuthCubit, AuthState>(
-              builder: (context, state) {
-                return GestureDetector(
-                  onTap: canResend
-                      ? () {
-                          context.read<AuthCubit>().sendVerificationOTP();
-                          startTimer();
-                          setState(() {
-                            otpCode = '';
-                          });
-                        }
-                      : null,
-                  child: canResend
-                      ? Text(
-                          "Resend Code",
-                          style: context.bodyMedium.copyWith(
-                            fontWeight: FontWeight.w700,
-                            decoration: TextDecoration.underline,
-                          ),
-                        )
-                      : SizedBox.shrink(),
-                );
-              },
-            ),
-          ],
-        ),
       ],
     );
   }

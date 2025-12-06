@@ -5,15 +5,20 @@ import 'package:mirath/core/helpers/my_loaders.dart';
 import 'package:mirath/core/utils/my_sizes.dart';
 import 'package:mirath/features/auth/presentation/cubit/auth_cubit.dart';
 import 'package:mirath/features/auth/presentation/widgets/otp_widget.dart';
+import 'package:mirath/features/auth/presentation/widgets/timer_widget.dart';
+import 'package:mirath/features/auth/presentation/widgets/verified_button_widget.dart';
 import 'package:mirath/features/common/widgets/my_back_icon.dart';
 import 'package:mirath/features/common/widgets/screen_decoration.dart';
 
 class VerifyAccountScreen extends StatelessWidget {
-  const VerifyAccountScreen({super.key});
+  VerifyAccountScreen({super.key});
+
+  final ValueNotifier<String> _otpCodeNotifier = ValueNotifier<String>("");
 
   @override
   Widget build(BuildContext context) {
     final screenHeight = MediaQuery.of(context).size.height;
+
     return BlocListener<AuthCubit, AuthState>(
       listener: (context, state) {
         if (state.status == AuthStatus.otpSent) {
@@ -28,7 +33,6 @@ class VerifyAccountScreen extends StatelessWidget {
             title: "Verified!",
             message: state.message ?? "otp verified successfully.",
           );
-          // Navigate to reset password screen
           context.pushReplacement('/home');
         } else if (state.status == AuthStatus.error) {
           MyLoaders.errorSnackBar(
@@ -45,7 +49,7 @@ class VerifyAccountScreen extends StatelessWidget {
           dark: false,
           child: LayoutBuilder(
             builder: (context, constraints) {
-              final topGap = screenHeight * 0.05; // ~12% of screen height
+              final topGap = screenHeight * 0.05;
               return SingleChildScrollView(
                 child: Padding(
                   padding: EdgeInsets.only(
@@ -55,17 +59,34 @@ class VerifyAccountScreen extends StatelessWidget {
                   ),
                   child: Center(
                     child: ConstrainedBox(
-                      constraints: BoxConstraints(maxWidth: 850),
+                      constraints: const BoxConstraints(maxWidth: 850),
                       child: Column(
                         children: [
                           SizedBox(height: screenHeight * 0.15),
                           BlocBuilder<AuthCubit, AuthState>(
                             builder: (context, state) {
-                              return OtpWidget(
-                                title: 'Verify your email',
-                                description:
-                                    'We just sent a 6-digit code to your email, enter it below:',
-                                btnName: 'Verify email',
+                              return Column(
+                                children: [
+                                  OtpWidget(
+                                    title: 'Verify your email',
+                                    description:
+                                        'We just sent a 6-digit code to your email, enter it below:',
+                                    onOtpCompleted: (value) {
+                                      _otpCodeNotifier.value = value;
+                                    },
+                                  ),
+                                  // نربط الزر بالـ ValueListenableBuilder عشان نقرى otpCode
+                                  ValueListenableBuilder<String>(
+                                    valueListenable: _otpCodeNotifier,
+                                    builder: (context, otpCode, _) {
+                                      return VerifiedButtonWidget(
+                                        btnName: 'Verify email',
+                                        otpCode: otpCode,
+                                      );
+                                    },
+                                  ),
+                                  const TimerWidget(),
+                                ],
                               );
                             },
                           ),
