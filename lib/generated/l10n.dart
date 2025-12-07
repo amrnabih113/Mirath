@@ -128,6 +128,126 @@ class S {
   String get get_started {
     return Intl.message('Get Started', name: 'get_started', desc: '', args: []);
   }
+
+  /// `Password Reset`
+  String get Password_Reset {
+    return Intl.message(
+      'Password Reset',
+      name: 'Password_Reset',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `We just sent a 6-digit code to your email, enter it below:`
+  String get OTP_code_description {
+    return Intl.message(
+      'We just sent a 6-digit code to your email, enter it below:',
+      name: 'OTP_code_description',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Verify code`
+  String get Verify_code {
+    return Intl.message('Verify code', name: 'Verify_code', desc: '', args: []);
+  }
+
+  /// `Haven’t got the email yet?`
+  String get Have_not_got_yet {
+    return Intl.message(
+      'Haven’t got the email yet?',
+      name: 'Have_not_got_yet',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Resend code`
+  String get Resend_code {
+    return Intl.message('Resend code', name: 'Resend_code', desc: '', args: []);
+  }
+
+  /// `Set a new password`
+  String get Set_a_new_password {
+    return Intl.message(
+      'Set a new password',
+      name: 'Set_a_new_password',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Create a new password. Ensure it differs fromprevious ones for security`
+  String get Create_a_new_password_description {
+    return Intl.message(
+      'Create a new password. Ensure it differs fromprevious ones for security',
+      name: 'Create_a_new_password_description',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Your new password`
+  String get Your_new_password {
+    return Intl.message(
+      'Your new password',
+      name: 'Your_new_password',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Confirm password`
+  String get Confirm_password {
+    return Intl.message(
+      'Confirm password',
+      name: 'Confirm_password',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Update password`
+  String get Update_password {
+    return Intl.message(
+      'Update password',
+      name: 'Update_password',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Verify your email`
+  String get Verify_your_email {
+    return Intl.message(
+      'Verify your email',
+      name: 'Verify_your_email',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Verify email`
+  String get Verify_email {
+    return Intl.message(
+      'Verify email',
+      name: 'Verify_email',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Resend code in`
+  String get Resend_code_in {
+    return Intl.message(
+      'Resend code in',
+      name: 'Resend_code_in',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {

@@ -9,6 +9,7 @@ import 'package:mirath/core/utils/my_validators.dart';
 import 'package:mirath/features/auth/presentation/cubit/auth_cubit.dart';
 import 'package:mirath/features/common/widgets/my_back_icon.dart';
 import 'package:mirath/features/common/widgets/screen_decoration.dart';
+import 'package:mirath/generated/l10n.dart';
 
 class ResetPasswordScreen extends StatefulWidget {
   const ResetPasswordScreen({super.key});
@@ -21,21 +22,25 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
   final _passController = TextEditingController();
   final _confirmPassController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
+  AutovalidateMode _autovalidateMode = AutovalidateMode.disabled;
 
   bool isButtonEnabled = false;
 
-  @override
-  void initState() {
-    super.initState();
+  void _handleResetPassword() {
+    setState(() {
+      _autovalidateMode = AutovalidateMode.onUserInteraction;
+    });
+    if (_formKey.currentState!.validate()) {
+      isButtonEnabled = true;
+      context.read<AuthCubit>().resetPassword(_passController.text.trim());
+    }
+  }
 
-    _confirmPassController.addListener(() {
-      final passwordsMatch =
-          _passController.text == _confirmPassController.text &&
-          MyValidator.validatePassword(_passController.text) == null;
+  void _validateForm() {
+    final isValid = _formKey.currentState?.validate() ?? false;
 
-      if (passwordsMatch != isButtonEnabled) {
-        setState(() => isButtonEnabled = passwordsMatch);
-      }
+    setState(() {
+      isButtonEnabled = isValid;
     });
   }
 
@@ -44,10 +49,6 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
     _confirmPassController.dispose();
     _passController.dispose();
     super.dispose();
-  }
-
-  void _handleRestsPassword() {
-    context.read<AuthCubit>().resetPassword(_passController.text.trim());
   }
 
   @override
@@ -73,7 +74,6 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
           child: LayoutBuilder(
             builder: (context, constraints) {
               final topGap = screenHeight * 0.05; // ~12% of screen height
-
               return SafeArea(
                 child: Padding(
                   padding: MySizes.paddingLg(context),
@@ -82,8 +82,9 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
                       constraints: BoxConstraints(maxWidth: 850),
                       child: Column(
                         children: [
+                          SizedBox(height: topGap),
                           Text(
-                            'Set a new password',
+                            S.of(context).Set_a_new_password,
                             style: context.headlineLarge.copyWith(
                               fontWeight: FontWeight.bold,
                               color: MyColors.primaryShade900,
@@ -94,7 +95,7 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
                             height: MySizes.spaceSm(context),
                           ), // Space between title and description
                           Text(
-                            'Create a new password. Ensure it differs from previous ones for security',
+                            S.of(context).Create_a_new_password_description,
                             style: context.titleMedium.copyWith(
                               fontWeight: FontWeight.w400,
                             ),
@@ -103,6 +104,7 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
                           SizedBox(height: MySizes.spaceMd(context)),
                           Form(
                             key: _formKey,
+                            autovalidateMode: _autovalidateMode,
                             child: Column(
                               children: [
                                 TextFormField(
@@ -111,9 +113,10 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
                                       MyValidator.validatePassword(value),
                                   cursorColor: MyColors.primaryColor,
                                   decoration: InputDecoration(
-                                    hintText: "Your new password",
+                                    hintText: S.of(context).Your_new_password,
                                   ),
                                   textInputAction: TextInputAction.next,
+                                  onChanged: (_) => _validateForm(),
                                 ),
                                 SizedBox(height: MySizes.spaceMd(context)),
                                 TextFormField(
@@ -125,9 +128,9 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
                                       ),
                                   cursorColor: MyColors.primaryColor,
                                   decoration: InputDecoration(
-                                    hintText: "confirm password",
+                                    hintText: S.of(context).Confirm_password,
                                   ),
-                                  textInputAction: TextInputAction.next,
+                                  onChanged: (_) => _validateForm(),
                                 ),
                                 SizedBox(height: MySizes.spaceLg(context)),
 
@@ -139,9 +142,15 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
                                           state.status == AuthStatus.loading;
 
                                       return ElevatedButton(
-                                        onPressed: isButtonEnabled
-                                            ? _handleRestsPassword
-                                            : null,
+                                        style: ElevatedButton.styleFrom(
+                                          disabledForegroundColor: Colors.white
+                                              .withAlpha(128),
+                                          foregroundColor: MyColors.black,
+                                        ),
+                                        onPressed:
+                                            (!isButtonEnabled || isLoading)
+                                            ? null
+                                            : _handleResetPassword,
 
                                         child: isLoading
                                             ? const SizedBox(
@@ -153,7 +162,9 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
                                                       color: MyColors.light,
                                                     ),
                                               )
-                                            : const Text("Reset Password"),
+                                            : Text(
+                                                S.of(context).Update_password,
+                                              ),
                                       );
                                     },
                                   ),

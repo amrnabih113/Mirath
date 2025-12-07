@@ -7,6 +7,7 @@ import 'package:mirath/features/auth/presentation/cubit/auth_cubit.dart';
 import 'package:mirath/features/auth/presentation/widgets/otp_widget.dart';
 import 'package:mirath/features/common/widgets/my_back_icon.dart';
 import 'package:mirath/features/common/widgets/screen_decoration.dart';
+import 'package:mirath/generated/l10n.dart';
 
 class VerifyAccountScreen extends StatelessWidget {
   const VerifyAccountScreen({super.key});
@@ -62,10 +63,9 @@ class VerifyAccountScreen extends StatelessWidget {
                           BlocBuilder<AuthCubit, AuthState>(
                             builder: (context, state) {
                               return OtpWidget(
-                                title: 'Verify your email',
-                                description:
-                                    'We just sent a 6-digit code to your email, enter it below:',
-                                btnName: 'Verify email',
+                                title: S.of(context).Verify_your_email,
+                                description: S.of(context).OTP_code_description,
+                                btnName: S.of(context).Verify_email,
                               );
                             },
                           ),

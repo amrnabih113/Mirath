@@ -8,5 +8,24 @@
     "onboarding_description_3": "Start teams to share resources and notes. Use AI to refine your writing and check journal formatting.",
     "skip": "Skip",
     "next": "Next",
-    "get_started": "Get Started"
+    "get_started": "Get Started",
+    "Password_Reset": "Password Reset",
+    "OTP_code_description":"We just sent a 6-digit code to your email, enter it below:",
+    "Verify_code":"Verify code",
+    "Have_not_got_yet" :"Haven’t got the email yet?",
+    "Resend_code" : "Resend code",
+    "Set_a_new_password":"Set a new password",
+    "Create_a_new_password_description":"Create a new password. Ensure it differs fromprevious ones for security",
+    "Your_new_password":"Your new password",
+    "Confirm_password":"Confirm password",
+    "Update_password":"Update password",
+    "Verify_your_email":"Verify your email",
+    "Verify_email":"Verify email",
+    "Resend_code_in":"Resend code in"
+
+
+
+    
+
+
 }

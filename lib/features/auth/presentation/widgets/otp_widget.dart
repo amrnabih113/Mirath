@@ -5,6 +5,7 @@ import 'package:mirath/core/utils/my_colors.dart';
 import 'package:mirath/core/utils/my_extenstions.dart';
 import 'package:mirath/core/utils/my_sizes.dart';
 import 'package:mirath/features/auth/presentation/cubit/auth_cubit.dart';
+import 'package:mirath/generated/l10n.dart';
 import 'package:pin_code_fields/pin_code_fields.dart';
 
 // ignore: must_be_immutable
@@ -171,8 +172,8 @@ class _OtpWidgetState extends State<OtpWidget> {
           children: [
             Text(
               canResend
-                  ? "Haven’t got the email yet? "
-                  : "Resend code in $secondsLeft s",
+                  ? S.of(context).Have_not_got_yet
+                  : "${S.of(context).Resend_code_in}$secondsLeft s",
               style: context.bodyMedium,
             ),
             BlocBuilder<AuthCubit, AuthState>(
@@ -189,7 +190,7 @@ class _OtpWidgetState extends State<OtpWidget> {
                       : null,
                   child: canResend
                       ? Text(
-                          "Resend Code",
+                          S.of(context).Resend_code,
                           style: context.bodyMedium.copyWith(
                             fontWeight: FontWeight.w700,
                             decoration: TextDecoration.underline,
