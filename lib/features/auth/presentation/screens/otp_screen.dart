@@ -1,16 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
-import '../../../../core/helpers/my_loaders.dart';
-import '../../../../core/utils/my_sizes.dart';
-import '../cubit/auth_cubit.dart';
-import '../widgets/otp_widget.dart';
-import '../../../common/widgets/my_back_icon.dart';
-import '../../../common/widgets/screen_decoration.dart';
-import '../../../../generated/l10n.dart';
+import 'package:mirath/core/helpers/my_loaders.dart';
+import 'package:mirath/core/utils/my_sizes.dart';
+import 'package:mirath/features/auth/presentation/cubit/auth_cubit.dart';
+import 'package:mirath/features/auth/presentation/widgets/otp_widget.dart';
+import 'package:mirath/features/auth/presentation/widgets/timer_widget.dart';
+import 'package:mirath/features/auth/presentation/widgets/verified_button_widget.dart';
+import 'package:mirath/features/common/widgets/my_back_icon.dart';
+import 'package:mirath/features/common/widgets/screen_decoration.dart';
 
 class OtpScreen extends StatelessWidget {
-  const OtpScreen({super.key});
+  OtpScreen({super.key});
+  final ValueNotifier<String> _otpCodeNotifier = ValueNotifier<String>("");
 
   @override
   Widget build(BuildContext context) {
@@ -56,10 +58,27 @@ class OtpScreen extends StatelessWidget {
                           SizedBox(height: screenHeight * 0.15),
                           BlocBuilder<AuthCubit, AuthState>(
                             builder: (context, state) {
-                              return OtpWidget(
-                                title: S.of(context).Password_Reset,
-                                description: S.of(context).OTP_code_description,
-                                btnName: S.of(context).Verify_code,
+                              return Column(
+                                children: [
+                                  OtpWidget(
+                                    title: 'Password Reset',
+                                    description:
+                                        'We just sent a 6-digit code to your email, enter it below:',
+                                    onOtpCompleted: (value) {
+                                      _otpCodeNotifier.value = value;
+                                    },
+                                  ),
+                                  ValueListenableBuilder(
+                                    valueListenable: _otpCodeNotifier,
+                                    builder: (context, otpCode, _) {
+                                      return VerifiedButtonWidget(
+                                        btnName: 'Verify code',
+                                        otpCode: otpCode,
+                                      );
+                                    },
+                                  ),
+                                  TimerWidget(),
+                                ],
                               );
                             },
                           ),
