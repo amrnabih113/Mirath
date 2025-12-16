@@ -1,8 +1,9 @@
 import 'package:dartz/dartz.dart';
-import '../entities/user_profile.dart';
+
 import '../../../../core/error/failuors.dart';
 import '../entities/signin_data.dart';
 import '../entities/signup_data.dart';
+import '../entities/user_profile.dart';
 
 abstract class AuthRepository {
   Future<Either<Failure, void>> signIn(SigninData signinData);

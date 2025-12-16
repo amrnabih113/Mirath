@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+
+import '../utils/my_colors.dart';
 import 'custom_themes/appbar_theme.dart';
 import 'custom_themes/bottom_sheet_theme.dart';
 import 'custom_themes/checkbox_theme.dart';
@@ -8,7 +10,6 @@ import 'custom_themes/elevation_button_theme.dart';
 import 'custom_themes/outlined_buttom_theme.dart';
 import 'custom_themes/text_field_theme.dart';
 import 'custom_themes/text_theme.dart';
-import '../utils/my_colors.dart';
 
 class MyTheme {
   MyTheme._();

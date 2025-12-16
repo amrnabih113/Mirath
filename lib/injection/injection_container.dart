@@ -1,5 +1,5 @@
 import 'package:get_it/get_it.dart';
-import 'package:mirath/features/auth/domain/usecases/set_up_profile_usecase.dart';
+import '../features/auth/domain/usecases/set_up_profile_usecase.dart';
 import '../core/services/local_storage_service.dart';
 import '../features/auth/domain/usecases/forget_password_usecase.dart';
 import '../features/auth/domain/usecases/is_signed_in_usecase.dart';

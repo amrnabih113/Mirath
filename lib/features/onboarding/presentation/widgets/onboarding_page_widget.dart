@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import '../../../../core/utils/my_sizes.dart';
+
 import '../../../../core/utils/my_extenstions.dart';
+import '../../../../core/utils/my_sizes.dart';
 import '../../domain/entities/onboarding_entity.dart';
 
 class OnboardingPageWidget extends StatelessWidget {

@@ -22,53 +22,43 @@ class MessageLookup extends MessageLookupByLibrary {
 
   final messages = _notInlinedMessages(_notInlinedMessages);
   static Map<String, Function> _notInlinedMessages(_) => <String, Function>{
-    "Confirm_password": MessageLookupByLibrary.simpleMessage(
-      "Confirm password",
-    ),
-    "Create_a_new_password_description": MessageLookupByLibrary.simpleMessage(
-      "Create a new password. Ensure it differs fromprevious ones for security",
-    ),
-    "Have_not_got_yet": MessageLookupByLibrary.simpleMessage(
-      "Haven’t got the email yet?",
-    ),
-    "OTP_code_description": MessageLookupByLibrary.simpleMessage(
-      "We just sent a 6-digit code to your email, enter it below:",
-    ),
-    "Password_Reset": MessageLookupByLibrary.simpleMessage("Password Reset"),
-    "Resend_code": MessageLookupByLibrary.simpleMessage("Resend code"),
-    "Resend_code_in": MessageLookupByLibrary.simpleMessage("Resend code in"),
-    "Set_a_new_password": MessageLookupByLibrary.simpleMessage(
-      "Set a new password",
-    ),
-    "Update_password": MessageLookupByLibrary.simpleMessage("Update password"),
-    "Verify_code": MessageLookupByLibrary.simpleMessage("Verify code"),
-    "Verify_email": MessageLookupByLibrary.simpleMessage("Verify email"),
-    "Verify_your_email": MessageLookupByLibrary.simpleMessage(
-      "Verify your email",
-    ),
-    "Your_new_password": MessageLookupByLibrary.simpleMessage(
-      "Your new password",
-    ),
-    "get_started": MessageLookupByLibrary.simpleMessage("Get Started"),
-    "next": MessageLookupByLibrary.simpleMessage("Next"),
-    "onboarding_description_1": MessageLookupByLibrary.simpleMessage(
-      "You can search by keywords, authors, titles, or even paste a block of text to find the exact paper you need.",
-    ),
-    "onboarding_description_2": MessageLookupByLibrary.simpleMessage(
-      "Enhance your learning by highlighting key passages. Write linked notes, track your insights on a separate page, and create your own summaries.",
-    ),
-    "onboarding_description_3": MessageLookupByLibrary.simpleMessage(
-      "Start teams to share resources and notes. Use AI to refine your writing and check journal formatting.",
-    ),
-    "onboarding_title_1": MessageLookupByLibrary.simpleMessage(
-      "Instantly Find Any Research",
-    ),
-    "onboarding_title_2": MessageLookupByLibrary.simpleMessage(
-      "Master Your Papers with Active Notes",
-    ),
-    "onboarding_title_3": MessageLookupByLibrary.simpleMessage(
-      "Collaborate and Write with Confidence",
-    ),
-    "skip": MessageLookupByLibrary.simpleMessage("Skip"),
-  };
+        "Confirm_password":
+            MessageLookupByLibrary.simpleMessage("Confirm password"),
+        "Create_a_new_password_description": MessageLookupByLibrary.simpleMessage(
+            "Create a new password. Ensure it differs fromprevious ones for security"),
+        "Have_not_got_yet":
+            MessageLookupByLibrary.simpleMessage("Haven’t got the email yet?"),
+        "OTP_code_description": MessageLookupByLibrary.simpleMessage(
+            "We just sent a 6-digit code to your email, enter it below:"),
+        "Password_Reset":
+            MessageLookupByLibrary.simpleMessage("Password Reset"),
+        "Resend_code": MessageLookupByLibrary.simpleMessage("Resend code"),
+        "Resend_code_in":
+            MessageLookupByLibrary.simpleMessage("Resend code in"),
+        "Set_a_new_password":
+            MessageLookupByLibrary.simpleMessage("Set a new password"),
+        "Update_password":
+            MessageLookupByLibrary.simpleMessage("Update password"),
+        "Verify_code": MessageLookupByLibrary.simpleMessage("Verify code"),
+        "Verify_email": MessageLookupByLibrary.simpleMessage("Verify email"),
+        "Verify_your_email":
+            MessageLookupByLibrary.simpleMessage("Verify your email"),
+        "Your_new_password":
+            MessageLookupByLibrary.simpleMessage("Your new password"),
+        "get_started": MessageLookupByLibrary.simpleMessage("Get Started"),
+        "next": MessageLookupByLibrary.simpleMessage("Next"),
+        "onboarding_description_1": MessageLookupByLibrary.simpleMessage(
+            "You can search by keywords, authors, titles, or even paste a block of text to find the exact paper you need."),
+        "onboarding_description_2": MessageLookupByLibrary.simpleMessage(
+            "Enhance your learning by highlighting key passages. Write linked notes, track your insights on a separate page, and create your own summaries."),
+        "onboarding_description_3": MessageLookupByLibrary.simpleMessage(
+            "Start teams to share resources and notes. Use AI to refine your writing and check journal formatting."),
+        "onboarding_title_1":
+            MessageLookupByLibrary.simpleMessage("Instantly Find Any Research"),
+        "onboarding_title_2": MessageLookupByLibrary.simpleMessage(
+            "Master Your Papers with Active Notes"),
+        "onboarding_title_3": MessageLookupByLibrary.simpleMessage(
+            "Collaborate and Write with Confidence"),
+        "skip": MessageLookupByLibrary.simpleMessage("Skip")
+      };
 }

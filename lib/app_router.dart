@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'features/Layout/presentation/cubit/layout_cubit.dart';
+import 'features/Layout/presentation/screens/main_layout.dart';
 import 'features/auth/presentation/screens/set_up_profile_screen.dart';
 import 'core/services/local_storage_service.dart';
 import 'core/utils/my_logger.dart';
@@ -115,19 +117,6 @@ final appRouter = GoRouter(
       return '/verify-account';
     }
 
-    // // Password reset flow
-    // if (authStatus == AuthStatus.resetPasswordRequested &&
-    //     currentLocation != '/verify-reset-otp') {
-    //   MyLogger.info('[Router] Redirecting to /verify-reset-otp');
-    //   return '/verify-reset-otp';
-    // }
-
-    // if (authStatus == AuthStatus.resetPasswordVerified &&
-    //     currentLocation != '/reset-password') {
-    //   MyLogger.info('[Router] Redirecting to /reset-password');
-    //   return '/reset-password';
-    // }
-
     // Authenticated user handling
     if (authStatus == AuthStatus.authenticated) {
       if (!hasSetupProfile && currentLocation != '/set-up-profile') {
@@ -176,10 +165,53 @@ final appRouter = GoRouter(
     // ===================== ROOT & HOME =====================
     GoRoute(path: '/', redirect: (context, state) => '/splash'),
 
-    GoRoute(
-      path: '/home',
-      pageBuilder: (context, state) =>
-          PageTransitions.smoothTransition(const Scaffold()),
+    // ===================== LAYOUT SHELL For NavBar =====================
+    ShellRoute(
+      builder: (context, state, child) {
+        return BlocProvider(
+          create: (_) => LayoutCubit(),
+          child: Builder(
+            builder: (context) {
+              context.read<LayoutCubit>().syncWithLocation(
+                state.matchedLocation,
+              );
+              return MainLayout(child: child);
+            },
+          ),
+        );
+      },
+      routes: [
+        GoRoute(
+          path: '/home',
+          pageBuilder: (context, state) => const NoTransitionPage(
+            child: Scaffold(body: Center(child: Text('Home Screen'))),
+          ),
+        ),
+        GoRoute(
+          path: '/home',
+          pageBuilder: (context, state) => const NoTransitionPage(
+            child: Scaffold(body: Center(child: Text('Home Screen'))),
+          ),
+        ),
+        GoRoute(
+          path: '/community',
+          pageBuilder: (context, state) => const NoTransitionPage(
+            child: Scaffold(body: Center(child: Text('Community Screen'))),
+          ),
+        ),
+        GoRoute(
+          path: '/library',
+          pageBuilder: (context, state) => const NoTransitionPage(
+            child: Scaffold(body: Center(child: Text('Library Screen'))),
+          ),
+        ),
+        GoRoute(
+          path: '/profile',
+          pageBuilder: (context, state) => NoTransitionPage(
+            child: Scaffold(body: Center(child: Text('Profile Screen'))),
+          ),
+        ),
+      ],
     ),
 
     // ===================== AUTH ROUTES =====================

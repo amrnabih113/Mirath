@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:hugeicons/hugeicons.dart';
 import 'package:iconsax/iconsax.dart';
+
 import '../../../../core/helpers/my_loaders.dart';
 import '../../../../core/services/local_storage_service.dart';
 import '../../../../core/utils/my_colors.dart';
@@ -11,11 +12,11 @@ import '../../../../core/utils/my_enums.dart';
 import '../../../../core/utils/my_extenstions.dart';
 import '../../../../core/utils/my_logger.dart';
 import '../../../../core/utils/my_sizes.dart';
-import '../../domain/entities/user_profile.dart';
-import '../cubit/auth_cubit.dart';
+import '../../../../injection/injection_container.dart';
 import '../../../common/widgets/screen_decoration.dart';
 import '../../../common/widgets/text_feild_with_lable.dart';
-import '../../../../injection/injection_container.dart';
+import '../../domain/entities/user_profile.dart';
+import '../cubit/auth_cubit.dart';
 
 class SetUpProfileScreen extends StatefulWidget {
   const SetUpProfileScreen({super.key, required this.userEntity});
