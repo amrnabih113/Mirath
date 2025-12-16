@@ -56,7 +56,7 @@ class MyLoaders {
       title: title,
       message: message,
       icon: Iconsax.check,
-      backgroundColor: MyColors.primaryColor,
+      backgroundColor: MyColors.success,
       duration: duration,
     );
   }
@@ -71,7 +71,7 @@ class MyLoaders {
       title: title,
       message: message,
       icon: Iconsax.warning_2,
-      backgroundColor: Colors.orange,
+      backgroundColor: MyColors.warning,
     );
   }
 
@@ -85,7 +85,7 @@ class MyLoaders {
       title: title,
       message: message,
       icon: Iconsax.warning_2,
-      backgroundColor: Colors.red.shade600,
+      backgroundColor: MyColors.error,
     );
   }
 
@@ -101,7 +101,7 @@ class MyLoaders {
     final overlayEntry = OverlayEntry(
       builder: (context) {
         return Positioned(
-          bottom: 30,
+          bottom: 20,
           left: 16,
           right: 16,
           child: Material(
@@ -119,8 +119,8 @@ class MyLoaders {
                   borderRadius: BorderRadius.circular(16),
                   boxShadow: [
                     BoxShadow(
-                      color: backgroundColor.withValues(alpha: 0.6),
-                      blurRadius: 10,
+                      color: MyColors.black.withValues(alpha: 0.05),
+                      blurRadius: 8,
                       offset: const Offset(0, 4),
                     ),
                   ],

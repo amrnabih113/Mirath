@@ -106,7 +106,7 @@ class MyColors {
   static const Color disabledButton = Color.fromARGB(255, 40, 32, 32);
 
   //Error Colors
-  static const Color error = Color(0xFFDC3545);
+  static const Color error = Color.fromARGB(255, 129, 67, 50);
   static const Color success = Color(0xFF28A745);
   static const Color warning = Color(0xFFFFC107);
   static const Color info = Color(0xFF17A2B8);

@@ -18,7 +18,6 @@ class ResponsiveHelper {
 
   /// Scale factor based on width and height (for better tall screen support)
   static double scale(BuildContext context) {
-    final w = MediaQuery.of(context).size.width;
     final h = MediaQuery.of(context).size.height;
 
     double widthScale;

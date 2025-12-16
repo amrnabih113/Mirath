@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'package:mirath/features/auth/domain/entities/user_profile.dart';
+import 'package:mirath/features/auth/presentation/screens/interests_screen.dart';
+import 'package:mirath/features/auth/presentation/screens/signin_screen.dart';
 import 'features/Layout/presentation/cubit/layout_cubit.dart';
 import 'features/Layout/presentation/screens/main_layout.dart';
 import 'features/auth/presentation/screens/set_up_profile_screen.dart';
@@ -11,7 +14,6 @@ import 'features/auth/presentation/cubit/auth_cubit.dart';
 import 'features/auth/presentation/screens/forget_password_screen.dart';
 import 'features/auth/presentation/screens/otp_screen.dart';
 import 'features/auth/presentation/screens/reset_password_screen.dart';
-import 'features/auth/presentation/screens/signin_screen.dart';
 import 'features/auth/presentation/screens/signup_screen.dart';
 import 'features/auth/presentation/screens/verify_account_screen.dart';
 import 'features/onboarding/domain/repository/onboarding_repository.dart';
@@ -119,7 +121,9 @@ final appRouter = GoRouter(
 
     // Authenticated user handling
     if (authStatus == AuthStatus.authenticated) {
-      if (!hasSetupProfile && currentLocation != '/set-up-profile') {
+      if (!hasSetupProfile &&
+          (currentLocation != '/set-up-profile' &&
+              currentLocation != '/interests')) {
         MyLogger.info('[Router] Redirecting to /set-up-profile');
         return '/set-up-profile';
       }
@@ -261,6 +265,15 @@ final appRouter = GoRouter(
         );
         return PageTransitions.smoothTransition(
           SetUpProfileScreen(userEntity: user),
+        );
+      },
+    ),
+    GoRoute(
+      path: '/interests',
+      pageBuilder: (context, state) {
+        final userProfile = state.extra as UserProfile;
+        return PageTransitions.smoothTransition(
+          InterestsScreen(userProfile: userProfile),
         );
       },
     ),

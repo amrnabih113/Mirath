@@ -76,23 +76,11 @@ class _SetUpProfileScreenState extends State<SetUpProfileScreen> {
     super.dispose();
   }
 
-  void _handleSkip() {
-    _localStorageService.setProfileSetup(true);
-    context.go('/home');
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       extendBodyBehindAppBar: true,
-      appBar: AppBar(
-        leadingWidth: MySizes.iconLarge(context) * 2,
-        toolbarHeight: MySizes.iconLarge(context),
-        leading: TextButton(
-          onPressed: _handleSkip,
-          child: Text('Skip', style: context.bodyMedium),
-        ),
-      ),
+
       body: ScreenDecoration(
         dark: false,
         child: Padding(
@@ -277,45 +265,30 @@ class _SetUpProfileScreenState extends State<SetUpProfileScreen> {
                               ),
                             ),
                             SizedBox(height: MySizes.spaceLg(context)),
-                            BlocBuilder<AuthCubit, AuthState>(
-                              builder: (context, state) {
-                                final isLoading =
-                                    state.status == AuthStatus.loading;
-                                return SizedBox(
-                                  width: MySizes.buttonWidth(context),
-                                  child: ElevatedButton(
-                                    onPressed: () {
-                                      context.read<AuthCubit>().setUpProfile(
-                                        UserProfile(
-                                          username: _usernameController.text,
-                                          email: _emailController.text,
-                                          educationLevel:
-                                              selectedEducationLevel,
-                                        ),
-                                      );
-                                    },
+                            SizedBox(
+                              width: MySizes.buttonWidth(context),
+                              child: ElevatedButton(
+                                onPressed: () {
+                                  final userProfile = UserProfile(
+                                    name: _nameController.text,
+                                    username: _usernameController.text,
+                                    email: _emailController.text,
+                                    educationLevel: selectedEducationLevel,
+                                    interests: [],
+                                  );
+                                  context.push(
+                                    '/interests',
+                                    extra: userProfile,
+                                  );
+                                },
 
-                                    child: isLoading
-                                        ? SizedBox(
-                                            height: 20,
-                                            width: 20,
-                                            child: CircularProgressIndicator(
-                                              strokeWidth: 2,
-                                              valueColor:
-                                                  AlwaysStoppedAnimation<Color>(
-                                                    MyColors.primaryShade50,
-                                                  ),
-                                            ),
-                                          )
-                                        : Text(
-                                            'Next',
-                                            style: context.titleMedium.copyWith(
-                                              color: Colors.black,
-                                            ),
-                                          ),
+                                child: Text(
+                                  'Next',
+                                  style: context.titleMedium.copyWith(
+                                    color: Colors.black,
                                   ),
-                                );
-                              },
+                                ),
+                              ),
                             ),
                           ],
                         ),

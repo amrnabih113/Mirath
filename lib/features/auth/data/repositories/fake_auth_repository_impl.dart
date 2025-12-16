@@ -20,7 +20,7 @@ class FakeAuthRepositoryImpl implements AuthRepository {
 
   // Fake user credentials for testing
   static const String validEmail = 'test@example.com';
-  static const String validPassword = 'password123';
+  static String validPassword = 'password123';
   static const String validOtp = '123456';
 
   @override
@@ -201,15 +201,7 @@ class FakeAuthRepositoryImpl implements AuthRepository {
     // Simulate password reset
     await Future.delayed(const Duration(seconds: 1));
 
-    if (!_resetOtpSent) {
-      return Left(ServerFailure('OTP verification required'));
-    }
-
-    if (newPassword.length < 6) {
-      return Left(ServerFailure('Password must be at least 6 characters'));
-    }
-
-    _currentPassword = newPassword;
+    validPassword = newPassword;
     _resetOtpSent = false;
     return const Right(null);
   }

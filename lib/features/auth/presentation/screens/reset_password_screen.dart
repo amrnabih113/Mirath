@@ -74,105 +74,108 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
           child: LayoutBuilder(
             builder: (context, constraints) {
               final topGap = screenHeight * 0.05; // ~12% of screen height
-              return SafeArea(
-                child: Padding(
-                  padding: MySizes.paddingLg(context),
-                  child: Center(
-                    child: ConstrainedBox(
-                      constraints: BoxConstraints(maxWidth: 850),
-                      child: Column(
-                        children: [
-                          SizedBox(height: topGap),
-                          Text(
-                            S.of(context).Set_a_new_password,
-                            style: context.headlineLarge.copyWith(
-                              fontWeight: FontWeight.bold,
-                              color: MyColors.primaryShade900,
+              return SingleChildScrollView(
+                child: SafeArea(
+                  child: Padding(
+                    padding: MySizes.paddingLg(context),
+                    child: Center(
+                      child: ConstrainedBox(
+                        constraints: BoxConstraints(maxWidth: 850),
+                        child: Column(
+                          children: [
+                            SizedBox(height: topGap),
+                            Text(
+                              S.of(context).Set_a_new_password,
+                              style: context.headlineLarge.copyWith(
+                                fontWeight: FontWeight.bold,
+                                color: MyColors.primaryShade900,
+                              ),
+                              textAlign: TextAlign.center,
                             ),
-                            textAlign: TextAlign.center,
-                          ),
-                          SizedBox(
-                            height: MySizes.spaceSm(context),
-                          ), // Space between title and description
-                          Text(
-                            S.of(context).Create_a_new_password_description,
-                            style: context.titleMedium.copyWith(
-                              fontWeight: FontWeight.w400,
+                            SizedBox(
+                              height: MySizes.spaceSm(context),
+                            ), // Space between title and description
+                            Text(
+                              S.of(context).Create_a_new_password_description,
+                              style: context.titleMedium.copyWith(
+                                fontWeight: FontWeight.w400,
+                              ),
+                              textAlign: TextAlign.center,
                             ),
-                            textAlign: TextAlign.center,
-                          ),
-                          SizedBox(height: MySizes.spaceMd(context)),
-                          Form(
-                            key: _formKey,
-                            autovalidateMode: _autovalidateMode,
-                            child: Column(
-                              children: [
-                                TextFormField(
-                                  controller: _passController,
-                                  validator: (value) =>
-                                      MyValidator.validatePassword(value),
-                                  cursorColor: MyColors.primaryColor,
-                                  decoration: InputDecoration(
-                                    hintText: S.of(context).Your_new_password,
+                            SizedBox(height: MySizes.spaceMd(context)),
+                            Form(
+                              key: _formKey,
+                              autovalidateMode: _autovalidateMode,
+                              child: Column(
+                                children: [
+                                  TextFormField(
+                                    controller: _passController,
+                                    validator: (value) =>
+                                        MyValidator.validatePassword(value),
+                                    cursorColor: MyColors.primaryColor,
+                                    decoration: InputDecoration(
+                                      hintText: S.of(context).Your_new_password,
+                                    ),
+                                    textInputAction: TextInputAction.next,
+                                    onChanged: (_) => _validateForm(),
                                   ),
-                                  textInputAction: TextInputAction.next,
-                                  onChanged: (_) => _validateForm(),
-                                ),
-                                SizedBox(height: MySizes.spaceMd(context)),
-                                TextFormField(
-                                  controller: _confirmPassController,
-                                  validator: (value) =>
-                                      MyValidator.validateConfirmPassword(
-                                        _passController.text.trim(),
-                                        value,
-                                      ),
-                                  cursorColor: MyColors.primaryColor,
-                                  decoration: InputDecoration(
-                                    hintText: S.of(context).Confirm_password,
-                                  ),
-                                  onChanged: (_) => _validateForm(),
-                                ),
-                                SizedBox(height: MySizes.spaceLg(context)),
-
-                                SizedBox(
-                                  width: MySizes.buttonWidth(context),
-                                  child: BlocBuilder<AuthCubit, AuthState>(
-                                    builder: (context, state) {
-                                      final isLoading =
-                                          state.status == AuthStatus.loading;
-
-                                      return ElevatedButton(
-                                        style: ElevatedButton.styleFrom(
-                                          disabledForegroundColor: Colors.white
-                                              .withAlpha(128),
-                                          foregroundColor: MyColors.black,
+                                  SizedBox(height: MySizes.spaceMd(context)),
+                                  TextFormField(
+                                    controller: _confirmPassController,
+                                    validator: (value) =>
+                                        MyValidator.validateConfirmPassword(
+                                          _passController.text.trim(),
+                                          value,
                                         ),
-                                        onPressed:
-                                            (!isButtonEnabled || isLoading)
-                                            ? null
-                                            : _handleResetPassword,
-
-                                        child: isLoading
-                                            ? const SizedBox(
-                                                height: 22,
-                                                width: 22,
-                                                child:
-                                                    CircularProgressIndicator(
-                                                      strokeWidth: 2,
-                                                      color: MyColors.light,
-                                                    ),
-                                              )
-                                            : Text(
-                                                S.of(context).Update_password,
-                                              ),
-                                      );
-                                    },
+                                    cursorColor: MyColors.primaryColor,
+                                    decoration: InputDecoration(
+                                      hintText: S.of(context).Confirm_password,
+                                    ),
+                                    onChanged: (_) => _validateForm(),
                                   ),
-                                ),
-                              ],
+                                  SizedBox(height: MySizes.spaceLg(context)),
+
+                                  SizedBox(
+                                    width: MySizes.buttonWidth(context),
+                                    child: BlocBuilder<AuthCubit, AuthState>(
+                                      builder: (context, state) {
+                                        final isLoading =
+                                            state.status == AuthStatus.loading;
+
+                                        return ElevatedButton(
+                                          style: ElevatedButton.styleFrom(
+                                            disabledForegroundColor: Colors
+                                                .white
+                                                .withAlpha(128),
+                                            foregroundColor: MyColors.black,
+                                          ),
+                                          onPressed:
+                                              (!isButtonEnabled || isLoading)
+                                              ? null
+                                              : _handleResetPassword,
+
+                                          child: isLoading
+                                              ? const SizedBox(
+                                                  height: 22,
+                                                  width: 22,
+                                                  child:
+                                                      CircularProgressIndicator(
+                                                        strokeWidth: 2,
+                                                        color: MyColors.light,
+                                                      ),
+                                                )
+                                              : Text(
+                                                  S.of(context).Update_password,
+                                                ),
+                                        );
+                                      },
+                                    ),
+                                  ),
+                                ],
+                              ),
                             ),
-                          ),
-                        ],
+                          ],
+                        ),
                       ),
                     ),
                   ),

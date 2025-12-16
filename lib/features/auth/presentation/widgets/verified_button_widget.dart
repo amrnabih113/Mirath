@@ -3,10 +3,9 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:mirath/core/utils/my_colors.dart';
 import 'package:mirath/core/utils/my_sizes.dart';
 import 'package:mirath/features/auth/presentation/cubit/auth_cubit.dart';
-import 'package:mirath/features/auth/presentation/widgets/otp_widget.dart';
 
 class VerifiedButtonWidget extends StatelessWidget {
-  VerifiedButtonWidget({
+ const VerifiedButtonWidget({
     super.key,
     required this.btnName,
     required this.otpCode,

@@ -5,6 +5,12 @@ import '../helpers/responsive_helper.dart';
 class MySizes {
   MySizes._();
 
+  static double screenWidth(BuildContext context) =>
+      MediaQuery.of(context).size.width;
+
+  static double screenHeight(BuildContext context) =>
+      MediaQuery.of(context).size.height;
+
   /// ---------- TEXT SIZES ----------
   static double headlineLarge(BuildContext context) =>
       ResponsiveHelper.responsiveValue(context, 30); // 32 → 30
