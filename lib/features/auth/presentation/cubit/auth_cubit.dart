@@ -1,5 +1,7 @@
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
+import 'package:mirath/core/error/failuors.dart';
+import 'package:mirath/core/helpers/failure_handler.dart';
 
 import '../../../../core/usecases/no_params.dart';
 import '../../../../core/utils/my_logger.dart';
@@ -224,25 +226,8 @@ class AuthCubit extends Cubit<AuthState> {
     final result = await signInWithGoogleUseCase(const NoParams());
 
     await result.fold(
-      (f) async =>
-          emit(state.copyWith(status: AuthStatus.error, message: f.message)),
-      (_) async {
-        // Check verification status
-        final verifiedResult = await isVerifiedUseCase(const NoParams());
-        verifiedResult.fold(
-          (failure) => emit(
-            state.copyWith(status: AuthStatus.error, message: failure.message),
-          ),
-          (isVerified) => emit(
-            state.copyWith(
-              status: isVerified
-                  ? AuthStatus.authenticated
-                  : AuthStatus.unverified,
-              message: isVerified ? null : "Please verify your account",
-            ),
-          ),
-        );
-      },
+      (failure) async => _handleFailure(failure),
+      (_) async => await _checkVerificationAndEmit(),
     );
   }
 
@@ -252,25 +237,8 @@ class AuthCubit extends Cubit<AuthState> {
     final result = await signInWithAppleUseCase(const NoParams());
 
     await result.fold(
-      (f) async =>
-          emit(state.copyWith(status: AuthStatus.error, message: f.message)),
-      (_) async {
-        // Check verification status
-        final verifiedResult = await isVerifiedUseCase(const NoParams());
-        verifiedResult.fold(
-          (failure) => emit(
-            state.copyWith(status: AuthStatus.error, message: failure.message),
-          ),
-          (isVerified) => emit(
-            state.copyWith(
-              status: isVerified
-                  ? AuthStatus.authenticated
-                  : AuthStatus.unverified,
-              message: isVerified ? null : "Please verify your account",
-            ),
-          ),
-        );
-      },
+      (failure) async => _handleFailure(failure),
+      (_) async => await _checkVerificationAndEmit(),
     );
   }
 
@@ -280,7 +248,7 @@ class AuthCubit extends Cubit<AuthState> {
     final result = await sendVerificationOTPUseCase(const NoParams());
 
     result.fold(
-      (f) => emit(state.copyWith(status: AuthStatus.error, message: f.message)),
+      _handleFailure,
       (_) => emit(
         state.copyWith(
           status: AuthStatus.otpSent,
@@ -296,7 +264,7 @@ class AuthCubit extends Cubit<AuthState> {
     final result = await verifyOTPUseCase(otp);
 
     result.fold(
-      (f) => emit(state.copyWith(status: AuthStatus.error, message: f.message)),
+      _handleFailure,
       (_) => emit(
         state.copyWith(
           status: AuthStatus.authenticated,
@@ -312,7 +280,7 @@ class AuthCubit extends Cubit<AuthState> {
     final result = await forgetPasswordUseCase(email);
 
     result.fold(
-      (f) => emit(state.copyWith(status: AuthStatus.error, message: f.message)),
+      _handleFailure,
       (_) => emit(
         state.copyWith(
           status: AuthStatus.success,
@@ -328,7 +296,7 @@ class AuthCubit extends Cubit<AuthState> {
     final result = await verifyResetPasswordOTPUseCase(otp);
 
     result.fold(
-      (f) => emit(state.copyWith(status: AuthStatus.error, message: f.message)),
+      _handleFailure,
       (_) => emit(
         state.copyWith(
           status: AuthStatus.success,
@@ -344,11 +312,37 @@ class AuthCubit extends Cubit<AuthState> {
     final result = await resetPasswordUseCase(newPassword);
 
     result.fold(
-      (f) => emit(state.copyWith(status: AuthStatus.error, message: f.message)),
+      _handleFailure,
       (_) => emit(
         state.copyWith(
           status: AuthStatus.success,
           message: "Password reset successfully",
+        ),
+      ),
+    );
+  }
+
+  // ===================== FAILURE HANDLER =====================
+  void _handleFailure(Failure failure) {
+    FailureHandler.handle(
+      failure: failure,
+      onUnauthorized: () =>
+          emit(state.copyWith(status: AuthStatus.unauthenticated)),
+      onError: (message) =>
+          emit(state.copyWith(status: AuthStatus.error, message: message)),
+    );
+  }
+
+  // ===================== HELPER: CHECK VERIFICATION =====================
+  /// Helper method to check verification status and emit appropriate state.
+  Future<void> _checkVerificationAndEmit() async {
+    final verifiedResult = await isVerifiedUseCase(const NoParams());
+    verifiedResult.fold(
+      _handleFailure,
+      (isVerified) => emit(
+        state.copyWith(
+          status: isVerified ? AuthStatus.authenticated : AuthStatus.unverified,
+          message: isVerified ? null : "Please verify your account",
         ),
       ),
     );
