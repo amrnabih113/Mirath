@@ -1,4 +1,7 @@
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:get_it/get_it.dart';
+import '../core/network/dio_client.dart';
+import '../core/services/secure_storage_service.dart';
 import '../features/auth/domain/usecases/set_up_profile_usecase.dart';
 import '../core/services/local_storage_service.dart';
 import '../features/auth/domain/usecases/forget_password_usecase.dart';
@@ -22,12 +25,19 @@ final sl = GetIt.instance;
 class DI {
   static Future<void> init() async {
     // Core
+    sl.registerLazySingleton(() => DioClient(secureStorage: sl()));
+    sl.registerLazySingleton(() => sl<DioClient>().dio);
 
     /// Local Storage ///
     final localStorage = await LocalStorageService.init();
     sl.registerLazySingleton<LocalStorageService>(() => localStorage);
 
-    //! Features
+    /// Secure Storage ///
+    sl.registerLazySingleton<SecureStorageService>(
+      () => SecureStorageService(const FlutterSecureStorage()),
+    );
+
+    //** Features **//
 
     //================ Authentication ========================
 
