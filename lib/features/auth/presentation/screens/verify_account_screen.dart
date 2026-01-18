@@ -27,11 +27,11 @@ class VerifyAccountScreen extends StatelessWidget {
             title: "Success!",
             message: state.message ?? "otp sent successfully.",
           );
-        } else if (state.status == AuthStatus.otpVerified) {
+        } else if (state.status == AuthStatus.authenticated) {
           MyLoaders.successSnackBar(
             context: context,
             title: "Verified!",
-            message: state.message ?? "otp verified successfully.",
+            message: state.message ?? "Account verified successfully.",
           );
           context.pushReplacement('/home');
         } else if (state.status == AuthStatus.error) {

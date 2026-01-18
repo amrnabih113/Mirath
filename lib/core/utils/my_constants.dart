@@ -9,6 +9,7 @@ class MyConstants {
   static const String profileSetupKey = 'has_setup_profile';
   static const String accessTokenKey = 'access_token';
   static const String refreshTokenKey = 'refresh_token';
+  static const String emailKey = 'user_email';
   // base url
 
   static const String baseUrl = "http://127.0.0.1:3000/";

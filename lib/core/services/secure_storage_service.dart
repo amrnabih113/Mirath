@@ -11,7 +11,9 @@ class SecureStorageService {
 
     static const _accessTokenKey = MyConstants.accessTokenKey;
     static const _refreshTokenKey = MyConstants.refreshTokenKey;
+    static const _emailKey = MyConstants.emailKey;
 
+  // ========== Token Storage ==========
   Future<void> saveAccessToken(String token) async {
     await _storage.write(key: _accessTokenKey, value: token);
   }
@@ -32,4 +34,18 @@ class SecureStorageService {
     await _storage.delete(key: _accessTokenKey);
     await _storage.delete(key: _refreshTokenKey);
   }
+
+  // ========== Email Storage ==========
+  Future<void> saveEmail(String email) async {
+    await _storage.write(key: _emailKey, value: email);
+  }
+
+  Future<String?> getEmail() async {
+    return await _storage.read(key: _emailKey);
+  }
+
+  Future<void> clearEmail() async {
+    await _storage.delete(key: _emailKey);
+  }
+
 }

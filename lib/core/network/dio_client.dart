@@ -1,5 +1,6 @@
 import 'package:cookie_jar/cookie_jar.dart';
 import 'package:dio/dio.dart';
+import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:mirath/core/network/dio_auth_interceptor.dart';
 import 'package:dio_cookie_manager/dio_cookie_manager.dart';
 
@@ -10,19 +11,29 @@ import '../utils/my_constants.dart';
 
 class DioClient {
   final Dio dio;
-  final cookieJar = CookieJar();
-  DioClient({required SecureStorageService secureStorage})
-    : dio = Dio(
+  final CookieJar? cookieJar;
+  final SecureStorageService _secureStorage;
+
+  /// Callback invoked when authentication fails and tokens are cleared.
+  /// Use this to trigger logout/redirect to login screen.
+  OnAuthFailure? onAuthFailure;
+
+  DioClient({required SecureStorageService secureStorage, this.onAuthFailure})
+    : _secureStorage = secureStorage,
+      cookieJar = kIsWeb ? null : CookieJar(),
+      dio = Dio(
         BaseOptions(
           baseUrl: MyConstants.baseUrl,
           connectTimeout: const Duration(seconds: 15),
           receiveTimeout: const Duration(seconds: 15),
           sendTimeout: const Duration(seconds: 15),
           responseType: ResponseType.json,
-          headers: {HttpHeaders.acceptHeader: 'application/json'},
+          headers: kIsWeb
+              ? {'Accept': 'application/json'}
+              : {HttpHeaders.acceptHeader: 'application/json'},
         ),
       ) {
-    dio.interceptors.addAll([
+    dio.interceptors.add(
       LogInterceptor(
         request: true,
         requestHeader: true,
@@ -30,10 +41,20 @@ class DioClient {
         responseBody: true,
         error: true,
       ),
-      CookieManager(cookieJar),
+    );
 
-      AuthInterceptor(dio: dio, secureStorage: secureStorage),
-    ]);
+    // Only add cookie manager on non-web platforms
+    if (!kIsWeb && cookieJar != null) {
+      dio.interceptors.add(CookieManager(cookieJar!));
+    }
+
+    dio.interceptors.add(
+      AuthInterceptor(
+        dio: dio,
+        secureStorage: _secureStorage,
+        onAuthFailure: () => onAuthFailure?.call(),
+      ),
+    );
   }
 
   // Generic GET

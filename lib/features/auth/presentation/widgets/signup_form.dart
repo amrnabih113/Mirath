@@ -53,9 +53,9 @@ class _SignupFormState extends State<SignupForm> {
         return;
       }
       context.read<AuthCubit>().signUp(
-        _usernameController.text.trim(),
         _emailController.text.trim(),
         _passwordController.text.trim(),
+        _usernameController.text.trim(),
       );
     }
   }
