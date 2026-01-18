@@ -1,5 +1,8 @@
+import 'package:cookie_jar/cookie_jar.dart';
 import 'package:dio/dio.dart';
 import 'package:mirath/core/network/dio_auth_interceptor.dart';
+import 'package:dio_cookie_manager/dio_cookie_manager.dart';
+
 import 'package:mirath/core/services/secure_storage_service.dart';
 import 'dart:io';
 
@@ -7,6 +10,7 @@ import '../utils/my_constants.dart';
 
 class DioClient {
   final Dio dio;
+  final cookieJar = CookieJar();
   DioClient({required SecureStorageService secureStorage})
     : dio = Dio(
         BaseOptions(
@@ -26,6 +30,8 @@ class DioClient {
         responseBody: true,
         error: true,
       ),
+      CookieManager(cookieJar),
+
       AuthInterceptor(dio: dio, secureStorage: secureStorage),
     ]);
   }

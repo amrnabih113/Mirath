@@ -1,9 +1,7 @@
 import 'package:dio/dio.dart';
 import 'package:mirath/core/services/secure_storage_service.dart';
-import 'package:mirath/core/utils/my_constants.dart';
 
-
-// ------------ Interceptor to handle auth token attachment and refresh ------------
+import '../utils/my_constants.dart';
 
 class AuthInterceptor extends Interceptor {
   final Dio dio;
@@ -38,12 +36,6 @@ class AuthInterceptor extends Interceptor {
       return handler.next(err);
     }
 
-    final refreshToken = await secureStorage.getRefreshToken();
-    if (refreshToken == null) {
-      await secureStorage.clearTokens();
-      return handler.next(err);
-    }
-
     if (_isRefreshing) {
       _retryQueue.add((newToken) {
         err.requestOptions.headers['Authorization'] =
@@ -57,15 +49,12 @@ class AuthInterceptor extends Interceptor {
     try {
       final response = await dio.post(
         MyConstants.refreshToken,
-        data: {'refresh_token': refreshToken},
         options: Options(headers: {'Authorization': null}),
       );
 
       final newAccessToken = response.data['access_token'];
-      final newRefreshToken = response.data['refresh_token'];
 
       await secureStorage.saveAccessToken(newAccessToken);
-      await secureStorage.saveRefreshToken(newRefreshToken);
 
       for (final retry in _retryQueue) {
         retry(newAccessToken);
