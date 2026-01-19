@@ -187,14 +187,15 @@ final appRouter = GoRouter(
       routes: [
         GoRoute(
           path: '/home',
-          pageBuilder: (context, state) => const NoTransitionPage(
-            child: Scaffold(body: Center(child: Text('Home Screen'))),
-          ),
-        ),
-        GoRoute(
-          path: '/home',
-          pageBuilder: (context, state) => const NoTransitionPage(
-            child: Scaffold(body: Center(child: Text('Home Screen'))),
+          pageBuilder: (context, state) => NoTransitionPage(
+            child: Scaffold(
+              body: Center(
+                child: ElevatedButton(
+                  child: Text('logout'),
+                  onPressed: () => context.read<AuthCubit>().signOut(),
+                ),
+              ),
+            ),
           ),
         ),
         GoRoute(

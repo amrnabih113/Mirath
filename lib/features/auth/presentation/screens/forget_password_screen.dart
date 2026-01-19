@@ -6,6 +6,7 @@ import '../../../../core/utils/my_colors.dart';
 import '../../../../core/utils/my_extenstions.dart';
 import '../../../../core/utils/my_sizes.dart';
 import '../../../../core/utils/my_validators.dart';
+import '../../../../generated/l10n.dart';
 import '../cubit/auth_cubit.dart';
 import '../../../common/widgets/my_back_icon.dart';
 import '../../../common/widgets/screen_decoration.dart';
@@ -27,7 +28,9 @@ class _ForgetPasswordScreenState extends State<ForgetPasswordScreen> {
     super.initState();
 
     _emailController.addListener(() {
-      final isValid = MyValidator.validateEmail(_emailController.text) == null;
+      // We'll validate with context in the form validator instead
+      final email = _emailController.text.trim();
+      final isValid = email.isNotEmpty && email.contains('@');
 
       if (isValid != isButtonEnabled) {
         setState(() => isButtonEnabled = isValid);
@@ -61,12 +64,18 @@ class _ForgetPasswordScreenState extends State<ForgetPasswordScreen> {
         child: BlocListener<AuthCubit, AuthState>(
           listener: (context, state) {
             if (state.status == AuthStatus.success) {
+              MyLoaders.successSnackBar(
+                context: context,
+                title: S.of(context).success,
+                message:
+                    state.message ?? S.of(context).password_reset_code_sent,
+              );
               context.push('/verify-reset-otp');
             } else if (state.status == AuthStatus.error) {
               MyLoaders.warningSnackBar(
                 context: context,
                 title: "",
-                message: state.message ?? "Something went wrong.",
+                message: state.message ?? S.of(context).something_went_wrong,
               );
             }
           },
@@ -84,7 +93,7 @@ class _ForgetPasswordScreenState extends State<ForgetPasswordScreen> {
                         children: [
                           SizedBox(height: topGap),
                           Text(
-                            "Forget Password",
+                            S.of(context).forget_password,
                             style: context.headlineLarge.copyWith(
                               fontWeight: FontWeight.bold,
                               fontSize: 40,
@@ -94,7 +103,7 @@ class _ForgetPasswordScreenState extends State<ForgetPasswordScreen> {
                           SizedBox(height: MySizes.spaceMd(context)),
 
                           Text(
-                            "Enter your email to receive a reset OTP.",
+                            S.of(context).enter_email_reset,
                             style: context.titleMedium,
                           ),
 
@@ -103,10 +112,11 @@ class _ForgetPasswordScreenState extends State<ForgetPasswordScreen> {
                             key: _formKey,
                             child: TextFormField(
                               controller: _emailController,
-                              validator: MyValidator.validateEmail,
+                              validator: (email) =>
+                                  MyValidator.validateEmail(context, email),
                               cursorColor: MyColors.primaryColor,
                               decoration: InputDecoration(
-                                hintText: "Email Address",
+                                hintText: S.of(context).email_address,
                               ),
                               keyboardType: TextInputType.emailAddress,
                             ),
@@ -115,7 +125,6 @@ class _ForgetPasswordScreenState extends State<ForgetPasswordScreen> {
                           SizedBox(height: MySizes.spaceLg(context)),
 
                           SizedBox(
-                            width: MySizes.buttonWidth(context),
                             child: BlocBuilder<AuthCubit, AuthState>(
                               builder: (context, state) {
                                 final isLoading =
@@ -135,7 +144,7 @@ class _ForgetPasswordScreenState extends State<ForgetPasswordScreen> {
                                             color: MyColors.light,
                                           ),
                                         )
-                                      : const Text("Reset Password"),
+                                      : Text(S.of(context).reset_password),
                                 );
                               },
                             ),

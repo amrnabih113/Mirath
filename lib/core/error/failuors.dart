@@ -53,6 +53,66 @@ class UnexpectedFailure extends Failure {
   const UnexpectedFailure([super.message = ErrorMessages.unexpected]) : super();
 }
 
+class GoogleSignInFailure extends Failure {
+  const GoogleSignInFailure([super.message = ErrorMessages.googleSignInFailed])
+    : super();
+}
+
+class AppleSignInFailure extends Failure {
+  const AppleSignInFailure([super.message = ErrorMessages.appleSignInFailed])
+    : super();
+}
+
+/// Extracts a user-friendly error message from API response data.
+///
+/// Handles various response formats:
+/// - `{"message": "string"}` → returns the string
+/// - `{"message": ["error1", "error2"]}` → joins with newlines
+/// - `{"error": "string"}` → returns the error string
+/// - Other formats → returns null
+String? _extractErrorMessage(dynamic data) {
+  if (data == null) return null;
+
+  if (data is Map<String, dynamic>) {
+    // Handle "message" field (can be string or array)
+    final message = data['message'];
+    if (message is String) {
+      return message;
+    }
+    if (message is List) {
+      return message.whereType<String>().join('\n');
+    }
+
+    // Handle "error" field
+    final error = data['error'];
+    if (error is String && error.toLowerCase() != 'bad request') {
+      return error;
+    }
+
+    // Handle "errors" field (array of error objects)
+    final errors = data['errors'];
+    if (errors is List) {
+      final messages = <String>[];
+      for (final e in errors) {
+        if (e is String) {
+          messages.add(e);
+        } else if (e is Map && e['message'] is String) {
+          messages.add(e['message'] as String);
+        }
+      }
+      if (messages.isNotEmpty) {
+        return messages.join('\n');
+      }
+    }
+  }
+
+  if (data is String && data.isNotEmpty) {
+    return data;
+  }
+
+  return null;
+}
+
 /// Map any [exception] into a domain [Failure].
 Failure mapExceptionToFailure(Object? exception) {
   if (exception == null) return const UnexpectedFailure();
@@ -111,19 +171,32 @@ Failure mapExceptionToFailure(Object? exception) {
     final response = dio.response;
     if (response != null) {
       final status = response.statusCode ?? 0;
-      if (status == 401) return const UnauthorizedFailure();
+      final errorMessage = _extractErrorMessage(response.data);
+
+      if (status == 400) {
+        return ValidationFailure(errorMessage ?? ErrorMessages.validation);
+      }
+      if (status == 401) {
+        return UnauthorizedFailure(errorMessage ?? ErrorMessages.unauthorized);
+      }
       if (status == 403) {
-        return const UnauthorizedFailure(ErrorMessages.forbidden);
+        return UnauthorizedFailure(errorMessage ?? ErrorMessages.forbidden);
       }
-      if (status == 404) return const NotFoundFailure();
-      if (status == 409) return const ConflictFailure();
+      if (status == 404) {
+        return NotFoundFailure(errorMessage ?? ErrorMessages.notFound);
+      }
+      if (status == 409) {
+        return ConflictFailure(errorMessage ?? ErrorMessages.conflict);
+      }
       if (status == 422) {
-        return ValidationFailure(
-          response.data?.toString() ?? ErrorMessages.validation,
-        );
+        return ValidationFailure(errorMessage ?? ErrorMessages.validation);
       }
-      if (status >= 500) return const ServerFailure();
-      return ServerFailure(response.statusMessage ?? ErrorMessages.server);
+      if (status >= 500) {
+        return ServerFailure(errorMessage ?? ErrorMessages.server);
+      }
+      return ServerFailure(
+        errorMessage ?? response.statusMessage ?? ErrorMessages.server,
+      );
     }
 
     // Fallback for unknown Dio errors
@@ -139,7 +212,6 @@ Failure mapExceptionToFailure(Object? exception) {
   // Default fallback
   return UnexpectedFailure(exception.toString());
 }
-
 
 /*
 |--------------------------------------------------------------------------

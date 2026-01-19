@@ -82,7 +82,7 @@ class MyColors {
 
   static const Color cardColor = Color.fromARGB(255, 227, 217, 205);
   // Background Colors
-  static const Color light = primaryShade100;
+  static const Color light = primaryShade50;
   static const Color dark = Color(
     0xFF2D2926,
   ); // Medium-dark with warm undertone

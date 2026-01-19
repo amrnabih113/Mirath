@@ -47,7 +47,86 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("تحققي من بريدك الإلكتروني"),
         "Your_new_password":
             MessageLookupByLibrary.simpleMessage("كلمة المرور الجديدة"),
+        "account_created_verify": MessageLookupByLibrary.simpleMessage(
+            "تم إنشاء الحساب. يرجى التحقق من بريدك الإلكتروني."),
+        "account_verified_success":
+            MessageLookupByLibrary.simpleMessage("تم التحقق من الحساب بنجاح."),
+        "already_have_account":
+            MessageLookupByLibrary.simpleMessage("لديك حساب بالفعل؟ "),
+        "confirm_password_hint":
+            MessageLookupByLibrary.simpleMessage("تأكيد كلمة المرور"),
+        "create_account": MessageLookupByLibrary.simpleMessage("إنشاء حساب"),
+        "dont_have_account":
+            MessageLookupByLibrary.simpleMessage("ليس لديك حساب؟ "),
+        "email": MessageLookupByLibrary.simpleMessage("البريد الإلكتروني"),
+        "email_address":
+            MessageLookupByLibrary.simpleMessage("عنوان البريد الإلكتروني"),
+        "email_or_username": MessageLookupByLibrary.simpleMessage(
+            "البريد الإلكتروني أو اسم المستخدم"),
+        "enter_email_reset": MessageLookupByLibrary.simpleMessage(
+            "أدخل بريدك الإلكتروني لاستلام رمز إعادة التعيين."),
+        "error_apple_signin_cancelled":
+            MessageLookupByLibrary.simpleMessage("تم إلغاء تسجيل الدخول بأبل."),
+        "error_apple_signin_failed": MessageLookupByLibrary.simpleMessage(
+            "فشل تسجيل الدخول بأبل. يرجى المحاولة مرة أخرى."),
+        "error_apple_signin_not_available":
+            MessageLookupByLibrary.simpleMessage(
+                "تسجيل الدخول بأبل غير متاح على هذا الجهاز."),
+        "error_cancelled":
+            MessageLookupByLibrary.simpleMessage("تم إلغاء الطلب."),
+        "error_confirm_password_required":
+            MessageLookupByLibrary.simpleMessage("تأكيد كلمة المرور مطلوب."),
+        "error_conflict": MessageLookupByLibrary.simpleMessage(
+            "حدث تعارض في البيانات. يرجى التحديث والمحاولة مرة أخرى."),
+        "error_email_invalid": MessageLookupByLibrary.simpleMessage(
+            "صيغة البريد الإلكتروني غير صالحة."),
+        "error_email_required":
+            MessageLookupByLibrary.simpleMessage("البريد الإلكتروني مطلوب."),
+        "error_field_required":
+            MessageLookupByLibrary.simpleMessage("هذا الحقل مطلوب."),
+        "error_forbidden": MessageLookupByLibrary.simpleMessage(
+            "تم رفض الوصول. ليس لديك الصلاحية."),
+        "error_google_signin_cancelled": MessageLookupByLibrary.simpleMessage(
+            "تم إلغاء تسجيل الدخول بجوجل."),
+        "error_google_signin_config": MessageLookupByLibrary.simpleMessage(
+            "لم يتم إعداد تسجيل الدخول بجوجل بشكل صحيح."),
+        "error_google_signin_failed": MessageLookupByLibrary.simpleMessage(
+            "فشل تسجيل الدخول بجوجل. يرجى المحاولة مرة أخرى."),
+        "error_google_signin_network": MessageLookupByLibrary.simpleMessage(
+            "خطأ في الشبكة أثناء تسجيل الدخول بجوجل."),
+        "error_network": MessageLookupByLibrary.simpleMessage(
+            "لا يوجد اتصال بالإنترنت. يرجى التحقق من اتصالك."),
+        "error_not_found": MessageLookupByLibrary.simpleMessage(
+            "لم يتم العثور على المورد المطلوب."),
+        "error_password_required":
+            MessageLookupByLibrary.simpleMessage("كلمة المرور مطلوبة."),
+        "error_password_short": MessageLookupByLibrary.simpleMessage(
+            "يجب أن تكون كلمة المرور 6 أحرف على الأقل."),
+        "error_passwords_not_match":
+            MessageLookupByLibrary.simpleMessage("كلمات المرور غير متطابقة."),
+        "error_phone_invalid":
+            MessageLookupByLibrary.simpleMessage("صيغة رقم الهاتف غير صالحة."),
+        "error_phone_required":
+            MessageLookupByLibrary.simpleMessage("رقم الهاتف مطلوب."),
+        "error_server": MessageLookupByLibrary.simpleMessage(
+            "حدث خطأ في الخادم. يرجى المحاولة لاحقاً."),
+        "error_timeout": MessageLookupByLibrary.simpleMessage(
+            "استغرق الطلب وقتاً طويلاً. يرجى المحاولة لاحقاً."),
+        "error_title": MessageLookupByLibrary.simpleMessage("عذراً!"),
+        "error_unauthorized": MessageLookupByLibrary.simpleMessage(
+            "غير مصرح لك. يرجى تسجيل الدخول مرة أخرى."),
+        "error_unexpected": MessageLookupByLibrary.simpleMessage(
+            "حدث خطأ غير متوقع. يرجى المحاولة مرة أخرى."),
+        "error_validation": MessageLookupByLibrary.simpleMessage(
+            "بعض الحقول غير صالحة. يرجى مراجعة مدخلاتك."),
+        "forget_password":
+            MessageLookupByLibrary.simpleMessage("نسيت كلمة المرور"),
+        "forgot_password":
+            MessageLookupByLibrary.simpleMessage("نسيت كلمة المرور؟"),
         "get_started": MessageLookupByLibrary.simpleMessage("ابدأ الآن"),
+        "i_agree_to": MessageLookupByLibrary.simpleMessage("أوافق على "),
+        "log_in": MessageLookupByLibrary.simpleMessage("تسجيل الدخول"),
+        "login_here": MessageLookupByLibrary.simpleMessage("تسجيل الدخول"),
         "next": MessageLookupByLibrary.simpleMessage("التالي"),
         "onboarding_description_1": MessageLookupByLibrary.simpleMessage(
             "يمكنك البحث بالكلمات المفتاحية أو المؤلفين أو العناوين أو حتى لصق نص للعثور على الورقة البحثية التي تحتاجها."),
@@ -61,6 +140,39 @@ class MessageLookup extends MessageLookupByLibrary {
             "أتقن أوراقك البحثية بملاحظات نشطة"),
         "onboarding_title_3":
             MessageLookupByLibrary.simpleMessage("تعاون واكتب بثقة"),
-        "skip": MessageLookupByLibrary.simpleMessage("تخطي")
+        "or_sign_in_with":
+            MessageLookupByLibrary.simpleMessage("أو سجل الدخول باستخدام"),
+        "otp_sent_success":
+            MessageLookupByLibrary.simpleMessage("تم إرسال الرمز بنجاح."),
+        "otp_verified_success": MessageLookupByLibrary.simpleMessage(
+            "تم التحقق من رمز التحقق. يمكنك الآن إعادة تعيين كلمة المرور."),
+        "password": MessageLookupByLibrary.simpleMessage("كلمة المرور"),
+        "password_reset_code_sent": MessageLookupByLibrary.simpleMessage(
+            "تم إرسال رمز إعادة تعيين كلمة المرور إلى بريدك الإلكتروني."),
+        "password_reset_success": MessageLookupByLibrary.simpleMessage(
+            "تم إعادة تعيين كلمة المرور بنجاح."),
+        "please_verify_account":
+            MessageLookupByLibrary.simpleMessage("يرجى التحقق من حسابك"),
+        "profile_setup_success": MessageLookupByLibrary.simpleMessage(
+            "تم إعداد الملف الشخصي بنجاح."),
+        "reset_password":
+            MessageLookupByLibrary.simpleMessage("إعادة تعيين كلمة المرور"),
+        "sign_in": MessageLookupByLibrary.simpleMessage("تسجيل الدخول"),
+        "sign_up": MessageLookupByLibrary.simpleMessage("إنشاء حساب"),
+        "skip": MessageLookupByLibrary.simpleMessage("تخطي"),
+        "something_went_wrong":
+            MessageLookupByLibrary.simpleMessage("حدث خطأ ما."),
+        "success": MessageLookupByLibrary.simpleMessage("نجاح!"),
+        "terms_agreement_required": MessageLookupByLibrary.simpleMessage(
+            "يجب الموافقة على الشروط والأحكام للتسجيل."),
+        "terms_and_conditions":
+            MessageLookupByLibrary.simpleMessage("الشروط والأحكام"),
+        "username": MessageLookupByLibrary.simpleMessage("اسم المستخدم"),
+        "verified": MessageLookupByLibrary.simpleMessage("تم التحقق!"),
+        "warning_title": MessageLookupByLibrary.simpleMessage("تنبيه"),
+        "welcome_back":
+            MessageLookupByLibrary.simpleMessage("مرحباً بعودتك إلى ميراث!"),
+        "welcome_to_mirath": MessageLookupByLibrary.simpleMessage(
+            "مرحباً بك في ميراث! أنشئ حساباً\nلتجربة بحثية أفضل.")
       };
 }

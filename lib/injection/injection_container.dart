@@ -1,6 +1,13 @@
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:get_it/get_it.dart';
+import 'package:mirath/features/auth/data/data_sources/auth_remote_data_source_impl.dart';
+
+import '../core/network/dio_client.dart';
+import '../core/services/secure_storage_service.dart';
 import '../features/auth/domain/usecases/set_up_profile_usecase.dart';
 import '../core/services/local_storage_service.dart';
+import '../features/auth/data/data_sources/auth_remote_data_source.dart';
+import '../features/auth/data/repositories/auth_repository_impl.dart';
 import '../features/auth/domain/usecases/forget_password_usecase.dart';
 import '../features/auth/domain/usecases/is_signed_in_usecase.dart';
 import '../features/auth/domain/usecases/is_verified_usecase.dart';
@@ -14,7 +21,6 @@ import '../features/auth/domain/usecases/signup_usecase.dart';
 import '../features/auth/domain/usecases/verify_account_usecase.dart';
 import '../features/auth/domain/usecases/verify_reset_password_otp_usecase.dart';
 import '../features/auth/presentation/cubit/auth_cubit.dart';
-import '../features/auth/data/repositories/fake_auth_repository_impl.dart';
 import '../features/auth/domain/repositories/auth_repository.dart';
 
 final sl = GetIt.instance;
@@ -22,17 +28,35 @@ final sl = GetIt.instance;
 class DI {
   static Future<void> init() async {
     // Core
+    sl.registerLazySingleton(() => DioClient(secureStorage: sl()));
+    sl.registerLazySingleton(() => sl<DioClient>().dio);
 
     /// Local Storage ///
     final localStorage = await LocalStorageService.init();
     sl.registerLazySingleton<LocalStorageService>(() => localStorage);
 
-    //! Features
+    /// Secure Storage ///
+    sl.registerLazySingleton<SecureStorageService>(
+      () => SecureStorageService(const FlutterSecureStorage()),
+    );
+
+    //** Features **//
 
     //================ Authentication ========================
 
+    /// Auth Data Sources ///
+    sl.registerLazySingleton<AuthRemoteDataSource>(
+      () => AuthRemoteDataSourceImpl(dioClient: sl()),
+    );
+   
+
     /// Auth Repository ///
-    sl.registerLazySingleton<AuthRepository>(() => FakeAuthRepositoryImpl());
+    sl.registerLazySingleton<AuthRepository>(
+      () => AuthRepositoryImpl(
+        remoteDataSource: sl(),
+        secureStorage: sl(),
+      ),
+    );
 
     /// Auth UseCases ///
     sl.registerLazySingleton(() => SignInUseCase(sl()));

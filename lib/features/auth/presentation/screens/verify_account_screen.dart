@@ -9,6 +9,7 @@ import 'package:mirath/features/auth/presentation/widgets/timer_widget.dart';
 import 'package:mirath/features/auth/presentation/widgets/verified_button_widget.dart';
 import 'package:mirath/features/common/widgets/my_back_icon.dart';
 import 'package:mirath/features/common/widgets/screen_decoration.dart';
+import 'package:mirath/generated/l10n.dart';
 
 class VerifyAccountScreen extends StatelessWidget {
   VerifyAccountScreen({super.key});
@@ -24,21 +25,21 @@ class VerifyAccountScreen extends StatelessWidget {
         if (state.status == AuthStatus.otpSent) {
           MyLoaders.successSnackBar(
             context: context,
-            title: "Success!",
-            message: state.message ?? "otp sent successfully.",
+            title: S.of(context).success,
+            message: state.message ?? S.of(context).otp_sent_success,
           );
-        } else if (state.status == AuthStatus.otpVerified) {
+        } else if (state.status == AuthStatus.authenticated) {
           MyLoaders.successSnackBar(
             context: context,
-            title: "Verified!",
-            message: state.message ?? "otp verified successfully.",
+            title: S.of(context).verified,
+            message: state.message ?? S.of(context).account_verified_success,
           );
           context.pushReplacement('/home');
         } else if (state.status == AuthStatus.error) {
           MyLoaders.errorSnackBar(
             context: context,
-            title: "Oh no!",
-            message: state.message ?? "Something went wrong.",
+            title: S.of(context).error_title,
+            message: state.message ?? S.of(context).something_went_wrong,
           );
         }
       },
@@ -68,9 +69,10 @@ class VerifyAccountScreen extends StatelessWidget {
                               return Column(
                                 children: [
                                   OtpWidget(
-                                    title: 'Verify your email',
-                                    description:
-                                        'We just sent a 6-digit code to your email, enter it below:',
+                                    title: S.of(context).Verify_your_email,
+                                    description: S
+                                        .of(context)
+                                        .OTP_code_description,
                                     onOtpCompleted: (value) {
                                       _otpCodeNotifier.value = value;
                                     },
@@ -80,7 +82,8 @@ class VerifyAccountScreen extends StatelessWidget {
                                     valueListenable: _otpCodeNotifier,
                                     builder: (context, otpCode, _) {
                                       return VerifiedButtonWidget(
-                                        btnName: 'Verify email',
+                                        actionType:
+                                            VerifyActionType.verifyEmail,
                                         otpCode: otpCode,
                                       );
                                     },
