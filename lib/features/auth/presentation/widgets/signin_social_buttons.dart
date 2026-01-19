@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../../core/helpers/my_helper_functions.dart';
@@ -6,6 +5,7 @@ import '../../../../core/utils/my_colors.dart';
 import '../../../../core/utils/my_extenstions.dart';
 import '../../../../core/utils/my_images.dart';
 import '../../../../core/utils/my_sizes.dart';
+import '../../../../generated/l10n.dart';
 import '../cubit/auth_cubit.dart';
 
 class SocialButtons extends StatelessWidget {
@@ -16,7 +16,7 @@ class SocialButtons extends StatelessWidget {
     final isDark = MyHelperFunctions.isDarkMode(context);
     return Column(
       children: [
-        Text("Or sign in with", style: context.bodyMedium),
+        Text(S.of(context).or_sign_in_with, style: context.bodyMedium),
         SizedBox(height: MySizes.spaceLg(context)),
         BlocBuilder<AuthCubit, AuthState>(
           builder: (context, state) {
@@ -88,4 +88,3 @@ class SocialButtons extends StatelessWidget {
     );
   }
 }
-

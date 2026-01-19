@@ -7,6 +7,7 @@ import '../../../../core/utils/my_colors.dart';
 import '../../../../core/utils/my_extenstions.dart';
 import '../../../../core/utils/my_sizes.dart';
 import '../../../../core/utils/my_validators.dart';
+import '../../../../generated/l10n.dart';
 import '../cubit/auth_cubit.dart';
 
 class SigninForm extends StatefulWidget {
@@ -52,19 +53,21 @@ class _SigninFormState extends State<SigninForm> {
             cursorColor: MyColors.primaryColor,
             controller: _emailController,
             keyboardType: TextInputType.emailAddress,
-            validator: (value) => MyValidator.validateEmail(value),
+            validator: (value) => MyValidator.validateEmail(context,value),
             style: context.bodyMedium.copyWith(color: MyColors.textPrimary),
-            decoration: const InputDecoration(hintText: "Email or Username"),
+            decoration: InputDecoration(
+              hintText: S.of(context).email_or_username,
+            ),
           ),
           SizedBox(height: MySizes.spaceMd(context)),
           TextFormField(
             cursorColor: MyColors.primaryColor,
             controller: _passwordController,
             obscureText: _obscurePassword,
-            validator: (value) => MyValidator.validatePassword(value),
+            validator: (value) => MyValidator.validatePassword(context,value),
             style: context.bodyMedium.copyWith(color: MyColors.textPrimary),
             decoration: InputDecoration(
-              hintText: "Password",
+              hintText: S.of(context).password,
               suffixIcon: IconButton(
                 icon: Icon(
                   _obscurePassword ? Iconsax.eye_slash : Iconsax.eye,
@@ -87,7 +90,7 @@ class _SigninFormState extends State<SigninForm> {
                   context.push('/forget-password');
                 },
                 child: Text(
-                  "Forgot Password?",
+                  S.of(context).forgot_password,
                   style: context.bodyMedium.copyWith(
                     fontWeight: FontWeight.w700,
                     decoration: TextDecoration.underline,
@@ -122,7 +125,7 @@ class _SigninFormState extends State<SigninForm> {
                             ),
                           ),
                         )
-                      : const Text("Sign In"),
+                      : Text(S.of(context).sign_in),
                 ),
               );
             },
@@ -134,11 +137,11 @@ class _SigninFormState extends State<SigninForm> {
             },
             child: Text.rich(
               TextSpan(
-                text: "Don't have an account? ",
+                text: S.of(context).dont_have_account,
                 style: context.bodyMedium,
                 children: [
                   TextSpan(
-                    text: "Sign Up",
+                    text: S.of(context).sign_up,
                     style: context.bodyMedium.copyWith(
                       fontWeight: FontWeight.bold,
                       decoration: TextDecoration.underline,

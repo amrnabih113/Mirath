@@ -53,6 +53,16 @@ class UnexpectedFailure extends Failure {
   const UnexpectedFailure([super.message = ErrorMessages.unexpected]) : super();
 }
 
+class GoogleSignInFailure extends Failure {
+  const GoogleSignInFailure([super.message = ErrorMessages.googleSignInFailed])
+    : super();
+}
+
+class AppleSignInFailure extends Failure {
+  const AppleSignInFailure([super.message = ErrorMessages.appleSignInFailed])
+    : super();
+}
+
 /// Extracts a user-friendly error message from API response data.
 ///
 /// Handles various response formats:

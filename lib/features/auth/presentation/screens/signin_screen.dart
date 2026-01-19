@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import '../../../../core/helpers/my_loaders.dart';
 import '../../../../core/utils/my_sizes.dart';
+import '../../../../generated/l10n.dart';
 import '../cubit/auth_cubit.dart';
 import '../widgets/login_header.dart';
 import '../widgets/signin_form.dart';
@@ -26,8 +27,8 @@ class SigninScreen extends StatelessWidget {
           } else if (state.status == AuthStatus.error) {
             MyLoaders.errorSnackBar(
               context: context,
-              title: "Oh no! ",
-              message: state.message!,
+              title: S.of(context).error_title,
+              message: state.message ?? S.of(context).something_went_wrong,
             );
           }
         },

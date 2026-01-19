@@ -39,11 +39,25 @@ class NetworkManager {
       final results = await _connectivity.checkConnectivity();
       if (results.contains(ConnectivityResult.none)) return false;
 
-      // Verify real connection (not just connected to router)
-      final lookup = await InternetAddress.lookup(
-        'google.com',
-      ).timeout(const Duration(seconds: 3));
-      return lookup.isNotEmpty && lookup.first.rawAddress.isNotEmpty;
+      // Verify real connection by trying multiple DNS lookups
+      // Some networks may block certain domains
+      final domains = ['google.com', 'cloudflare.com', '1.1.1.1'];
+      for (final domain in domains) {
+        try {
+          final lookup = await InternetAddress.lookup(
+            domain,
+          ).timeout(const Duration(seconds: 2));
+          if (lookup.isNotEmpty && lookup.first.rawAddress.isNotEmpty) {
+            return true;
+          }
+        } catch (_) {
+          // Try next domain
+          continue;
+        }
+      }
+      // If all lookups failed, fall back to connectivity result
+      // (device might be behind a restrictive firewall but still have internet)
+      return !results.contains(ConnectivityResult.none);
     } catch (_) {
       return false;
     }

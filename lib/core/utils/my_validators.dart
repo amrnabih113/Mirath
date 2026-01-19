@@ -1,60 +1,69 @@
+import 'package:flutter/material.dart';
+import '../../generated/l10n.dart';
 
 class MyValidator {
-  static String? validateEmptyText(String? fieldName, String? text) {
+  static String? validateEmptyText(
+    BuildContext context,
+    String? fieldName,
+    String? text,
+  ) {
     if (text == null || text.isEmpty) {
-      return 'Field "$fieldName" is required.';
+      return S.of(context).error_field_required;
     }
     return null;
   }
 
-  static String? validateEmail(String? email) {
+  static String? validateEmail(BuildContext context, String? email) {
     if (email == null || email.isEmpty) {
-      return 'Email is required.';
+      return S.of(context).error_email_required;
     }
 
     final RegExp emailRegex = RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$');
     if (!emailRegex.hasMatch(email)) {
-      return 'Invalid email format.';
+      return S.of(context).error_email_invalid;
     }
     return null;
   }
 
-  static String? validatePassword(String? password) {
+  static String? validatePassword(BuildContext context, String? password) {
     if (password == null || password.isEmpty) {
-      return 'Password is required.';
+      return S.of(context).error_password_required;
     }
 
     if (password.length < 6) {
-      return 'Password must be at least 6 characters long.';
+      return S.of(context).error_password_short;
     }
 
     return null;
   }
 
-  static String? validatePhoneNumber(String? phoneNumber) {
+  static String? validatePhoneNumber(
+    BuildContext context,
+    String? phoneNumber,
+  ) {
     if (phoneNumber == null || phoneNumber.isEmpty) {
-      return 'Phone number is required.';
+      return S.of(context).error_phone_required;
     }
 
     final RegExp phoneNumberRegex = RegExp(r'^\d{11}$');
     if (!phoneNumberRegex.hasMatch(phoneNumber)) {
-      return 'Invalid phone number format.';
+      return S.of(context).error_phone_invalid;
     }
 
     return null;
   }
 
   static String? validateConfirmPassword(
+    BuildContext context,
     String? password,
     String? confirmPassword,
   ) {
     if (confirmPassword == null || confirmPassword.isEmpty) {
-      return 'Confirm password is required.';
+      return S.of(context).error_confirm_password_required;
     }
     if (password != confirmPassword) {
-      return 'Passwords do not match.';
+      return S.of(context).error_passwords_not_match;
     }
     return null;
   }
 }
-

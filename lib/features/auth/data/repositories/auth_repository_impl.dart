@@ -1,5 +1,8 @@
 import 'package:dartz/dartz.dart';
+import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:mirath/core/utils/my_constants.dart';
+import 'package:mirath/core/utils/my_logger.dart';
 
 import '../../../../core/error/failuors.dart';
 import '../../../../core/services/secure_storage_service.dart';
@@ -70,7 +73,7 @@ class AuthRepositoryImpl implements AuthRepository {
     try {
       await _remoteDataSource.signout();
       try {
-        await GoogleSignIn.instance.signOut();
+        await GoogleSignIn().signOut();
       } catch (_) {
         // Ignore errors from Google sign out
       }
@@ -110,32 +113,69 @@ class AuthRepositoryImpl implements AuthRepository {
   @override
   Future<Either<Failure, void>> signinWithGoogle() async {
     try {
-      // Initialize and authenticate with Google
-      final googleSignIn = GoogleSignIn.instance;
-      await googleSignIn.initialize();
+      MyLogger.debug("🔵 Starting Google Sign-In process...");
+      MyLogger.debug("Platform: ${kIsWeb ? 'Web' : 'Mobile'}");
 
-      // Trigger authentication flow
-      final account = await googleSignIn.authenticate();
+      // Create Google Sign-In instance with platform-specific configuration
+      final GoogleSignIn googleSignIn;
 
-      // Get ID token
-      final idToken = account.authentication.idToken;
+      if (kIsWeb) {
+        MyLogger.debug("🌐 Web platform: Creating instance with clientId");
+        googleSignIn = GoogleSignIn(clientId: MyConstants.googleServerClientId);
+        MyLogger.debug("✅ Web instance created");
+      } else {
+        MyLogger.debug(
+          "📱 Mobile platform: Creating instance with serverClientId",
+        );
+        googleSignIn = GoogleSignIn(
+          serverClientId: MyConstants.googleServerClientId,
+        );
+        MyLogger.debug("✅ Mobile instance created");
+      }
+
+      GoogleSignInAccount? account;
+
+      // Use the standard signIn() method
+      MyLogger.debug("🔐 Attempting Google Sign-In with user interaction...");
+      account = await googleSignIn.signIn();
+
+      if (account == null) {
+        MyLogger.debug("❌ Google Sign-In returned null - user likely canceled");
+        return const Left(ServerFailure("Google Sign-In was canceled"));
+      }
+
+      MyLogger.debug("✅ Google Sign-In successful!");
+      MyLogger.debug("User: ${account.displayName} (${account.email})");
+
+      // Get authentication details
+      MyLogger.debug("🔑 Getting authentication token...");
+      final GoogleSignInAuthentication authentication =
+          await account.authentication;
+      final String? idToken = authentication.idToken;
 
       if (idToken == null) {
+        MyLogger.debug("❌ Failed to get ID token");
         return const Left(ServerFailure('Failed to get Google ID token'));
       }
 
+      MyLogger.debug("✅ ID token obtained successfully");
+
       // Authenticate with backend
+      MyLogger.debug("🌐 Authenticating with backend...");
       final response = await _remoteDataSource.googleAuth(idToken: idToken);
 
       // Save access token
       if (response.accessToken != null) {
         await _secureStorage.saveAccessToken(response.accessToken!);
+        MyLogger.debug("✅ Access token saved");
       }
 
       _cachedEmail = account.email;
+      MyLogger.debug("🎉 Google Sign-In process completed successfully!");
 
       return const Right(null);
     } catch (e) {
+      MyLogger.debug("💥 Google Sign-In failed: $e");
       return Left(mapExceptionToFailure(e));
     }
   }

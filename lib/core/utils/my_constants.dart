@@ -4,6 +4,13 @@ class MyConstants {
   // app name
   static const String appName = "Mirath";
 
+  // Google Sign-In configuration
+  // TODO: Replace with your Web Client ID from Google Cloud Console
+  // Go to: https://console.cloud.google.com/apis/credentials
+  // Create OAuth 2.0 Client ID (Web application type)
+  static const String googleServerClientId =
+      '551081167484-v7ute4pkh7nvb7v4gu8383cchvc0jd6h.apps.googleusercontent.com';
+
   // storage keys
   static const String onboardingKey = 'has_seen_onboarding';
   static const String profileSetupKey = 'has_setup_profile';
@@ -11,8 +18,10 @@ class MyConstants {
   static const String refreshTokenKey = 'refresh_token';
   static const String emailKey = 'user_email';
   // base url
-
-  static const String baseUrl = "http://127.0.0.1:3000/";
+  // Use 10.0.2.2 for Android emulator (maps to host machine's localhost)
+  // Use your computer's IP (e.g., 192.168.x.x) for real devices
+  // Use 127.0.0.1 for iOS simulator or web
+  static const String baseUrl = "http://192.168.1.5:3000/";
 
   // Endpoints
   // ***Auth endpoints***
@@ -40,7 +49,4 @@ class MyConstants {
   static const String isVerified = "api/v1/auth/is-verified";
   // get
   static const String checkSetup = "api/v1/auth/check-setup";
-
-
-
 }

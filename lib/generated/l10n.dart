@@ -269,6 +269,626 @@ class S {
       args: [],
     );
   }
+
+  /// `Login Here`
+  String get login_here {
+    return Intl.message(
+      'Login Here',
+      name: 'login_here',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Welcome back to Mirath!`
+  String get welcome_back {
+    return Intl.message(
+      'Welcome back to Mirath!',
+      name: 'welcome_back',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Email or Username`
+  String get email_or_username {
+    return Intl.message(
+      'Email or Username',
+      name: 'email_or_username',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Password`
+  String get password {
+    return Intl.message(
+      'Password',
+      name: 'password',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Forgot Password?`
+  String get forgot_password {
+    return Intl.message(
+      'Forgot Password?',
+      name: 'forgot_password',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Sign In`
+  String get sign_in {
+    return Intl.message(
+      'Sign In',
+      name: 'sign_in',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Don't have an account? `
+  String get dont_have_account {
+    return Intl.message(
+      'Don\'t have an account? ',
+      name: 'dont_have_account',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Sign Up`
+  String get sign_up {
+    return Intl.message(
+      'Sign Up',
+      name: 'sign_up',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Or sign in with`
+  String get or_sign_in_with {
+    return Intl.message(
+      'Or sign in with',
+      name: 'or_sign_in_with',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Create Account`
+  String get create_account {
+    return Intl.message(
+      'Create Account',
+      name: 'create_account',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Welcome to Mirath! Create an account\nfor better research experience.`
+  String get welcome_to_mirath {
+    return Intl.message(
+      'Welcome to Mirath! Create an account\nfor better research experience.',
+      name: 'welcome_to_mirath',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Username`
+  String get username {
+    return Intl.message(
+      'Username',
+      name: 'username',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Email`
+  String get email {
+    return Intl.message(
+      'Email',
+      name: 'email',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Confirm Password`
+  String get confirm_password_hint {
+    return Intl.message(
+      'Confirm Password',
+      name: 'confirm_password_hint',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `I agree to the `
+  String get i_agree_to {
+    return Intl.message(
+      'I agree to the ',
+      name: 'i_agree_to',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Terms and Conditions`
+  String get terms_and_conditions {
+    return Intl.message(
+      'Terms and Conditions',
+      name: 'terms_and_conditions',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Already have an account? `
+  String get already_have_account {
+    return Intl.message(
+      'Already have an account? ',
+      name: 'already_have_account',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Log in`
+  String get log_in {
+    return Intl.message(
+      'Log in',
+      name: 'log_in',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Forget Password`
+  String get forget_password {
+    return Intl.message(
+      'Forget Password',
+      name: 'forget_password',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Enter your email to receive a reset OTP.`
+  String get enter_email_reset {
+    return Intl.message(
+      'Enter your email to receive a reset OTP.',
+      name: 'enter_email_reset',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Email Address`
+  String get email_address {
+    return Intl.message(
+      'Email Address',
+      name: 'email_address',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Reset Password`
+  String get reset_password {
+    return Intl.message(
+      'Reset Password',
+      name: 'reset_password',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Success!`
+  String get success {
+    return Intl.message(
+      'Success!',
+      name: 'success',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Verified!`
+  String get verified {
+    return Intl.message(
+      'Verified!',
+      name: 'verified',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `OTP sent successfully.`
+  String get otp_sent_success {
+    return Intl.message(
+      'OTP sent successfully.',
+      name: 'otp_sent_success',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Account verified successfully.`
+  String get account_verified_success {
+    return Intl.message(
+      'Account verified successfully.',
+      name: 'account_verified_success',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Account created. Please verify your email.`
+  String get account_created_verify {
+    return Intl.message(
+      'Account created. Please verify your email.',
+      name: 'account_created_verify',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Please verify your account`
+  String get please_verify_account {
+    return Intl.message(
+      'Please verify your account',
+      name: 'please_verify_account',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Oh no!`
+  String get error_title {
+    return Intl.message(
+      'Oh no!',
+      name: 'error_title',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Warning`
+  String get warning_title {
+    return Intl.message(
+      'Warning',
+      name: 'warning_title',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Something went wrong.`
+  String get something_went_wrong {
+    return Intl.message(
+      'Something went wrong.',
+      name: 'something_went_wrong',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `You must agree to the Terms and Conditions to sign up.`
+  String get terms_agreement_required {
+    return Intl.message(
+      'You must agree to the Terms and Conditions to sign up.',
+      name: 'terms_agreement_required',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Something went wrong on the server. Please try again later.`
+  String get error_server {
+    return Intl.message(
+      'Something went wrong on the server. Please try again later.',
+      name: 'error_server',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `No internet connection. Please check your connection and try again.`
+  String get error_network {
+    return Intl.message(
+      'No internet connection. Please check your connection and try again.',
+      name: 'error_network',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `The request took too long. Please try again later.`
+  String get error_timeout {
+    return Intl.message(
+      'The request took too long. Please try again later.',
+      name: 'error_timeout',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `The request was cancelled.`
+  String get error_cancelled {
+    return Intl.message(
+      'The request was cancelled.',
+      name: 'error_cancelled',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `You are not authorized. Please log in again.`
+  String get error_unauthorized {
+    return Intl.message(
+      'You are not authorized. Please log in again.',
+      name: 'error_unauthorized',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Access denied. You do not have permission.`
+  String get error_forbidden {
+    return Intl.message(
+      'Access denied. You do not have permission.',
+      name: 'error_forbidden',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Some fields are invalid. Please review your input.`
+  String get error_validation {
+    return Intl.message(
+      'Some fields are invalid. Please review your input.',
+      name: 'error_validation',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `A data conflict occurred. Please refresh and try again.`
+  String get error_conflict {
+    return Intl.message(
+      'A data conflict occurred. Please refresh and try again.',
+      name: 'error_conflict',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Requested resource was not found.`
+  String get error_not_found {
+    return Intl.message(
+      'Requested resource was not found.',
+      name: 'error_not_found',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `An unexpected error occurred. Please try again.`
+  String get error_unexpected {
+    return Intl.message(
+      'An unexpected error occurred. Please try again.',
+      name: 'error_unexpected',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Google Sign-In was cancelled.`
+  String get error_google_signin_cancelled {
+    return Intl.message(
+      'Google Sign-In was cancelled.',
+      name: 'error_google_signin_cancelled',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Google Sign-In failed. Please try again.`
+  String get error_google_signin_failed {
+    return Intl.message(
+      'Google Sign-In failed. Please try again.',
+      name: 'error_google_signin_failed',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Network error during Google Sign-In. Check your connection.`
+  String get error_google_signin_network {
+    return Intl.message(
+      'Network error during Google Sign-In. Check your connection.',
+      name: 'error_google_signin_network',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Google Sign-In is not configured properly.`
+  String get error_google_signin_config {
+    return Intl.message(
+      'Google Sign-In is not configured properly.',
+      name: 'error_google_signin_config',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Apple Sign-In is not available on this device.`
+  String get error_apple_signin_not_available {
+    return Intl.message(
+      'Apple Sign-In is not available on this device.',
+      name: 'error_apple_signin_not_available',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Apple Sign-In was cancelled.`
+  String get error_apple_signin_cancelled {
+    return Intl.message(
+      'Apple Sign-In was cancelled.',
+      name: 'error_apple_signin_cancelled',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Apple Sign-In failed. Please try again.`
+  String get error_apple_signin_failed {
+    return Intl.message(
+      'Apple Sign-In failed. Please try again.',
+      name: 'error_apple_signin_failed',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Email is required.`
+  String get error_email_required {
+    return Intl.message(
+      'Email is required.',
+      name: 'error_email_required',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Invalid email format.`
+  String get error_email_invalid {
+    return Intl.message(
+      'Invalid email format.',
+      name: 'error_email_invalid',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Password is required.`
+  String get error_password_required {
+    return Intl.message(
+      'Password is required.',
+      name: 'error_password_required',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Password must be at least 6 characters long.`
+  String get error_password_short {
+    return Intl.message(
+      'Password must be at least 6 characters long.',
+      name: 'error_password_short',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `This field is required.`
+  String get error_field_required {
+    return Intl.message(
+      'This field is required.',
+      name: 'error_field_required',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Passwords do not match.`
+  String get error_passwords_not_match {
+    return Intl.message(
+      'Passwords do not match.',
+      name: 'error_passwords_not_match',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Confirm password is required.`
+  String get error_confirm_password_required {
+    return Intl.message(
+      'Confirm password is required.',
+      name: 'error_confirm_password_required',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Phone number is required.`
+  String get error_phone_required {
+    return Intl.message(
+      'Phone number is required.',
+      name: 'error_phone_required',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Invalid phone number format.`
+  String get error_phone_invalid {
+    return Intl.message(
+      'Invalid phone number format.',
+      name: 'error_phone_invalid',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Profile set up successfully.`
+  String get profile_setup_success {
+    return Intl.message(
+      'Profile set up successfully.',
+      name: 'profile_setup_success',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Password reset successfully.`
+  String get password_reset_success {
+    return Intl.message(
+      'Password reset successfully.',
+      name: 'password_reset_success',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `OTP verified. You can now reset your password.`
+  String get otp_verified_success {
+    return Intl.message(
+      'OTP verified. You can now reset your password.',
+      name: 'otp_verified_success',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Password reset code sent to your email.`
+  String get password_reset_code_sent {
+    return Intl.message(
+      'Password reset code sent to your email.',
+      name: 'password_reset_code_sent',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {
