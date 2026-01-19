@@ -1,5 +1,3 @@
-import 'dart:math';
-
 import 'package:flutter/material.dart';
 import 'package:mirath/core/utils/my_colors.dart';
 
@@ -34,6 +32,5 @@ class CategoryItems extends StatelessWidget {
         ),
       ),
     );
-    ;
   }
 }
