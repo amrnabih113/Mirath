@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../../../../core/utils/my_extenstions.dart';
 import '../../../../core/utils/my_sizes.dart';
+import '../../../../generated/l10n.dart';
 
 class LoginHeader extends StatelessWidget {
   const LoginHeader({super.key});
@@ -11,7 +12,7 @@ class LoginHeader extends StatelessWidget {
     return Column(
       children: [
         Text(
-          "Login Here",
+          S.of(context).login_here,
           style: context.headlineLarge.copyWith(
             fontWeight: FontWeight.bold,
             fontSize: 40,
@@ -19,7 +20,7 @@ class LoginHeader extends StatelessWidget {
         ),
         SizedBox(height: MySizes.spaceMd(context)),
         Text(
-          "Welcome back to Mirath!",
+          S.of(context).welcome_back,
           style: context.titleMedium,
           textAlign: TextAlign.center,
         ),

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../../../../core/utils/my_extenstions.dart';
 import '../../../../core/utils/my_sizes.dart';
+import '../../../../generated/l10n.dart';
 
 class SignupHeader extends StatelessWidget {
   const SignupHeader({super.key});
@@ -11,7 +12,7 @@ class SignupHeader extends StatelessWidget {
     return Column(
       children: [
         Text(
-          "Create Account",
+          S.of(context).create_account,
           style: context.headlineLarge.copyWith(
             fontWeight: FontWeight.bold,
             fontSize: 40,
@@ -19,7 +20,7 @@ class SignupHeader extends StatelessWidget {
         ),
         SizedBox(height: MySizes.spaceMd(context)),
         Text(
-          "Welcome to Mirath! Create an account\nfor better research experience.",
+          S.of(context).welcome_to_mirath,
           style: context.titleMedium,
           textAlign: TextAlign.center,
         ),

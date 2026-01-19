@@ -9,6 +9,7 @@ import 'package:mirath/features/auth/presentation/widgets/timer_widget.dart';
 import 'package:mirath/features/auth/presentation/widgets/verified_button_widget.dart';
 import 'package:mirath/features/common/widgets/my_back_icon.dart';
 import 'package:mirath/features/common/widgets/screen_decoration.dart';
+import 'package:mirath/generated/l10n.dart';
 
 class OtpScreen extends StatelessWidget {
   OtpScreen({super.key});
@@ -22,16 +23,16 @@ class OtpScreen extends StatelessWidget {
         if (state.status == AuthStatus.success) {
           MyLoaders.successSnackBar(
             context: context,
-            title: "Verified!",
-            message: state.message ?? "otp verified successfully.",
+            title: S.of(context).verified,
+            message: state.message ?? S.of(context).otp_sent_success,
           );
           // Navigate to reset password screen
           context.pushReplacement('/reset-password');
         } else if (state.status == AuthStatus.error) {
-          MyLoaders.warningSnackBar(
+          MyLoaders.errorSnackBar(
             context: context,
             title: "",
-            message: state.message ?? "Something went wrong.",
+            message: state.message ?? S.of(context).something_went_wrong,
           );
         }
       },
@@ -61,9 +62,10 @@ class OtpScreen extends StatelessWidget {
                               return Column(
                                 children: [
                                   OtpWidget(
-                                    title: 'Password Reset',
-                                    description:
-                                        'We just sent a 6-digit code to your email, enter it below:',
+                                    title: S.of(context).Password_Reset,
+                                    description: S
+                                        .of(context)
+                                        .OTP_code_description,
                                     onOtpCompleted: (value) {
                                       _otpCodeNotifier.value = value;
                                     },
@@ -72,11 +74,12 @@ class OtpScreen extends StatelessWidget {
                                     valueListenable: _otpCodeNotifier,
                                     builder: (context, otpCode, _) {
                                       return VerifiedButtonWidget(
-                                        btnName: 'Verify code',
+                                        actionType: VerifyActionType.verifyCode,
                                         otpCode: otpCode,
                                       );
                                     },
                                   ),
+                                  SizedBox(height: MySizes.spaceMd(context)),
                                   TimerWidget(),
                                 ],
                               );

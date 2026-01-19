@@ -85,7 +85,7 @@ class MySizes {
 
   /// ---------- RADIUS ----------
   static double borderRadiusSm(BuildContext context) =>
-      ResponsiveHelper.responsiveValue(context, 11); // 12 → 11
+      ResponsiveHelper.responsiveValue(context, 10); // 12 → 11
 
   static double borderRadiusMd(BuildContext context) =>
       ResponsiveHelper.responsiveValue(context, 15); // 16 → 15

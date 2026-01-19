@@ -62,12 +62,17 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
         child: BlocListener<AuthCubit, AuthState>(
           listener: (context, state) {
             if (state.status == AuthStatus.success) {
+              MyLoaders.successSnackBar(
+                context: context,
+                title: S.of(context).success,
+                message: state.message ?? S.of(context).password_reset_success,
+              );
               context.push('/signin');
             } else if (state.status == AuthStatus.error) {
               MyLoaders.warningSnackBar(
                 context: context,
                 title: "",
-                message: state.message ?? "Something went wrong.",
+                message: state.message ?? S.of(context).something_went_wrong,
               );
             }
           },
@@ -111,7 +116,10 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
                                   TextFormField(
                                     controller: _passController,
                                     validator: (value) =>
-                                        MyValidator.validatePassword(value),
+                                        MyValidator.validatePassword(
+                                          context,
+                                          value,
+                                        ),
                                     cursorColor: MyColors.primaryColor,
                                     decoration: InputDecoration(
                                       hintText: S.of(context).Your_new_password,
@@ -124,6 +132,7 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
                                     controller: _confirmPassController,
                                     validator: (value) =>
                                         MyValidator.validateConfirmPassword(
+                                          context,
                                           _passController.text.trim(),
                                           value,
                                         ),
@@ -143,12 +152,6 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
                                             state.status == AuthStatus.loading;
 
                                         return ElevatedButton(
-                                          style: ElevatedButton.styleFrom(
-                                            disabledForegroundColor: Colors
-                                                .white
-                                                .withAlpha(128),
-                                            foregroundColor: MyColors.black,
-                                          ),
                                           onPressed:
                                               (!isButtonEnabled || isLoading)
                                               ? null

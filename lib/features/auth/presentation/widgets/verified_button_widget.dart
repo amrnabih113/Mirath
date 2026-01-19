@@ -3,14 +3,17 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:mirath/core/utils/my_colors.dart';
 import 'package:mirath/core/utils/my_sizes.dart';
 import 'package:mirath/features/auth/presentation/cubit/auth_cubit.dart';
+import 'package:mirath/generated/l10n.dart';
+
+enum VerifyActionType { verifyEmail, verifyCode }
 
 class VerifiedButtonWidget extends StatelessWidget {
- const VerifiedButtonWidget({
+  const VerifiedButtonWidget({
     super.key,
-    required this.btnName,
+    required this.actionType,
     required this.otpCode,
   });
-  final String btnName;
+  final VerifyActionType actionType;
   final String otpCode;
 
   @override
@@ -20,15 +23,11 @@ class VerifiedButtonWidget extends StatelessWidget {
         return SizedBox(
           width: MySizes.buttonWidth(context),
           child: ElevatedButton(
-            style: ElevatedButton.styleFrom(
-              disabledForegroundColor: Colors.white.withAlpha(128),
-              foregroundColor: MyColors.black,
-            ),
             onPressed: otpCode.length == 6
                 ? () {
-                    if (btnName == "Verify email") {
+                    if (actionType == VerifyActionType.verifyEmail) {
                       context.read<AuthCubit>().verifyAccount(otpCode);
-                    } else if (btnName == "Verify code") {
+                    } else if (actionType == VerifyActionType.verifyCode) {
                       context.read<AuthCubit>().verifyResetPasswordOTP(otpCode);
                     }
                   }
@@ -44,7 +43,11 @@ class VerifiedButtonWidget extends StatelessWidget {
                       ),
                     ),
                   )
-                : Text(btnName),
+                : Text(
+                    actionType == VerifyActionType.verifyEmail
+                        ? S.of(context).Verify_email
+                        : S.of(context).Verify_code,
+                  ),
           ),
         );
       },

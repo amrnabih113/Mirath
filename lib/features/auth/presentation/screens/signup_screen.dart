@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import '../../../../core/helpers/my_loaders.dart';
 import '../../../../core/utils/my_sizes.dart';
+import '../../../../generated/l10n.dart';
 import '../cubit/auth_cubit.dart';
 import '../../../common/widgets/my_back_icon.dart';
 import '../../../common/widgets/screen_decoration.dart';
@@ -24,11 +25,16 @@ class SignupScreen extends StatelessWidget {
           if (state.status == AuthStatus.authenticated) {
             context.pushReplacement('/home');
           } else if (state.status == AuthStatus.unverified) {
+            MyLoaders.successSnackBar(
+              context: context,
+              title: S.of(context).success,
+              message: state.message ?? S.of(context).account_created_verify,
+            );
             context.pushReplacement('/verify-account');
           } else if (state.message != null && state.message!.isNotEmpty) {
             MyLoaders.errorSnackBar(
               context: context,
-              title: "Oh no! ",
+              title: S.of(context).error_title,
               message: state.message!,
             );
           }

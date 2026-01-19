@@ -12,6 +12,7 @@ import '../../../../core/utils/my_enums.dart';
 import '../../../../core/utils/my_extenstions.dart';
 import '../../../../core/utils/my_logger.dart';
 import '../../../../core/utils/my_sizes.dart';
+import '../../../../generated/l10n.dart';
 import '../../../../injection/injection_container.dart';
 import '../../../common/widgets/screen_decoration.dart';
 import '../../../common/widgets/text_feild_with_lable.dart';
@@ -96,14 +97,16 @@ class _SetUpProfileScreenState extends State<SetUpProfileScreen> {
                       MyLoaders.errorSnackBar(
                         context: context,
                         title: "Oh no! ",
-                        message: state.message ?? 'An unknown error occurred.',
+                        message:
+                            state.message ?? S.of(context).something_went_wrong,
                       );
                     } else if (state.status == AuthStatus.success) {
                       MyLoaders.successSnackBar(
                         context: context,
                         title: "Success! ",
                         message:
-                            state.message ?? 'Profile set up successfully.',
+                            state.message ??
+                            S.of(context).profile_setup_success,
                       );
                       _localStorageService.setProfileSetup(true);
                       context.go('/home');

@@ -8,6 +8,7 @@ import '../../../../core/utils/my_colors.dart';
 import '../../../../core/utils/my_extenstions.dart';
 import '../../../../core/utils/my_sizes.dart';
 import '../../../../core/utils/my_validators.dart';
+import '../../../../generated/l10n.dart';
 import '../cubit/auth_cubit.dart';
 
 class SignupForm extends StatefulWidget {
@@ -47,15 +48,15 @@ class _SignupFormState extends State<SignupForm> {
       if (!_agreedToTerms) {
         MyLoaders.warningSnackBar(
           context: context,
-          title: "Terms and Conditions",
-          message: "You must agree to the Terms and Conditions to sign up.",
+          title: S.of(context).warning_title,
+          message: S.of(context).terms_agreement_required,
         );
         return;
       }
       context.read<AuthCubit>().signUp(
-        _usernameController.text.trim(),
         _emailController.text.trim(),
         _passwordController.text.trim(),
+        _usernameController.text.trim(),
       );
     }
   }
@@ -70,25 +71,28 @@ class _SignupFormState extends State<SignupForm> {
           TextFormField(
             controller: _usernameController,
 
-            decoration: const InputDecoration(hintText: "Username"),
+            decoration: InputDecoration(hintText: S.of(context).username),
             keyboardType: TextInputType.text,
-            validator: (value) =>
-                MyValidator.validateEmptyText("username", value),
+            validator: (value) => MyValidator.validateEmptyText(
+              context,
+              S.of(context).username,
+              value,
+            ),
             textInputAction: TextInputAction.next,
           ),
           SizedBox(height: MySizes.spaceMd(context)),
           TextFormField(
             controller: _emailController,
-            decoration: const InputDecoration(hintText: "Email"),
+            decoration: InputDecoration(hintText: S.of(context).email),
             keyboardType: TextInputType.emailAddress,
-            validator: (value) => MyValidator.validateEmail(value),
+            validator: (value) => MyValidator.validateEmail(context, value),
             textInputAction: TextInputAction.next,
           ),
           SizedBox(height: MySizes.spaceMd(context)),
           TextFormField(
             controller: _passwordController,
             decoration: InputDecoration(
-              hintText: "Password",
+              hintText: S.of(context).password,
               suffixIcon: IconButton(
                 icon: Icon(
                   _obscurePassword ? Iconsax.eye_slash : Iconsax.eye,
@@ -102,14 +106,14 @@ class _SignupFormState extends State<SignupForm> {
               ),
             ),
             obscureText: _obscurePassword,
-            validator: (value) => MyValidator.validatePassword(value),
+            validator: (value) => MyValidator.validatePassword(context, value),
             textInputAction: TextInputAction.next,
           ),
           SizedBox(height: MySizes.spaceMd(context)),
           TextFormField(
             controller: _confirmPasswordController,
             decoration: InputDecoration(
-              hintText: "Confirm Password",
+              hintText: S.of(context).confirm_password_hint,
               suffixIcon: IconButton(
                 icon: Icon(
                   _obscureConfirmPassword ? Iconsax.eye_slash : Iconsax.eye,
@@ -124,6 +128,7 @@ class _SignupFormState extends State<SignupForm> {
             ),
             obscureText: _obscureConfirmPassword,
             validator: (value) => MyValidator.validateConfirmPassword(
+              context,
               value,
               _passwordController.text,
             ),
@@ -150,11 +155,11 @@ class _SignupFormState extends State<SignupForm> {
                   },
                   child: Text.rich(
                     TextSpan(
-                      text: "I agree to the ",
+                      text: S.of(context).i_agree_to,
                       style: context.bodyMedium,
                       children: [
                         TextSpan(
-                          text: "Terms and Conditions",
+                          text: S.of(context).terms_and_conditions,
                           style: context.bodyMedium.copyWith(
                             fontWeight: FontWeight.bold,
                             decoration: TextDecoration.underline,
@@ -177,7 +182,6 @@ class _SignupFormState extends State<SignupForm> {
                 child: ElevatedButton(
                   onPressed: isLoading ? null : _handleSignUp,
                   style: ElevatedButton.styleFrom(
-                    foregroundColor: MyColors.textPrimary,
                     padding: EdgeInsets.symmetric(
                       vertical: MySizes.spaceMd(context),
                       horizontal: MySizes.spaceLg(context),
@@ -194,7 +198,7 @@ class _SignupFormState extends State<SignupForm> {
                             ),
                           ),
                         )
-                      : const Text("Sign up"),
+                      : Text(S.of(context).sign_up),
                 ),
               );
             },
@@ -206,11 +210,11 @@ class _SignupFormState extends State<SignupForm> {
             },
             child: Text.rich(
               TextSpan(
-                text: "Already have an account? ",
+                text: S.of(context).already_have_account,
                 style: context.bodyMedium,
                 children: [
                   TextSpan(
-                    text: "Log in",
+                    text: S.of(context).log_in,
                     style: context.bodyMedium.copyWith(
                       fontWeight: FontWeight.bold,
                       decoration: TextDecoration.underline,

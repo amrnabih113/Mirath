@@ -9,7 +9,7 @@ class MyColors {
   // Primary Color Shades (from darkest to lightest)
   static const Color primaryShade900 = Color(0xFF25201A);
   static const Color primaryShade800 = Color(0xFF4A4034);
-  static const Color primaryShade700 = Color(0xFF6F604E);
+  static const Color primaryShade700 = Color(0xFF4A4034);
   static const Color primaryShade600 = Color(0xFF948068);
   static const Color primaryShade500 = Color(0xFFB9A082); // Base primary color
   static const Color primaryShade400 = Color(0xFFC7B39B);
@@ -82,7 +82,7 @@ class MyColors {
 
   static const Color cardColor = Color.fromARGB(255, 227, 217, 205);
   // Background Colors
-  static const Color light = primaryShade100;
+  static const Color light = Color(0xFFFBFAF8); // Light warm background
   static const Color dark = Color(
     0xFF2D2926,
   ); // Medium-dark with warm undertone

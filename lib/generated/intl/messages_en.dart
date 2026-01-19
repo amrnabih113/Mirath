@@ -49,7 +49,115 @@ class MessageLookup extends MessageLookupByLibrary {
     "Your_new_password": MessageLookupByLibrary.simpleMessage(
       "Your new password",
     ),
+    "account_created_verify": MessageLookupByLibrary.simpleMessage(
+      "Account created. Please verify your email.",
+    ),
+    "account_verified_success": MessageLookupByLibrary.simpleMessage(
+      "Account verified successfully.",
+    ),
+    "already_have_account": MessageLookupByLibrary.simpleMessage(
+      "Already have an account? ",
+    ),
+    "confirm_password_hint": MessageLookupByLibrary.simpleMessage(
+      "Confirm Password",
+    ),
+    "create_account": MessageLookupByLibrary.simpleMessage("Create Account"),
+    "dont_have_account": MessageLookupByLibrary.simpleMessage(
+      "Don\'t have an account? ",
+    ),
+    "email": MessageLookupByLibrary.simpleMessage("Email"),
+    "email_address": MessageLookupByLibrary.simpleMessage("Email Address"),
+    "email_or_username": MessageLookupByLibrary.simpleMessage(
+      "Email or Username",
+    ),
+    "enter_email_reset": MessageLookupByLibrary.simpleMessage(
+      "Enter your email to receive a reset OTP.",
+    ),
+    "error_apple_signin_cancelled": MessageLookupByLibrary.simpleMessage(
+      "Apple Sign-In was cancelled.",
+    ),
+    "error_apple_signin_failed": MessageLookupByLibrary.simpleMessage(
+      "Apple Sign-In failed. Please try again.",
+    ),
+    "error_apple_signin_not_available": MessageLookupByLibrary.simpleMessage(
+      "Apple Sign-In is not available on this device.",
+    ),
+    "error_cancelled": MessageLookupByLibrary.simpleMessage(
+      "The request was cancelled.",
+    ),
+    "error_confirm_password_required": MessageLookupByLibrary.simpleMessage(
+      "Confirm password is required.",
+    ),
+    "error_conflict": MessageLookupByLibrary.simpleMessage(
+      "A data conflict occurred. Please refresh and try again.",
+    ),
+    "error_email_invalid": MessageLookupByLibrary.simpleMessage(
+      "Invalid email format.",
+    ),
+    "error_email_required": MessageLookupByLibrary.simpleMessage(
+      "Email is required.",
+    ),
+    "error_field_required": MessageLookupByLibrary.simpleMessage(
+      "This field is required.",
+    ),
+    "error_forbidden": MessageLookupByLibrary.simpleMessage(
+      "Access denied. You do not have permission.",
+    ),
+    "error_google_signin_cancelled": MessageLookupByLibrary.simpleMessage(
+      "Google Sign-In was cancelled.",
+    ),
+    "error_google_signin_config": MessageLookupByLibrary.simpleMessage(
+      "Google Sign-In is not configured properly.",
+    ),
+    "error_google_signin_failed": MessageLookupByLibrary.simpleMessage(
+      "Google Sign-In failed. Please try again.",
+    ),
+    "error_google_signin_network": MessageLookupByLibrary.simpleMessage(
+      "Network error during Google Sign-In. Check your connection.",
+    ),
+    "error_network": MessageLookupByLibrary.simpleMessage(
+      "No internet connection. Please check your connection and try again.",
+    ),
+    "error_not_found": MessageLookupByLibrary.simpleMessage(
+      "Requested resource was not found.",
+    ),
+    "error_password_required": MessageLookupByLibrary.simpleMessage(
+      "Password is required.",
+    ),
+    "error_password_short": MessageLookupByLibrary.simpleMessage(
+      "Password must be at least 6 characters long.",
+    ),
+    "error_passwords_not_match": MessageLookupByLibrary.simpleMessage(
+      "Passwords do not match.",
+    ),
+    "error_phone_invalid": MessageLookupByLibrary.simpleMessage(
+      "Invalid phone number format.",
+    ),
+    "error_phone_required": MessageLookupByLibrary.simpleMessage(
+      "Phone number is required.",
+    ),
+    "error_server": MessageLookupByLibrary.simpleMessage(
+      "Something went wrong on the server. Please try again later.",
+    ),
+    "error_timeout": MessageLookupByLibrary.simpleMessage(
+      "The request took too long. Please try again later.",
+    ),
+    "error_title": MessageLookupByLibrary.simpleMessage("Oh no!"),
+    "error_unauthorized": MessageLookupByLibrary.simpleMessage(
+      "You are not authorized. Please log in again.",
+    ),
+    "error_unexpected": MessageLookupByLibrary.simpleMessage(
+      "An unexpected error occurred. Please try again.",
+    ),
+    "error_validation": MessageLookupByLibrary.simpleMessage(
+      "Some fields are invalid. Please review your input.",
+    ),
+    "forget_password": MessageLookupByLibrary.simpleMessage("Forget Password"),
+    "forgot_password": MessageLookupByLibrary.simpleMessage("Forgot Password?"),
     "get_started": MessageLookupByLibrary.simpleMessage("Get Started"),
+    "i_agree_to": MessageLookupByLibrary.simpleMessage("I agree to the "),
+    "log_in": MessageLookupByLibrary.simpleMessage("Log in"),
+    "login_here": MessageLookupByLibrary.simpleMessage("Login Here"),
     "next": MessageLookupByLibrary.simpleMessage("Next"),
     "onboarding_description_1": MessageLookupByLibrary.simpleMessage(
       "You can search by keywords, authors, titles, or even paste a block of text to find the exact paper you need.",
@@ -69,6 +177,48 @@ class MessageLookup extends MessageLookupByLibrary {
     "onboarding_title_3": MessageLookupByLibrary.simpleMessage(
       "Collaborate and Write with Confidence",
     ),
+    "or_sign_in_with": MessageLookupByLibrary.simpleMessage("Or sign in with"),
+    "otp_sent_success": MessageLookupByLibrary.simpleMessage(
+      "OTP sent successfully.",
+    ),
+    "otp_verified_success": MessageLookupByLibrary.simpleMessage(
+      "OTP verified. You can now reset your password.",
+    ),
+    "password": MessageLookupByLibrary.simpleMessage("Password"),
+    "password_reset_code_sent": MessageLookupByLibrary.simpleMessage(
+      "Password reset code sent to your email.",
+    ),
+    "password_reset_success": MessageLookupByLibrary.simpleMessage(
+      "Password reset successfully.",
+    ),
+    "please_verify_account": MessageLookupByLibrary.simpleMessage(
+      "Please verify your account",
+    ),
+    "profile_setup_success": MessageLookupByLibrary.simpleMessage(
+      "Profile set up successfully.",
+    ),
+    "reset_password": MessageLookupByLibrary.simpleMessage("Reset Password"),
+    "sign_in": MessageLookupByLibrary.simpleMessage("Sign In"),
+    "sign_up": MessageLookupByLibrary.simpleMessage("Sign Up"),
     "skip": MessageLookupByLibrary.simpleMessage("Skip"),
+    "something_went_wrong": MessageLookupByLibrary.simpleMessage(
+      "Something went wrong.",
+    ),
+    "success": MessageLookupByLibrary.simpleMessage("Success!"),
+    "terms_agreement_required": MessageLookupByLibrary.simpleMessage(
+      "You must agree to the Terms and Conditions to sign up.",
+    ),
+    "terms_and_conditions": MessageLookupByLibrary.simpleMessage(
+      "Terms and Conditions",
+    ),
+    "username": MessageLookupByLibrary.simpleMessage("Username"),
+    "verified": MessageLookupByLibrary.simpleMessage("Verified!"),
+    "warning_title": MessageLookupByLibrary.simpleMessage("Warning"),
+    "welcome_back": MessageLookupByLibrary.simpleMessage(
+      "Welcome back to Mirath!",
+    ),
+    "welcome_to_mirath": MessageLookupByLibrary.simpleMessage(
+      "Welcome to Mirath! Create an account\nfor better research experience.",
+    ),
   };
 }
