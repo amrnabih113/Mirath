@@ -13,7 +13,6 @@ class SearchItem extends StatelessWidget {
     return ListTile(
       contentPadding: EdgeInsets.symmetric(
         horizontal: MySizes.spaceXs(context),
-        vertical: MySizes.spaceXs(context) - 2,
       ),
       leading: HugeIcon(
         icon: HugeIcons.strokeRoundedSearch01,
@@ -21,10 +20,10 @@ class SearchItem extends StatelessWidget {
         color: MyColors.primaryShade300,
       ),
       title: Text(
-        'jpojwrpj',
+        'IEEE',
         style: context.bodySmall.copyWith(
           fontSize: ResponsiveHelper.responsiveValue(context, 16),
-          fontWeight: FontWeight.w800,
+          fontWeight: FontWeight.w400,
           color: MyColors.black,
         ),
       ),
