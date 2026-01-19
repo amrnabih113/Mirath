@@ -6,9 +6,7 @@ import 'package:mirath/core/utils/my_extenstions.dart';
 import 'package:mirath/core/utils/my_sizes.dart';
 
 class HomeSearchBar extends StatelessWidget {
-  const HomeSearchBar({
-    super.key,
-  });
+  const HomeSearchBar({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -18,7 +16,7 @@ class HomeSearchBar extends StatelessWidget {
       onTap: () {
         context.push('/search');
       },
-    
+
       decoration: InputDecoration(
         contentPadding: EdgeInsets.symmetric(
           vertical: MySizes.spaceSm(context),
@@ -31,33 +29,21 @@ class HomeSearchBar extends StatelessWidget {
             left: MySizes.spaceSm(context),
             right: MySizes.spaceXs(context),
           ),
-          child: HugeIcon(
-            icon: HugeIcons.strokeRoundedSearch01,
-          ),
+          child: HugeIcon(icon: HugeIcons.strokeRoundedSearch01),
         ),
         suffixIcon: IconButton(
           onPressed: () {},
-          icon: HugeIcon(
-            icon: HugeIcons.strokeRoundedCamera01,
-          ),
+          icon: HugeIcon(icon: HugeIcons.strokeRoundedCamera01),
         ),
         hintText: 'Search papers, authors, keywords...',
         hintStyle: context.bodySmall,
         enabledBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(
-            MySizes.borderRadiusMd(context),
-          ),
-          borderSide: BorderSide(
-            color: MyColors.primaryShade700,
-            width: 1.2,
-          ),
+          borderRadius: BorderRadius.circular(MySizes.borderRadiusSm(context)),
+          borderSide: BorderSide(color: MyColors.primaryShade700, width: 1.2),
         ),
         focusedBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(8),
-          borderSide: BorderSide(
-            color: MyColors.primaryShade700,
-            width: 1.5,
-          ),
+          borderRadius: BorderRadius.circular(MySizes.borderRadiusSm(context)),
+          borderSide: BorderSide(color: MyColors.primaryShade700, width: 1.5),
         ),
       ),
     );

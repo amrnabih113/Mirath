@@ -1,11 +1,9 @@
+// ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
-import 'package:hugeicons/hugeicons.dart';
+
 import 'package:mirath/core/helpers/responsive_helper.dart';
-import 'package:mirath/core/utils/my_colors.dart';
-import 'package:mirath/core/utils/my_extenstions.dart';
 import 'package:mirath/core/utils/my_sizes.dart';
-import 'package:mirath/features/common/widgets/screen_decoration.dart';
+import 'package:mirath/features/common/widgets/section_title.dart';
 import 'package:mirath/features/home/presentation/widgets/category_items.dart';
 import 'package:mirath/features/home/presentation/widgets/home_search_bar.dart';
 import 'package:mirath/features/home/presentation/widgets/paper_card_items.dart';
@@ -33,79 +31,36 @@ class _HomeScreenState extends State<HomeScreen> {
           return Center(
             child: ConstrainedBox(
               constraints: BoxConstraints(maxWidth: 850),
-              child: CustomScrollView(
-                slivers: [
-                  SliverToBoxAdapter(
-                    child: Padding(
-                      padding: MySizes.paddingMd(context),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          HomeSearchBar(),
-                          const SizedBox(height: 10),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              const Text(
-                                'Recently Published',
-                                style: TextStyle(
-                                  fontSize: 20,
-                                  fontWeight: FontWeight.w600,
-                                ),
-                              ),
-                              TextButton(
-                                onPressed: () {},
-                                child: Row(
-                                  mainAxisSize: MainAxisSize.min,
-                                  children: [
-                                    Text(
-                                      'See all',
-                                      style: TextStyle(
-                                        fontSize: 13,
-                                        color: Color(0xffA80C0C),
-                                      ),
-                                    ),
-                                    SizedBox(width: 4),
-                                    Icon(
-                                      Icons.arrow_forward_ios,
-                                      size: 13,
-                                      color: Color(0xffA80C0C),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ],
-                          ),
-                          SizedBox(
-                            height: 40,
-                            child: ListView.builder(
-                              scrollDirection: Axis.horizontal,
-                              itemCount: 4,
-                              itemBuilder: (context, index) {
-                                return CategoryItems();
-                              },
-                            ),
-                          ),
-                          const SizedBox(height: 20),
-                          const Text(
-                            'You might also like',
-                            style: TextStyle(
-                              fontSize: 20,
-                              fontWeight: FontWeight.w600,
-                            ),
-                          ),
-                          const SizedBox(height: 10),
-                        ],
-                      ),
+              child: ListView(
+                padding: MySizes.paddingMd(context),
+                children: [
+                  HomeSearchBar(),
+                  SizedBox(height: MySizes.spaceMd(context)),
+                  SectionTitle(title: 'Recently Published'),
+                  SizedBox(height: MySizes.spaceSm(context)),
+                  SizedBox(
+                    height: ResponsiveHelper.responsiveValue(context, 40),
+                    child: ListView.builder(
+                      scrollDirection: Axis.horizontal,
+                      itemCount: 4,
+                      itemBuilder: (context, index) {
+                        return CategoryItems();
+                      },
                     ),
                   ),
-                  SliverList(
-                    delegate: SliverChildBuilderDelegate((context, index) {
-                      return Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 12.0),
-                        child: PaperCardItems(),
-                      );
-                    }, childCount: 10),
+                  SizedBox(height: MySizes.spaceLg(context)),
+                  SectionTitle(title: 'You might also like', showSeeAll: false),
+                  SizedBox(height: MySizes.spaceSm(context)),
+                  ListView.separated(
+                    separatorBuilder: (context, index) =>
+                        SizedBox(height: MySizes.spaceXs(context)),
+                    padding: EdgeInsets.zero,
+                    shrinkWrap: true,
+                    physics: NeverScrollableScrollPhysics(),
+                    itemCount: 10,
+                    itemBuilder: (context, index) {
+                      return PaperCardItems();
+                    },
                   ),
                 ],
               ),

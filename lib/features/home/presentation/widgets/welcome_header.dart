@@ -24,7 +24,7 @@ class WelcomeHeader extends StatelessWidget {
           right: 0,
         ),
         child: CircleAvatar(
-          backgroundColor: MyColors.primaryShade50,
+          backgroundColor: MyColors.light,
           child: SvgPicture.asset(
             'assets/images/Profile picture.svg',
             fit: BoxFit.cover,

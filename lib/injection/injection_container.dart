@@ -1,6 +1,7 @@
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:get_it/get_it.dart';
 import 'package:mirath/features/auth/data/data_sources/auth_remote_data_source_impl.dart';
+import 'package:mirath/features/auth/data/repositories/fake_auth_repository_impl.dart';
 
 import '../core/network/dio_client.dart';
 import '../core/services/secure_storage_service.dart';
@@ -48,15 +49,16 @@ class DI {
     sl.registerLazySingleton<AuthRemoteDataSource>(
       () => AuthRemoteDataSourceImpl(dioClient: sl()),
     );
-   
 
     /// Auth Repository ///
-    sl.registerLazySingleton<AuthRepository>(
-      () => AuthRepositoryImpl(
-        remoteDataSource: sl(),
-        secureStorage: sl(),
-      ),
-    );
+    // sl.registerLazySingleton<AuthRepository>(
+    //   () => AuthRepositoryImpl(
+    //     remoteDataSource: sl(),
+    //     secureStorage: sl(),
+    //   ),
+    // );
+
+    sl.registerLazySingleton<AuthRepository>(() => FakeAuthRepositoryImpl());
 
     /// Auth UseCases ///
     sl.registerLazySingleton(() => SignInUseCase(sl()));
