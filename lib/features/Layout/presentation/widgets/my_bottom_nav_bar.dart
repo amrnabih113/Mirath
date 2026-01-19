@@ -48,9 +48,9 @@ class MyBottomNavBar extends StatelessWidget {
                       horizontal: ResponsiveHelper.responsiveValue(context, 10),
                     ),
                     decoration: BoxDecoration(
-                      color: MyColors.primaryShade400,
+                      color: MyColors.white,
                       borderRadius: BorderRadius.circular(
-                        MySizes.borderRadiusLg(context),
+                        MySizes.borderRadiusMd(context),
                       ),
                       boxShadow: [
                         BoxShadow(
@@ -126,7 +126,7 @@ class MyBottomNavBar extends StatelessWidget {
                       padding: EdgeInsets.all(MySizes.spaceXs(context) * 0.6),
                       decoration: BoxDecoration(
                         shape: BoxShape.circle,
-                        color: MyColors.light,
+                        color: MyColors.white,
                         boxShadow: [
                           BoxShadow(
                             color: Colors.black.withAlpha(25),

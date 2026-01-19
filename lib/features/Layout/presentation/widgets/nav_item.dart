@@ -37,12 +37,15 @@ class NavItem extends StatelessWidget {
             vertical: MySizes.spaceXs(context) * 0.5,
           ),
           decoration: BoxDecoration(
-            color: isSelected
-                ? MyColors.light.withAlpha(80)
-                : Colors.transparent,
-            borderRadius: BorderRadius.circular(
-              MySizes.borderRadiusMd(context),
-            ),
+            border: isSelected
+                ? Border(
+                    bottom: BorderSide(
+                      color: MyColors.primaryShade700,
+                      width: 3,
+                      style: BorderStyle.solid,
+                    ),
+                  )
+                : null,
           ),
           child: Column(
             mainAxisSize: MainAxisSize.min,
