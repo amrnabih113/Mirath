@@ -23,10 +23,6 @@ class VerifiedButtonWidget extends StatelessWidget {
         return SizedBox(
           width: MySizes.buttonWidth(context),
           child: ElevatedButton(
-            style: ElevatedButton.styleFrom(
-              disabledForegroundColor: Colors.white.withAlpha(128),
-              foregroundColor: MyColors.black,
-            ),
             onPressed: otpCode.length == 6
                 ? () {
                     if (actionType == VerifyActionType.verifyEmail) {

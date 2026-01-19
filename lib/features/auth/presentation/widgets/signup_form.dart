@@ -73,8 +73,11 @@ class _SignupFormState extends State<SignupForm> {
 
             decoration: InputDecoration(hintText: S.of(context).username),
             keyboardType: TextInputType.text,
-            validator: (value) =>
-                MyValidator.validateEmptyText(context, S.of(context).username, value),
+            validator: (value) => MyValidator.validateEmptyText(
+              context,
+              S.of(context).username,
+              value,
+            ),
             textInputAction: TextInputAction.next,
           ),
           SizedBox(height: MySizes.spaceMd(context)),
@@ -82,7 +85,7 @@ class _SignupFormState extends State<SignupForm> {
             controller: _emailController,
             decoration: InputDecoration(hintText: S.of(context).email),
             keyboardType: TextInputType.emailAddress,
-            validator: (value) => MyValidator.validateEmail(context,value),
+            validator: (value) => MyValidator.validateEmail(context, value),
             textInputAction: TextInputAction.next,
           ),
           SizedBox(height: MySizes.spaceMd(context)),
@@ -103,7 +106,7 @@ class _SignupFormState extends State<SignupForm> {
               ),
             ),
             obscureText: _obscurePassword,
-            validator: (value) => MyValidator.validatePassword(context,value),
+            validator: (value) => MyValidator.validatePassword(context, value),
             textInputAction: TextInputAction.next,
           ),
           SizedBox(height: MySizes.spaceMd(context)),
@@ -124,7 +127,8 @@ class _SignupFormState extends State<SignupForm> {
               ),
             ),
             obscureText: _obscureConfirmPassword,
-            validator: (value) => MyValidator.validateConfirmPassword(context,
+            validator: (value) => MyValidator.validateConfirmPassword(
+              context,
               value,
               _passwordController.text,
             ),
@@ -178,7 +182,6 @@ class _SignupFormState extends State<SignupForm> {
                 child: ElevatedButton(
                   onPressed: isLoading ? null : _handleSignUp,
                   style: ElevatedButton.styleFrom(
-                    foregroundColor: MyColors.textPrimary,
                     padding: EdgeInsets.symmetric(
                       vertical: MySizes.spaceMd(context),
                       horizontal: MySizes.spaceLg(context),

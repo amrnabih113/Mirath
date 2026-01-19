@@ -53,7 +53,7 @@ class _SigninFormState extends State<SigninForm> {
             cursorColor: MyColors.primaryColor,
             controller: _emailController,
             keyboardType: TextInputType.emailAddress,
-            validator: (value) => MyValidator.validateEmail(context,value),
+            validator: (value) => MyValidator.validateEmail(context, value),
             style: context.bodyMedium.copyWith(color: MyColors.textPrimary),
             decoration: InputDecoration(
               hintText: S.of(context).email_or_username,
@@ -64,7 +64,7 @@ class _SigninFormState extends State<SigninForm> {
             cursorColor: MyColors.primaryColor,
             controller: _passwordController,
             obscureText: _obscurePassword,
-            validator: (value) => MyValidator.validatePassword(context,value),
+            validator: (value) => MyValidator.validatePassword(context, value),
             style: context.bodyMedium.copyWith(color: MyColors.textPrimary),
             decoration: InputDecoration(
               hintText: S.of(context).password,
@@ -108,7 +108,6 @@ class _SigninFormState extends State<SigninForm> {
                 child: ElevatedButton(
                   onPressed: isLoading ? null : _handleSignIn,
                   style: ElevatedButton.styleFrom(
-                    foregroundColor: MyColors.textPrimary,
                     padding: EdgeInsets.symmetric(
                       vertical: MySizes.spaceMd(context),
                       horizontal: MySizes.spaceLg(context),
