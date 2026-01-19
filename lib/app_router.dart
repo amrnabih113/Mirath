@@ -4,6 +4,8 @@ import 'package:go_router/go_router.dart';
 import 'package:mirath/features/auth/domain/entities/user_profile.dart';
 import 'package:mirath/features/auth/presentation/screens/interests_screen.dart';
 import 'package:mirath/features/auth/presentation/screens/signin_screen.dart';
+import 'package:mirath/features/home/presentation/screens/home_screen.dart';
+import 'package:mirath/features/home/presentation/screens/search_screen.dart';
 import 'features/Layout/presentation/cubit/layout_cubit.dart';
 import 'features/Layout/presentation/screens/main_layout.dart';
 import 'features/auth/presentation/screens/set_up_profile_screen.dart';
@@ -187,16 +189,8 @@ final appRouter = GoRouter(
       routes: [
         GoRoute(
           path: '/home',
-          pageBuilder: (context, state) => NoTransitionPage(
-            child: Scaffold(
-              body: Center(
-                child: ElevatedButton(
-                  child: Text('logout'),
-                  onPressed: () => context.read<AuthCubit>().signOut(),
-                ),
-              ),
-            ),
-          ),
+          pageBuilder: (context, state) =>
+              const NoTransitionPage(child: HomeScreen()),
         ),
         GoRoute(
           path: '/community',
@@ -276,6 +270,12 @@ final appRouter = GoRouter(
         return PageTransitions.smoothTransition(
           InterestsScreen(userProfile: userProfile),
         );
+      },
+    ),
+    GoRoute(
+      path: '/search',
+      pageBuilder: (context, state) {
+        return MaterialPage(child: SearchScreen());
       },
     ),
   ],

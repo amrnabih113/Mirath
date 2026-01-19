@@ -18,8 +18,10 @@ class S {
   static S? _current;
 
   static S get current {
-    assert(_current != null,
-        'No instance of S was loaded. Try to initialize the S delegate before accessing S.current.');
+    assert(
+      _current != null,
+      'No instance of S was loaded. Try to initialize the S delegate before accessing S.current.',
+    );
     return _current!;
   }
 
@@ -41,8 +43,10 @@ class S {
 
   static S of(BuildContext context) {
     final instance = S.maybeOf(context);
-    assert(instance != null,
-        'No instance of S present in the widget tree. Did you add S.delegate in localizationsDelegates?');
+    assert(
+      instance != null,
+      'No instance of S present in the widget tree. Did you add S.delegate in localizationsDelegates?',
+    );
     return instance!;
   }
 
@@ -112,32 +116,17 @@ class S {
 
   /// `Skip`
   String get skip {
-    return Intl.message(
-      'Skip',
-      name: 'skip',
-      desc: '',
-      args: [],
-    );
+    return Intl.message('Skip', name: 'skip', desc: '', args: []);
   }
 
   /// `Next`
   String get next {
-    return Intl.message(
-      'Next',
-      name: 'next',
-      desc: '',
-      args: [],
-    );
+    return Intl.message('Next', name: 'next', desc: '', args: []);
   }
 
   /// `Get Started`
   String get get_started {
-    return Intl.message(
-      'Get Started',
-      name: 'get_started',
-      desc: '',
-      args: [],
-    );
+    return Intl.message('Get Started', name: 'get_started', desc: '', args: []);
   }
 
   /// `Password Reset`
@@ -162,12 +151,7 @@ class S {
 
   /// `Verify code`
   String get Verify_code {
-    return Intl.message(
-      'Verify code',
-      name: 'Verify_code',
-      desc: '',
-      args: [],
-    );
+    return Intl.message('Verify code', name: 'Verify_code', desc: '', args: []);
   }
 
   /// `Haven’t got the email yet?`
@@ -182,12 +166,7 @@ class S {
 
   /// `Resend code`
   String get Resend_code {
-    return Intl.message(
-      'Resend code',
-      name: 'Resend_code',
-      desc: '',
-      args: [],
-    );
+    return Intl.message('Resend code', name: 'Resend_code', desc: '', args: []);
   }
 
   /// `Set a new password`
