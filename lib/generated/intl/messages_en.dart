@@ -51,18 +51,28 @@ class MessageLookup extends MessageLookupByLibrary {
             "Account verified successfully."),
         "already_have_account":
             MessageLookupByLibrary.simpleMessage("Already have an account? "),
+        "choose_username":
+            MessageLookupByLibrary.simpleMessage("Choose a username"),
         "confirm_password_hint":
             MessageLookupByLibrary.simpleMessage("Confirm Password"),
         "create_account":
             MessageLookupByLibrary.simpleMessage("Create Account"),
         "dont_have_account":
             MessageLookupByLibrary.simpleMessage("Don\'t have an account? "),
+        "education_level":
+            MessageLookupByLibrary.simpleMessage("Education Level"),
         "email": MessageLookupByLibrary.simpleMessage("Email"),
         "email_address": MessageLookupByLibrary.simpleMessage("Email Address"),
         "email_or_username":
             MessageLookupByLibrary.simpleMessage("Email or Username"),
         "enter_email_reset": MessageLookupByLibrary.simpleMessage(
             "Enter your email to receive a reset OTP."),
+        "enter_university_name":
+            MessageLookupByLibrary.simpleMessage("Enter your university name"),
+        "enter_your_email":
+            MessageLookupByLibrary.simpleMessage("Enter your email"),
+        "enter_your_name":
+            MessageLookupByLibrary.simpleMessage("Enter your name"),
         "error_apple_signin_cancelled": MessageLookupByLibrary.simpleMessage(
             "Apple Sign-In was cancelled."),
         "error_apple_signin_failed": MessageLookupByLibrary.simpleMessage(
@@ -122,9 +132,12 @@ class MessageLookup extends MessageLookupByLibrary {
         "forgot_password":
             MessageLookupByLibrary.simpleMessage("Forgot Password?"),
         "get_started": MessageLookupByLibrary.simpleMessage("Get Started"),
+        "graduated": MessageLookupByLibrary.simpleMessage("Graduated"),
+        "high_school": MessageLookupByLibrary.simpleMessage("High School"),
         "i_agree_to": MessageLookupByLibrary.simpleMessage("I agree to the "),
         "log_in": MessageLookupByLibrary.simpleMessage("Log in"),
         "login_here": MessageLookupByLibrary.simpleMessage("Login Here"),
+        "name": MessageLookupByLibrary.simpleMessage("Name"),
         "next": MessageLookupByLibrary.simpleMessage("Next"),
         "onboarding_description_1": MessageLookupByLibrary.simpleMessage(
             "You can search by keywords, authors, titles, or even paste a block of text to find the exact paper you need."),
@@ -155,6 +168,10 @@ class MessageLookup extends MessageLookupByLibrary {
             "Profile set up successfully."),
         "reset_password":
             MessageLookupByLibrary.simpleMessage("Reset Password"),
+        "select_education_level":
+            MessageLookupByLibrary.simpleMessage("Select your education level"),
+        "set_up_profile":
+            MessageLookupByLibrary.simpleMessage("Set Up Your Profile"),
         "sign_in": MessageLookupByLibrary.simpleMessage("Sign In"),
         "sign_up": MessageLookupByLibrary.simpleMessage("Sign Up"),
         "skip": MessageLookupByLibrary.simpleMessage("Skip"),
@@ -165,6 +182,11 @@ class MessageLookup extends MessageLookupByLibrary {
             "You must agree to the Terms and Conditions to sign up."),
         "terms_and_conditions":
             MessageLookupByLibrary.simpleMessage("Terms and Conditions"),
+        "undergraduate": MessageLookupByLibrary.simpleMessage("Undergraduate"),
+        "university_name":
+            MessageLookupByLibrary.simpleMessage("University Name"),
+        "upload_picture":
+            MessageLookupByLibrary.simpleMessage("Upload Picture"),
         "username": MessageLookupByLibrary.simpleMessage("Username"),
         "verified": MessageLookupByLibrary.simpleMessage("Verified!"),
         "warning_title": MessageLookupByLibrary.simpleMessage("Warning"),

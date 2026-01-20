@@ -83,5 +83,18 @@
     "profile_setup_success": "تم إعداد الملف الشخصي بنجاح.",
     "password_reset_success": "تم إعادة تعيين كلمة المرور بنجاح.",
     "otp_verified_success": "تم التحقق من رمز التحقق. يمكنك الآن إعادة تعيين كلمة المرور.",
-    "password_reset_code_sent": "تم إرسال رمز إعادة تعيين كلمة المرور إلى بريدك الإلكتروني."
+    "password_reset_code_sent": "تم إرسال رمز إعادة تعيين كلمة المرور إلى بريدك الإلكتروني.",
+    "set_up_profile": "إعداد ملفك الشخصي",
+    "upload_picture": "رفع صورة",
+    "name": "الاسم",
+    "enter_your_name": "أدخل اسمك",
+    "choose_username": "اختر اسم مستخدم",
+    "enter_your_email": "أدخل بريدك الإلكتروني",
+    "education_level": "المستوى التعليمي",
+    "select_education_level": "اختر مستواك التعليمي",
+    "high_school": "الثانوية العامة",
+    "undergraduate": "البكالوريوس",
+    "graduated": "خريج",
+    "university_name": "اسم الجامعة",
+    "enter_university_name": "أدخل اسم جامعتك"
 }

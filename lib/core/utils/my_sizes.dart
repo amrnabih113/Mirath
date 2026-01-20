@@ -78,10 +78,10 @@ class MySizes {
 
   /// ---------- BUTTON ----------
   static double buttonHeight(BuildContext context) =>
-      ResponsiveHelper.responsiveValue(context, 52); // 56 → 52
+      ResponsiveHelper.responsiveValue(context, 49); // 56 → 49
 
   static double buttonWidth(BuildContext context) =>
-      ResponsiveHelper.responsiveValue(context, 160); // 200 → 190
+      ResponsiveHelper.responsiveValue(context, 140); // 200 → 190
 
   /// ---------- RADIUS ----------
   static double borderRadiusSm(BuildContext context) =>

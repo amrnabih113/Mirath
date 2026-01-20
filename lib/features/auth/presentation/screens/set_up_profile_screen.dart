@@ -120,7 +120,7 @@ class _SetUpProfileScreenState extends State<SetUpProfileScreen> {
                           crossAxisAlignment: CrossAxisAlignment.center,
                           children: [
                             Text(
-                              'Set Up Your Profile',
+                              S.of(context).set_up_profile,
                               style: context.displayMedium.copyWith(
                                 fontWeight: FontWeight.bold,
                                 fontFamily: GoogleFonts.sourceSans3(
@@ -181,7 +181,9 @@ class _SetUpProfileScreenState extends State<SetUpProfileScreen> {
                                           ),
                                           child: Row(
                                             children: [
-                                              Text("Upload Picture"),
+                                              Text(
+                                                S.of(context).upload_picture,
+                                              ),
                                               SizedBox(
                                                 width: MySizes.spaceSm(context),
                                               ),
@@ -198,44 +200,50 @@ class _SetUpProfileScreenState extends State<SetUpProfileScreen> {
                                     ),
                                     SizedBox(height: MySizes.spaceLg(context)),
                                     TextFeildWithLable(
-                                      label: "Name",
-                                      hintText: "Enter your name",
+                                      label: S.of(context).name,
+                                      hintText: S.of(context).enter_your_name,
                                       controller: _nameController,
                                     ),
                                     SizedBox(height: MySizes.spaceSm(context)),
                                     TextFeildWithLable(
-                                      label: "Username",
-                                      hintText: "Choose a username",
+                                      label: S.of(context).username,
+                                      hintText: S.of(context).choose_username,
                                       controller: _usernameController,
                                     ),
                                     SizedBox(height: MySizes.spaceSm(context)),
                                     TextFeildWithLable(
-                                      label: "Email",
-                                      hintText: "Enter your email",
+                                      label: S.of(context).email,
+                                      hintText: S.of(context).enter_your_email,
                                       controller: _emailController,
                                     ),
                                     SizedBox(height: MySizes.spaceSm(context)),
                                     Text(
-                                      "Education Level",
+                                      S.of(context).education_level,
                                       style: context.bodyLarge,
                                       textAlign: TextAlign.left,
                                     ),
                                     SizedBox(height: MySizes.spaceXs(context)),
                                     DropdownButtonFormField<String>(
-                                      hint: Text("Select your education level"),
+                                      hint: Text(
+                                        S.of(context).select_education_level,
+                                      ),
                                       items: [
                                         DropdownMenuItem(
                                           value: EducationLevel.highSchool.name,
-                                          child: Text("High School"),
+                                          child: Text(
+                                            S.of(context).high_school,
+                                          ),
                                         ),
                                         DropdownMenuItem(
                                           value:
                                               EducationLevel.underGraduate.name,
-                                          child: Text("Undergraduate"),
+                                          child: Text(
+                                            S.of(context).undergraduate,
+                                          ),
                                         ),
                                         DropdownMenuItem(
                                           value: EducationLevel.graduated.name,
-                                          child: Text("Graduated"),
+                                          child: Text(S.of(context).graduated),
                                         ),
                                       ],
                                       onChanged: (value) {
@@ -259,8 +267,10 @@ class _SetUpProfileScreenState extends State<SetUpProfileScreen> {
                                         height: MySizes.spaceSm(context),
                                       ),
                                       TextFeildWithLable(
-                                        label: "University Name",
-                                        hintText: "Enter your university name",
+                                        label: S.of(context).university_name,
+                                        hintText: S
+                                            .of(context)
+                                            .enter_university_name,
                                       ),
                                     ],
                                   ],
@@ -286,9 +296,10 @@ class _SetUpProfileScreenState extends State<SetUpProfileScreen> {
                                 },
 
                                 child: Text(
-                                  'Next',
+                                  S.of(context).next,
                                   style: context.titleMedium.copyWith(
-                                    color: Colors.black,
+                                    color: MyColors.light,
+                                    fontWeight: FontWeight.bold,
                                   ),
                                 ),
                               ),

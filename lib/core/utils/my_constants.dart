@@ -4,12 +4,9 @@ class MyConstants {
   // app name
   static const String appName = "Mirath";
 
-  // Google Sign-In configuration
-  // TODO: Replace with your Web Client ID from Google Cloud Console
-  // Go to: https://console.cloud.google.com/apis/credentials
-  // Create OAuth 2.0 Client ID (Web application type)
+  
   static const String googleServerClientId =
-      '551081167484-v7ute4pkh7nvb7v4gu8383cchvc0jd6h.apps.googleusercontent.com';
+      "551081167484-bruuovdj7oal5gsej29vbja5803a3520.apps.googleusercontent.com";
 
   // storage keys
   static const String onboardingKey = 'has_seen_onboarding';

@@ -232,7 +232,6 @@ class _InterestsScreenState extends State<InterestsScreen> {
                                   ),
                                 );
                                 context.go('/home');
-                                
                               },
 
                         child: isLoading
@@ -249,7 +248,7 @@ class _InterestsScreenState extends State<InterestsScreen> {
                             : Text(
                                 'Next',
                                 style: context.titleMedium.copyWith(
-                                  color: Colors.black,
+                                  color: MyColors.light,
                                 ),
                               ),
                       ),

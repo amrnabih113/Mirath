@@ -5,6 +5,7 @@ import 'package:mirath/features/auth/domain/entities/user_profile.dart';
 import 'package:mirath/features/auth/presentation/screens/interests_screen.dart';
 import 'package:mirath/features/auth/presentation/screens/signin_screen.dart';
 import 'package:mirath/features/home/presentation/screens/home_screen.dart';
+import 'package:mirath/features/home/presentation/screens/search_result_screen.dart';
 import 'package:mirath/features/home/presentation/screens/search_screen.dart';
 import 'features/Layout/presentation/cubit/layout_cubit.dart';
 import 'features/Layout/presentation/screens/main_layout.dart';
@@ -277,6 +278,11 @@ final appRouter = GoRouter(
       pageBuilder: (context, state) {
         return MaterialPage(child: SearchScreen());
       },
+    ),
+    GoRoute(
+      path: '/search-results',
+      pageBuilder: (context, state) =>
+          PageTransitions.smoothTransition(const SearchResultScreen()),
     ),
   ],
 );

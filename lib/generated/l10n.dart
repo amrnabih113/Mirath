@@ -272,7 +272,12 @@ class S {
 
   /// `Login Here`
   String get login_here {
-    return Intl.message('Login Here', name: 'login_here', desc: '', args: []);
+    return Intl.message(
+      'Login Here',
+      name: 'login_here',
+      desc: '',
+      args: [],
+    );
   }
 
   /// `Welcome back to Mirath!`
@@ -297,7 +302,12 @@ class S {
 
   /// `Password`
   String get password {
-    return Intl.message('Password', name: 'password', desc: '', args: []);
+    return Intl.message(
+      'Password',
+      name: 'password',
+      desc: '',
+      args: [],
+    );
   }
 
   /// `Forgot Password?`
@@ -312,7 +322,12 @@ class S {
 
   /// `Sign In`
   String get sign_in {
-    return Intl.message('Sign In', name: 'sign_in', desc: '', args: []);
+    return Intl.message(
+      'Sign In',
+      name: 'sign_in',
+      desc: '',
+      args: [],
+    );
   }
 
   /// `Don't have an account? `
@@ -327,7 +342,12 @@ class S {
 
   /// `Sign Up`
   String get sign_up {
-    return Intl.message('Sign Up', name: 'sign_up', desc: '', args: []);
+    return Intl.message(
+      'Sign Up',
+      name: 'sign_up',
+      desc: '',
+      args: [],
+    );
   }
 
   /// `Or sign in with`
@@ -362,12 +382,22 @@ class S {
 
   /// `Username`
   String get username {
-    return Intl.message('Username', name: 'username', desc: '', args: []);
+    return Intl.message(
+      'Username',
+      name: 'username',
+      desc: '',
+      args: [],
+    );
   }
 
   /// `Email`
   String get email {
-    return Intl.message('Email', name: 'email', desc: '', args: []);
+    return Intl.message(
+      'Email',
+      name: 'email',
+      desc: '',
+      args: [],
+    );
   }
 
   /// `Confirm Password`
@@ -412,7 +442,12 @@ class S {
 
   /// `Log in`
   String get log_in {
-    return Intl.message('Log in', name: 'log_in', desc: '', args: []);
+    return Intl.message(
+      'Log in',
+      name: 'log_in',
+      desc: '',
+      args: [],
+    );
   }
 
   /// `Forget Password`
@@ -457,12 +492,22 @@ class S {
 
   /// `Success!`
   String get success {
-    return Intl.message('Success!', name: 'success', desc: '', args: []);
+    return Intl.message(
+      'Success!',
+      name: 'success',
+      desc: '',
+      args: [],
+    );
   }
 
   /// `Verified!`
   String get verified {
-    return Intl.message('Verified!', name: 'verified', desc: '', args: []);
+    return Intl.message(
+      'Verified!',
+      name: 'verified',
+      desc: '',
+      args: [],
+    );
   }
 
   /// `OTP sent successfully.`
@@ -507,12 +552,22 @@ class S {
 
   /// `Oh no!`
   String get error_title {
-    return Intl.message('Oh no!', name: 'error_title', desc: '', args: []);
+    return Intl.message(
+      'Oh no!',
+      name: 'error_title',
+      desc: '',
+      args: [],
+    );
   }
 
   /// `Warning`
   String get warning_title {
-    return Intl.message('Warning', name: 'warning_title', desc: '', args: []);
+    return Intl.message(
+      'Warning',
+      name: 'warning_title',
+      desc: '',
+      args: [],
+    );
   }
 
   /// `Something went wrong.`
@@ -830,6 +885,136 @@ class S {
     return Intl.message(
       'Password reset code sent to your email.',
       name: 'password_reset_code_sent',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Set Up Your Profile`
+  String get set_up_profile {
+    return Intl.message(
+      'Set Up Your Profile',
+      name: 'set_up_profile',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Upload Picture`
+  String get upload_picture {
+    return Intl.message(
+      'Upload Picture',
+      name: 'upload_picture',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Name`
+  String get name {
+    return Intl.message(
+      'Name',
+      name: 'name',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Enter your name`
+  String get enter_your_name {
+    return Intl.message(
+      'Enter your name',
+      name: 'enter_your_name',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Choose a username`
+  String get choose_username {
+    return Intl.message(
+      'Choose a username',
+      name: 'choose_username',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Enter your email`
+  String get enter_your_email {
+    return Intl.message(
+      'Enter your email',
+      name: 'enter_your_email',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Education Level`
+  String get education_level {
+    return Intl.message(
+      'Education Level',
+      name: 'education_level',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Select your education level`
+  String get select_education_level {
+    return Intl.message(
+      'Select your education level',
+      name: 'select_education_level',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `High School`
+  String get high_school {
+    return Intl.message(
+      'High School',
+      name: 'high_school',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Undergraduate`
+  String get undergraduate {
+    return Intl.message(
+      'Undergraduate',
+      name: 'undergraduate',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Graduated`
+  String get graduated {
+    return Intl.message(
+      'Graduated',
+      name: 'graduated',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `University Name`
+  String get university_name {
+    return Intl.message(
+      'University Name',
+      name: 'university_name',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Enter your university name`
+  String get enter_university_name {
+    return Intl.message(
+      'Enter your university name',
+      name: 'enter_university_name',
       desc: '',
       args: [],
     );

@@ -83,5 +83,18 @@
     "profile_setup_success": "Profile set up successfully.",
     "password_reset_success": "Password reset successfully.",
     "otp_verified_success": "OTP verified. You can now reset your password.",
-    "password_reset_code_sent": "Password reset code sent to your email."
+    "password_reset_code_sent": "Password reset code sent to your email.",
+    "set_up_profile": "Set Up Your Profile",
+    "upload_picture": "Upload Picture",
+    "name": "Name",
+    "enter_your_name": "Enter your name",
+    "choose_username": "Choose a username",
+    "enter_your_email": "Enter your email",
+    "education_level": "Education Level",
+    "select_education_level": "Select your education level",
+    "high_school": "High School",
+    "undergraduate": "Undergraduate",
+    "graduated": "Graduated",
+    "university_name": "University Name",
+    "enter_university_name": "Enter your university name"
 }

@@ -12,7 +12,7 @@ class InteresteChip extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Chip(
-      color: WidgetStatePropertyAll(MyColors.primaryColor),
+      color: WidgetStatePropertyAll(MyColors.primaryShade100),
       padding: EdgeInsets.symmetric(
         horizontal: MySizes.spaceMd(context) * 0.5,
         vertical: MySizes.spaceMd(context),
