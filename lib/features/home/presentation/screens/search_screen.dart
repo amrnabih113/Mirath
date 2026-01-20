@@ -40,16 +40,16 @@ class SearchScreen extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.start,
               children: [
                 SearchScreenHeading(),
-                ListView.separated(
-                  separatorBuilder: (context, index) =>
-                      SizedBox(height: MySizes.spaceXs(context)),
-                  padding: EdgeInsets.zero,
-                  shrinkWrap: true,
-                  physics: NeverScrollableScrollPhysics(),
-                  itemCount: 5,
-                  itemBuilder: (context, index) {
-                    return SearchItem();
-                  },
+                Expanded(
+                  child: ListView.separated(
+                    separatorBuilder: (context, index) =>
+                        SizedBox(height: MySizes.spaceXs(context)),
+                    padding: EdgeInsets.zero,
+                    itemCount: 30,
+                    itemBuilder: (context, index) {
+                      return SearchItem();
+                    },
+                  ),
                 ),
               ],
             ),
