@@ -79,6 +79,7 @@ class OtpScreen extends StatelessWidget {
                                       );
                                     },
                                   ),
+                                  SizedBox(height: MySizes.spaceMd(context)),
                                   TimerWidget(),
                                 ],
                               );

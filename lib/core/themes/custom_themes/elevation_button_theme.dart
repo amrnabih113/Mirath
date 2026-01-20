@@ -10,9 +10,8 @@ class MyElevationButtonTheme {
     BuildContext context,
   ) {
     final double fontSize = MySizes.bodyMedium(context); // responsive
-    final double verticalPadding = MySizes.spaceMd(
-      context,
-    ); // responsive padding
+    final double verticalPadding =
+        MySizes.spaceMd(context) - 5; // responsive padding
     final double horizontalPadding = MySizes.spaceLg(
       context,
     ); // responsive padding
@@ -21,8 +20,8 @@ class MyElevationButtonTheme {
       style: ElevatedButton.styleFrom(
         shadowColor: MyColors.primaryColor.withAlpha(128),
         foregroundColor: Colors.white,
-        backgroundColor: MyColors.primaryColor,
-        disabledBackgroundColor: MyColors.primaryShade300,
+        backgroundColor: MyColors.primaryShade700,
+        disabledBackgroundColor: MyColors.primaryShade700.withAlpha(120),
         disabledForegroundColor: MyColors.primaryShade50,
         side: BorderSide.none,
         padding: EdgeInsets.symmetric(

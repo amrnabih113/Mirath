@@ -21,7 +21,7 @@ class MyTextFieldTheme {
     final fontSize = MySizes.bodyMedium(context); // responsive font size
 
     return InputDecorationThemeData(
-      fillColor: MyColors.primaryShade300,
+      fillColor: MyColors.primaryShade100,
       filled: true,
       errorMaxLines: 3,
       prefixIconColor: MyColors.textPrimary,

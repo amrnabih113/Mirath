@@ -38,10 +38,10 @@ class MirathApp extends StatelessWidget {
       title: 'Mirath App',
       debugShowCheckedModeBanner: false,
       themeMode: ThemeMode.light,
-      locale: const Locale('ar'),
+      locale: const Locale('en'),
       routerConfig: appRouter,
-      theme: MyTheme.lightTheme(context, const Locale('ar')),
-      darkTheme: MyTheme.darkTheme(context, const Locale('ar')),
+      theme: MyTheme.lightTheme(context, const Locale('en')),
+      darkTheme: MyTheme.darkTheme(context, const Locale('en')),
 
       localizationsDelegates: const [
         S.delegate,

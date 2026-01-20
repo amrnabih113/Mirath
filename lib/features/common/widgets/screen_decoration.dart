@@ -37,7 +37,7 @@ class ScreenDecoration extends StatelessWidget {
                   ? const Color(0x7F6F604E)
                   : isDark
                   ? MyColors.primaryShade900
-                  : MyColors.primaryShade50,
+                  : MyColors.white,
               shape: const OvalBorder(),
             ),
           ),
@@ -56,7 +56,7 @@ class ScreenDecoration extends StatelessWidget {
                       ? const Color(0x7F6F604E)
                       : isDark
                       ? MyColors.primaryShade900
-                      : MyColors.primaryShade50,
+                      : MyColors.white,
                 ),
               ),
             ),

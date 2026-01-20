@@ -88,6 +88,7 @@ class VerifyAccountScreen extends StatelessWidget {
                                       );
                                     },
                                   ),
+                                  SizedBox(height: MySizes.spaceLg(context)),
                                   const TimerWidget(),
                                 ],
                               );

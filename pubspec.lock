@@ -461,6 +461,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.1.1"
+  hugeicons_pro:
+    dependency: "direct main"
+    description:
+      name: hugeicons_pro
+      sha256: "45ad993949cecc4745535e33f04a13d16004058d3295b5e0b34d6b6d6a00ef9a"
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.0.2"
   iconsax:
     dependency: "direct main"
     description:

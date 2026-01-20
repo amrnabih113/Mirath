@@ -152,12 +152,6 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
                                             state.status == AuthStatus.loading;
 
                                         return ElevatedButton(
-                                          style: ElevatedButton.styleFrom(
-                                            disabledForegroundColor: Colors
-                                                .white
-                                                .withAlpha(128),
-                                            foregroundColor: MyColors.black,
-                                          ),
                                           onPressed:
                                               (!isButtonEnabled || isLoading)
                                               ? null
