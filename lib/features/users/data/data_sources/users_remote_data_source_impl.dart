@@ -25,7 +25,9 @@ class UsersRemoteDataSourceImpl implements UsersRemoteDataSource {
         'name': profileSetupData.name,
         'levelOfEducation': profileSetupData.levelOfEducation,
         'interests': profileSetupData.interests.join(', '),
-        if (profileSetupData.university != null)
+        // Only include university if it has valid content (2+ characters)
+        if (profileSetupData.university != null &&
+            profileSetupData.university!.length >= 2)
           'university': profileSetupData.university,
       });
 

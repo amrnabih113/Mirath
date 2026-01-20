@@ -2,13 +2,12 @@ import 'dart:convert';
 
 import 'package:mirath/features/auth/data/models/auth_user_data.dart';
 
-import '../../features/auth/data/models/auth_response_model.dart';
 import 'local_storage_service.dart';
 
 class UserCacheService {
   final LocalStorageService _localStorage;
   static const String _userDataKey = 'cached_user_data';
-  
+
   UserCacheService(this._localStorage);
 
   /// Save user data to cache

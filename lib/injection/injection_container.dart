@@ -23,6 +23,7 @@ import '../features/auth/domain/usecases/signout_usecase.dart';
 import '../features/auth/domain/usecases/signup_usecase.dart';
 import '../features/auth/domain/usecases/verify_account_usecase.dart';
 import '../features/auth/domain/usecases/verify_reset_password_otp_usecase.dart';
+import '../features/auth/domain/usecases/check_setup_usecase.dart';
 import '../features/auth/presentation/cubit/auth_cubit.dart';
 import '../features/auth/domain/repositories/auth_repository.dart';
 // Users imports
@@ -34,6 +35,14 @@ import '../features/users/domain/usecases/setup_profile_usecase.dart';
 import '../features/users/domain/usecases/get_current_user_usecase.dart';
 import '../features/users/domain/usecases/follow_user_usecase.dart';
 import '../features/users/domain/usecases/unfollow_user_usecase.dart';
+// Interests imports
+import '../features/interests/data/data_sources/interests_remote_data_source.dart';
+import '../features/interests/data/data_sources/interests_remote_data_source_impl.dart';
+import '../features/interests/data/repositories/interests_repository_impl.dart';
+import '../features/interests/domain/repositories/interests_repository.dart';
+import '../features/interests/domain/usecases/get_all_interests_usecase.dart';
+import '../features/interests/domain/usecases/get_interest_by_id_usecase.dart';
+import '../features/interests/presentation/bloc/interests_bloc.dart';
 
 final sl = GetIt.instance;
 
@@ -54,9 +63,7 @@ class DI {
     );
 
     /// User Cache Service ///
-    sl.registerLazySingleton<UserCacheService>(
-      () => UserCacheService(sl()),
-    );
+    sl.registerLazySingleton<UserCacheService>(() => UserCacheService(sl()));
 
     //** Features **//
 
@@ -70,8 +77,8 @@ class DI {
     ///   Auth Repository ///
     sl.registerLazySingleton<AuthRepository>(
       () => AuthRepositoryImpl(
-        remoteDataSource: sl(), 
-        secureStorage: sl(), 
+        remoteDataSource: sl(),
+        secureStorage: sl(),
         userCache: sl(),
       ),
     );
@@ -91,6 +98,7 @@ class DI {
     sl.registerLazySingleton(() => VerifyResetPasswordOTPUseCase(sl()));
     sl.registerLazySingleton(() => ResetPasswordUseCase(sl()));
     sl.registerLazySingleton(() => IsVerifiedUseCase(sl()));
+    sl.registerLazySingleton(() => CheckSetupUseCase(sl()));
 
     /// Auth Cubit ///
     sl.registerLazySingleton(
@@ -108,6 +116,8 @@ class DI {
         resetPasswordUseCase: sl(),
         isVerifiedUseCase: sl(),
         setUpProfileUseCase: sl(),
+        checkSetupUseCase: sl(),
+        localStorage: sl(),
       ),
     ); // Cubit
 
@@ -128,5 +138,30 @@ class DI {
     sl.registerLazySingleton(() => GetCurrentUserUsecase(sl()));
     sl.registerLazySingleton(() => FollowUserUsecase(sl()));
     sl.registerLazySingleton(() => UnfollowUserUsecase(sl()));
+
+    //================ Interests ========================
+
+    /// Interests Data Sources ///
+    sl.registerLazySingleton<InterestsRemoteDataSource>(
+      () => InterestsRemoteDataSourceImpl(dioClient: sl()),
+    );
+
+    /// Interests Repository ///
+    sl.registerLazySingleton<InterestsRepository>(
+      () =>
+          InterestsRepositoryImpl(remoteDataSource: sl(), networkManager: sl()),
+    );
+
+    /// Interests UseCases ///
+    sl.registerLazySingleton(() => GetAllInterestsUsecase(sl()));
+    sl.registerLazySingleton(() => GetInterestByIdUsecase(sl()));
+
+    /// Interests Bloc ///
+    sl.registerFactory(
+      () => InterestsBloc(
+        getAllInterestsUsecase: sl(),
+        getInterestByIdUsecase: sl(),
+      ),
+    );
   }
 }

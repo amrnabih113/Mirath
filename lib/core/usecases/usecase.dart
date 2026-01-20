@@ -5,12 +5,15 @@ import 'no_params.dart';
 
 /// UseCase contract: implement call with [Params] and return [Either<Failure, R>]
 /// To use:
+/// ```dart
 /// final Either<Failure, User> result = await useCase(42);
 ///
 /// result.fold(
 ///   (failure) => handleFailure(failure),
 ///   (user) => handleUser(user),
 /// );
+/// ```
+///
 
 abstract class UseCase<R, P> {
   Future<Either<Failure, R>> call(P params);

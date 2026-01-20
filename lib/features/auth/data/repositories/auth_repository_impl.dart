@@ -289,4 +289,13 @@ class AuthRepositoryImpl implements AuthRepository {
     }
   }
 
+  @override
+  Future<Either<Failure, bool>> checkSetup() async {
+    try {
+      final response = await _remoteDataSource.checkSetup();
+      return Right(response.isSetupCompleted);
+    } catch (e) {
+      return Left(mapExceptionToFailure(e));
+    }
+  }
 }

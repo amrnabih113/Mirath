@@ -55,4 +55,10 @@ class MyConstants {
   static const String followUser = "api/v1/users/{id}/follow";
   // delete
   static const String unfollowUser = "api/v1/users/{id}/follow";
+
+  // ***Interests endpoints***
+  // get
+  static const String getAllInterests = "api/v1/interests";
+  // get
+  static const String getInterestById = "api/v1/interests/{id}";
 }

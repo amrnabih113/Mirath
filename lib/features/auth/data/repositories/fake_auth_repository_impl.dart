@@ -1,4 +1,5 @@
 import 'package:dartz/dartz.dart';
+import 'package:flutter/foundation.dart';
 
 import '../../../../core/error/failuors.dart';
 import '../../domain/entities/signin_data.dart';
@@ -130,7 +131,9 @@ class FakeAuthRepositoryImpl implements AuthRepository {
 
     _otpSent = true;
     // In real app, OTP would be sent to email/phone
-    print('Fake OTP sent: $validOtp to $_currentEmail');
+    if (kDebugMode) {
+      print('Fake OTP sent: $validOtp to $_currentEmail');
+    }
     return const Right(null);
   }
 
@@ -171,7 +174,9 @@ class FakeAuthRepositoryImpl implements AuthRepository {
 
     _resetOtpSent = true;
     // In real app, OTP would be sent to email
-    print('Fake Reset OTP sent: $validOtp to $_currentEmail');
+    if (kDebugMode) {
+      print('Fake Reset OTP sent: $validOtp to $_currentEmail');
+    }
     return const Right(null);
   }
 
@@ -213,6 +218,15 @@ class FakeAuthRepositoryImpl implements AuthRepository {
     _resetOtpSent = false;
     _currentEmail = null;
     _currentPassword = null;
+  }
+
+  @override
+  Future<Either<Failure, bool>> checkSetup() async {
+    // Simulate network delay
+    await Future.delayed(const Duration(milliseconds: 500));
+
+    // For testing, return true if user is signed in and verified
+    return Right(_isSignedIn && _isVerified);
   }
 
   // Helper method to set custom state for testing

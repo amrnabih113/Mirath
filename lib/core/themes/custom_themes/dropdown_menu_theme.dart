@@ -17,7 +17,7 @@ class MyDropdownMenuTheme {
         backgroundColor: WidgetStateProperty.all(MyColors.primaryShade200),
         elevation: WidgetStateProperty.all(8),
         shadowColor: WidgetStateProperty.all(
-          MyColors.textPrimary.withOpacity(0.1),
+          MyColors.textPrimary.withValues(alpha: 0.1),
         ),
         shape: WidgetStateProperty.all(
           RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
@@ -50,7 +50,7 @@ class MyDropdownMenuTheme {
         hintStyle: TextStyle(fontSize: fontSize, color: MyColors.textSecondary),
         errorStyle: const TextStyle(fontStyle: FontStyle.normal),
         floatingLabelStyle: TextStyle(
-          color: MyColors.textPrimary.withOpacity(0.8),
+          color: MyColors.textPrimary..withValues(alpha: 0.8),
         ),
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(12),
@@ -86,7 +86,9 @@ class MyDropdownMenuTheme {
       menuStyle: MenuStyle(
         backgroundColor: WidgetStateProperty.all(MyColors.primaryShade600),
         elevation: WidgetStateProperty.all(8),
-        shadowColor: WidgetStateProperty.all(MyColors.black.withOpacity(0.3)),
+        shadowColor: WidgetStateProperty.all(
+          MyColors.black..withValues(alpha: 0.3),
+        ),
         shape: WidgetStateProperty.all(
           RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
         ),
@@ -95,7 +97,7 @@ class MyDropdownMenuTheme {
         ),
       ),
       inputDecorationTheme: InputDecorationTheme(
-        fillColor: MyColors.primaryShade700.withOpacity(0.2),
+        fillColor: MyColors.primaryShade700..withValues(alpha: 0.2),
         filled: true,
         errorMaxLines: 3,
         prefixIconColor: MyColors.textPrimaryDark,
@@ -124,7 +126,7 @@ class MyDropdownMenuTheme {
         ),
         errorStyle: const TextStyle(fontStyle: FontStyle.normal),
         floatingLabelStyle: TextStyle(
-          color: MyColors.textPrimaryDark.withOpacity(0.8),
+          color: MyColors.textPrimaryDark..withValues(alpha: 0.8),
         ),
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(12),
@@ -156,7 +158,7 @@ class MyDropdownMenuTheme {
     return PopupMenuThemeData(
       color: MyColors.primaryShade400,
       elevation: 8,
-      shadowColor: MyColors.textPrimary.withOpacity(0.1),
+      shadowColor: MyColors.textPrimary..withValues(alpha: 0.1),
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
       textStyle: TextStyle(
         fontSize: MySizes.bodyMedium(context),
@@ -169,7 +171,7 @@ class MyDropdownMenuTheme {
     return PopupMenuThemeData(
       color: MyColors.primaryShade600,
       elevation: 8,
-      shadowColor: MyColors.black.withOpacity(0.3),
+      shadowColor: MyColors.black..withValues(alpha: 0.3),
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
       textStyle: TextStyle(
         fontSize: MySizes.bodyMedium(context),

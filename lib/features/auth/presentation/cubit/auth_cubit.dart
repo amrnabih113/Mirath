@@ -2,6 +2,7 @@ import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:mirath/core/error/failuors.dart';
 import 'package:mirath/core/helpers/failure_handler.dart';
+import 'package:mirath/core/services/local_storage_service.dart';
 import 'package:mirath/features/users/domain/entities/profile_setup_data.dart';
 import 'package:mirath/features/users/domain/usecases/setup_profile_usecase.dart';
 
@@ -21,6 +22,7 @@ import '../../domain/usecases/signout_usecase.dart';
 import '../../domain/usecases/signup_usecase.dart';
 import '../../domain/usecases/verify_account_usecase.dart';
 import '../../domain/usecases/verify_reset_password_otp_usecase.dart';
+import '../../domain/usecases/check_setup_usecase.dart';
 
 part 'auth_state.dart';
 
@@ -38,6 +40,8 @@ class AuthCubit extends Cubit<AuthState> {
   final ResetPasswordUseCase resetPasswordUseCase;
   final IsVerifiedUseCase isVerifiedUseCase;
   final SetupProfileUsecase setUpProfileUseCase;
+  final CheckSetupUseCase checkSetupUseCase;
+  final LocalStorageService localStorage;
 
   AuthCubit({
     required this.signInUseCase,
@@ -53,6 +57,8 @@ class AuthCubit extends Cubit<AuthState> {
     required this.resetPasswordUseCase,
     required this.isVerifiedUseCase,
     required this.setUpProfileUseCase,
+    required this.checkSetupUseCase,
+    required this.localStorage,
   }) : super(AuthState.initial());
 
   // ===================== SIGN IN =====================
@@ -118,12 +124,25 @@ class AuthCubit extends Cubit<AuthState> {
       (failure) => emit(
         state.copyWith(status: AuthStatus.error, message: failure.message),
       ),
-      (_) => emit(
-        state.copyWith(
-          status: AuthStatus.success,
-          message: "Profile set up successfully",
-        ),
-      ),
+      (_) async {
+        // Profile setup completed successfully
+        // The server now knows the profile is complete
+        emit(
+          state.copyWith(
+            status: AuthStatus.success,
+            message: "Profile set up successfully",
+          ),
+        );
+      },
+    );
+  }
+
+  // ===================== CHECK SETUP STATUS =====================
+  Future<bool> checkSetup() async {
+    final result = await checkSetupUseCase(NoParams());
+    return result.fold(
+      (failure) => false, // If the check fails, assume setup is not completed
+      (isCompleted) => isCompleted,
     );
   }
 

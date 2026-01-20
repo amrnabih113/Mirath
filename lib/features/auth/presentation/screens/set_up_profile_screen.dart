@@ -4,7 +4,6 @@ import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:hugeicons/hugeicons.dart';
 import 'package:iconsax/iconsax.dart';
-import 'package:mirath/features/auth/data/models/auth_response_model.dart';
 import 'package:mirath/features/auth/data/models/auth_user_data.dart';
 import 'package:mirath/features/users/domain/entities/profile_setup_data.dart';
 
@@ -29,7 +28,7 @@ class SetUpProfileScreen extends StatefulWidget {
 }
 
 class _SetUpProfileScreenState extends State<SetUpProfileScreen> {
-  EducationLevel selectedEducationLevel = EducationLevel.none;
+  EducationLevel selectedEducationLevel = EducationLevel.highSchool;
   bool isUnderGraduateSelected = false;
 
   final LocalStorageService _localStorageService = sl<LocalStorageService>();
@@ -45,7 +44,7 @@ class _SetUpProfileScreenState extends State<SetUpProfileScreen> {
     super.initState();
     _usernameController.text = widget.user.username;
     _emailController.text = widget.user.email;
-    selectedEducationLevel = EducationLevel.none;
+    selectedEducationLevel = EducationLevel.highSchool;
   }
 
   @override
@@ -206,6 +205,7 @@ class _SetUpProfileScreenState extends State<SetUpProfileScreen> {
                                     ),
                                     SizedBox(height: MySizes.spaceXs(context)),
                                     DropdownButtonFormField<String>(
+                                      value: selectedEducationLevel.name,
                                       hint: Text(
                                         S.of(context).select_education_level,
                                       ),
@@ -253,6 +253,7 @@ class _SetUpProfileScreenState extends State<SetUpProfileScreen> {
                                         hintText: S
                                             .of(context)
                                             .enter_university_name,
+                                        controller: _universityController,
                                       ),
                                     ],
                                   ],
@@ -264,18 +265,47 @@ class _SetUpProfileScreenState extends State<SetUpProfileScreen> {
                               width: MySizes.buttonWidth(context),
                               child: ElevatedButton(
                                 onPressed: () {
+                                  // Add basic validation
+                                  if (_nameController.text.isEmpty) {
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                      const SnackBar(
+                                        content: Text('Please enter your name'),
+                                        backgroundColor: Colors.red,
+                                      ),
+                                    );
+                                    return;
+                                  }
+
+                                  if (isUnderGraduateSelected &&
+                                      (_universityController.text.isEmpty ||
+                                          _universityController.text.length <
+                                              2)) {
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                      const SnackBar(
+                                        content: Text(
+                                          'Please enter a valid university name (at least 2 characters)',
+                                        ),
+                                        backgroundColor: Colors.red,
+                                      ),
+                                    );
+                                    return;
+                                  }
+
                                   final userProfile = ProfileSetupData(
                                     name: _nameController.text,
                                     levelOfEducation:
-                                        selectedEducationLevel.name,
+                                        selectedEducationLevel.serverValue,
                                     interests: [],
+                                    university:
+                                        _universityController.text.isEmpty
+                                        ? null
+                                        : _universityController.text,
                                   );
                                   context.push(
                                     '/interests',
                                     extra: userProfile,
                                   );
                                 },
-
                                 child: Text(
                                   S.of(context).next,
                                   style: context.titleMedium.copyWith(

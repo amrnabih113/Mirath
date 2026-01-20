@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:mirath/core/utils/my_colors.dart';
 
 import '../../../core/utils/my_extenstions.dart';
 import '../../../core/utils/my_sizes.dart';
@@ -24,6 +25,7 @@ class TextFeildWithLable extends StatelessWidget {
         Text(label, style: context.bodyLarge, textAlign: TextAlign.left),
         SizedBox(height: MySizes.spaceXs(context)),
         TextField(
+          cursorColor: MyColors.primaryColor,
           readOnly: readOnly,
           controller: controller,
           decoration: InputDecoration(hintText: hintText),

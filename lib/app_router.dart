@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:mirath/core/services/user_cache_service.dart';
-import 'package:mirath/features/auth/data/models/auth_response_model.dart';
 import 'package:mirath/features/auth/data/models/auth_user_data.dart';
 import 'package:mirath/features/auth/presentation/screens/interests_screen.dart';
 import 'package:mirath/features/auth/presentation/screens/signin_screen.dart';
@@ -43,8 +42,9 @@ final appRouter = GoRouter(
   initialLocation: '/splash',
   refreshListenable: _AuthStateNotifier(sl<AuthCubit>()),
 
-  redirect: (context, state) {
+  redirect: (context, state) async {
     final authStatus = sl<AuthCubit>().state.status;
+    final authCubit = sl<AuthCubit>();
     final localStorage = sl<LocalStorageService>();
     final currentLocation = state.matchedLocation;
 
@@ -53,7 +53,12 @@ final appRouter = GoRouter(
     );
 
     final hasSeenOnboarding = localStorage.hasSeenOnboarding();
-    final hasSetupProfile = localStorage.hasSetupProfile();
+
+    // Check profile setup status from server for authenticated users
+    bool hasSetupProfile = false;
+    if (authStatus == AuthStatus.authenticated) {
+      hasSetupProfile = await authCubit.checkSetup();
+    }
 
     const authPaths = [
       '/signin',
@@ -143,6 +148,18 @@ final appRouter = GoRouter(
       }
 
       return null;
+    }
+
+    // Handle authentication errors - allow staying on current auth pages
+    if (authStatus == AuthStatus.error) {
+      if (authPaths.contains(currentLocation) ||
+          currentLocation == '/set-up-profile' ||
+          currentLocation == '/interests') {
+        return null; // Stay on current page
+      }
+      // For other pages, redirect to signin
+      MyLogger.info('[Router] Auth error - redirecting to /signin');
+      return '/signin';
     }
 
     return null;
@@ -258,16 +275,26 @@ final appRouter = GoRouter(
       path: '/set-up-profile',
       pageBuilder: (context, state) {
         final userCacheService = sl<UserCacheService>();
-        final  user = userCacheService.getCachedUser();
+        final user = userCacheService.getCachedUser();
         return PageTransitions.smoothTransition(
-          SetUpProfileScreen(user: user ??  AuthUserData.empty()),
+          SetUpProfileScreen(user: user ?? AuthUserData.empty()),
         );
       },
     ),
     GoRoute(
       path: '/interests',
       pageBuilder: (context, state) {
-        final userProfile = state.extra as ProfileSetupData;
+        final userProfile = state.extra as ProfileSetupData?;
+        if (userProfile == null) {
+          // If no user profile data is provided, redirect to setup profile
+          return PageTransitions.smoothTransition(
+            const Scaffold(
+              body: Center(
+                child: Text('Invalid navigation - missing profile data'),
+              ),
+            ),
+          );
+        }
         return PageTransitions.smoothTransition(
           InterestsScreen(userProfile: userProfile),
         );

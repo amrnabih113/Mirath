@@ -33,7 +33,7 @@ class LocalStorageService {
   }
 
   /// Mark profile as setup
-  Future<bool>  setProfileSetup(bool value) async {
+  Future<bool> setProfileSetup(bool value) async {
     return await _prefs.setBool(MyConstants.profileSetupKey, value);
   }
 
@@ -75,5 +75,4 @@ class LocalStorageService {
   bool hasData(String key) {
     return _prefs.containsKey(key);
   }
-
 }

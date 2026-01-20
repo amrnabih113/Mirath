@@ -9,11 +9,7 @@ class AuthResponseModel {
   final String? message;
   final AuthUserData? user;
 
-  const AuthResponseModel({
-    this.accessToken, 
-    this.message, 
-    this.user,
-  });
+  const AuthResponseModel({this.accessToken, this.message, this.user});
 
   factory AuthResponseModel.fromJson(Map<String, dynamic> json) {
     return AuthResponseModel(
