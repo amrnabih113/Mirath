@@ -226,7 +226,7 @@ class FakeAuthRepositoryImpl implements AuthRepository {
     await Future.delayed(const Duration(milliseconds: 500));
 
     // For testing, return true if user is signed in and verified
-    return Right(_isSignedIn && _isVerified);
+    return Right(false);
   }
 
   // Helper method to set custom state for testing

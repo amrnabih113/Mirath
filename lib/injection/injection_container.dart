@@ -10,7 +10,6 @@ import '../core/services/secure_storage_service.dart';
 import '../core/services/local_storage_service.dart';
 import '../core/services/user_cache_service.dart';
 import '../features/auth/data/data_sources/auth_remote_data_source.dart';
-import '../features/auth/data/repositories/auth_repository_impl.dart';
 import '../features/auth/domain/usecases/forget_password_usecase.dart';
 import '../features/auth/domain/usecases/is_signed_in_usecase.dart';
 import '../features/auth/domain/usecases/is_verified_usecase.dart';
@@ -75,15 +74,15 @@ class DI {
     );
 
     ///   Auth Repository ///
-    sl.registerLazySingleton<AuthRepository>(
-      () => AuthRepositoryImpl(
-        remoteDataSource: sl(),
-        secureStorage: sl(),
-        userCache: sl(),
-      ),
-    );
+    // sl.registerLazySingleton<AuthRepository>(
+    //   () => AuthRepositoryImpl(
+    //     remoteDataSource: sl(),
+    //     secureStorage: sl(),
+    //     userCache: sl(),
+    //   ),
+    // );
 
-    //  sl.registerLazySingleton<AuthRepository>(() => FakeAuthRepositoryImpl());
+    sl.registerLazySingleton<AuthRepository>(() => FakeAuthRepositoryImpl());
 
     /// Auth UseCases ///
     sl.registerLazySingleton(() => SignInUseCase(sl()));

@@ -96,5 +96,6 @@
     "undergraduate": "البكالوريوس",
     "graduated": "خريج",
     "university_name": "اسم الجامعة",
-    "enter_university_name": "أدخل اسم جامعتك"
+    "enter_university_name": "أدخل اسم جامعتك",
+    "sign_out": "تسجيل الخروج"
 }

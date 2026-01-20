@@ -173,6 +173,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "set_up_profile":
             MessageLookupByLibrary.simpleMessage("Set Up Your Profile"),
         "sign_in": MessageLookupByLibrary.simpleMessage("Sign In"),
+        "sign_out": MessageLookupByLibrary.simpleMessage("Sign Out"),
         "sign_up": MessageLookupByLibrary.simpleMessage("Sign Up"),
         "skip": MessageLookupByLibrary.simpleMessage("Skip"),
         "something_went_wrong":

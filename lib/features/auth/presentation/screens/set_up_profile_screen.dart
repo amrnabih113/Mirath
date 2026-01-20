@@ -60,6 +60,49 @@ class _SetUpProfileScreenState extends State<SetUpProfileScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       extendBodyBehindAppBar: true,
+      appBar: AppBar(
+        backgroundColor: Colors.transparent,
+        elevation: 0,
+        automaticallyImplyLeading: false,
+        actions: [
+          Padding(
+            padding: EdgeInsets.only(right: MySizes.spaceMd(context)),
+            child: IconButton(
+              onPressed: () {
+                // Show confirmation dialog
+                showDialog(
+                  context: context,
+                  builder: (BuildContext context) {
+                    return AlertDialog(
+                      title: Text(S.of(context).sign_out),
+                      content: Text('Are you sure you want to sign out?'),
+                      actions: [
+                        TextButton(
+                          onPressed: () => Navigator.of(context).pop(),
+                          child: Text('Cancel'),
+                        ),
+                        TextButton(
+                          onPressed: () {
+                            Navigator.of(context).pop();
+                            context.read<AuthCubit>().signOut();
+                          },
+                          child: Text('Sign Out'),
+                        ),
+                      ],
+                    );
+                  },
+                );
+              },
+              icon: Icon(
+                Icons.logout,
+                color: MyColors.primaryShade700,
+                size: MySizes.iconMedium(context),
+              ),
+              tooltip: 'Sign Out',
+            ),
+          ),
+        ],
+      ),
 
       body: ScreenDecoration(
         dark: false,

@@ -96,5 +96,6 @@
     "undergraduate": "Undergraduate",
     "graduated": "Graduated",
     "university_name": "University Name",
-    "enter_university_name": "Enter your university name"
+    "enter_university_name": "Enter your university name",
+    "sign_out": "Sign Out"
 }

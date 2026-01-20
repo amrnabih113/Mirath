@@ -174,6 +174,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "set_up_profile":
             MessageLookupByLibrary.simpleMessage("إعداد ملفك الشخصي"),
         "sign_in": MessageLookupByLibrary.simpleMessage("تسجيل الدخول"),
+        "sign_out": MessageLookupByLibrary.simpleMessage("تسجيل الخروج"),
         "sign_up": MessageLookupByLibrary.simpleMessage("إنشاء حساب"),
         "skip": MessageLookupByLibrary.simpleMessage("تخطي"),
         "something_went_wrong":
