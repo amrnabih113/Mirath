@@ -3,7 +3,6 @@ import 'package:dartz/dartz.dart';
 import '../../../../core/error/failuors.dart';
 import '../../domain/entities/signin_data.dart';
 import '../../domain/entities/signup_data.dart';
-import '../../domain/entities/user_profile.dart';
 import '../../domain/repositories/auth_repository.dart';
 
 /// Fake implementation of AuthRepository for testing purposes
@@ -221,18 +220,5 @@ class FakeAuthRepositoryImpl implements AuthRepository {
     if (isSignedIn != null) _isSignedIn = isSignedIn;
     if (isVerified != null) _isVerified = isVerified;
     if (email != null) _currentEmail = email;
-  }
-
-  @override
-  Future<Either<Failure, void>> setUpProfile(UserProfile userProfile) async {
-    await Future.delayed(const Duration(seconds: 1)); // Simulate network delay
-
-    if (!_isSignedIn) {
-      return Left(ServerFailure('User not authenticated'));
-    }
-
-    // In a real implementation, this would save to a database
-    // For now, we just simulate success
-    return const Right(null);
   }
 }

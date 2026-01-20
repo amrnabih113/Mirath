@@ -3,7 +3,6 @@ import 'package:dartz/dartz.dart';
 import '../../../../core/error/failuors.dart';
 import '../entities/signin_data.dart';
 import '../entities/signup_data.dart';
-import '../entities/user_profile.dart';
 
 abstract class AuthRepository {
   Future<Either<Failure, void>> signIn(SigninData signinData);
@@ -18,5 +17,4 @@ abstract class AuthRepository {
   Future<Either<Failure, void>> forgetPassword(String email);
   Future<Either<Failure, void>> verifyResetPasswordOTP(String otp);
   Future<Either<Failure, void>> resetPassword(String newPassword);
-  Future<Either<Failure, void>> setUpProfile(UserProfile userProfile);
 }

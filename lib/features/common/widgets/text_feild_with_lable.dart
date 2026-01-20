@@ -9,10 +9,12 @@ class TextFeildWithLable extends StatelessWidget {
     required this.label,
     required this.hintText,
     this.controller,
+    this.readOnly = false,
   });
   final String label;
   final String hintText;
   final TextEditingController? controller;
+  final bool readOnly;
 
   @override
   Widget build(BuildContext context) {
@@ -22,6 +24,7 @@ class TextFeildWithLable extends StatelessWidget {
         Text(label, style: context.bodyLarge, textAlign: TextAlign.left),
         SizedBox(height: MySizes.spaceXs(context)),
         TextField(
+          readOnly: readOnly,
           controller: controller,
           decoration: InputDecoration(hintText: hintText),
         ),

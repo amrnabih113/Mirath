@@ -4,6 +4,9 @@ import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:hugeicons/hugeicons.dart';
 import 'package:iconsax/iconsax.dart';
+import 'package:mirath/features/auth/data/models/auth_response_model.dart';
+import 'package:mirath/features/auth/data/models/auth_user_data.dart';
+import 'package:mirath/features/users/domain/entities/profile_setup_data.dart';
 
 import '../../../../core/helpers/my_loaders.dart';
 import '../../../../core/services/local_storage_service.dart';
@@ -16,33 +19,13 @@ import '../../../../generated/l10n.dart';
 import '../../../../injection/injection_container.dart';
 import '../../../common/widgets/screen_decoration.dart';
 import '../../../common/widgets/text_feild_with_lable.dart';
-import '../../domain/entities/user_profile.dart';
 import '../cubit/auth_cubit.dart';
 
 class SetUpProfileScreen extends StatefulWidget {
-  const SetUpProfileScreen({super.key, required this.userEntity});
-  final UserEntity userEntity;
+  const SetUpProfileScreen({super.key, required this.user});
+  final AuthUserData user;
   @override
   State<SetUpProfileScreen> createState() => _SetUpProfileScreenState();
-}
-
-// temporary user entity for testing untill the backend gives real data
-class UserEntity {
-  final String? name;
-  final String? imageUrl;
-  final String username;
-  final String email;
-  final EducationLevel? educationLevel;
-  final String? university;
-
-  UserEntity({
-    this.name,
-    this.educationLevel,
-    this.imageUrl,
-    required this.username,
-    required this.email,
-    this.university,
-  });
 }
 
 class _SetUpProfileScreenState extends State<SetUpProfileScreen> {
@@ -60,12 +43,9 @@ class _SetUpProfileScreenState extends State<SetUpProfileScreen> {
   @override
   void initState() {
     super.initState();
-    _usernameController.text = widget.userEntity.username;
-    _emailController.text = widget.userEntity.email;
-    _nameController.text = widget.userEntity.name ?? '';
-    _universityController.text = widget.userEntity.university ?? '';
-    selectedEducationLevel =
-        widget.userEntity.educationLevel ?? EducationLevel.none;
+    _usernameController.text = widget.user.username;
+    _emailController.text = widget.user.email;
+    selectedEducationLevel = EducationLevel.none;
   }
 
   @override
@@ -134,7 +114,7 @@ class _SetUpProfileScreenState extends State<SetUpProfileScreen> {
 
                               clipBehavior: Clip.antiAlias,
                               decoration: ShapeDecoration(
-                                color: MyColors.cardColor /* Card-color */,
+                                color: MyColors.cardColor,
                                 shape: RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(24),
                                 ),
@@ -207,12 +187,14 @@ class _SetUpProfileScreenState extends State<SetUpProfileScreen> {
                                     SizedBox(height: MySizes.spaceSm(context)),
                                     TextFeildWithLable(
                                       label: S.of(context).username,
+                                      readOnly: true,
                                       hintText: S.of(context).choose_username,
                                       controller: _usernameController,
                                     ),
                                     SizedBox(height: MySizes.spaceSm(context)),
                                     TextFeildWithLable(
                                       label: S.of(context).email,
+                                      readOnly: true,
                                       hintText: S.of(context).enter_your_email,
                                       controller: _emailController,
                                     ),
@@ -282,11 +264,10 @@ class _SetUpProfileScreenState extends State<SetUpProfileScreen> {
                               width: MySizes.buttonWidth(context),
                               child: ElevatedButton(
                                 onPressed: () {
-                                  final userProfile = UserProfile(
+                                  final userProfile = ProfileSetupData(
                                     name: _nameController.text,
-                                    username: _usernameController.text,
-                                    email: _emailController.text,
-                                    educationLevel: selectedEducationLevel,
+                                    levelOfEducation:
+                                        selectedEducationLevel.name,
                                     interests: [],
                                   );
                                   context.push(

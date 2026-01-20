@@ -2,18 +2,18 @@ import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:mirath/core/error/failuors.dart';
 import 'package:mirath/core/helpers/failure_handler.dart';
+import 'package:mirath/features/users/domain/entities/profile_setup_data.dart';
+import 'package:mirath/features/users/domain/usecases/setup_profile_usecase.dart';
 
 import '../../../../core/usecases/no_params.dart';
 import '../../../../core/utils/my_logger.dart';
 import '../../domain/entities/signin_data.dart';
 import '../../domain/entities/signup_data.dart';
-import '../../domain/entities/user_profile.dart';
 import '../../domain/usecases/forget_password_usecase.dart';
 import '../../domain/usecases/is_signed_in_usecase.dart';
 import '../../domain/usecases/is_verified_usecase.dart';
 import '../../domain/usecases/reset_password_usecase.dart';
 import '../../domain/usecases/send_verification_otp_usecase.dart';
-import '../../domain/usecases/set_up_profile_usecase.dart';
 import '../../domain/usecases/signin_usecase.dart';
 import '../../domain/usecases/signin_with_apple_usecase.dart';
 import '../../domain/usecases/signin_with_google_usecase.dart';
@@ -37,7 +37,7 @@ class AuthCubit extends Cubit<AuthState> {
   final VerifyResetPasswordOTPUseCase verifyResetPasswordOTPUseCase;
   final ResetPasswordUseCase resetPasswordUseCase;
   final IsVerifiedUseCase isVerifiedUseCase;
-  final SetUpProfileUseCase setUpProfileUseCase;
+  final SetupProfileUsecase setUpProfileUseCase;
 
   AuthCubit({
     required this.signInUseCase,
@@ -109,7 +109,7 @@ class AuthCubit extends Cubit<AuthState> {
   }
 
   // ====================== SET UP PROFILE =====================
-  Future<void> setUpProfile(UserProfile userProfile) async {
+  Future<void> setUpProfile(ProfileSetupData userProfile) async {
     emit(state.copyWith(status: AuthStatus.loading, clearMessage: true));
 
     final result = await setUpProfileUseCase(userProfile);

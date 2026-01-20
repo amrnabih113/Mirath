@@ -5,15 +5,15 @@ import 'package:hugeicons/hugeicons.dart';
 import 'package:mirath/core/utils/my_colors.dart';
 import 'package:mirath/core/utils/my_extenstions.dart';
 import 'package:mirath/core/utils/my_sizes.dart';
-import 'package:mirath/features/auth/domain/entities/user_profile.dart';
 import 'package:mirath/features/auth/presentation/cubit/auth_cubit.dart';
 import 'package:mirath/features/auth/presentation/widgets/intereste_chip.dart';
 import 'package:mirath/features/common/widgets/my_search_bar.dart';
 import 'package:mirath/features/common/widgets/screen_decoration.dart';
+import 'package:mirath/features/users/domain/entities/profile_setup_data.dart';
 
 class InterestsScreen extends StatefulWidget {
   const InterestsScreen({super.key, required this.userProfile});
-  final UserProfile userProfile;
+  final ProfileSetupData userProfile;
 
   @override
   State<InterestsScreen> createState() => _InterestsScreenState();

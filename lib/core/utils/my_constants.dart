@@ -4,7 +4,6 @@ class MyConstants {
   // app name
   static const String appName = "Mirath";
 
-  
   static const String googleServerClientId =
       "551081167484-bruuovdj7oal5gsej29vbja5803a3520.apps.googleusercontent.com";
 
@@ -46,4 +45,14 @@ class MyConstants {
   static const String isVerified = "api/v1/auth/is-verified";
   // get
   static const String checkSetup = "api/v1/auth/check-setup";
+
+  // ***User endpoints***
+  // post
+  static const String setupProfile = "api/v1/users/profile/setup";
+  // get
+  static const String getMe = "api/v1/users/me";
+  // post
+  static const String followUser = "api/v1/users/{id}/follow";
+  // delete
+  static const String unfollowUser = "api/v1/users/{id}/follow";
 }

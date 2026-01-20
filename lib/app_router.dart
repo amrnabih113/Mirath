@@ -1,12 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
-import 'package:mirath/features/auth/domain/entities/user_profile.dart';
+import 'package:mirath/core/services/user_cache_service.dart';
+import 'package:mirath/features/auth/data/models/auth_response_model.dart';
+import 'package:mirath/features/auth/data/models/auth_user_data.dart';
 import 'package:mirath/features/auth/presentation/screens/interests_screen.dart';
 import 'package:mirath/features/auth/presentation/screens/signin_screen.dart';
 import 'package:mirath/features/home/presentation/screens/home_screen.dart';
 import 'package:mirath/features/home/presentation/screens/search_result_screen.dart';
 import 'package:mirath/features/home/presentation/screens/search_screen.dart';
+import 'package:mirath/features/users/domain/entities/profile_setup_data.dart';
 import 'features/Layout/presentation/cubit/layout_cubit.dart';
 import 'features/Layout/presentation/screens/main_layout.dart';
 import 'features/auth/presentation/screens/set_up_profile_screen.dart';
@@ -253,21 +256,18 @@ final appRouter = GoRouter(
 
     GoRoute(
       path: '/set-up-profile',
-
       pageBuilder: (context, state) {
-        final user = UserEntity(
-          username: 'username1',
-          email: 'test@example.com',
-        );
+        final userCacheService = sl<UserCacheService>();
+        final  user = userCacheService.getCachedUser();
         return PageTransitions.smoothTransition(
-          SetUpProfileScreen(userEntity: user),
+          SetUpProfileScreen(user: user ??  AuthUserData.empty()),
         );
       },
     ),
     GoRoute(
       path: '/interests',
       pageBuilder: (context, state) {
-        final userProfile = state.extra as UserProfile;
+        final userProfile = state.extra as ProfileSetupData;
         return PageTransitions.smoothTransition(
           InterestsScreen(userProfile: userProfile),
         );
