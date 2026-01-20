@@ -1,5 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:hugeicons/hugeicons.dart';
+import 'package:mirath/core/helpers/responsive_helper.dart';
+import 'package:mirath/core/utils/my_colors.dart';
+import 'package:mirath/core/utils/my_extenstions.dart';
+import 'package:mirath/core/utils/my_sizes.dart';
 
 class SearchItem extends StatelessWidget {
   const SearchItem({super.key});
@@ -7,16 +11,30 @@ class SearchItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ListTile(
-      leading: IconButton(onPressed: () {}, icon: Icon(Icons.search, size: 20)),
+      contentPadding: EdgeInsets.symmetric(
+        horizontal: MySizes.spaceXs(context),
+      ),
+      leading: HugeIcon(
+        icon: HugeIcons.strokeRoundedSearch01,
+        size: MySizes.iconSmall(context),
+        color: MyColors.primaryShade300,
+      ),
       title: Text(
-        'jpojwrpj',
-        style: TextStyle(
-          fontSize: 16,
+        'IEEE',
+        style: context.bodySmall.copyWith(
+          fontSize: ResponsiveHelper.responsiveValue(context, 16),
           fontWeight: FontWeight.w400,
-          color: Colors.black,
+          color: MyColors.black,
         ),
       ),
-      trailing: HugeIcon(icon: HugeIcons.strokeRoundedCancel01),
+      trailing: IconButton(
+        onPressed: () {},
+        icon: HugeIcon(
+          icon: HugeIcons.strokeRoundedCancel01,
+          size: MySizes.iconSmall(context),
+          color: MyColors.primaryShade900,
+        ),
+      ),
     );
   }
 }

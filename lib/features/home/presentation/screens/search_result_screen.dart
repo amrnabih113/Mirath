@@ -3,12 +3,11 @@ import 'package:mirath/core/helpers/responsive_helper.dart';
 import 'package:mirath/core/utils/my_colors.dart';
 import 'package:mirath/core/utils/my_sizes.dart';
 import 'package:mirath/features/common/widgets/my_back_icon.dart';
-import 'package:mirath/features/home/presentation/widgets/search_item.dart';
-import 'package:mirath/features/home/presentation/widgets/search_screen_heading.dart';
+import 'package:mirath/features/home/presentation/widgets/paper_card_items.dart';
 import 'package:mirath/features/home/presentation/widgets/search_text_field.dart';
 
-class SearchScreen extends StatelessWidget {
-  const SearchScreen({super.key});
+class MyWidget extends StatelessWidget {
+  const MyWidget({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -39,17 +38,16 @@ class SearchScreen extends StatelessWidget {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.start,
               children: [
-                SearchScreenHeading(),
-                Expanded(
-                  child: ListView.separated(
-                    separatorBuilder: (context, index) =>
-                        SizedBox(height: MySizes.spaceXs(context)),
-                    padding: EdgeInsets.zero,
-                    itemCount: 30,
-                    itemBuilder: (context, index) {
-                      return SearchItem();
-                    },
-                  ),
+                ListView.separated(
+                  separatorBuilder: (context, index) =>
+                      SizedBox(height: MySizes.spaceXs(context)),
+                  padding: EdgeInsets.zero,
+                  shrinkWrap: true,
+                  physics: NeverScrollableScrollPhysics(),
+                  itemCount: 5,
+                  itemBuilder: (context, index) {
+                    return PaperCardItems();
+                  },
                 ),
               ],
             ),
