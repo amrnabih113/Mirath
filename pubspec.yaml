@@ -59,6 +59,7 @@ dependencies:
   shared_preferences: ^2.3.4
 
 dev_dependencies:
+  flutter_launcher_icons: ^0.14.1
   flutter_lints: ^6.0.0
   flutter_test:
     sdk: flutter
@@ -102,3 +103,35 @@ flutter:
   # see https://flutter.dev/to/font-from-package
 flutter_intl:
   enabled: true
+
+# Flutter Native Splash Configuration
+flutter_native_splash:
+  color: "#FBFAF8"
+  image: assets/images/logo.png
+  color_dark: "#FBFAF8"
+  image_dark: assets/images/logo.png
+  android_12:
+    image: assets/images/logo.png
+    color: "#FBFAF8"
+    image_dark: assets/images/logo.png
+    color_dark: "#FBFAF8"
+
+# Flutter Launcher Icons Configuration
+flutter_launcher_icons:
+  android: "launcher_icon"
+  ios: true
+  image_path: "assets/images/Launcher_icon.png"
+  remove_alpha_ios: true
+  min_sdk_android: 21
+  web:
+    generate: true
+    image_path: "assets/images/Launcher_icon.png"
+    background_color: "#FBFAF8"
+    theme_color: "#FBFAF8"
+  windows:
+    generate: true
+    image_path: "assets/images/Launcher_icon.png"
+    icon_size: 48
+  macos:
+    generate: true
+    image_path: "assets/images/Launcher_icon.png"

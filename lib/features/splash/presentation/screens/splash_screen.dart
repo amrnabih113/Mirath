@@ -64,6 +64,7 @@ class _SplashScreenState extends State<SplashScreen>
     final isDarkMode = Theme.of(context).brightness == Brightness.dark;
 
     return Scaffold(
+      backgroundColor: MyColors.primaryShade50,
       body: Center(
         child: AnimatedBuilder(
           animation: _controller,
@@ -80,8 +81,7 @@ class _SplashScreenState extends State<SplashScreen>
                       width: 120,
                       height: 120,
                       decoration: BoxDecoration(
-                        color: MyColors.primaryColor,
-                        borderRadius: BorderRadius.circular(30),
+                        borderRadius: BorderRadius.circular(20),
                         boxShadow: [
                           BoxShadow(
                             color: MyColors.primaryColor.withAlpha(30),
@@ -90,12 +90,14 @@ class _SplashScreenState extends State<SplashScreen>
                           ),
                         ],
                       ),
-                      child: Icon(
-                        Icons.apps_rounded,
-                        size: 60,
-                        color: isDarkMode
-                            ? MyColors.textPrimaryDark
-                            : MyColors.white,
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.circular(20),
+                        child: Image.asset(
+                          'assets/images/Launcher_icon.png',
+                          width: 120,
+                          height: 120,
+                          fit: BoxFit.contain,
+                        ),
                       ),
                     ),
                     SizedBox(height: MySizes.spaceXl(context)),

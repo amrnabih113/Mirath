@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:hugeicons/hugeicons.dart';
 import 'package:hugeicons_pro/hugeicons.dart';
 
 import 'package:mirath/core/helpers/responsive_helper.dart';
