@@ -4,12 +4,8 @@ class MyConstants {
   // app name
   static const String appName = "Mirath";
 
-  // Google Sign-In configuration
-  // TODO: Replace with your Web Client ID from Google Cloud Console
-  // Go to: https://console.cloud.google.com/apis/credentials
-  // Create OAuth 2.0 Client ID (Web application type)
   static const String googleServerClientId =
-      '551081167484-v7ute4pkh7nvb7v4gu8383cchvc0jd6h.apps.googleusercontent.com';
+      "551081167484-bruuovdj7oal5gsej29vbja5803a3520.apps.googleusercontent.com";
 
   // storage keys
   static const String onboardingKey = 'has_seen_onboarding';
@@ -49,4 +45,20 @@ class MyConstants {
   static const String isVerified = "api/v1/auth/is-verified";
   // get
   static const String checkSetup = "api/v1/auth/check-setup";
+
+  // ***User endpoints***
+  // post
+  static const String setupProfile = "api/v1/users/profile/setup";
+  // get
+  static const String getMe = "api/v1/users/me";
+  // post
+  static const String followUser = "api/v1/users/{id}/follow";
+  // delete
+  static const String unfollowUser = "api/v1/users/{id}/follow";
+
+  // ***Interests endpoints***
+  // get
+  static const String getAllInterests = "api/v1/interests";
+  // get
+  static const String getInterestById = "api/v1/interests/{id}";
 }

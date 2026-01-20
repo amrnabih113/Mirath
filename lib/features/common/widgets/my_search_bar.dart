@@ -45,8 +45,8 @@ class MySearchBar extends StatelessWidget {
             color: MyColors.textSecondary,
           ),
         ),
-        filled: true,
-        fillColor: MyColors.primaryShade300,
+        filled: false,
+        fillColor: MyColors.primaryShade100,
         contentPadding: EdgeInsets.symmetric(
           vertical: MySizes.spaceMd(context),
           horizontal: MySizes.spaceMd(context),

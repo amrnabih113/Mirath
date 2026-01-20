@@ -8,11 +8,15 @@ class SearchTextField extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final _Searchcontroller = TextEditingController();
+    final searchcontroller = TextEditingController();
     return Padding(
-      padding: EdgeInsets.only(right: MySizes.spaceMd(context)),
+      padding: EdgeInsets.only(
+        right: MySizes.spaceMd(context),
+        top: MySizes.spaceSm(context),
+        bottom: MySizes.spaceMd(context),
+      ),
       child: TextField(
-        controller: _Searchcontroller,
+        controller: searchcontroller,
         cursorColor: MyColors.primaryShade500,
         decoration: InputDecoration(
           contentPadding: EdgeInsets.symmetric(

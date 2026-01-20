@@ -44,7 +44,7 @@ class MyTextFieldTheme {
       hintStyle: TextStyle(fontSize: fontSize, color: MyColors.textSecondary),
       errorStyle: const TextStyle(fontStyle: FontStyle.normal),
       floatingLabelStyle: TextStyle(
-        color: MyColors.textPrimary.withOpacity(0.8),
+        color: MyColors.textPrimary..withValues(alpha: 0.8),
       ),
       border: _border(),
       enabledBorder: _border(),
@@ -88,7 +88,7 @@ class MyTextFieldTheme {
       hintStyle: TextStyle(fontSize: fontSize, color: MyColors.textPrimaryDark),
       errorStyle: const TextStyle(fontStyle: FontStyle.normal),
       floatingLabelStyle: TextStyle(
-        color: MyColors.textPrimaryDark.withOpacity(0.8),
+        color: MyColors.textPrimaryDark..withValues(alpha: 0.8),
       ),
       border: _border(),
       enabledBorder: _border(),

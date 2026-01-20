@@ -20,6 +20,8 @@ class MyColors {
 
   static const Color secondaryColor = primaryShade700;
 
+  static const Color lightCircle = Color(0xffE3D9CD); // Base primary color
+
   // //Gradient Colors
   // static const Gradient orangeGradient = LinearGradient(
   //   begin: Alignment.centerRight,
@@ -80,7 +82,7 @@ class MyColors {
     0xFFD4C9BD,
   ).withValues(alpha: 0.9); // Muted warm text
 
-  static const Color cardColor = Color.fromARGB(255, 227, 217, 205);
+  static const Color cardColor = primaryShade50;
   // Background Colors
   static const Color light = Color(0xFFFBFAF8); // Light warm background
   static const Color dark = Color(

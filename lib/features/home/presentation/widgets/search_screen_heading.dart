@@ -12,7 +12,7 @@ class SearchScreenHeading extends StatelessWidget {
       children: [
         Text(
           'Recent searches',
-          style: context.labelLarge.copyWith(
+          style: context.bodyLarge.copyWith(
             color: MyColors.darkerGrey,
             fontWeight: FontWeight.w500,
           ),
@@ -23,7 +23,7 @@ class SearchScreenHeading extends StatelessWidget {
             'Clear All',
             style: context.titleSmall.copyWith(
               color: MyColors.black,
-              fontWeight: FontWeight.w500,
+              fontWeight: FontWeight.w800,
             ),
           ),
         ),

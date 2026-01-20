@@ -4,6 +4,8 @@ import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:hugeicons/hugeicons.dart';
 import 'package:iconsax/iconsax.dart';
+import 'package:mirath/features/auth/data/models/auth_user_data.dart';
+import 'package:mirath/features/users/domain/entities/profile_setup_data.dart';
 
 import '../../../../core/helpers/my_loaders.dart';
 import '../../../../core/services/local_storage_service.dart';
@@ -16,37 +18,17 @@ import '../../../../generated/l10n.dart';
 import '../../../../injection/injection_container.dart';
 import '../../../common/widgets/screen_decoration.dart';
 import '../../../common/widgets/text_feild_with_lable.dart';
-import '../../domain/entities/user_profile.dart';
 import '../cubit/auth_cubit.dart';
 
 class SetUpProfileScreen extends StatefulWidget {
-  const SetUpProfileScreen({super.key, required this.userEntity});
-  final UserEntity userEntity;
+  const SetUpProfileScreen({super.key, required this.user});
+  final AuthUserData user;
   @override
   State<SetUpProfileScreen> createState() => _SetUpProfileScreenState();
 }
 
-// temporary user entity for testing untill the backend gives real data
-class UserEntity {
-  final String? name;
-  final String? imageUrl;
-  final String username;
-  final String email;
-  final EducationLevel? educationLevel;
-  final String? university;
-
-  UserEntity({
-    this.name,
-    this.educationLevel,
-    this.imageUrl,
-    required this.username,
-    required this.email,
-    this.university,
-  });
-}
-
 class _SetUpProfileScreenState extends State<SetUpProfileScreen> {
-  EducationLevel selectedEducationLevel = EducationLevel.none;
+  EducationLevel selectedEducationLevel = EducationLevel.highSchool;
   bool isUnderGraduateSelected = false;
 
   final LocalStorageService _localStorageService = sl<LocalStorageService>();
@@ -60,12 +42,9 @@ class _SetUpProfileScreenState extends State<SetUpProfileScreen> {
   @override
   void initState() {
     super.initState();
-    _usernameController.text = widget.userEntity.username;
-    _emailController.text = widget.userEntity.email;
-    _nameController.text = widget.userEntity.name ?? '';
-    _universityController.text = widget.userEntity.university ?? '';
-    selectedEducationLevel =
-        widget.userEntity.educationLevel ?? EducationLevel.none;
+    _usernameController.text = widget.user.username;
+    _emailController.text = widget.user.email;
+    selectedEducationLevel = EducationLevel.highSchool;
   }
 
   @override
@@ -81,6 +60,49 @@ class _SetUpProfileScreenState extends State<SetUpProfileScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       extendBodyBehindAppBar: true,
+      appBar: AppBar(
+        backgroundColor: Colors.transparent,
+        elevation: 0,
+        automaticallyImplyLeading: false,
+        actions: [
+          Padding(
+            padding: EdgeInsets.only(right: MySizes.spaceMd(context)),
+            child: IconButton(
+              onPressed: () {
+                // Show confirmation dialog
+                showDialog(
+                  context: context,
+                  builder: (BuildContext context) {
+                    return AlertDialog(
+                      title: Text(S.of(context).sign_out),
+                      content: Text('Are you sure you want to sign out?'),
+                      actions: [
+                        TextButton(
+                          onPressed: () => Navigator.of(context).pop(),
+                          child: Text('Cancel'),
+                        ),
+                        TextButton(
+                          onPressed: () {
+                            Navigator.of(context).pop();
+                            context.read<AuthCubit>().signOut();
+                          },
+                          child: Text('Sign Out'),
+                        ),
+                      ],
+                    );
+                  },
+                );
+              },
+              icon: Icon(
+                Icons.logout,
+                color: MyColors.primaryShade700,
+                size: MySizes.iconMedium(context),
+              ),
+              tooltip: 'Sign Out',
+            ),
+          ),
+        ],
+      ),
 
       body: ScreenDecoration(
         dark: false,
@@ -120,7 +142,7 @@ class _SetUpProfileScreenState extends State<SetUpProfileScreen> {
                           crossAxisAlignment: CrossAxisAlignment.center,
                           children: [
                             Text(
-                              'Set Up Your Profile',
+                              S.of(context).set_up_profile,
                               style: context.displayMedium.copyWith(
                                 fontWeight: FontWeight.bold,
                                 fontFamily: GoogleFonts.sourceSans3(
@@ -134,7 +156,7 @@ class _SetUpProfileScreenState extends State<SetUpProfileScreen> {
 
                               clipBehavior: Clip.antiAlias,
                               decoration: ShapeDecoration(
-                                color: MyColors.cardColor /* Card-color */,
+                                color: MyColors.cardColor,
                                 shape: RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(24),
                                 ),
@@ -181,7 +203,9 @@ class _SetUpProfileScreenState extends State<SetUpProfileScreen> {
                                           ),
                                           child: Row(
                                             children: [
-                                              Text("Upload Picture"),
+                                              Text(
+                                                S.of(context).upload_picture,
+                                              ),
                                               SizedBox(
                                                 width: MySizes.spaceSm(context),
                                               ),
@@ -198,44 +222,53 @@ class _SetUpProfileScreenState extends State<SetUpProfileScreen> {
                                     ),
                                     SizedBox(height: MySizes.spaceLg(context)),
                                     TextFeildWithLable(
-                                      label: "Name",
-                                      hintText: "Enter your name",
+                                      label: S.of(context).name,
+                                      hintText: S.of(context).enter_your_name,
                                       controller: _nameController,
                                     ),
                                     SizedBox(height: MySizes.spaceSm(context)),
                                     TextFeildWithLable(
-                                      label: "Username",
-                                      hintText: "Choose a username",
+                                      label: S.of(context).username,
+                                      readOnly: true,
+                                      hintText: S.of(context).choose_username,
                                       controller: _usernameController,
                                     ),
                                     SizedBox(height: MySizes.spaceSm(context)),
                                     TextFeildWithLable(
-                                      label: "Email",
-                                      hintText: "Enter your email",
+                                      label: S.of(context).email,
+                                      readOnly: true,
+                                      hintText: S.of(context).enter_your_email,
                                       controller: _emailController,
                                     ),
                                     SizedBox(height: MySizes.spaceSm(context)),
                                     Text(
-                                      "Education Level",
+                                      S.of(context).education_level,
                                       style: context.bodyLarge,
                                       textAlign: TextAlign.left,
                                     ),
                                     SizedBox(height: MySizes.spaceXs(context)),
                                     DropdownButtonFormField<String>(
-                                      hint: Text("Select your education level"),
+                                      value: selectedEducationLevel.name,
+                                      hint: Text(
+                                        S.of(context).select_education_level,
+                                      ),
                                       items: [
                                         DropdownMenuItem(
                                           value: EducationLevel.highSchool.name,
-                                          child: Text("High School"),
+                                          child: Text(
+                                            S.of(context).high_school,
+                                          ),
                                         ),
                                         DropdownMenuItem(
                                           value:
                                               EducationLevel.underGraduate.name,
-                                          child: Text("Undergraduate"),
+                                          child: Text(
+                                            S.of(context).undergraduate,
+                                          ),
                                         ),
                                         DropdownMenuItem(
                                           value: EducationLevel.graduated.name,
-                                          child: Text("Graduated"),
+                                          child: Text(S.of(context).graduated),
                                         ),
                                       ],
                                       onChanged: (value) {
@@ -259,8 +292,11 @@ class _SetUpProfileScreenState extends State<SetUpProfileScreen> {
                                         height: MySizes.spaceSm(context),
                                       ),
                                       TextFeildWithLable(
-                                        label: "University Name",
-                                        hintText: "Enter your university name",
+                                        label: S.of(context).university_name,
+                                        hintText: S
+                                            .of(context)
+                                            .enter_university_name,
+                                        controller: _universityController,
                                       ),
                                     ],
                                   ],
@@ -272,23 +308,52 @@ class _SetUpProfileScreenState extends State<SetUpProfileScreen> {
                               width: MySizes.buttonWidth(context),
                               child: ElevatedButton(
                                 onPressed: () {
-                                  final userProfile = UserProfile(
+                                  // Add basic validation
+                                  if (_nameController.text.isEmpty) {
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                      const SnackBar(
+                                        content: Text('Please enter your name'),
+                                        backgroundColor: Colors.red,
+                                      ),
+                                    );
+                                    return;
+                                  }
+
+                                  if (isUnderGraduateSelected &&
+                                      (_universityController.text.isEmpty ||
+                                          _universityController.text.length <
+                                              2)) {
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                      const SnackBar(
+                                        content: Text(
+                                          'Please enter a valid university name (at least 2 characters)',
+                                        ),
+                                        backgroundColor: Colors.red,
+                                      ),
+                                    );
+                                    return;
+                                  }
+
+                                  final userProfile = ProfileSetupData(
                                     name: _nameController.text,
-                                    username: _usernameController.text,
-                                    email: _emailController.text,
-                                    educationLevel: selectedEducationLevel,
+                                    levelOfEducation:
+                                        selectedEducationLevel.serverValue,
                                     interests: [],
+                                    university:
+                                        _universityController.text.isEmpty
+                                        ? null
+                                        : _universityController.text,
                                   );
                                   context.push(
                                     '/interests',
                                     extra: userProfile,
                                   );
                                 },
-
                                 child: Text(
-                                  'Next',
+                                  S.of(context).next,
                                   style: context.titleMedium.copyWith(
-                                    color: Colors.black,
+                                    color: MyColors.light,
+                                    fontWeight: FontWeight.bold,
                                   ),
                                 ),
                               ),

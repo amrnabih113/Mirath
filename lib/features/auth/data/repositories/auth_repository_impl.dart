@@ -6,16 +6,16 @@ import 'package:mirath/core/utils/my_logger.dart';
 
 import '../../../../core/error/failuors.dart';
 import '../../../../core/services/secure_storage_service.dart';
+import '../../../../core/services/user_cache_service.dart';
 import '../../domain/entities/signin_data.dart';
 import '../../domain/entities/signup_data.dart';
-import '../../domain/entities/user_profile.dart';
 import '../../domain/repositories/auth_repository.dart';
 import '../data_sources/auth_remote_data_source.dart';
-import '../models/user_profile_model.dart';
 
 class AuthRepositoryImpl implements AuthRepository {
   final AuthRemoteDataSource _remoteDataSource;
   final SecureStorageService _secureStorage;
+  final UserCacheService _userCache;
 
   String? _cachedEmail;
   String? _cachedResetToken;
@@ -23,8 +23,10 @@ class AuthRepositoryImpl implements AuthRepository {
   AuthRepositoryImpl({
     required AuthRemoteDataSource remoteDataSource,
     required SecureStorageService secureStorage,
+    required UserCacheService userCache,
   }) : _remoteDataSource = remoteDataSource,
-       _secureStorage = secureStorage;
+       _secureStorage = secureStorage,
+       _userCache = userCache;
 
   @override
   Future<Either<Failure, void>> signIn(SigninData signinData) async {
@@ -37,6 +39,12 @@ class AuthRepositoryImpl implements AuthRepository {
       // Save access token if returned
       if (response.accessToken != null) {
         await _secureStorage.saveAccessToken(response.accessToken!);
+      }
+
+      // Cache user data if returned
+      if (response.user != null) {
+        await _userCache.saveUser(response.user!);
+        MyLogger.info('[AuthRepository] User data cached successfully');
       }
 
       // Cache email for verification flows
@@ -80,6 +88,8 @@ class AuthRepositoryImpl implements AuthRepository {
       _cachedEmail = null;
       await _secureStorage.clearEmail();
       await _secureStorage.clearTokens();
+      await _userCache.clearUser();
+      MyLogger.info('[AuthRepository] User cache cleared on signout');
       return const Right(null);
     } catch (e) {
       return Left(mapExceptionToFailure(e));
@@ -167,6 +177,12 @@ class AuthRepositoryImpl implements AuthRepository {
       if (response.accessToken != null) {
         await _secureStorage.saveAccessToken(response.accessToken!);
         MyLogger.debug("Access token saved");
+      }
+
+      // Cache user data if available in response
+      if (response.user != null) {
+        await _userCache.saveUser(response.user!);
+        MyLogger.debug("User data cached successfully");
       }
 
       _cachedEmail = account.email;
@@ -274,17 +290,10 @@ class AuthRepositoryImpl implements AuthRepository {
   }
 
   @override
-  Future<Either<Failure, void>> setUpProfile(UserProfile userProfile) async {
+  Future<Either<Failure, bool>> checkSetup() async {
     try {
-      // Convert entity to model for serialization
-      // ignore: unused_local_variable
-      final profileModel = UserProfileModel.fromEntity(userProfile);
-
-      // TODO: Add profile setup endpoint to remote data source when API is available
-      // For now, this is a placeholder
-      // await _remoteDataSource.setUpProfile(profileModel);
-
-      return const Right(null);
+      final response = await _remoteDataSource.checkSetup();
+      return Right(response.isSetupCompleted);
     } catch (e) {
       return Left(mapExceptionToFailure(e));
     }

@@ -33,7 +33,7 @@ class LocalStorageService {
   }
 
   /// Mark profile as setup
-  Future<bool>  setProfileSetup(bool value) async {
+  Future<bool> setProfileSetup(bool value) async {
     return await _prefs.setBool(MyConstants.profileSetupKey, value);
   }
 
@@ -54,6 +54,25 @@ class LocalStorageService {
     return await _prefs.remove(MyConstants.profileSetupKey);
   }
 
+  // ========== Generic Data Methods ==========
 
+  /// Save string data with key
+  Future<bool> setData(String key, String value) async {
+    return await _prefs.setString(key, value);
+  }
 
+  /// Get string data by key
+  String? getData(String key) {
+    return _prefs.getString(key);
+  }
+
+  /// Remove data by key
+  Future<bool> removeData(String key) async {
+    return await _prefs.remove(key);
+  }
+
+  /// Check if data exists by key
+  bool hasData(String key) {
+    return _prefs.containsKey(key);
+  }
 }

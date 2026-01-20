@@ -48,6 +48,10 @@ class MyBottomNavBar extends StatelessWidget {
                       horizontal: ResponsiveHelper.responsiveValue(context, 10),
                     ),
                     decoration: BoxDecoration(
+                      // border: Border.all(
+                      //   color: MyColors.primaryShade800,
+                      //   width: 1.2,
+                      // ),
                       color: MyColors.white,
                       borderRadius: BorderRadius.circular(
                         MySizes.borderRadiusMd(context),

@@ -8,6 +8,7 @@ import 'custom_themes/chip_theme.dart';
 import 'custom_themes/dropdown_menu_theme.dart';
 import 'custom_themes/elevation_button_theme.dart';
 import 'custom_themes/outlined_buttom_theme.dart';
+import 'custom_themes/text_button_theme.dart';
 import 'custom_themes/text_field_theme.dart';
 import 'custom_themes/text_theme.dart';
 
@@ -29,6 +30,7 @@ class MyTheme {
         context,
       ),
       outlinedButtonTheme: MyOutlinedButtonTheme.lightTheme,
+      textButtonTheme: MyTextButtonTheme.lightTextButtonTheme(context),
       inputDecorationTheme: MyTextFieldTheme.lightInputDecorationThemeData(
         context,
       ),
@@ -53,6 +55,7 @@ class MyTheme {
         context,
       ),
       outlinedButtonTheme: MyOutlinedButtonTheme.darkTheme,
+      textButtonTheme: MyTextButtonTheme.darkTextButtonTheme(context),
       inputDecorationTheme: MyTextFieldTheme.darkInputDecorationThemeData(
         context,
       ),

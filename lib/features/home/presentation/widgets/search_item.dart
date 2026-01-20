@@ -20,7 +20,7 @@ class SearchItem extends StatelessWidget {
         color: MyColors.primaryShade300,
       ),
       title: Text(
-        'IEEE',
+        'Quantum Mechanics',
         style: context.bodySmall.copyWith(
           fontSize: ResponsiveHelper.responsiveValue(context, 16),
           fontWeight: FontWeight.w400,

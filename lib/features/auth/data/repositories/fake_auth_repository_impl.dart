@@ -1,9 +1,9 @@
 import 'package:dartz/dartz.dart';
+import 'package:flutter/foundation.dart';
 
 import '../../../../core/error/failuors.dart';
 import '../../domain/entities/signin_data.dart';
 import '../../domain/entities/signup_data.dart';
-import '../../domain/entities/user_profile.dart';
 import '../../domain/repositories/auth_repository.dart';
 
 /// Fake implementation of AuthRepository for testing purposes
@@ -131,7 +131,9 @@ class FakeAuthRepositoryImpl implements AuthRepository {
 
     _otpSent = true;
     // In real app, OTP would be sent to email/phone
-    print('Fake OTP sent: $validOtp to $_currentEmail');
+    if (kDebugMode) {
+      print('Fake OTP sent: $validOtp to $_currentEmail');
+    }
     return const Right(null);
   }
 
@@ -172,7 +174,9 @@ class FakeAuthRepositoryImpl implements AuthRepository {
 
     _resetOtpSent = true;
     // In real app, OTP would be sent to email
-    print('Fake Reset OTP sent: $validOtp to $_currentEmail');
+    if (kDebugMode) {
+      print('Fake Reset OTP sent: $validOtp to $_currentEmail');
+    }
     return const Right(null);
   }
 
@@ -216,23 +220,19 @@ class FakeAuthRepositoryImpl implements AuthRepository {
     _currentPassword = null;
   }
 
+  @override
+  Future<Either<Failure, bool>> checkSetup() async {
+    // Simulate network delay
+    await Future.delayed(const Duration(milliseconds: 500));
+
+    // For testing, return true if user is signed in and verified
+    return Right(false);
+  }
+
   // Helper method to set custom state for testing
   void setCustomState({bool? isSignedIn, bool? isVerified, String? email}) {
     if (isSignedIn != null) _isSignedIn = isSignedIn;
     if (isVerified != null) _isVerified = isVerified;
     if (email != null) _currentEmail = email;
-  }
-
-  @override
-  Future<Either<Failure, void>> setUpProfile(UserProfile userProfile) async {
-    await Future.delayed(const Duration(seconds: 1)); // Simulate network delay
-
-    if (!_isSignedIn) {
-      return Left(ServerFailure('User not authenticated'));
-    }
-
-    // In a real implementation, this would save to a database
-    // For now, we just simulate success
-    return const Right(null);
   }
 }
