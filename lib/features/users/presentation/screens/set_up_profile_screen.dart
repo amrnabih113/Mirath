@@ -18,7 +18,7 @@ import '../../../../generated/l10n.dart';
 import '../../../../injection/injection_container.dart';
 import '../../../common/widgets/screen_decoration.dart';
 import '../../../common/widgets/text_feild_with_lable.dart';
-import '../cubit/auth_cubit.dart';
+import '../../../auth/presentation/cubit/auth_cubit.dart';
 
 class SetUpProfileScreen extends StatefulWidget {
   const SetUpProfileScreen({super.key, required this.user});
@@ -248,7 +248,7 @@ class _SetUpProfileScreenState extends State<SetUpProfileScreen> {
                                     ),
                                     SizedBox(height: MySizes.spaceXs(context)),
                                     DropdownButtonFormField<String>(
-                                      value: selectedEducationLevel.name,
+                                      initialValue: selectedEducationLevel.name,
                                       hint: Text(
                                         S.of(context).select_education_level,
                                       ),

@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:mirath/core/services/user_cache_service.dart';
 import 'package:mirath/features/auth/data/models/auth_user_data.dart';
+import 'package:mirath/features/interests/presentation/cubit/interests_cubit.dart';
 import 'package:mirath/features/interests/presentation/screens/interests_screen.dart';
 import 'package:mirath/features/auth/presentation/screens/signin_screen.dart';
 import 'package:mirath/features/home/presentation/screens/home_screen.dart';
@@ -11,7 +12,7 @@ import 'package:mirath/features/home/presentation/screens/search_screen.dart';
 import 'package:mirath/features/users/domain/entities/profile_setup_data.dart';
 import 'features/Layout/presentation/cubit/layout_cubit.dart';
 import 'features/Layout/presentation/screens/main_layout.dart';
-import 'features/auth/presentation/screens/set_up_profile_screen.dart';
+import 'features/users/presentation/screens/set_up_profile_screen.dart';
 import 'core/services/local_storage_service.dart';
 import 'core/utils/my_logger.dart';
 import 'core/utils/page_transitions.dart';
@@ -296,7 +297,10 @@ final appRouter = GoRouter(
           );
         }
         return PageTransitions.smoothTransition(
-          InterestsScreen(userProfile: userProfile),
+          BlocProvider.value(
+            value: sl<InterestsCubit>(),
+            child: InterestsScreen(userProfile: userProfile),
+          ),
         );
       },
     ),
