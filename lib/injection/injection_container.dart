@@ -1,6 +1,7 @@
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:get_it/get_it.dart';
 import 'package:mirath/features/auth/data/data_sources/auth_remote_data_source_impl.dart';
+import 'package:mirath/features/auth/data/repositories/auth_repository_impl.dart';
 // ignore: unused_import
 import 'package:mirath/features/auth/data/repositories/fake_auth_repository_impl.dart';
 
@@ -41,7 +42,7 @@ import '../features/interests/data/repositories/interests_repository_impl.dart';
 import '../features/interests/domain/repositories/interests_repository.dart';
 import '../features/interests/domain/usecases/get_all_interests_usecase.dart';
 import '../features/interests/domain/usecases/get_interest_by_id_usecase.dart';
-import '../features/interests/presentation/bloc/interests_bloc.dart';
+import '../features/interests/presentation/cubit/interests_cubit.dart';
 
 final sl = GetIt.instance;
 
@@ -74,15 +75,16 @@ class DI {
     );
 
     ///   Auth Repository ///
-    // sl.registerLazySingleton<AuthRepository>(
-    //   () => AuthRepositoryImpl(
-    //     remoteDataSource: sl(),
-    //     secureStorage: sl(),
-    //     userCache: sl(),
-    //   ),
-    // );
+    ///
+    sl.registerLazySingleton<AuthRepository>(
+      () => AuthRepositoryImpl(
+        remoteDataSource: sl(),
+        secureStorage: sl(),
+        userCache: sl(),
+      ),
+    );
 
-    sl.registerLazySingleton<AuthRepository>(() => FakeAuthRepositoryImpl());
+    // sl.registerLazySingleton<AuthRepository>(() => FakeAuthRepositoryImpl());
 
     /// Auth UseCases ///
     sl.registerLazySingleton(() => SignInUseCase(sl()));
@@ -155,9 +157,9 @@ class DI {
     sl.registerLazySingleton(() => GetAllInterestsUsecase(sl()));
     sl.registerLazySingleton(() => GetInterestByIdUsecase(sl()));
 
-    /// Interests Bloc ///
+    /// Interests Cubit ///
     sl.registerFactory(
-      () => InterestsBloc(
+      () => InterestsCubit(
         getAllInterestsUsecase: sl(),
         getInterestByIdUsecase: sl(),
       ),

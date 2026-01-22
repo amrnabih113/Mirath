@@ -3,7 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:mirath/core/services/user_cache_service.dart';
 import 'package:mirath/features/auth/data/models/auth_user_data.dart';
-import 'package:mirath/features/auth/presentation/screens/interests_screen.dart';
+import 'package:mirath/features/interests/presentation/screens/interests_screen.dart';
 import 'package:mirath/features/auth/presentation/screens/signin_screen.dart';
 import 'package:mirath/features/home/presentation/screens/home_screen.dart';
 import 'package:mirath/features/home/presentation/screens/search_result_screen.dart';
