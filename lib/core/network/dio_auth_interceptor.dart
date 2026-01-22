@@ -17,6 +17,11 @@ class AuthInterceptor extends Interceptor {
   bool _isRefreshing = false;
   Completer<String?>? _refreshCompleter;
 
+  // Retry configuration
+  static const int _maxRetries = 3;
+  static const Duration _initialRetryDelay = Duration(seconds: 1);
+  static const Duration _refreshTimeout = Duration(seconds: 30);
+
   AuthInterceptor({
     required this.dio,
     required this.secureStorage,
@@ -58,7 +63,7 @@ class AuthInterceptor extends Interceptor {
     );
 
     try {
-      final newToken = await _refreshToken();
+      final newToken = await _refreshTokenWithRetry();
 
       if (newToken == null) {
         await _handleAuthFailure();
@@ -70,14 +75,14 @@ class AuthInterceptor extends Interceptor {
       final response = await dio.fetch(err.requestOptions);
       return handler.resolve(response);
     } catch (e) {
-      MyLogger.error('[AuthInterceptor] Retry failed: $e');
+      MyLogger.error('[AuthInterceptor] Token refresh retry failed: $e');
+      await _handleAuthFailure();
       return handler.next(err);
     }
   }
 
-  /// Refreshes the access token. Uses a completer to ensure only one refresh
-  /// happens at a time - concurrent 401s will wait for the same refresh.
-  Future<String?> _refreshToken() async {
+  /// Refreshes the access token with retry logic for network errors
+  Future<String?> _refreshTokenWithRetry() async {
     // If already refreshing, wait for the existing refresh to complete
     if (_isRefreshing && _refreshCompleter != null) {
       MyLogger.info('[AuthInterceptor] Waiting for existing refresh...');
@@ -88,45 +93,108 @@ class AuthInterceptor extends Interceptor {
     _refreshCompleter = Completer<String?>();
 
     try {
-      MyLogger.info('[AuthInterceptor] Refreshing token...');
+      String? result;
+      for (int attempt = 1; attempt <= _maxRetries; attempt++) {
+        try {
+          MyLogger.info(
+            '[AuthInterceptor] Refreshing token (attempt $attempt/$_maxRetries)...',
+          );
 
-      final response = await dio.post(
-        MyConstants.refreshToken,
-        options: Options(
-          headers: {'Authorization': null},
-          // Ensure cookies are sent for refresh token
-          extra: {'withCredentials': true},
-        ),
-      );
+          final response = await dio
+              .post(
+                MyConstants.refreshToken,
+                options: Options(
+                  headers: {'Authorization': null},
+                  // Ensure cookies are sent for refresh token
+                  extra: {'withCredentials': true},
+                  sendTimeout: _refreshTimeout,
+                  receiveTimeout: _refreshTimeout,
+                ),
+              )
+              .timeout(_refreshTimeout);
 
-      final newAccessToken = response.data['access_token'] as String?;
+          final newAccessToken = response.data['access_token'] as String?;
 
-      if (newAccessToken != null) {
-        await secureStorage.saveAccessToken(newAccessToken);
-        MyLogger.info('[AuthInterceptor] Token refreshed successfully');
-        _refreshCompleter!.complete(newAccessToken);
-        return newAccessToken;
-      } else {
-        MyLogger.warning(
-          '[AuthInterceptor] No access token in refresh response',
-        );
-        _refreshCompleter!.complete(null);
-        return null;
+          if (newAccessToken != null) {
+            await secureStorage.saveAccessToken(newAccessToken);
+            MyLogger.info('[AuthInterceptor] Token refreshed successfully');
+            result = newAccessToken;
+            break; // Success, exit retry loop
+          } else {
+            MyLogger.warning(
+              '[AuthInterceptor] No access token in refresh response',
+            );
+            // This is likely an auth failure, not a network issue
+            result = null;
+            break;
+          }
+        } on DioException catch (e) {
+          if (_isNetworkError(e)) {
+            MyLogger.warning(
+              '[AuthInterceptor] Network error on attempt $attempt/$_maxRetries: ${e.message}',
+            );
+
+            if (attempt < _maxRetries) {
+              final delay =
+                  _initialRetryDelay * (attempt * 2); // Exponential backoff
+              MyLogger.info(
+                '[AuthInterceptor] Retrying in ${delay.inSeconds} seconds...',
+              );
+              await Future.delayed(delay);
+              continue;
+            } else {
+              MyLogger.error(
+                '[AuthInterceptor] All retry attempts failed due to network errors',
+              );
+              result = null;
+              break;
+            }
+          } else {
+            // Non-network error (likely auth failure), don't retry
+            MyLogger.error(
+              '[AuthInterceptor] Auth error during token refresh: ${e.message}',
+            );
+            result = null;
+            break;
+          }
+        } catch (e) {
+          MyLogger.error(
+            '[AuthInterceptor] Unexpected error during token refresh: $e',
+          );
+          result = null;
+          break;
+        }
       }
-    } catch (e) {
-      MyLogger.error('[AuthInterceptor] Token refresh failed: $e');
-      _refreshCompleter!.complete(null);
-      return null;
+
+      _refreshCompleter!.complete(result);
+      return result;
     } finally {
       _isRefreshing = false;
       _refreshCompleter = null;
     }
   }
 
+  /// Checks if a DioException is a network-related error that might be temporary
+  bool _isNetworkError(DioException error) {
+    switch (error.type) {
+      case DioExceptionType.connectionTimeout:
+      case DioExceptionType.sendTimeout:
+      case DioExceptionType.receiveTimeout:
+      case DioExceptionType.connectionError:
+        return true;
+      case DioExceptionType.badResponse:
+        // Consider 5xx server errors as temporary network issues
+        final statusCode = error.response?.statusCode;
+        return statusCode != null && statusCode >= 500;
+      default:
+        return false;
+    }
+  }
+
   /// Handles authentication failure by clearing tokens and notifying listeners
   Future<void> _handleAuthFailure() async {
     MyLogger.warning(
-      '[AuthInterceptor] Authentication failed, clearing tokens...',
+      '[AuthInterceptor] Authentication failed after all retries, clearing tokens...',
     );
     await secureStorage.clearTokens();
     await secureStorage.clearEmail();

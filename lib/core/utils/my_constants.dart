@@ -13,6 +13,7 @@ class MyConstants {
   static const String accessTokenKey = 'access_token';
   static const String refreshTokenKey = 'refresh_token';
   static const String emailKey = 'user_email';
+  static const String setupStatusKey = 'setup_status';
   // base url
   // Use 10.0.2.2 for Android emulator (maps to host machine's localhost)
   // Use your computer's IP (e.g., 192.168.x.x) for real devices

@@ -6,12 +6,12 @@ import 'package:mirath/core/utils/my_extenstions.dart';
 import 'package:mirath/core/utils/my_sizes.dart';
 
 class SeeAllButton extends StatelessWidget {
-  const SeeAllButton({super.key});
-
+  const SeeAllButton({super.key, this.onTap});
+  final void Function()? onTap;
   @override
   Widget build(BuildContext context) {
     return InkWell(
-      onTap: () {},
+      onTap: onTap,
       child: Container(
         decoration: BoxDecoration(
           color: MyColors.primaryShade700,

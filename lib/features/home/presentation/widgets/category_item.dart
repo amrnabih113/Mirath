@@ -4,21 +4,34 @@ import 'package:mirath/core/utils/my_colors.dart';
 import 'package:mirath/core/utils/my_extenstions.dart';
 import 'package:mirath/core/utils/my_sizes.dart';
 
-class CategoryItems extends StatelessWidget {
-  const CategoryItems({super.key});
-
+class CategoryItem extends StatelessWidget {
+  const CategoryItem({
+    super.key,
+    required this.categoryName,
+    this.onTap,
+    this.isSelected = false,
+  });
+  final String categoryName;
+  final VoidCallback? onTap;
+  final bool isSelected;
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: () {},
+      onTap: onTap,
       child: Container(
         margin: EdgeInsets.only(
           right: ResponsiveHelper.responsiveValue(context, 8),
         ),
-        height: ResponsiveHelper.responsiveValue(context, 40),
+        height: ResponsiveHelper.responsiveValue(context, 35),
         decoration: BoxDecoration(
-          border: Border.all(color: MyColors.primaryShade600),
-          color: MyColors.primaryShade200,
+          border: Border.all(
+            color: isSelected
+                ? MyColors.primaryShade700
+                : MyColors.primaryShade600,
+          ),
+          color: isSelected
+              ? MyColors.primaryShade500
+              : MyColors.primaryShade100,
           borderRadius: BorderRadius.circular(MySizes.borderRadiusSm(context)),
         ),
 
@@ -26,7 +39,7 @@ class CategoryItems extends StatelessWidget {
           child: Padding(
             padding: EdgeInsets.all(MySizes.spaceSm(context)),
             child: Text(
-              'Computer Science',
+              categoryName,
               style: context.bodySmall.copyWith(
                 color: MyColors.primaryShade900,
                 fontWeight: FontWeight.w800,

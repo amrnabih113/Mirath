@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:mirath/core/services/user_cache_service.dart';
 import 'package:mirath/features/auth/data/models/auth_user_data.dart';
+import 'package:mirath/features/home/presentation/screens/recentely_published_screen.dart';
 import 'package:mirath/features/interests/presentation/cubit/interests_cubit.dart';
 import 'package:mirath/features/interests/presentation/screens/interests_screen.dart';
 import 'package:mirath/features/auth/presentation/screens/signin_screen.dart';
@@ -314,6 +315,11 @@ final appRouter = GoRouter(
       path: '/search-results',
       pageBuilder: (context, state) =>
           PageTransitions.smoothTransition(const SearchResultScreen()),
+    ),
+    GoRoute(
+      path: '/recentely-published',
+      pageBuilder: (context, state) =>
+          PageTransitions.smoothTransition(const RecentelyPublishedScreen()),
     ),
   ],
 );

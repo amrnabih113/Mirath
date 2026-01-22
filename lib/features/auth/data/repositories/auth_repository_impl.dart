@@ -292,8 +292,20 @@ class AuthRepositoryImpl implements AuthRepository {
   @override
   Future<Either<Failure, bool>> checkSetup() async {
     try {
+      // First check local cache
+      final cachedStatus = await _secureStorage.getSetupStatus();
+      if (cachedStatus != null) {
+        return Right(cachedStatus);
+      }
+
+      // If no cached value, fetch from API
       final response = await _remoteDataSource.checkSetup();
-      return Right(response.isSetupCompleted);
+      final isSetupCompleted = response.isSetupCompleted;
+
+      // Cache the result for future use
+      await _secureStorage.saveSetupStatus(isSetupCompleted);
+
+      return Right(isSetupCompleted);
     } catch (e) {
       return Left(mapExceptionToFailure(e));
     }

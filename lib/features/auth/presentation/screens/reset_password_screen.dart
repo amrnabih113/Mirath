@@ -144,35 +144,32 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
                                   ),
                                   SizedBox(height: MySizes.spaceLg(context)),
 
-                                  SizedBox(
-                                    width: MySizes.buttonWidth(context),
-                                    child: BlocBuilder<AuthCubit, AuthState>(
-                                      builder: (context, state) {
-                                        final isLoading =
-                                            state.status == AuthStatus.loading;
+                                  BlocBuilder<AuthCubit, AuthState>(
+                                    builder: (context, state) {
+                                      final isLoading =
+                                          state.status == AuthStatus.loading;
 
-                                        return ElevatedButton(
-                                          onPressed:
-                                              (!isButtonEnabled || isLoading)
-                                              ? null
-                                              : _handleResetPassword,
+                                      return ElevatedButton(
+                                        onPressed:
+                                            (!isButtonEnabled || isLoading)
+                                            ? null
+                                            : _handleResetPassword,
 
-                                          child: isLoading
-                                              ? const SizedBox(
-                                                  height: 22,
-                                                  width: 22,
-                                                  child:
-                                                      CircularProgressIndicator(
-                                                        strokeWidth: 2,
-                                                        color: MyColors.light,
-                                                      ),
-                                                )
-                                              : Text(
-                                                  S.of(context).Update_password,
-                                                ),
-                                        );
-                                      },
-                                    ),
+                                        child: isLoading
+                                            ? const SizedBox(
+                                                height: 22,
+                                                width: 22,
+                                                child:
+                                                    CircularProgressIndicator(
+                                                      strokeWidth: 2,
+                                                      color: MyColors.light,
+                                                    ),
+                                              )
+                                            : Text(
+                                                S.of(context).Update_password,
+                                              ),
+                                      );
+                                    },
                                   ),
                                 ],
                               ),

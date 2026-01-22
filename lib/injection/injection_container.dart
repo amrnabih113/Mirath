@@ -119,6 +119,7 @@ class DI {
         setUpProfileUseCase: sl(),
         checkSetupUseCase: sl(),
         localStorage: sl(),
+        secureStorage: sl(),
       ),
     ); // Cubit
 

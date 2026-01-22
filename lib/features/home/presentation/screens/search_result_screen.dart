@@ -15,25 +15,19 @@ class SearchResultScreen extends StatelessWidget {
         preferredSize: Size.fromHeight(
           ResponsiveHelper.responsiveValue(context, 50),
         ),
-        child: SafeArea(
-          bottom: false,
-          child: AppBar(
-            toolbarHeight: ResponsiveHelper.responsiveValue(context, 50),
-            leadingWidth: ResponsiveHelper.responsiveValue(context, 50),
-            leading: MyBackIcon(),
-            titleSpacing: 0,
-            title: SearchTextField(),
-          ),
+        child: AppBar(
+          toolbarHeight: ResponsiveHelper.responsiveValue(context, 50),
+          leadingWidth: ResponsiveHelper.responsiveValue(context, 50),
+          leading: MyBackIcon(),
+          titleSpacing: 0,
+          title: SearchTextField(),
         ),
       ),
 
       body: LayoutBuilder(
         builder: (BuildContext context, BoxConstraints constraints) {
           return Padding(
-            padding: EdgeInsets.symmetric(
-              horizontal: ResponsiveHelper.responsiveValue(context, 14),
-              vertical: ResponsiveHelper.responsiveValue(context, 0),
-            ),
+            padding: MySizes.paddingMd(context),
             child: ListView.separated(
               separatorBuilder: (context, index) =>
                   SizedBox(height: MySizes.spaceXs(context)),
