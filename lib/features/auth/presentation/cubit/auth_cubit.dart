@@ -1,11 +1,11 @@
 ﻿import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
-import 'package:mirath/core/error/failuors.dart';
-import 'package:mirath/core/helpers/failure_handler.dart';
-import 'package:mirath/core/services/local_storage_service.dart';
-import 'package:mirath/core/services/secure_storage_service.dart';
-import 'package:mirath/features/users/domain/entities/profile_setup_data.dart';
-import 'package:mirath/features/users/domain/usecases/setup_profile_usecase.dart';
+import '../../../../core/error/failuors.dart';
+import '../../../../core/helpers/failure_handler.dart';
+import '../../../../core/services/local_storage_service.dart';
+import '../../../../core/services/secure_storage_service.dart';
+import '../../../users/domain/entities/profile_setup_data.dart';
+import '../../../users/domain/usecases/setup_profile_usecase.dart';
 
 import '../../../../core/usecases/no_params.dart';
 import '../../../../core/utils/my_logger.dart';

@@ -2,8 +2,8 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:mirath/core/utils/my_extenstions.dart';
-import 'package:mirath/features/auth/presentation/cubit/auth_cubit.dart';
+import '../../../../core/utils/my_extenstions.dart';
+import '../cubit/auth_cubit.dart';
 
 class TimerWidget extends StatefulWidget {
   const TimerWidget({super.key});

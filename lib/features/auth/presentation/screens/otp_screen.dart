@@ -1,15 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
-import 'package:mirath/core/helpers/my_loaders.dart';
-import 'package:mirath/core/utils/my_sizes.dart';
-import 'package:mirath/features/auth/presentation/cubit/auth_cubit.dart';
-import 'package:mirath/features/auth/presentation/widgets/otp_widget.dart';
-import 'package:mirath/features/auth/presentation/widgets/timer_widget.dart';
-import 'package:mirath/features/auth/presentation/widgets/verified_button_widget.dart';
-import 'package:mirath/features/common/widgets/my_back_icon.dart';
-import 'package:mirath/features/common/widgets/screen_decoration.dart';
-import 'package:mirath/generated/l10n.dart';
+import '../../../../core/helpers/my_loaders.dart';
+import '../../../../core/utils/my_sizes.dart';
+import '../cubit/auth_cubit.dart';
+import '../widgets/otp_widget.dart';
+import '../widgets/timer_widget.dart';
+import '../widgets/verified_button_widget.dart';
+import '../../../common/widgets/my_back_icon.dart';
+import '../../../common/widgets/screen_decoration.dart';
+import '../../../../generated/l10n.dart';
 
 class OtpScreen extends StatelessWidget {
   OtpScreen({super.key});

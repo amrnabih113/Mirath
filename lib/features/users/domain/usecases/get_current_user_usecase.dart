@@ -1,5 +1,5 @@
 import 'package:dartz/dartz.dart';
-import 'package:mirath/core/usecases/no_params.dart';
+import '../../../../core/usecases/no_params.dart';
 
 import '../../../../core/error/failuors.dart';
 import '../../../../core/usecases/usecase.dart';

@@ -1,4 +1,4 @@
-import 'package:mirath/features/users/domain/entities/user.dart';
+import '../../domain/entities/user.dart';
 
 class FieldOfStudyModel extends FieldOfStudy {
   const FieldOfStudyModel({

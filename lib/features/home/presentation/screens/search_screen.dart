@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:mirath/core/helpers/responsive_helper.dart';
-import 'package:mirath/core/utils/my_sizes.dart';
-import 'package:mirath/features/common/widgets/my_back_icon.dart';
-import 'package:mirath/features/home/presentation/widgets/search_item.dart';
-import 'package:mirath/features/home/presentation/widgets/search_screen_heading.dart';
-import 'package:mirath/features/home/presentation/widgets/search_text_field.dart';
+import '../../../../core/helpers/responsive_helper.dart';
+import '../../../../core/utils/my_sizes.dart';
+import '../../../common/widgets/my_back_icon.dart';
+import '../widgets/search_item.dart';
+import '../widgets/search_screen_heading.dart';
+import '../widgets/search_text_field.dart';
 
 class SearchScreen extends StatelessWidget {
   const SearchScreen({super.key});

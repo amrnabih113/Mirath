@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
-import 'package:mirath/core/utils/my_colors.dart';
-import 'package:mirath/core/utils/my_extenstions.dart';
-import 'package:mirath/core/utils/my_sizes.dart';
-import 'package:mirath/features/common/widgets/my_search_bar.dart';
-import 'package:mirath/features/common/widgets/screen_decoration.dart';
-import 'package:mirath/features/interests/presentation/cubit/interests_cubit.dart';
-import 'package:mirath/features/interests/presentation/widgets/interests_section_widget.dart';
-import 'package:mirath/features/interests/presentation/widgets/interests_bottom_button_widget.dart';
-import 'package:mirath/features/users/domain/entities/profile_setup_data.dart';
-import 'package:mirath/injection/injection_container.dart';
+import '../../../../core/utils/my_colors.dart';
+import '../../../../core/utils/my_extenstions.dart';
+import '../../../../core/utils/my_sizes.dart';
+import '../../../common/widgets/my_search_bar.dart';
+import '../../../common/widgets/screen_decoration.dart';
+import '../cubit/interests_cubit.dart';
+import '../widgets/interests_section_widget.dart';
+import '../widgets/interests_bottom_button_widget.dart';
+import '../../../users/domain/entities/profile_setup_data.dart';
+import '../../../../injection/injection_container.dart';
 
 class InterestsScreen extends StatefulWidget {
   const InterestsScreen({super.key, required this.userProfile});

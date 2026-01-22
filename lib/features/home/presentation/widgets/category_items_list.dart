@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:mirath/core/helpers/responsive_helper.dart';
-import 'package:mirath/features/home/presentation/widgets/category_item.dart';
+import '../../../../core/helpers/responsive_helper.dart';
+import 'category_item.dart';
 
 class CategoryItemsList extends StatelessWidget {
   const CategoryItemsList({

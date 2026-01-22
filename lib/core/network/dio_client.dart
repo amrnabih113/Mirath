@@ -1,10 +1,10 @@
 import 'package:cookie_jar/cookie_jar.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
-import 'package:mirath/core/network/dio_auth_interceptor.dart';
+import 'dio_auth_interceptor.dart';
 import 'package:dio_cookie_manager/dio_cookie_manager.dart';
 
-import 'package:mirath/core/services/secure_storage_service.dart';
+import '../services/secure_storage_service.dart';
 import 'dart:io';
 
 import '../utils/my_constants.dart';

@@ -4,8 +4,8 @@ import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:hugeicons/hugeicons.dart';
 import 'package:iconsax/iconsax.dart';
-import 'package:mirath/features/auth/data/models/auth_user_data.dart';
-import 'package:mirath/features/users/domain/entities/profile_setup_data.dart';
+import '../../../auth/data/models/auth_user_data.dart';
+import '../../domain/entities/profile_setup_data.dart';
 
 import '../../../../core/helpers/my_loaders.dart';
 import '../../../../core/services/local_storage_service.dart';

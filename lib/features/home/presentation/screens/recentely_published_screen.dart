@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:mirath/core/helpers/responsive_helper.dart';
-import 'package:mirath/core/utils/my_extenstions.dart';
-import 'package:mirath/core/utils/my_sizes.dart';
-import 'package:mirath/features/common/widgets/my_back_icon.dart';
-import 'package:mirath/features/home/presentation/widgets/category_items_list.dart';
-import 'package:mirath/features/home/presentation/widgets/home_search_bar.dart';
-import 'package:mirath/features/home/presentation/widgets/paper_card_items.dart';
+import '../../../../core/helpers/responsive_helper.dart';
+import '../../../../core/utils/my_extenstions.dart';
+import '../../../../core/utils/my_sizes.dart';
+import '../../../common/widgets/my_back_icon.dart';
+import '../widgets/category_items_list.dart';
+import '../widgets/home_search_bar.dart';
+import '../widgets/paper_card_items.dart';
 
 class RecentelyPublishedScreen extends StatelessWidget {
   const RecentelyPublishedScreen({super.key});

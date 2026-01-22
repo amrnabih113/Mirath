@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:hugeicons/hugeicons.dart';
-import 'package:mirath/core/utils/my_extenstions.dart';
-import 'package:mirath/core/utils/my_sizes.dart';
-import 'package:mirath/features/interests/domain/entities/interest.dart';
-import 'package:mirath/features/interests/presentation/widgets/interests_chip.dart';
+import '../../../../core/utils/my_extenstions.dart';
+import '../../../../core/utils/my_sizes.dart';
+import '../../domain/entities/interest.dart';
+import 'interests_chip.dart';
 
 class InterestsListWidget extends StatelessWidget {
   final List<Interest> interests;

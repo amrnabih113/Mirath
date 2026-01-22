@@ -1,6 +1,6 @@
 import 'package:dartz/dartz.dart';
 import 'package:dio/dio.dart';
-import 'package:mirath/core/network/network_manager.dart';
+import '../../../../core/network/network_manager.dart';
 
 import '../../../../core/error/failuors.dart';
 import '../../../../core/utils/my_logger.dart';

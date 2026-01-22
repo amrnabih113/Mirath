@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:mirath/core/utils/my_extenstions.dart';
-import 'package:mirath/features/home/presentation/widgets/see_all_button.dart';
+import '../../../core/utils/my_extenstions.dart';
+import '../../home/presentation/widgets/see_all_button.dart';
 
 class SectionTitle extends StatelessWidget {
   const SectionTitle({super.key, required this.title, this.showSeeAll = true, this.onTap});

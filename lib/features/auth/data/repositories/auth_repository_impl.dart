@@ -1,8 +1,8 @@
 import 'package:dartz/dartz.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:google_sign_in/google_sign_in.dart';
-import 'package:mirath/core/utils/my_constants.dart';
-import 'package:mirath/core/utils/my_logger.dart';
+import '../../../../core/utils/my_constants.dart';
+import '../../../../core/utils/my_logger.dart';
 
 import '../../../../core/error/failuors.dart';
 import '../../../../core/services/secure_storage_service.dart';

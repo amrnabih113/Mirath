@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:mirath/core/helpers/responsive_helper.dart';
-import 'package:mirath/core/utils/my_sizes.dart';
-import 'package:mirath/features/common/widgets/my_back_icon.dart';
-import 'package:mirath/features/home/presentation/widgets/paper_card_items.dart';
-import 'package:mirath/features/home/presentation/widgets/search_text_field.dart';
+import '../../../../core/helpers/responsive_helper.dart';
+import '../../../../core/utils/my_sizes.dart';
+import '../../../common/widgets/my_back_icon.dart';
+import '../widgets/paper_card_items.dart';
+import '../widgets/search_text_field.dart';
 
 class SearchResultScreen extends StatelessWidget {
   const SearchResultScreen({super.key});
