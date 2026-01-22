@@ -4,8 +4,8 @@ import 'package:mirath/core/utils/my_colors.dart';
 import 'package:mirath/core/utils/my_extenstions.dart';
 import 'package:mirath/core/utils/my_sizes.dart';
 
-class InteresteChip extends StatelessWidget {
-  const InteresteChip({super.key, required this.interest, this.onDeleted});
+class InterestsChip extends StatelessWidget {
+  const InterestsChip({super.key, required this.interest, this.onDeleted});
   final String interest;
   final VoidCallback? onDeleted;
 

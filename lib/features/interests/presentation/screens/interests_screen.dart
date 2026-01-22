@@ -7,13 +7,12 @@ import 'package:mirath/core/utils/my_colors.dart';
 import 'package:mirath/core/utils/my_extenstions.dart';
 import 'package:mirath/core/utils/my_sizes.dart';
 import 'package:mirath/features/auth/presentation/cubit/auth_cubit.dart';
-import 'package:mirath/features/auth/presentation/widgets/intereste_chip.dart';
+import 'package:mirath/features/interests/presentation/widgets/interests_chip.dart';
 import 'package:mirath/features/common/widgets/my_search_bar.dart';
 import 'package:mirath/features/common/widgets/screen_decoration.dart';
 import 'package:mirath/features/interests/domain/entities/interest.dart';
-import 'package:mirath/features/interests/presentation/bloc/interests_bloc.dart';
-import 'package:mirath/features/interests/presentation/bloc/interests_event.dart';
-import 'package:mirath/features/interests/presentation/bloc/interests_state.dart';
+import 'package:mirath/features/interests/presentation/cubit/interests_cubit.dart';
+import 'package:mirath/features/interests/presentation/cubit/interests_state.dart';
 import 'package:mirath/features/users/domain/entities/profile_setup_data.dart';
 import 'package:mirath/injection/injection_container.dart';
 
@@ -27,27 +26,27 @@ class InterestsScreen extends StatefulWidget {
 
 class _InterestsScreenState extends State<InterestsScreen> {
   final TextEditingController _searchController = TextEditingController();
-  late InterestsBloc _interestsBloc;
+  late InterestsCubit _interestsCubit;
   final List<String> _selectedInterests = [];
 
   @override
   void initState() {
     super.initState();
-    _interestsBloc = sl<InterestsBloc>();
-    _interestsBloc.add(GetAllInterestsEvent());
+    _interestsCubit = sl<InterestsCubit>();
+    _interestsCubit.getAllInterests();
   }
 
   @override
   void dispose() {
     _searchController.dispose();
-    _interestsBloc.close();
+    _interestsCubit.close();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     return BlocProvider.value(
-      value: _interestsBloc,
+      value: _interestsCubit,
       child: Scaffold(
         resizeToAvoidBottomInset: false,
         body: ScreenDecoration(
@@ -113,7 +112,7 @@ class _InterestsScreenState extends State<InterestsScreen> {
   }
 
   Widget _buildInterestsSection() {
-    return BlocBuilder<InterestsBloc, InterestsState>(
+    return BlocBuilder<InterestsCubit, InterestsState>(
       builder: (context, state) {
         if (state is InterestsLoading) {
           return SizedBox(
@@ -133,7 +132,7 @@ class _InterestsScreenState extends State<InterestsScreen> {
                   SizedBox(height: MySizes.spaceSm(context)),
                   ElevatedButton(
                     onPressed: () {
-                      _interestsBloc.add(GetAllInterestsEvent());
+                      _interestsCubit.getAllInterests();
                     },
                     child: const Text('Retry'),
                   ),
@@ -162,7 +161,7 @@ class _InterestsScreenState extends State<InterestsScreen> {
                 runSpacing: MySizes.spaceMd(context),
                 children: _selectedInterests
                     .map(
-                      (interest) => InteresteChip(
+                      (interest) => InterestsChip(
                         interest: interest,
                         onDeleted: () {
                           setState(() {
