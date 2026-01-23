@@ -1,16 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+
 import '../../../../core/helpers/responsive_helper.dart';
 import '../../../../core/services/local_storage_service.dart';
 import '../../../../core/utils/my_sizes.dart';
+import '../../../../generated/l10n.dart';
 import '../../../../injection/injection_container.dart';
 import '../../../common/widgets/screen_decoration.dart';
 import '../cubit/onboarding_cubit.dart';
 import '../widgets/onboarding_page_widget.dart';
 import '../widgets/page_indicator.dart';
 import '../widgets/skip_button.dart';
-import '../../../../generated/l10n.dart';
 
 class OnboardingScreen extends StatefulWidget {
   final List pages;

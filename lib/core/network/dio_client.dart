@@ -1,13 +1,13 @@
-import 'package:cookie_jar/cookie_jar.dart';
-import 'package:dio/dio.dart';
-import 'package:flutter/foundation.dart' show kIsWeb;
-import 'dio_auth_interceptor.dart';
-import 'package:dio_cookie_manager/dio_cookie_manager.dart';
-
-import '../services/secure_storage_service.dart';
 import 'dart:io';
 
+import 'package:cookie_jar/cookie_jar.dart';
+import 'package:dio/dio.dart';
+import 'package:dio_cookie_manager/dio_cookie_manager.dart';
+import 'package:flutter/foundation.dart' show kIsWeb;
+
+import '../services/secure_storage_service.dart';
 import '../utils/my_constants.dart';
+import 'dio_auth_interceptor.dart';
 
 class DioClient {
   final Dio dio;

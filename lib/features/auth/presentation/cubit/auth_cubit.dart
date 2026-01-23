@@ -1,16 +1,17 @@
 ﻿import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
+
 import '../../../../core/error/failuors.dart';
 import '../../../../core/helpers/failure_handler.dart';
 import '../../../../core/services/local_storage_service.dart';
 import '../../../../core/services/secure_storage_service.dart';
-import '../../../users/domain/entities/profile_setup_data.dart';
-import '../../../users/domain/usecases/setup_profile_usecase.dart';
-
 import '../../../../core/usecases/no_params.dart';
 import '../../../../core/utils/my_logger.dart';
+import '../../../users/domain/entities/profile_setup_data.dart';
+import '../../../users/domain/usecases/setup_profile_usecase.dart';
 import '../../domain/entities/signin_data.dart';
 import '../../domain/entities/signup_data.dart';
+import '../../domain/usecases/check_setup_usecase.dart';
 import '../../domain/usecases/forget_password_usecase.dart';
 import '../../domain/usecases/is_signed_in_usecase.dart';
 import '../../domain/usecases/is_verified_usecase.dart';
@@ -23,7 +24,6 @@ import '../../domain/usecases/signout_usecase.dart';
 import '../../domain/usecases/signup_usecase.dart';
 import '../../domain/usecases/verify_account_usecase.dart';
 import '../../domain/usecases/verify_reset_password_otp_usecase.dart';
-import '../../domain/usecases/check_setup_usecase.dart';
 
 part 'auth_state.dart';
 

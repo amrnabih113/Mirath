@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+
 import '../../../../core/utils/my_colors.dart';
 import '../../../../core/utils/my_sizes.dart';
-import '../cubit/auth_cubit.dart';
 import '../../../../generated/l10n.dart';
+import '../cubit/auth_cubit.dart';
 
 enum VerifyActionType { verifyEmail, verifyCode }
 

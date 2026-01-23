@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import '../../../common/widgets/my_search_bar.dart';
 import '../../../../core/helpers/responsive_helper.dart';
 import '../../../../core/utils/my_sizes.dart';
 import '../../../common/widgets/my_back_icon.dart';
 import '../widgets/search_item.dart';
 import '../widgets/search_screen_heading.dart';
-import '../widgets/search_text_field.dart';
 
 class SearchScreen extends StatelessWidget {
   const SearchScreen({super.key});
@@ -22,7 +22,14 @@ class SearchScreen extends StatelessWidget {
           leadingWidth: ResponsiveHelper.responsiveValue(context, 60),
           leading: MyBackIcon(),
           titleSpacing: 0,
-          title: SearchTextField(),
+          title: Padding(
+            padding: EdgeInsets.only(right: MySizes.spaceSm(context)),
+            child: MySearchBar(
+              controller: TextEditingController(),
+              hintText: 'Search',
+              showSuffixIcon: true,
+            ),
+          ),
         ),
       ),
 

@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:hugeicons/hugeicons.dart';
+
 import '../../../../core/utils/my_colors.dart';
 import '../../../../core/utils/my_sizes.dart';
 
+//! deprecated use MySearchBar instead
 class SearchTextField extends StatelessWidget {
   const SearchTextField({super.key});
 

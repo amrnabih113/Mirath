@@ -1,10 +1,10 @@
 import '../../../../core/network/dio_client.dart';
 import '../../../../core/utils/my_constants.dart';
-import 'auth_remote_data_source.dart';
 import '../models/auth_response_model.dart';
 import '../models/check_setup_response_model.dart';
 import '../models/is_verified_response_model.dart';
 import '../models/signup_response_model.dart';
+import 'auth_remote_data_source.dart';
 
 class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
   final DioClient _dioClient;

@@ -1,33 +1,34 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
-import 'core/services/user_cache_service.dart';
-import 'features/auth/data/models/auth_user_data.dart';
-import 'features/community/presentation/screens/community_screen.dart';
-import 'features/home/presentation/screens/recentely_published_screen.dart';
-import 'features/interests/presentation/cubit/interests_cubit.dart';
-import 'features/interests/presentation/screens/interests_screen.dart';
-import 'features/auth/presentation/screens/signin_screen.dart';
-import 'features/home/presentation/screens/home_screen.dart';
-import 'features/home/presentation/screens/search_result_screen.dart';
-import 'features/home/presentation/screens/search_screen.dart';
-import 'features/users/domain/entities/profile_setup_data.dart';
-import 'features/Layout/presentation/cubit/layout_cubit.dart';
-import 'features/Layout/presentation/screens/main_layout.dart';
-import 'features/users/presentation/screens/set_up_profile_screen.dart';
+
 import 'core/services/local_storage_service.dart';
+import 'core/services/user_cache_service.dart';
 import 'core/utils/my_logger.dart';
 import 'core/utils/page_transitions.dart';
+import 'features/Layout/presentation/cubit/layout_cubit.dart';
+import 'features/Layout/presentation/screens/main_layout.dart';
+import 'features/auth/data/models/auth_user_data.dart';
 import 'features/auth/presentation/cubit/auth_cubit.dart';
 import 'features/auth/presentation/screens/forget_password_screen.dart';
 import 'features/auth/presentation/screens/otp_screen.dart';
 import 'features/auth/presentation/screens/reset_password_screen.dart';
+import 'features/auth/presentation/screens/signin_screen.dart';
 import 'features/auth/presentation/screens/signup_screen.dart';
 import 'features/auth/presentation/screens/verify_account_screen.dart';
+import 'features/community/presentation/screens/community_screen.dart';
+import 'features/home/presentation/screens/home_screen.dart';
+import 'features/home/presentation/screens/recentely_published_screen.dart';
+import 'features/home/presentation/screens/search_result_screen.dart';
+import 'features/home/presentation/screens/search_screen.dart';
+import 'features/interests/presentation/cubit/interests_cubit.dart';
+import 'features/interests/presentation/screens/interests_screen.dart';
 import 'features/onboarding/domain/repository/onboarding_repository.dart';
 import 'features/onboarding/presentation/cubit/onboarding_cubit.dart';
 import 'features/onboarding/presentation/screens/onboarding_screen.dart';
 import 'features/splash/presentation/screens/splash_screen.dart';
+import 'features/users/domain/entities/profile_setup_data.dart';
+import 'features/users/presentation/screens/set_up_profile_screen.dart';
 import 'injection/injection_container.dart';
 
 // Helper class to make AuthCubit work with GoRouter's refreshListenable
@@ -218,9 +219,8 @@ final appRouter = GoRouter(
         ),
         GoRoute(
           path: '/community',
-          pageBuilder: (context, state) => const NoTransitionPage(
-            child: Scaffold(body: Center(child: Text('Community Screen'))),
-          ),
+          pageBuilder: (context, state) =>
+              const NoTransitionPage(child: CommunityScreen()),
         ),
         GoRoute(
           path: '/library',
@@ -321,12 +321,6 @@ final appRouter = GoRouter(
       path: '/recentely-published',
       pageBuilder: (context, state) =>
           PageTransitions.smoothTransition(const RecentelyPublishedScreen()),
-    ),
-    GoRoute(
-      path: '/community',
-      pageBuilder: (context, state) {
-        return PageTransitions.smoothTransition(const CommunityScreen());
-      },
     ),
   ],
 );

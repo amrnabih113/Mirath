@@ -1,8 +1,8 @@
 import 'package:dartz/dartz.dart';
 import 'package:dio/dio.dart';
-import '../../../../core/network/network_manager.dart';
 
 import '../../../../core/error/failuors.dart';
+import '../../../../core/network/network_manager.dart';
 import '../../../../core/utils/my_logger.dart';
 import '../../domain/entities/profile_setup_data.dart';
 import '../../domain/entities/user.dart';

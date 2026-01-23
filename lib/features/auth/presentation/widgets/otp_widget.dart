@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:pin_code_fields/pin_code_fields.dart';
+
 import '../../../../core/utils/my_colors.dart';
 import '../../../../core/utils/my_extenstions.dart';
 import '../../../../core/utils/my_sizes.dart';
-import 'package:pin_code_fields/pin_code_fields.dart';
 
 // ignore: must_be_immutable
 class OtpWidget extends StatefulWidget {

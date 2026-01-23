@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/svg.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:hugeicons/hugeicons.dart';
+
 import '../../../../core/helpers/responsive_helper.dart';
-import '../../../../core/utils/my_colors.dart';
 import '../../../../core/utils/my_extenstions.dart';
 import '../../../../core/utils/my_sizes.dart';
+import '../../../common/widgets/profile_avatar.dart';
 
 class WelcomeHeader extends StatelessWidget {
   const WelcomeHeader({super.key});
@@ -23,15 +23,7 @@ class WelcomeHeader extends StatelessWidget {
           bottom: ResponsiveHelper.responsiveValue(context, 8),
           right: 0,
         ),
-        child: CircleAvatar(
-          backgroundColor: MyColors.light,
-          child: SvgPicture.asset(
-            'assets/images/Profile picture.svg',
-            fit: BoxFit.cover,
-            height: ResponsiveHelper.responsiveValue(context, 40),
-            width: ResponsiveHelper.responsiveValue(context, 40),
-          ),
-        ),
+        child: ProfileAvatar(),
       ),
       actions: [
         Padding(

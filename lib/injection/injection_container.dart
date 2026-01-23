@@ -1,16 +1,18 @@
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:get_it/get_it.dart';
-import '../features/auth/data/data_sources/auth_remote_data_source_impl.dart';
-import '../features/auth/data/repositories/auth_repository_impl.dart';
 // ignore: unused_import
 import 'package:mirath/features/auth/data/repositories/fake_auth_repository_impl.dart';
 
 import '../core/network/dio_client.dart';
 import '../core/network/network_manager.dart';
-import '../core/services/secure_storage_service.dart';
 import '../core/services/local_storage_service.dart';
+import '../core/services/secure_storage_service.dart';
 import '../core/services/user_cache_service.dart';
 import '../features/auth/data/data_sources/auth_remote_data_source.dart';
+import '../features/auth/data/data_sources/auth_remote_data_source_impl.dart';
+import '../features/auth/data/repositories/auth_repository_impl.dart';
+import '../features/auth/domain/repositories/auth_repository.dart';
+import '../features/auth/domain/usecases/check_setup_usecase.dart';
 import '../features/auth/domain/usecases/forget_password_usecase.dart';
 import '../features/auth/domain/usecases/is_signed_in_usecase.dart';
 import '../features/auth/domain/usecases/is_verified_usecase.dart';
@@ -23,18 +25,7 @@ import '../features/auth/domain/usecases/signout_usecase.dart';
 import '../features/auth/domain/usecases/signup_usecase.dart';
 import '../features/auth/domain/usecases/verify_account_usecase.dart';
 import '../features/auth/domain/usecases/verify_reset_password_otp_usecase.dart';
-import '../features/auth/domain/usecases/check_setup_usecase.dart';
 import '../features/auth/presentation/cubit/auth_cubit.dart';
-import '../features/auth/domain/repositories/auth_repository.dart';
-// Users imports
-import '../features/users/data/data_sources/users_remote_data_source.dart';
-import '../features/users/data/data_sources/users_remote_data_source_impl.dart';
-import '../features/users/data/repositories/users_repository_impl.dart';
-import '../features/users/domain/repositories/users_repository.dart';
-import '../features/users/domain/usecases/setup_profile_usecase.dart';
-import '../features/users/domain/usecases/get_current_user_usecase.dart';
-import '../features/users/domain/usecases/follow_user_usecase.dart';
-import '../features/users/domain/usecases/unfollow_user_usecase.dart';
 // Interests imports
 import '../features/interests/data/data_sources/interests_remote_data_source.dart';
 import '../features/interests/data/data_sources/interests_remote_data_source_impl.dart';
@@ -43,6 +34,15 @@ import '../features/interests/domain/repositories/interests_repository.dart';
 import '../features/interests/domain/usecases/get_all_interests_usecase.dart';
 import '../features/interests/domain/usecases/get_interest_by_id_usecase.dart';
 import '../features/interests/presentation/cubit/interests_cubit.dart';
+// Users imports
+import '../features/users/data/data_sources/users_remote_data_source.dart';
+import '../features/users/data/data_sources/users_remote_data_source_impl.dart';
+import '../features/users/data/repositories/users_repository_impl.dart';
+import '../features/users/domain/repositories/users_repository.dart';
+import '../features/users/domain/usecases/follow_user_usecase.dart';
+import '../features/users/domain/usecases/get_current_user_usecase.dart';
+import '../features/users/domain/usecases/setup_profile_usecase.dart';
+import '../features/users/domain/usecases/unfollow_user_usecase.dart';
 
 final sl = GetIt.instance;
 

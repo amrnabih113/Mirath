@@ -1,7 +1,6 @@
+import '../../domain/entities/user.dart';
 import 'field_of_study_model.dart';
 import 'interest_model.dart';
-
-import '../../domain/entities/user.dart';
 
 class UserModel extends User {
   const UserModel({

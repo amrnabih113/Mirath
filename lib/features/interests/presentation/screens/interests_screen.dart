@@ -1,14 +1,15 @@
 import 'package:flutter/material.dart';
+
 import '../../../../core/utils/my_colors.dart';
 import '../../../../core/utils/my_extenstions.dart';
 import '../../../../core/utils/my_sizes.dart';
+import '../../../../injection/injection_container.dart';
 import '../../../common/widgets/my_search_bar.dart';
 import '../../../common/widgets/screen_decoration.dart';
-import '../cubit/interests_cubit.dart';
-import '../widgets/interests_section_widget.dart';
-import '../widgets/interests_bottom_button_widget.dart';
 import '../../../users/domain/entities/profile_setup_data.dart';
-import '../../../../injection/injection_container.dart';
+import '../cubit/interests_cubit.dart';
+import '../widgets/interests_bottom_button_widget.dart';
+import '../widgets/interests_section_widget.dart';
 
 class InterestsScreen extends StatefulWidget {
   const InterestsScreen({super.key, required this.userProfile});
