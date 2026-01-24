@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'package:mirath/features/home/presentation/cubit/home_cubit.dart';
 
 import 'core/services/local_storage_service.dart';
 import 'core/services/user_cache_service.dart';
@@ -214,8 +215,12 @@ final appRouter = GoRouter(
       routes: [
         GoRoute(
           path: '/home',
-          pageBuilder: (context, state) =>
-              const NoTransitionPage(child: HomeScreen()),
+          pageBuilder: (context, state) => NoTransitionPage(
+            child: BlocProvider.value(
+              value: sl<HomeCubit>(),
+              child: HomeScreen(),
+            ),
+          ),
         ),
         GoRoute(
           path: '/community',

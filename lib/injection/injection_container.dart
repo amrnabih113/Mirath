@@ -2,6 +2,13 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:get_it/get_it.dart';
 // ignore: unused_import
 import 'package:mirath/features/auth/data/repositories/fake_auth_repository_impl.dart';
+import 'package:mirath/features/home/data/data_sources/home_remote_data_source.dart';
+import 'package:mirath/features/home/data/data_sources/home_remote_data_source_impl.dart';
+import 'package:mirath/features/home/data/repositories/home_repository_impl.dart';
+import 'package:mirath/features/home/domain/repositories/home_repository.dart';
+import 'package:mirath/features/home/domain/usecases/get_recent_papers_usecase.dart';
+import 'package:mirath/features/home/domain/usecases/get_recommendations_usecase.dart';
+import 'package:mirath/features/home/presentation/cubit/home_cubit.dart';
 
 import '../core/network/dio_client.dart';
 import '../core/network/network_manager.dart';
@@ -165,5 +172,31 @@ class DI {
         getInterestByIdUsecase: sl(),
       ),
     );
+
+    //=================== Feed Or Home ========================
+
+    /// Home Data Sources ///
+    sl.registerLazySingleton<HomeRemoteDataSource>(
+      () => HomeRemoteDataSourceImpl(dioClient: sl()),
+    );
+
+    /// Home Repository ///
+    sl.registerLazySingleton<HomeRepository>(
+      () => HomeRepositoryImpl(remoteDataSource: sl(), networkManager: sl()),
+    );
+
+    /// Home UseCases ///
+    sl.registerLazySingleton(() => GetRecentPapersUseCase(repository: sl()));
+    sl.registerLazySingleton(() => GetRecommendationsUseCase(repository: sl()));
+
+    /// Home Cubit ///
+    sl.registerFactory(
+      () => HomeCubit(
+        getRecentPapersUseCase: sl(),
+        getRecommendationsUseCase: sl(),
+      ),
+    );
+
+    
   }
 }
