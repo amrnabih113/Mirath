@@ -15,7 +15,14 @@ class HomeSearchBar extends StatelessWidget {
       cursorColor: MyColors.primaryShade500,
       readOnly: true,
       onTap: () {
-        context.push('/search');
+        context.push(
+          '/search',
+          extra: {
+            'items': ["Item 1", "Item 2", "Item 3"],
+            'hintText': 'Search',
+            'onItemTap': () => context.push('/home-search-results'),
+          },
+        );
       },
 
       decoration: InputDecoration(

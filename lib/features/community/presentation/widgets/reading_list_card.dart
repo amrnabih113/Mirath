@@ -15,7 +15,7 @@ class ReadingListCard extends StatelessWidget {
       decoration: BoxDecoration(
         color: MyColors.white,
         borderRadius: BorderRadius.circular(MySizes.borderRadiusMd(context)),
-        border: Border.all(color: MyColors.primaryShade300, width: 1),
+        border: Border.all(color: MyColors.primaryShade500, width: 1),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,

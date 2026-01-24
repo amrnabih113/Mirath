@@ -13,15 +13,22 @@ class MySearchBar extends StatelessWidget {
     this.showSuffixIcon = false,
     this.onSuffixIconTap,
     this.onChanged,
+    this.readOnly = false,
+    this.onTap,
   });
   final TextEditingController controller;
   final String hintText;
   final bool showSuffixIcon;
   final void Function()? onSuffixIconTap;
   final void Function(String)? onChanged;
+  final bool? readOnly;
+  final void Function()? onTap;
+
   @override
   Widget build(BuildContext context) {
     return TextField(
+      readOnly: readOnly ?? false,
+      onTap: onTap,
       cursorColor: MyColors.primaryColor,
       controller: controller,
       onChanged: onChanged,

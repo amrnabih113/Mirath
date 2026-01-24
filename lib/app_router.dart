@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'package:mirath/features/community/presentation/screens/community_search_result.dart';
 import 'package:mirath/features/home/presentation/cubit/home_cubit.dart';
 
 import 'core/services/local_storage_service.dart';
@@ -314,18 +315,34 @@ final appRouter = GoRouter(
     GoRoute(
       path: '/search',
       pageBuilder: (context, state) {
-        return MaterialPage(child: SearchScreen());
+        final extra = state.extra as Map<String, dynamic>?;
+        return MaterialPage(
+          child: SearchScreen(
+            items: extra?['items'] ?? [],
+            hintText: extra?['hintText'] ?? 'Search',
+            headingText: extra?['headingText'],
+            onSearchChanged: extra?['onSearchChanged'],
+            onItemTap: extra?['onItemTap'],
+            showHeading: extra?['showHeading'] ?? true,
+            onRemoveTap: extra?['onRemoveTap'],
+          ),
+        );
       },
     ),
     GoRoute(
-      path: '/search-results',
+      path: '/home-search-results',
       pageBuilder: (context, state) =>
-          PageTransitions.smoothTransition(const SearchResultScreen()),
+          PageTransitions.smoothTransition(const HomeSearchResultScreen()),
     ),
     GoRoute(
       path: '/recentely-published',
       pageBuilder: (context, state) =>
           PageTransitions.smoothTransition(const RecentelyPublishedScreen()),
+    ),
+    GoRoute(
+      path: '/community-search-results',
+      pageBuilder: (context, state) =>
+          PageTransitions.smoothTransition(const CommunitySearchResult()),
     ),
   ],
 );

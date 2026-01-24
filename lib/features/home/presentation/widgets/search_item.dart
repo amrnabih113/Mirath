@@ -7,8 +7,9 @@ import '../../../../core/utils/my_extenstions.dart';
 import '../../../../core/utils/my_sizes.dart';
 
 class SearchItem extends StatelessWidget {
-  const SearchItem({super.key});
-
+  const SearchItem({super.key, required this.itemTitle, this.onTap});
+  final String itemTitle;
+  final void Function()? onTap;
   @override
   Widget build(BuildContext context) {
     return ListTile(
@@ -21,7 +22,7 @@ class SearchItem extends StatelessWidget {
         color: MyColors.primaryShade300,
       ),
       title: Text(
-        'Quantum Mechanics',
+        itemTitle,
         style: context.bodySmall.copyWith(
           fontSize: ResponsiveHelper.responsiveValue(context, 16),
           fontWeight: FontWeight.w400,
@@ -29,7 +30,7 @@ class SearchItem extends StatelessWidget {
         ),
       ),
       trailing: IconButton(
-        onPressed: () {},
+        onPressed: onTap,
         icon: HugeIcon(
           icon: HugeIcons.strokeRoundedCancel01,
           size: MySizes.iconSmall(context),

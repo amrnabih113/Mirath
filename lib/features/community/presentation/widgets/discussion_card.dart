@@ -21,7 +21,7 @@ class DiscussionCard extends StatelessWidget {
       decoration: BoxDecoration(
         color: MyColors.white,
         borderRadius: BorderRadius.circular(MySizes.borderRadiusMd(context)),
-        border: Border.all(color: MyColors.primaryShade200),
+        border: Border.all(color: MyColors.primaryShade500),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,

@@ -5,8 +5,8 @@ import '../../../common/widgets/my_back_icon.dart';
 import '../widgets/paper_card_items.dart';
 import '../widgets/search_text_field.dart';
 
-class SearchResultScreen extends StatelessWidget {
-  const SearchResultScreen({super.key});
+class HomeSearchResultScreen extends StatelessWidget {
+  const HomeSearchResultScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
