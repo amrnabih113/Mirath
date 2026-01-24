@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:hugeicons/hugeicons.dart';
+import 'package:mirath/core/helpers/responsive_helper.dart';
+import 'package:mirath/core/utils/my_formaters.dart';
 
 import '../../../../core/utils/my_colors.dart';
 import '../../../../core/utils/my_extenstions.dart';
@@ -26,7 +28,9 @@ class DiscussionCard extends StatelessWidget {
         children: [
           Row(
             children: [
-              const ProfileAvatar(size: 40),
+              ProfileAvatar(
+                size: ResponsiveHelper.responsiveValue(context, 40),
+              ),
               SizedBox(width: MySizes.spaceSm(context)),
               Expanded(
                 child: Column(
@@ -47,9 +51,7 @@ class DiscussionCard extends StatelessWidget {
                     SizedBox(height: MySizes.spaceXs(context) * 0.5),
                     Text(
                       'Lorem ipsum dolor sit amet, consectetur...',
-                      style: context.bodySmall.copyWith(
-                        color: MyColors.textSecondary,
-                      ),
+                      style: context.bodySmall.copyWith(),
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
                     ),
@@ -87,7 +89,7 @@ class DiscussionCard extends StatelessWidget {
               borderRadius: BorderRadius.circular(
                 MySizes.borderRadiusSm(context),
               ),
-              border: Border.all(color: MyColors.primaryShade200),
+              border: Border.all(color: MyColors.primaryShade400),
             ),
             child: Row(
               children: [
@@ -136,7 +138,9 @@ class DiscussionCard extends StatelessWidget {
           Row(
             children: [
               Text(
-                '2 days ago',
+                MyFormaters.relativeTime(
+                  DateTime.now().subtract(const Duration(hours: 5)),
+                ),
                 style: context.bodySmall.copyWith(
                   color: MyColors.textSecondary,
                 ),

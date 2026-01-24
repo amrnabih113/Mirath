@@ -79,7 +79,10 @@ class _CommunityScreenState extends State<CommunityScreen>
                     ],
                     body: TabBarView(
                       controller: _tabController,
-                      children: [DiscussionTab(), const ReadingListsTab()],
+                      children: [
+                        const DiscussionTab(),
+                        const ReadingListsTab(),
+                      ],
                     ),
                   ),
                 ),
