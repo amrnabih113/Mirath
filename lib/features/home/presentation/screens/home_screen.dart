@@ -6,7 +6,7 @@ import '../../../../core/utils/my_sizes.dart';
 import '../../../common/widgets/section_title.dart';
 import '../widgets/category_items_list.dart';
 import '../widgets/home_search_bar.dart';
-import '../widgets/paper_card_items.dart';
+import '../widgets/paper_card.dart';
 import '../widgets/welcome_header.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -53,7 +53,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     physics: NeverScrollableScrollPhysics(),
                     itemCount: 10,
                     itemBuilder: (context, index) {
-                      return PaperCardItems();
+                      return PaperCard();
                     },
                   ),
                 ],

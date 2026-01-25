@@ -19,9 +19,11 @@ class CategoryItemsList extends StatelessWidget {
       'Economics',
       'Psychology',
     ],
+    this.onCategoryChanged,
   });
   final List<String> categories;
   final String? selectedCategory;
+  final Function(String)? onCategoryChanged;
   @override
   Widget build(BuildContext context) {
     return SizedBox(
@@ -30,9 +32,12 @@ class CategoryItemsList extends StatelessWidget {
         scrollDirection: Axis.horizontal,
         itemCount: categories.length,
         itemBuilder: (context, index) {
-          return CategoryItem(
-            categoryName: categories[index],
-            isSelected: selectedCategory == categories[index],
+          return GestureDetector(
+            onTap: () => onCategoryChanged?.call(categories[index]),
+            child: CategoryItem(
+              categoryName: categories[index],
+              isSelected: selectedCategory == categories[index],
+            ),
           );
         },
       ),

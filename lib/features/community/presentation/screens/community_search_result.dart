@@ -1,10 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:hugeicons/hugeicons.dart';
 import 'package:mirath/core/helpers/responsive_helper.dart';
-import 'package:mirath/core/utils/my_colors.dart';
-import 'package:mirath/core/utils/my_extenstions.dart';
 import 'package:mirath/features/common/widgets/my_back_icon.dart';
-import 'package:mirath/features/common/widgets/profile_avatar.dart';
 import 'package:mirath/features/common/widgets/search_with_filter.dart';
 import 'package:mirath/features/common/widgets/section_title.dart';
 import 'package:mirath/features/community/presentation/widgets/discussion_card.dart';
@@ -14,8 +10,27 @@ import 'package:mirath/features/home/presentation/widgets/category_items_list.da
 
 import '../../../../core/utils/my_sizes.dart';
 
-class CommunitySearchResult extends StatelessWidget {
+class CommunitySearchResult extends StatefulWidget {
   const CommunitySearchResult({super.key});
+
+  @override
+  State<CommunitySearchResult> createState() => _CommunitySearchResultState();
+}
+
+class _CommunitySearchResultState extends State<CommunitySearchResult> {
+  late String _selectedCategory;
+
+  @override
+  void initState() {
+    super.initState();
+    _selectedCategory = 'Top';
+  }
+
+  void _onCategoryChanged(String category) {
+    setState(() {
+      _selectedCategory = category;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -42,96 +57,114 @@ class CommunitySearchResult extends StatelessWidget {
                         pinned: true,
                         delegate: _CategoryHeaderDelegate(
                           context: context,
+                          selectedCategory: _selectedCategory,
+                          onCategoryChanged: _onCategoryChanged,
                           child: Column(
                             children: [
                               CategoryItemsList(
-                                selectedCategory: 'Top',
+                                selectedCategory: _selectedCategory,
                                 categories: [
                                   "Top",
                                   "Discussions",
                                   "Reading Lists",
                                   "Researchers",
                                 ],
+                                onCategoryChanged: _onCategoryChanged,
                               ),
                               SizedBox(height: MySizes.spaceLg(context)),
                             ],
                           ),
                         ),
                       ),
-
-                      SliverToBoxAdapter(
-                        child: SectionTitle(
-                          title: "Researchers",
-                          showSeeAll: true,
+                      if (_selectedCategory == 'Top' ||
+                          _selectedCategory == 'Researchers') ...[
+                        SliverToBoxAdapter(
+                          child: SectionTitle(
+                            title: "Researchers",
+                            showSeeAll: true,
+                          ),
                         ),
-                      ),
-                      SliverToBoxAdapter(
-                        child: SizedBox(height: MySizes.spaceSm(context)),
-                      ),
-                      SliverList(
-                        delegate: SliverChildBuilderDelegate((context, index) {
-                          return Padding(
-                            padding: EdgeInsets.only(
-                              bottom: MySizes.spaceXs(context),
-                            ),
-                            child: ResearcherCard(),
-                          );
-                        }, childCount: 3),
-                      ),
-                      SliverToBoxAdapter(
-                        child: SizedBox(height: MySizes.spaceMd(context)),
-                      ),
-                      SliverToBoxAdapter(child: Divider()),
-                      SliverToBoxAdapter(
-                        child: SizedBox(height: MySizes.spaceMd(context)),
-                      ),
-
-                      SliverToBoxAdapter(
-                        child: SectionTitle(
-                          title: "Discussions",
-                          showSeeAll: true,
+                        SliverToBoxAdapter(
+                          child: SizedBox(height: MySizes.spaceSm(context)),
                         ),
-                      ),
-                      SliverToBoxAdapter(
-                        child: SizedBox(height: MySizes.spaceSm(context)),
-                      ),
-                      SliverList(
-                        delegate: SliverChildBuilderDelegate((context, index) {
-                          return Padding(
-                            padding: EdgeInsets.only(
-                              bottom: MySizes.spaceXs(context),
-                            ),
-                            child: DiscussionCard(),
-                          );
-                        }, childCount: 3),
-                      ),
-                      SliverToBoxAdapter(
-                        child: SizedBox(height: MySizes.spaceMd(context)),
-                      ),
-                      SliverToBoxAdapter(child: Divider()),
-                      SliverToBoxAdapter(
-                        child: SizedBox(height: MySizes.spaceMd(context)),
-                      ),
-                      SliverToBoxAdapter(
-                        child: SectionTitle(
-                          title: "Reading Lists",
-                          showSeeAll: true,
+                        SliverList(
+                          delegate: SliverChildBuilderDelegate((
+                            context,
+                            index,
+                          ) {
+                            return Padding(
+                              padding: EdgeInsets.only(
+                                bottom: MySizes.spaceXs(context),
+                              ),
+                              child: ResearcherCard(),
+                            );
+                          }, childCount: 3),
                         ),
-                      ),
-                      SliverToBoxAdapter(
-                        child: SizedBox(height: MySizes.spaceSm(context)),
-                      ),
-
-                      SliverList(
-                        delegate: SliverChildBuilderDelegate((context, index) {
-                          return Padding(
-                            padding: EdgeInsets.only(
-                              bottom: MySizes.spaceXs(context),
-                            ),
-                            child: ReadingListCard(),
-                          );
-                        }, childCount: 3),
-                      ),
+                        SliverToBoxAdapter(
+                          child: SizedBox(height: MySizes.spaceMd(context)),
+                        ),
+                        SliverToBoxAdapter(child: Divider()),
+                        SliverToBoxAdapter(
+                          child: SizedBox(height: MySizes.spaceMd(context)),
+                        ),
+                      ],
+                      if (_selectedCategory == 'Top' ||
+                          _selectedCategory == 'Discussions') ...[
+                        SliverToBoxAdapter(
+                          child: SectionTitle(
+                            title: "Discussions",
+                            showSeeAll: true,
+                          ),
+                        ),
+                        SliverToBoxAdapter(
+                          child: SizedBox(height: MySizes.spaceSm(context)),
+                        ),
+                        SliverList(
+                          delegate: SliverChildBuilderDelegate((
+                            context,
+                            index,
+                          ) {
+                            return Padding(
+                              padding: EdgeInsets.only(
+                                bottom: MySizes.spaceXs(context),
+                              ),
+                              child: DiscussionCard(),
+                            );
+                          }, childCount: 3),
+                        ),
+                        SliverToBoxAdapter(
+                          child: SizedBox(height: MySizes.spaceMd(context)),
+                        ),
+                        SliverToBoxAdapter(child: Divider()),
+                        SliverToBoxAdapter(
+                          child: SizedBox(height: MySizes.spaceMd(context)),
+                        ),
+                      ],
+                      if (_selectedCategory == 'Top' ||
+                          _selectedCategory == 'Reading Lists') ...[
+                        SliverToBoxAdapter(
+                          child: SectionTitle(
+                            title: "Reading Lists",
+                            showSeeAll: true,
+                          ),
+                        ),
+                        SliverToBoxAdapter(
+                          child: SizedBox(height: MySizes.spaceSm(context)),
+                        ),
+                        SliverList(
+                          delegate: SliverChildBuilderDelegate((
+                            context,
+                            index,
+                          ) {
+                            return Padding(
+                              padding: EdgeInsets.only(
+                                bottom: MySizes.spaceXs(context),
+                              ),
+                              child: ReadingListCard(),
+                            );
+                          }, childCount: 3),
+                        ),
+                      ],
                     ],
                   ),
                 ),
@@ -147,8 +180,15 @@ class CommunitySearchResult extends StatelessWidget {
 class _CategoryHeaderDelegate extends SliverPersistentHeaderDelegate {
   final Widget child;
   final BuildContext context;
+  final String selectedCategory;
+  final Function(String) onCategoryChanged;
 
-  _CategoryHeaderDelegate({required this.child, required this.context});
+  _CategoryHeaderDelegate({
+    required this.child,
+    required this.context,
+    required this.selectedCategory,
+    required this.onCategoryChanged,
+  });
 
   @override
   Widget build(
@@ -172,6 +212,9 @@ class _CategoryHeaderDelegate extends SliverPersistentHeaderDelegate {
 
   @override
   bool shouldRebuild(covariant SliverPersistentHeaderDelegate oldDelegate) {
+    if (oldDelegate is _CategoryHeaderDelegate) {
+      return oldDelegate.selectedCategory != selectedCategory;
+    }
     return false;
   }
 }

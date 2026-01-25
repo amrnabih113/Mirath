@@ -1,11 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:mirath/core/utils/my_sizes.dart';
 import 'package:mirath/features/community/presentation/widgets/discussion_card.dart';
 
 class DiscussionTab extends StatelessWidget {
-  const DiscussionTab({
-    super.key,
-  });
+  const DiscussionTab({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -19,8 +18,12 @@ class DiscussionTab extends StatelessWidget {
       ),
       separatorBuilder: (context, index) =>
           SizedBox(height: MySizes.spaceMd(context)),
-      itemBuilder: (context, index) =>
-          const DiscussionCard(),
+      itemBuilder: (context, index) => InkWell(
+        onTap: () {
+          context.push('/disscussion-details');
+        },
+        child: const DiscussionCard(),
+      ),
       itemCount: 10,
     );
   }

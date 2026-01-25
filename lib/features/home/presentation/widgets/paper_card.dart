@@ -7,8 +7,8 @@ import '../../../../core/utils/my_colors.dart';
 import '../../../../core/utils/my_extenstions.dart';
 import '../../../../core/utils/my_sizes.dart';
 
-class PaperCardItems extends StatelessWidget {
-  const PaperCardItems({super.key});
+class PaperCard extends StatelessWidget {
+  const PaperCard({super.key});
 
   @override
   Widget build(BuildContext context) {
