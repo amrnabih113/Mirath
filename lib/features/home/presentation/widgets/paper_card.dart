@@ -8,8 +8,8 @@ import '../../../../core/utils/my_extenstions.dart';
 import '../../../../core/utils/my_sizes.dart';
 
 class PaperCard extends StatelessWidget {
-  const PaperCard({super.key});
-
+  const PaperCard({super.key, this.number});
+  final int? number;
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
@@ -32,12 +32,28 @@ class PaperCard extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                Text(
-                  'J. Phys. Commun. • 2022',
-                  style: context.bodySmall.copyWith(
-                    color: MyColors.primaryShade700,
-                    fontWeight: FontWeight.w500,
-                  ),
+                Row(
+                  children: [
+                    if (number != null) ...[
+                      Text(
+                        '$number.',
+                        style: context.titleSmall.copyWith(
+                          color: MyColors.black,
+                          fontWeight: FontWeight.w900,
+                        ),
+                      ),
+                      SizedBox(
+                        width: ResponsiveHelper.responsiveValue(context, 6),
+                      ),
+                    ],
+                    Text(
+                      'J. Phys. Commun. • 2022',
+                      style: context.bodySmall.copyWith(
+                        color: MyColors.primaryShade700,
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                  ],
                 ),
                 IconButton(
                   onPressed: () {},

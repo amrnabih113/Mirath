@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:mirath/features/community/presentation/screens/community_search_result.dart';
+import 'package:mirath/features/community/presentation/screens/reading_list_details_screen.dart';
 import 'package:mirath/features/home/presentation/cubit/home_cubit.dart';
 
 import 'core/services/local_storage_service.dart';
@@ -49,95 +50,127 @@ final appRouter = GoRouter(
   initialLocation: '/splash',
   refreshListenable: _AuthStateNotifier(sl<AuthCubit>()),
 
-  redirect: (context, state) {
+  redirect: (context, state) async {
+    final authStatus = sl<AuthCubit>().state.status;
     final authCubit = sl<AuthCubit>();
-    final authState = authCubit.state;
+    final localStorage = sl<LocalStorageService>();
     final currentLocation = state.matchedLocation;
-    final hasSeenOnboarding = sl<LocalStorageService>().hasSeenOnboarding();
 
     MyLogger.info(
-      '[Router] Redirect check - Current: $currentLocation, Status: ${authState.status}',
+      '[Router] Redirect check - Current: $currentLocation, AuthStatus: $authStatus',
     );
 
-    // Define route groups
-    const splashRoute = '/splash';
-    const onboardingRoute = '/onboarding';
-    const authPaths = {
+    final hasSeenOnboarding = localStorage.hasSeenOnboarding();
+
+    // Check profile setup status from server for authenticated users
+    bool hasSetupProfile = false;
+    if (authStatus == AuthStatus.authenticated) {
+      hasSetupProfile = await authCubit.checkSetup();
+    }
+
+    const authPaths = [
       '/signin',
       '/signup',
       '/verify-account',
       '/forget-password',
       '/verify-reset-otp',
       '/reset-password',
-    };
+    ];
 
-    // ===== INITIAL STATE =====
-    // App just started, still checking auth
-    if (authState.status == AuthStatus.initial) {
-      if (currentLocation != splashRoute) {
-        MyLogger.info('[Router] Initial → /splash (checking auth)');
-        return splashRoute;
+    const publicPaths = ['/splash', '/onboarding', ...authPaths];
+
+    // If auth is still initializing, stay on splash or current page
+    if (authStatus == AuthStatus.initial) {
+      if (currentLocation != '/splash') {
+        MyLogger.info('[Router] Auth not ready → redirecting to /splash');
+        return '/splash';
       }
-      return null; // Stay on splash
-    }
-
-    // ===== UNAUTHENTICATED =====
-    // User not logged in
-    if (authState.status == AuthStatus.unauthenticated) {
-      // First-time user: show onboarding
-      if (!hasSeenOnboarding && currentLocation != onboardingRoute) {
-        MyLogger.info('[Router] Unauthenticated → /onboarding (first time)');
-        return onboardingRoute;
-      }
-
-      // Onboarded but not authenticated: must go to signin
-      if (!authPaths.contains(currentLocation) &&
-          currentLocation != onboardingRoute &&
-          currentLocation != splashRoute) {
-        MyLogger.info('[Router] Unauthenticated → /signin (must login)');
-        return '/signin';
-      }
-
-      return null; // Allow auth routes and onboarding
-    }
-
-    // ===== EMAIL UNVERIFIED =====
-    // User logged in but email not verified
-    if (authState.status == AuthStatus.unverified) {
-      if (currentLocation != '/verify-account' &&
-          currentLocation != splashRoute) {
-        MyLogger.info('[Router] Unverified → /verify-account (verify email)');
-        return '/verify-account';
-      }
+      MyLogger.debug('[Router] Auth initializing - staying on splash');
       return null;
     }
 
-    // ===== AUTHENTICATED =====
-    // User fully authenticated
-    if (authState.status == AuthStatus.authenticated) {
-      // Block access to auth pages if fully authenticated
-      if (authPaths.contains(currentLocation) ||
-          (currentLocation == onboardingRoute && hasSeenOnboarding)) {
-        MyLogger.info('[Router] Authenticated → /home (blocking auth routes)');
+    // On splash - auth is ready, redirect based on status
+    if (currentLocation == '/splash') {
+      if (authStatus == AuthStatus.unauthenticated) {
+        if (!hasSeenOnboarding) {
+          MyLogger.info('[Router] Splash → /onboarding (first time user)');
+          return '/onboarding';
+        }
+        MyLogger.info('[Router] Splash → /signin (unauthenticated)');
+        return '/signin';
+      }
+
+      if (authStatus == AuthStatus.unverified) {
+        MyLogger.info('[Router] Splash → /verify-account');
+        return '/verify-account';
+      }
+
+      if (authStatus == AuthStatus.authenticated) {
+        if (!hasSetupProfile) {
+          MyLogger.info('[Router] Splash → /set-up-profile');
+          return '/set-up-profile';
+        }
+        MyLogger.info('[Router] Splash → /home');
         return '/home';
       }
 
-      return null; // Fully authenticated, allow route
+      MyLogger.debug('[Router] On splash - no redirect needed');
+      return null;
     }
 
-    // ===== ERROR STATE =====
-    // Authentication failed
-    if (authState.status == AuthStatus.error) {
-      if (!authPaths.contains(currentLocation) &&
-          currentLocation != onboardingRoute &&
-          currentLocation != splashRoute) {
-        MyLogger.info('[Router] Error state → /signin');
+    // Unauthenticated flow
+    if (authStatus == AuthStatus.unauthenticated) {
+      if (!hasSeenOnboarding && currentLocation != '/onboarding') {
+        MyLogger.info('[Router] Redirecting to /onboarding');
+        return '/onboarding';
+      }
+      if (!authPaths.contains(currentLocation)) {
+        MyLogger.info('[Router] Redirecting to /signin');
         return '/signin';
       }
       return null;
     }
 
-    return null; // Default: no redirect
+    // Email unverified
+    if (authStatus == AuthStatus.unverified &&
+        currentLocation != '/verify-account') {
+      MyLogger.info('[Router] Redirecting to /verify-account');
+      return '/verify-account';
+    }
+
+    // Authenticated user handling
+    if (authStatus == AuthStatus.authenticated) {
+      if (!hasSetupProfile &&
+          (currentLocation != '/set-up-profile' &&
+              currentLocation != '/interests')) {
+        MyLogger.info('[Router] Redirecting to /set-up-profile');
+        return '/set-up-profile';
+      }
+
+      // Block navigation to public/auth pages
+      if (publicPaths.contains(currentLocation)) {
+        MyLogger.info(
+          '[Router] Redirecting to /home (block public page access)',
+        );
+        return '/home';
+      }
+
+      return null;
+    }
+
+    // Handle authentication errors - allow staying on current auth pages
+    if (authStatus == AuthStatus.error) {
+      if (authPaths.contains(currentLocation) ||
+          currentLocation == '/set-up-profile' ||
+          currentLocation == '/interests') {
+        return null; // Stay on current page
+      }
+      // For other pages, redirect to signin
+      MyLogger.info('[Router] Auth error - redirecting to /signin');
+      return '/signin';
+    }
+
+    return null;
   },
 
   routes: [
@@ -313,10 +346,16 @@ final appRouter = GoRouter(
       pageBuilder: (context, state) =>
           PageTransitions.smoothTransition(const CommunitySearchResult()),
     ),
+
     GoRoute(
       path: '/disscussion-details',
       pageBuilder: (context, state) =>
           PageTransitions.smoothTransition(const DisscussionDetailsScreen()),
+    ),
+    GoRoute(
+      path: '/reading-list-details',
+      pageBuilder: (context, state) =>
+          PageTransitions.smoothTransition(const ReadingListDetailsScreen()),
     ),
   ],
 );

@@ -1,4 +1,5 @@
 ﻿import 'package:flutter/material.dart';
+import 'package:hugeicons/hugeicons.dart';
 import 'package:mirath/core/utils/my_colors.dart';
 import 'package:mirath/core/utils/my_extenstions.dart';
 import 'package:mirath/features/community/presentation/widgets/discussion_card.dart';
@@ -22,6 +23,22 @@ class DisscussionDetailsScreen extends StatelessWidget {
         leadingWidth: ResponsiveHelper.responsiveValue(context, 50),
         leading: MyBackIcon(),
         titleSpacing: 0,
+        actions: [
+          Padding(
+            padding: EdgeInsets.only(right: MySizes.spaceSm(context)),
+            child: IconButton(
+              onPressed: () {},
+              icon: HugeIcon(
+                icon: HugeIcons.strokeRoundedMoreHorizontal,
+                size: MySizes.iconMedium(context),
+                strokeWidth: ResponsiveHelper.responsiveValue(context, 2),
+              ),
+
+              padding: EdgeInsets.zero,
+              constraints: const BoxConstraints(),
+            ),
+          ),
+        ],
       ),
       body: LayoutBuilder(
         builder: (context, constraints) {
