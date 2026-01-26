@@ -68,65 +68,79 @@ class _SearchScreenState extends State<SearchScreen> {
     return Scaffold(
       appBar: PreferredSize(
         preferredSize: Size.fromHeight(
-          ResponsiveHelper.responsiveValue(context, 65),
+          ResponsiveHelper.responsiveValue(context, 50),
         ),
-        child: AppBar(
-          toolbarHeight: ResponsiveHelper.responsiveValue(context, 65),
-          leadingWidth: ResponsiveHelper.responsiveValue(context, 60),
-          leading: MyBackIcon(),
-          titleSpacing: 0,
-          title: Padding(
-            padding: EdgeInsets.only(right: MySizes.spaceSm(context)),
-            child: MySearchBar(
-              controller: _searchController,
-              hintText: widget.hintText,
-              showSuffixIcon: true,
-              onChanged: _filterItems,
-            ),
+        child: Center(
+          child: LayoutBuilder(
+            builder: (BuildContext context, BoxConstraints constraints) {
+              return ConstrainedBox(
+                constraints: BoxConstraints(maxWidth: 850),
+                child: AppBar(
+                  toolbarHeight: ResponsiveHelper.responsiveValue(context, 55),
+                  leadingWidth: ResponsiveHelper.responsiveValue(context, 60),
+                  leading: MyBackIcon(),
+                  titleSpacing: 0,
+                  title: Padding(
+                    padding: EdgeInsets.only(right: MySizes.spaceSm(context)),
+                    child: MySearchBar(
+                      controller: _searchController,
+                      hintText: widget.hintText,
+                      showSuffixIcon: true,
+                      onChanged: _filterItems,
+                    ),
+                  ),
+                ),
+              );
+            },
           ),
         ),
       ),
 
-      body: LayoutBuilder(
-        builder: (BuildContext context, BoxConstraints constraints) {
-          return Padding(
-            padding: MySizes.paddingMd(context),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.start,
-              children: [
-                if (widget.showHeading) ...[
-                  SearchScreenHeading(),
-                  SizedBox(height: MySizes.spaceSm(context)),
-                ],
-                Expanded(
-                  child: _filteredItems.isEmpty
-                      ? Center(
-                          child: Text(
-                            'No results found',
-                            style: Theme.of(context).textTheme.bodyMedium,
-                          ),
-                        )
-                      : ListView.separated(
-                          separatorBuilder: (context, index) =>
-                              SizedBox(height: MySizes.spaceXs(context)),
-                          padding: EdgeInsets.zero,
-                          itemCount: _filteredItems.length,
-                          itemBuilder: (context, index) {
-                            final item = _filteredItems[index];
-                            return InkWell(
-                              onTap: () => widget.onItemTap!.call(),
-                              child: SearchItem(
-                                itemTitle: item.toString(),
-                                onTap: () => widget.onRemoveTap!.call(),
+      body: Center(
+        child: LayoutBuilder(
+          builder: (BuildContext context, BoxConstraints constraints) {
+            return ConstrainedBox(
+              constraints: BoxConstraints(maxWidth: 850),
+              child: Padding(
+                padding: MySizes.paddingMd(context),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: [
+                    if (widget.showHeading) ...[
+                      SearchScreenHeading(),
+                      SizedBox(height: MySizes.spaceSm(context)),
+                    ],
+                    Expanded(
+                      child: _filteredItems.isEmpty
+                          ? Center(
+                              child: Text(
+                                'No results found',
+                                style: Theme.of(context).textTheme.bodyMedium,
                               ),
-                            );
-                          },
-                        ),
+                            )
+                          : ListView.separated(
+                              separatorBuilder: (context, index) =>
+                                  SizedBox(height: MySizes.spaceXs(context)),
+                              padding: EdgeInsets.zero,
+                              itemCount: _filteredItems.length,
+                              itemBuilder: (context, index) {
+                                final item = _filteredItems[index];
+                                return InkWell(
+                                  onTap: () => widget.onItemTap!.call(),
+                                  child: SearchItem(
+                                    itemTitle: item.toString(),
+                                    onTap: () => widget.onRemoveTap!.call(),
+                                  ),
+                                );
+                              },
+                            ),
+                    ),
+                  ],
                 ),
-              ],
-            ),
-          );
-        },
+              ),
+            );
+          },
+        ),
       ),
     );
   }

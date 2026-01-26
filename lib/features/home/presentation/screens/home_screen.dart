@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:mirath/features/common/widgets/screen_decoration.dart';
 
 import '../../../../core/helpers/responsive_helper.dart';
 import '../../../../core/utils/my_sizes.dart';
@@ -22,45 +23,60 @@ class _HomeScreenState extends State<HomeScreen> {
     return Scaffold(
       appBar: PreferredSize(
         preferredSize: Size.fromHeight(
-          ResponsiveHelper.responsiveValue(context, 70),
+          ResponsiveHelper.responsiveValue(context, 60),
         ),
-        child: WelcomeHeader(),
+        child: Center(
+          child: LayoutBuilder(
+            builder: (BuildContext context, BoxConstraints constraints) {
+              return ConstrainedBox(
+                constraints: BoxConstraints(maxWidth: 850),
+                child: WelcomeHeader(),
+              );
+            },
+          ),
+        ),
       ),
-      body: LayoutBuilder(
-        builder: (context, constraints) {
-          return Center(
-            child: ConstrainedBox(
-              constraints: BoxConstraints(maxWidth: 850),
-              child: ListView(
-                padding: MySizes.paddingMd(context),
-                children: [
-                  HomeSearchBar(),
-                  SizedBox(height: MySizes.spaceMd(context)),
-                  SectionTitle(
-                    title: 'Recently Published',
-                    onTap: () => context.push("/recentely-published"),
-                  ),
-                  SizedBox(height: MySizes.spaceSm(context)),
-                  CategoryItemsList(),
-                  SizedBox(height: MySizes.spaceLg(context)),
-                  SectionTitle(title: 'You might also like', showSeeAll: false),
-                  SizedBox(height: MySizes.spaceSm(context)),
-                  ListView.separated(
-                    separatorBuilder: (context, index) =>
-                        SizedBox(height: MySizes.spaceXs(context)),
-                    padding: EdgeInsets.zero,
-                    shrinkWrap: true,
-                    physics: NeverScrollableScrollPhysics(),
-                    itemCount: 10,
-                    itemBuilder: (context, index) {
-                      return PaperCard();
-                    },
-                  ),
-                ],
+      body: ScreenDecoration(
+        dark: false,
+        child: LayoutBuilder(
+          builder: (context, constraints) {
+            return Center(
+              child: ConstrainedBox(
+                constraints: BoxConstraints(maxWidth: 850),
+                child: ListView(
+                  padding: MySizes.paddingMd(context),
+                  children: [
+                    HomeSearchBar(),
+                    SizedBox(height: MySizes.spaceMd(context)),
+                    SectionTitle(
+                      title: 'Recently Published',
+                      onTap: () => context.push("/recentely-published"),
+                    ),
+                    SizedBox(height: MySizes.spaceSm(context)),
+                    CategoryItemsList(),
+                    SizedBox(height: MySizes.spaceLg(context)),
+                    SectionTitle(
+                      title: 'You might also like',
+                      showSeeAll: false,
+                    ),
+                    SizedBox(height: MySizes.spaceSm(context)),
+                    ListView.separated(
+                      separatorBuilder: (context, index) =>
+                          SizedBox(height: MySizes.spaceXs(context)),
+                      padding: EdgeInsets.zero,
+                      shrinkWrap: true,
+                      physics: NeverScrollableScrollPhysics(),
+                      itemCount: 10,
+                      itemBuilder: (context, index) {
+                        return PaperCard();
+                      },
+                    ),
+                  ],
+                ),
               ),
-            ),
-          );
-        },
+            );
+          },
+        ),
       ),
     );
   }

@@ -14,37 +14,46 @@ class ScreenDecoration extends StatelessWidget {
   Widget build(BuildContext context) {
     final isDark = MyHelperFunctions.isDarkMode(context);
 
-    // Make circles responsive
+    final isWeb =
+        ResponsiveHelper.deviceTypeFromContext(context) == DeviceType.desktop;
+
+    // Responsive sizes (unchanged)
     final largeCircleSize = ResponsiveHelper.responsiveValue(context, 635);
     final smallCircleSize = ResponsiveHelper.responsiveValue(context, 496);
 
-    final largeCircleLeft = ResponsiveHelper.responsiveValue(context, 148);
+    final largeCircleOffsetX = ResponsiveHelper.responsiveValue(context, 148);
     final largeCircleTop = ResponsiveHelper.responsiveValue(context, -327);
 
-    final smallCircleLeft = ResponsiveHelper.responsiveValue(context, 57);
+    final smallCircleOffsetX = ResponsiveHelper.responsiveValue(context, 57);
     final smallCircleTop = ResponsiveHelper.responsiveValue(context, -142);
 
+    final circleColor = dark
+        ? const Color(0x7F6F604E)
+        : isDark
+        ? MyColors.primaryShade900
+        : MyColors.lightCircle;
+
     return Stack(
+      clipBehavior: Clip.none,
       children: [
+        /// LARGE CIRCLE
         Positioned(
-          left: largeCircleLeft,
           top: largeCircleTop,
+          left: isWeb ? largeCircleOffsetX * 5 : largeCircleOffsetX,
           child: Container(
             width: largeCircleSize,
             height: largeCircleSize,
             decoration: ShapeDecoration(
-              color: dark
-                  ? const Color(0x7F6F604E)
-                  : isDark
-                  ? MyColors.primaryShade900
-                  : MyColors.lightCircle,
+              color: circleColor,
               shape: const OvalBorder(),
             ),
           ),
         ),
+
+        /// SMALL CIRCLE (OUTLINE)
         Positioned(
-          left: smallCircleLeft,
-          top: smallCircleTop,
+          top: isWeb ? smallCircleTop * 0.6 : smallCircleTop,
+          left: isWeb ? smallCircleOffsetX * 12.5 : smallCircleOffsetX,
           child: Container(
             width: smallCircleSize,
             height: smallCircleSize,
@@ -52,17 +61,17 @@ class ScreenDecoration extends StatelessWidget {
               shape: OvalBorder(
                 side: BorderSide(
                   width: ResponsiveHelper.responsiveValue(context, 3),
-                  color: dark
-                      ? const Color(0x7F6F604E)
-                      : isDark
-                      ? MyColors.primaryShade900
-                      : MyColors.lightCircle,
+                  color: circleColor,
                 ),
               ),
             ),
           ),
         ),
-        Positioned.fill(child: child),
+
+        /// CONTENT
+        Positioned.fill(
+          child: Align(alignment: Alignment.topLeft, child: child),
+        ),
       ],
     );
   }

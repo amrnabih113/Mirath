@@ -15,24 +15,11 @@ class WelcomeHeader extends StatelessWidget {
     return AppBar(
       backgroundColor: Colors.transparent,
       toolbarHeight: ResponsiveHelper.responsiveValue(context, 70),
-      leadingWidth: ResponsiveHelper.responsiveValue(context, 60),
-      leading: Padding(
-        padding: EdgeInsets.only(
-          left: ResponsiveHelper.responsiveValue(context, 8),
-          top: ResponsiveHelper.responsiveValue(context, 8),
-          bottom: ResponsiveHelper.responsiveValue(context, 8),
-          right: 0,
-        ),
-        child: ProfileAvatar(),
-      ),
+      leading: ProfileAvatar(),
       actions: [
-        Padding(
-          padding: MySizes.paddingSm(context),
-          child: HugeIcon(
-            icon: HugeIcons.strokeRoundedNotification01,
-            color: Colors.black,
-            size: MySizes.iconSmall(context),
-          ),
+        HugeIcon(
+          icon: HugeIcons.strokeRoundedNotification01,
+          size: MySizes.iconSmall(context),
         ),
       ],
       titleSpacing: 0,
