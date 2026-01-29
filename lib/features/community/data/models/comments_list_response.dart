@@ -15,7 +15,8 @@ class CommentsListResponse {
     return CommentsListResponse(
       message: json['message'] ?? '',
       size: json['size'] ?? 0,
-      data: (json['data'] as List<dynamic>?)
+      data:
+          (json['data'] as List<dynamic>?)
               ?.map((e) => CommentModel.fromJson(e as Map<String, dynamic>))
               .toList() ??
           [],

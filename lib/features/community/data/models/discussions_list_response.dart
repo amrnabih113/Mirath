@@ -15,7 +15,8 @@ class DiscussionsListResponse {
     return DiscussionsListResponse(
       message: json['message'] ?? '',
       size: json['size'] ?? 0,
-      data: (json['data'] as List<dynamic>?)
+      data:
+          (json['data'] as List<dynamic>?)
               ?.map((e) => DiscussionModel.fromJson(e as Map<String, dynamic>))
               .toList() ??
           [],

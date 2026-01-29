@@ -27,7 +27,8 @@ class DiscussionModel extends Discussion {
       voteScore: json['voteScore'] ?? 0,
       commentCount: json['commentCount'] ?? 0,
       authorId: json['authorId'] ?? '',
-      paperIds: (json['paperIds'] as List<dynamic>?)
+      paperIds:
+          (json['paperIds'] as List<dynamic>?)
               ?.map((e) => e.toString())
               .toList() ??
           [],
@@ -39,8 +40,11 @@ class DiscussionModel extends Discussion {
           : DateTime.now(),
       hasVoted: json['hasVoted'] ?? false,
       userVoteType: json['userVoteType'],
-      topics: (json['topics'] as List<dynamic>?)
-              ?.map((e) => DiscussionTopicModel.fromJson(e as Map<String, dynamic>))
+      topics:
+          (json['topics'] as List<dynamic>?)
+              ?.map(
+                (e) => DiscussionTopicModel.fromJson(e as Map<String, dynamic>),
+              )
               .toList() ??
           [],
       author: DiscussionAuthorModel.fromJson(

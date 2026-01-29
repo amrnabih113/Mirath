@@ -16,10 +16,6 @@ class DiscussionTopicModel extends DiscussionTopic {
   }
 
   Map<String, dynamic> toJson() {
-    return {
-      'id': id,
-      'name': name,
-      'custom': custom,
-    };
+    return {'id': id, 'name': name, 'custom': custom};
   }
 }

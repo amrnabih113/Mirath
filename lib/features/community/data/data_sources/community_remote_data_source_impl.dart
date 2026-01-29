@@ -10,7 +10,7 @@ class CommunityRemoteDataSourceImpl implements CommunityRemoteDataSource {
   final DioClient _dioClient;
 
   CommunityRemoteDataSourceImpl({required DioClient dioClient})
-      : _dioClient = dioClient;
+    : _dioClient = dioClient;
 
   @override
   Future<DiscussionResponse> createDiscussion({
@@ -73,10 +73,7 @@ class CommunityRemoteDataSourceImpl implements CommunityRemoteDataSource {
     required String type,
   }) async {
     final endpoint = MyConstants.voteOnDiscussion.replaceAll('{id}', id);
-    await _dioClient.post(
-      endpoint,
-      data: {'type': type},
-    );
+    await _dioClient.post(endpoint, data: {'type': type});
   }
 
   @override
@@ -91,14 +88,10 @@ class CommunityRemoteDataSourceImpl implements CommunityRemoteDataSource {
     required String content,
     String? parentId,
   }) async {
-    final endpoint =
-        MyConstants.createComment.replaceAll('{id}', discussionId);
+    final endpoint = MyConstants.createComment.replaceAll('{id}', discussionId);
     final response = await _dioClient.post(
       endpoint,
-      data: {
-        'content': content,
-        if (parentId != null) 'parentId': parentId,
-      },
+      data: {'content': content, if (parentId != null) 'parentId': parentId},
     );
     return CommentResponse.fromJson(response.data as Map<String, dynamic>);
   }
@@ -107,24 +100,18 @@ class CommunityRemoteDataSourceImpl implements CommunityRemoteDataSource {
   Future<CommentsListResponse> getDiscussionComments(
     String discussionId,
   ) async {
-    final endpoint =
-        MyConstants.getDiscussionComments.replaceAll('{id}', discussionId);
-    final response = await _dioClient.get(endpoint);
-    return CommentsListResponse.fromJson(
-      response.data as Map<String, dynamic>,
+    final endpoint = MyConstants.getDiscussionComments.replaceAll(
+      '{id}',
+      discussionId,
     );
+    final response = await _dioClient.get(endpoint);
+    return CommentsListResponse.fromJson(response.data as Map<String, dynamic>);
   }
 
   @override
-  Future<void> voteOnComment({
-    required String id,
-    required String type,
-  }) async {
+  Future<void> voteOnComment({required String id, required String type}) async {
     final endpoint = MyConstants.voteOnComment.replaceAll('{id}', id);
-    await _dioClient.post(
-      endpoint,
-      data: {'type': type},
-    );
+    await _dioClient.post(endpoint, data: {'type': type});
   }
 
   @override

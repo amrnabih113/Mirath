@@ -234,7 +234,5 @@ class DI {
         getRecommendationsUseCase: sl(),
       ),
     );
-
-    
   }
 }

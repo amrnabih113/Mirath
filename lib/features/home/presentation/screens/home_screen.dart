@@ -36,47 +36,41 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
         ),
       ),
-      body: ScreenDecoration(
-        dark: false,
-        child: LayoutBuilder(
-          builder: (context, constraints) {
-            return Center(
-              child: ConstrainedBox(
-                constraints: BoxConstraints(maxWidth: 850),
-                child: ListView(
-                  padding: MySizes.paddingMd(context),
-                  children: [
-                    HomeSearchBar(),
-                    SizedBox(height: MySizes.spaceMd(context)),
-                    SectionTitle(
-                      title: 'Recently Published',
-                      onTap: () => context.push("/recentely-published"),
-                    ),
-                    SizedBox(height: MySizes.spaceSm(context)),
-                    CategoryItemsList(),
-                    SizedBox(height: MySizes.spaceLg(context)),
-                    SectionTitle(
-                      title: 'You might also like',
-                      showSeeAll: false,
-                    ),
-                    SizedBox(height: MySizes.spaceSm(context)),
-                    ListView.separated(
-                      separatorBuilder: (context, index) =>
-                          SizedBox(height: MySizes.spaceXs(context)),
-                      padding: EdgeInsets.zero,
-                      shrinkWrap: true,
-                      physics: NeverScrollableScrollPhysics(),
-                      itemCount: 10,
-                      itemBuilder: (context, index) {
-                        return PaperCard();
-                      },
-                    ),
-                  ],
-                ),
+      body: LayoutBuilder(
+        builder: (context, constraints) {
+          return Center(
+            child: ConstrainedBox(
+              constraints: BoxConstraints(maxWidth: 850),
+              child: ListView(
+                padding: MySizes.paddingMd(context),
+                children: [
+                  HomeSearchBar(),
+                  SizedBox(height: MySizes.spaceMd(context)),
+                  SectionTitle(
+                    title: 'Recently Published',
+                    onTap: () => context.push("/recentely-published"),
+                  ),
+                  SizedBox(height: MySizes.spaceSm(context)),
+                  CategoryItemsList(),
+                  SizedBox(height: MySizes.spaceLg(context)),
+                  SectionTitle(title: 'You might also like', showSeeAll: false),
+                  SizedBox(height: MySizes.spaceSm(context)),
+                  ListView.separated(
+                    separatorBuilder: (context, index) =>
+                        SizedBox(height: MySizes.spaceXs(context)),
+                    padding: EdgeInsets.zero,
+                    shrinkWrap: true,
+                    physics: NeverScrollableScrollPhysics(),
+                    itemCount: 10,
+                    itemBuilder: (context, index) {
+                      return PaperCard();
+                    },
+                  ),
+                ],
               ),
-            );
-          },
-        ),
+            ),
+          );
+        },
       ),
     );
   }

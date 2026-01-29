@@ -27,10 +27,7 @@ abstract class CommunityRemoteDataSource {
   Future<void> deleteDiscussion(String id);
 
   /// Vote on a discussion
-  Future<void> voteOnDiscussion({
-    required String id,
-    required String type,
-  });
+  Future<void> voteOnDiscussion({required String id, required String type});
 
   /// Delete vote from a discussion
   Future<void> deleteDiscussionVote(String id);
@@ -46,10 +43,7 @@ abstract class CommunityRemoteDataSource {
   Future<CommentsListResponse> getDiscussionComments(String discussionId);
 
   /// Vote on a comment
-  Future<void> voteOnComment({
-    required String id,
-    required String type,
-  });
+  Future<void> voteOnComment({required String id, required String type});
 
   /// Delete vote from a comment
   Future<void> deleteCommentVote(String id);

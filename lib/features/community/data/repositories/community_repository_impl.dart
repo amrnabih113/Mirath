@@ -13,9 +13,8 @@ import '../data_sources/community_remote_data_source.dart';
 class CommunityRepositoryImpl implements CommunityRepository {
   final CommunityRemoteDataSource _remoteDataSource;
 
-  CommunityRepositoryImpl({
-    required CommunityRemoteDataSource remoteDataSource,
-  }) : _remoteDataSource = remoteDataSource;
+  CommunityRepositoryImpl({required CommunityRemoteDataSource remoteDataSource})
+    : _remoteDataSource = remoteDataSource;
 
   @override
   Future<Either<Failure, Discussion>> createDiscussion(
@@ -115,8 +114,9 @@ class CommunityRepositoryImpl implements CommunityRepository {
     String discussionId,
   ) async {
     try {
-      final response =
-          await _remoteDataSource.getDiscussionComments(discussionId);
+      final response = await _remoteDataSource.getDiscussionComments(
+        discussionId,
+      );
       return Right(response.data);
     } catch (e) {
       return Left(mapExceptionToFailure(e));
@@ -126,10 +126,7 @@ class CommunityRepositoryImpl implements CommunityRepository {
   @override
   Future<Either<Failure, void>> voteOnComment(VoteParams params) async {
     try {
-      await _remoteDataSource.voteOnComment(
-        id: params.id,
-        type: params.type,
-      );
+      await _remoteDataSource.voteOnComment(id: params.id, type: params.type);
       return const Right(null);
     } catch (e) {
       return Left(mapExceptionToFailure(e));

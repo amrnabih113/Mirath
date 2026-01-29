@@ -70,28 +70,28 @@ class MyConstants {
   // get
   static const String getRecommended = "api/v1/feed/recommendations";
 
-    // ***Discussions endpoints***
-    // post
-    static const String createDiscussion = "api/v1/discussions";
-    // get
-    static const String getAllDiscussions = "api/v1/discussions";
-    // get
-    static const String getDiscussionById = "api/v1/discussions/{id}";
-    // delete
-    static const String deleteDiscussion = "api/v1/discussions/{id}";
-    // post
-    static const String voteOnDiscussion = "api/v1/discussions/{id}/vote";
-    // delete
-    static const String deleteDiscussionVote = "api/v1/discussions/{id}/vote";
-    // post
-    static const String createComment = "api/v1/discussions/{id}/comments";
-    // get
-    static const String getDiscussionComments = "api/v1/discussions/{id}/comments";
+  // ***Discussions endpoints***
+  // post
+  static const String createDiscussion = "api/v1/discussions";
+  // get
+  static const String getAllDiscussions = "api/v1/discussions";
+  // get
+  static const String getDiscussionById = "api/v1/discussions/{id}";
+  // delete
+  static const String deleteDiscussion = "api/v1/discussions/{id}";
+  // post
+  static const String voteOnDiscussion = "api/v1/discussions/{id}/vote";
+  // delete
+  static const String deleteDiscussionVote = "api/v1/discussions/{id}/vote";
+  // post
+  static const String createComment = "api/v1/discussions/{id}/comments";
+  // get
+  static const String getDiscussionComments =
+      "api/v1/discussions/{id}/comments";
 
-    // ***Comments endpoints***
-    // post
-    static const String voteOnComment = "api/v1/comments/{id}/vote";
-    // delete
-    static const String deleteCommentVote = "api/v1/comments/{id}/vote";
-
+  // ***Comments endpoints***
+  // post
+  static const String voteOnComment = "api/v1/comments/{id}/vote";
+  // delete
+  static const String deleteCommentVote = "api/v1/comments/{id}/vote";
 }
