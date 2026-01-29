@@ -55,7 +55,8 @@ class HomeSearchResultScreen extends StatelessWidget {
                   ),
                   itemCount: 5,
                   itemBuilder: (context, index) {
-                    return PaperCard();
+                    return SizedBox();
+                    //PaperCard();
                   },
                 ),
               ),

@@ -216,8 +216,8 @@ final appRouter = GoRouter(
           path: '/home',
           pageBuilder: (context, state) => NoTransitionPage(
             child: BlocProvider.value(
-              value: sl<HomeCubit>(),
-              child: HomeScreen(),
+              value: sl<HomeCubit>()..getRecommendations(),
+              child: const HomeScreen(),
             ),
           ),
         ),
@@ -330,8 +330,12 @@ final appRouter = GoRouter(
     ),
     GoRoute(
       path: '/recentely-published',
-      pageBuilder: (context, state) =>
-          PageTransitions.smoothTransition(const RecentelyPublishedScreen()),
+      pageBuilder: (context, state) => NoTransitionPage(
+        child: BlocProvider.value(
+          value: sl<HomeCubit>()..getRecentPapers(),
+          child: const RecentelyPublishedScreen(),
+        ),
+      ),
     ),
     GoRoute(
       path: '/community-search-results',
