@@ -3,7 +3,12 @@ import '../../../core/utils/my_extenstions.dart';
 import '../../home/presentation/widgets/see_all_button.dart';
 
 class SectionTitle extends StatelessWidget {
-  const SectionTitle({super.key, required this.title, this.showSeeAll = true, this.onTap});
+  const SectionTitle({
+    super.key,
+    required this.title,
+    this.showSeeAll = true,
+    this.onTap,
+  });
   final String title;
   final bool showSeeAll;
   final void Function()? onTap;
@@ -13,9 +18,13 @@ class SectionTitle extends StatelessWidget {
       children: [
         Text(
           title,
-          style: context.titleMedium.copyWith(fontWeight: FontWeight.w900),
+          style: context.titleMedium.copyWith(
+            fontWeight: FontWeight.w900,
+            letterSpacing: -0.4,
+            height: 1.2,
+          ),
         ),
-        if (showSeeAll) ...[Spacer(), SeeAllButton(onTap: onTap)],
+        if (showSeeAll) ...[const Spacer(), SeeAllButton(onTap: onTap)],
       ],
     );
   }

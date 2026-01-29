@@ -30,6 +30,7 @@ class CategoryItemsList extends StatelessWidget {
       height: ResponsiveHelper.responsiveValue(context, 45),
       child: ListView.builder(
         scrollDirection: Axis.horizontal,
+        physics: const BouncingScrollPhysics(),
         itemCount: categories.length,
         itemBuilder: (context, index) {
           return GestureDetector(

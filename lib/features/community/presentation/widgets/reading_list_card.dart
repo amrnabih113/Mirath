@@ -5,6 +5,8 @@ import 'package:mirath/core/utils/my_extenstions.dart';
 import 'package:mirath/core/utils/my_sizes.dart';
 import 'package:mirath/features/community/presentation/widgets/tag_chip.dart';
 
+import '../../../../core/helpers/responsive_helper.dart';
+
 class ReadingListCard extends StatelessWidget {
   const ReadingListCard({super.key});
 
@@ -14,8 +16,31 @@ class ReadingListCard extends StatelessWidget {
       padding: MySizes.paddingMd(context),
       decoration: BoxDecoration(
         color: MyColors.white,
-        borderRadius: BorderRadius.circular(MySizes.borderRadiusMd(context)),
-        border: Border.all(color: MyColors.primaryShade500, width: 1),
+        borderRadius: BorderRadius.circular(
+          ResponsiveHelper.responsiveValue(context, 20),
+        ),
+        border: Border.all(
+          color: MyColors.primaryShade400.withValues(alpha: 0.4),
+          width: 1.5,
+        ),
+        boxShadow: [
+          BoxShadow(
+            color: MyColors.primaryShade600.withValues(alpha: 0.12),
+            blurRadius: 24,
+            offset: const Offset(0, 8),
+            spreadRadius: -4,
+          ),
+          BoxShadow(
+            color: MyColors.primaryShade400.withValues(alpha: 0.08),
+            blurRadius: 12,
+            offset: const Offset(0, 4),
+          ),
+          BoxShadow(
+            color: MyColors.white.withValues(alpha: 0.8),
+            blurRadius: 2,
+            offset: const Offset(0, -1),
+          ),
+        ],
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,

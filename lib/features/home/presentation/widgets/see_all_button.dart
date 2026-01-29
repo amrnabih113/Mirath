@@ -36,12 +36,12 @@ class SeeAllButton extends StatelessWidget {
                 color: MyColors.white,
               ),
             ),
-            HugeIcon(
-              icon: HugeIcons.strokeRoundedArrowRight01,
-              strokeWidth: ResponsiveHelper.responsiveValue(context, 4),
-              size: MySizes.spaceMd(context),
-              color: MyColors.white,
-            ),
+            // HugeIcon(
+            //   icon: HugeIcons.strokeRoundedArrowRight01,
+            //   strokeWidth: ResponsiveHelper.responsiveValue(context, 4),
+            //   size: MySizes.spaceMd(context),
+            //   color: MyColors.white,
+            // ),
           ],
         ),
       ),

@@ -22,9 +22,18 @@ class _HomeScreenState extends State<HomeScreen> {
     return Scaffold(
       appBar: PreferredSize(
         preferredSize: Size.fromHeight(
-          ResponsiveHelper.responsiveValue(context, 70),
+          ResponsiveHelper.responsiveValue(context, 60),
         ),
-        child: WelcomeHeader(),
+        child: Center(
+          child: LayoutBuilder(
+            builder: (BuildContext context, BoxConstraints constraints) {
+              return ConstrainedBox(
+                constraints: BoxConstraints(maxWidth: 850),
+                child: WelcomeHeader(),
+              );
+            },
+          ),
+        ),
       ),
       body: LayoutBuilder(
         builder: (context, constraints) {
@@ -35,19 +44,19 @@ class _HomeScreenState extends State<HomeScreen> {
                 padding: MySizes.paddingMd(context),
                 children: [
                   HomeSearchBar(),
-                  SizedBox(height: MySizes.spaceMd(context)),
+                  SizedBox(height: MySizes.spaceLg(context)),
                   SectionTitle(
                     title: 'Recently Published',
                     onTap: () => context.push("/recentely-published"),
                   ),
-                  SizedBox(height: MySizes.spaceSm(context)),
+                  SizedBox(height: MySizes.spaceMd(context)),
                   CategoryItemsList(),
-                  SizedBox(height: MySizes.spaceLg(context)),
+                  SizedBox(height: MySizes.spaceLg(context) * 1.5),
                   SectionTitle(title: 'You might also like', showSeeAll: false),
-                  SizedBox(height: MySizes.spaceSm(context)),
+                  SizedBox(height: MySizes.spaceMd(context)),
                   ListView.separated(
                     separatorBuilder: (context, index) =>
-                        SizedBox(height: MySizes.spaceXs(context)),
+                        SizedBox(height: MySizes.spaceMd(context)),
                     padding: EdgeInsets.zero,
                     shrinkWrap: true,
                     physics: NeverScrollableScrollPhysics(),
@@ -56,6 +65,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       return PaperCard();
                     },
                   ),
+                  SizedBox(height: MySizes.spaceLg(context)),
                 ],
               ),
             ),

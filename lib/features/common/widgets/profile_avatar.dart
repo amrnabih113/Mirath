@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import '../../../core/helpers/responsive_helper.dart';
-import '../../../core/utils/my_colors.dart';
 
 class ProfileAvatar extends StatelessWidget {
   const ProfileAvatar({super.key, this.size = 40});
@@ -9,7 +8,7 @@ class ProfileAvatar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return CircleAvatar(
-      backgroundColor: MyColors.light,
+      backgroundColor: Colors.transparent,
       child: SvgPicture.asset(
         'assets/images/Profile picture.svg',
         fit: BoxFit.cover,

@@ -19,7 +19,7 @@ class TabBarSliverDelegate extends SliverPersistentHeaderDelegate {
     bool overlapsContent,
   ) {
     return Container(
-      color: MyColors.white,
+      color: MyColors.light,
       child: Material(color: Colors.transparent, child: tabBar),
     );
   }
