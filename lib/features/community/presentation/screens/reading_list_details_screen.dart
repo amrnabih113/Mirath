@@ -150,7 +150,8 @@ class ReadingListDetailsScreen extends StatelessWidget {
                             padding: EdgeInsets.only(
                               bottom: MySizes.spaceMd(context),
                             ),
-                            child: PaperCard(number: index + 1),
+                            child: SizedBox(),
+                            // PaperCard(number: index + 1),
                           );
                         }, childCount: 3),
                       ),

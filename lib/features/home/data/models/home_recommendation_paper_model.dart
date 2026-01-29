@@ -41,6 +41,7 @@ import '../../domain/entities/paper_entity.dart';
 class HomeRecommendationPaperModel {
   final String id;
   final String title;
+  final String preprint;
   final String abstract;
   final String publishedAt;
   final List<String> authors;
@@ -55,6 +56,7 @@ class HomeRecommendationPaperModel {
     required this.authors,
     required this.categories,
     required this.isSaved,
+    required this.preprint,
   });
 
   factory HomeRecommendationPaperModel.fromJson(Map<String, dynamic> json) {
@@ -74,6 +76,7 @@ class HomeRecommendationPaperModel {
               .toList() ??
           [],
       isSaved: json['isSaved'] ?? false,
+      preprint: json['preprint'] ?? '',
     );
   }
 
@@ -81,6 +84,7 @@ class HomeRecommendationPaperModel {
     return {
       'id': id,
       'title': title,
+      'preprint': preprint,
       'abstract': abstract,
       'publishedAt': publishedAt,
       'authors': authors,
@@ -97,6 +101,7 @@ class HomeRecommendationPaperModel {
     authors: [],
     categories: [],
     isSaved: false,
+    preprint: '',
   );
 }
 
@@ -110,6 +115,7 @@ extension HomeRecommendationPaperModelX on HomeRecommendationPaperModel {
       authors: authors,
       categories: categories,
       isSaved: isSaved,
+      preprint: preprint,
     );
   }
 }

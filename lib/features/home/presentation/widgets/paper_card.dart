@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:hugeicons_pro/hugeicons.dart';
+import 'package:mirath/features/home/domain/entities/paper_entity.dart';
 
 import '../../../../core/helpers/responsive_helper.dart';
 import '../../../../core/utils/my_colors.dart';
@@ -8,8 +9,9 @@ import '../../../../core/utils/my_extenstions.dart';
 import '../../../../core/utils/my_sizes.dart';
 
 class PaperCard extends StatefulWidget {
-  const PaperCard({super.key, this.number});
+  const PaperCard({super.key, this.number, required this.paper});
   final int? number;
+  final PaperEntity paper;
 
   @override
   State<PaperCard> createState() => _PaperCardState();
@@ -81,19 +83,24 @@ class _PaperCardState extends State<PaperCard> {
                           ),
                         ),
                       ],
-                      SizedBox(
-                        width: ResponsiveHelper.responsiveValue(context, 6),
-                      ),
                     ],
-                    Text(
-                      'J. Phys. Commun. • 2022',
-                      style: context.bodySmall.copyWith(
-                        color: MyColors.primaryShade600,
-                        fontWeight: FontWeight.w600,
-                        letterSpacing: 0.3,
-                      ),
-                    ),
                   ],
+                ),
+                SizedBox(width: ResponsiveHelper.responsiveValue(context, 6)),
+              ],
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text(
+                  maxLines: 1,
+                  'preprint',
+                  style: context.bodySmall.copyWith(
+                    color: MyColors.primaryShade600,
+                    fontWeight: FontWeight.w600,
+                    letterSpacing: 0.3,
+                  ),
+                  overflow: TextOverflow.ellipsis,
                 ),
                 IconButton(
                   onPressed: () => setState(() => isSaved = !isSaved),
@@ -110,18 +117,20 @@ class _PaperCardState extends State<PaperCard> {
             ),
             SizedBox(height: MySizes.spaceXs(context) * 0.5),
             Text(
-              'What does it take to solve the measurement problem?',
+              '${widget.paper.authors[0]}• ${DateTime.parse(widget.paper.publishedAt).year.toString()}',
+              maxLines: 2,
               style: context.titleMedium.copyWith(
                 color: MyColors.primaryShade900,
                 fontFamily: GoogleFonts.sourceSerif4().fontFamily,
                 fontWeight: FontWeight.w700,
                 height: 1.3,
                 letterSpacing: -0.2,
+                overflow: TextOverflow.ellipsis,
               ),
             ),
             SizedBox(height: MySizes.spaceXs(context)),
             Text(
-              'Jonte R Hance and Sabine Hossenfelder',
+              widget.paper.title,
               style: context.bodySmall.copyWith(
                 color: MyColors.primaryShade700,
                 fontWeight: FontWeight.w500,
@@ -133,8 +142,8 @@ class _PaperCardState extends State<PaperCard> {
               spacing: MySizes.spaceXs(context) / 2,
               runSpacing: MySizes.spaceXs(context),
               children: [
-                _tag(context, 'Quantum Mechanics'),
-                _tag(context, 'The Measurement Problem'),
+                _tag(context, widget.paper.categories[0]),
+                _tag(context, widget.paper.categories[1]),
               ],
             ),
           ],
