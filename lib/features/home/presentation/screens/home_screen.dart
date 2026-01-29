@@ -65,7 +65,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       return PaperCard();
                     },
                   ),
-                  SizedBox(height: MySizes.spaceLg(context)),
+                  SizedBox(height: MySizes.spaceLg(context) * 4),
                 ],
               ),
             ),

@@ -4,6 +4,7 @@ class ProfileSetupData extends Equatable {
   final List<String> interests;
   final String levelOfEducation;
   final String name;
+
   final String? university;
 
   const ProfileSetupData({

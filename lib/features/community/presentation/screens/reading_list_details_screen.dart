@@ -8,7 +8,7 @@ import 'package:mirath/features/home/presentation/widgets/paper_card.dart';
 import '../../../../core/helpers/responsive_helper.dart';
 import '../../../../core/utils/my_sizes.dart';
 import '../../../common/widgets/my_back_icon.dart';
-import '../widgets/tag_chip.dart';
+import '../../../common/widgets/tag_chip.dart';
 
 class ReadingListDetailsScreen extends StatelessWidget {
   const ReadingListDetailsScreen({super.key});

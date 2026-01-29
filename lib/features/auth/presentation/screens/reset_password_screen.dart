@@ -70,9 +70,9 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
               );
               context.push('/signin');
             } else if (state.status == AuthStatus.error) {
-              MyLoaders.warningSnackBar(
+              MyLoaders.errorSnackBar(
                 context: context,
-                title: "",
+                title: S.of(context).error_title,
                 message: state.message ?? S.of(context).something_went_wrong,
               );
             }
