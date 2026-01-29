@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hugeicons/hugeicons.dart';
-import 'package:mirath/core/utils/my_colors.dart';
-import 'package:mirath/core/utils/my_extenstions.dart';
-import 'package:mirath/core/utils/my_sizes.dart';
+
+import '../../../../core/utils/my_colors.dart';
+import '../../../../core/utils/my_extenstions.dart';
+import '../../../../core/utils/my_sizes.dart';
 
 class HomeSearchBar extends StatelessWidget {
   const HomeSearchBar({super.key});
@@ -14,7 +15,14 @@ class HomeSearchBar extends StatelessWidget {
       cursorColor: MyColors.primaryShade500,
       readOnly: true,
       onTap: () {
-        context.push('/search');
+        context.push(
+          '/search',
+          extra: {
+            'items': ["Item 1", "Item 2", "Item 3"],
+            'hintText': 'Search',
+            'onItemTap': () => context.push('/home-search-results'),
+          },
+        );
       },
 
       decoration: InputDecoration(

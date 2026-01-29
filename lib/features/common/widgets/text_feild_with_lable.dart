@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:mirath/core/utils/my_colors.dart';
 
+import '../../../core/utils/my_colors.dart';
 import '../../../core/utils/my_extenstions.dart';
 import '../../../core/utils/my_sizes.dart';
 

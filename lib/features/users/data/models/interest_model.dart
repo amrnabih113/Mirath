@@ -1,4 +1,4 @@
-import 'package:mirath/features/users/domain/entities/user.dart';
+import '../../domain/entities/user.dart';
 
 class InterestModel extends Interest {
   const InterestModel({

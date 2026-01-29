@@ -1,15 +1,17 @@
-import 'package:bloc/bloc.dart';
+﻿import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
-import 'package:mirath/core/error/failuors.dart';
-import 'package:mirath/core/helpers/failure_handler.dart';
-import 'package:mirath/core/services/local_storage_service.dart';
-import 'package:mirath/features/users/domain/entities/profile_setup_data.dart';
-import 'package:mirath/features/users/domain/usecases/setup_profile_usecase.dart';
 
+import '../../../../core/error/failuors.dart';
+import '../../../../core/helpers/failure_handler.dart';
+import '../../../../core/services/local_storage_service.dart';
+import '../../../../core/services/secure_storage_service.dart';
 import '../../../../core/usecases/no_params.dart';
 import '../../../../core/utils/my_logger.dart';
+import '../../../users/domain/entities/profile_setup_data.dart';
+import '../../../users/domain/usecases/setup_profile_usecase.dart';
 import '../../domain/entities/signin_data.dart';
 import '../../domain/entities/signup_data.dart';
+import '../../domain/usecases/check_setup_usecase.dart';
 import '../../domain/usecases/forget_password_usecase.dart';
 import '../../domain/usecases/is_signed_in_usecase.dart';
 import '../../domain/usecases/is_verified_usecase.dart';
@@ -22,7 +24,6 @@ import '../../domain/usecases/signout_usecase.dart';
 import '../../domain/usecases/signup_usecase.dart';
 import '../../domain/usecases/verify_account_usecase.dart';
 import '../../domain/usecases/verify_reset_password_otp_usecase.dart';
-import '../../domain/usecases/check_setup_usecase.dart';
 
 part 'auth_state.dart';
 
@@ -42,6 +43,7 @@ class AuthCubit extends Cubit<AuthState> {
   final SetupProfileUsecase setUpProfileUseCase;
   final CheckSetupUseCase checkSetupUseCase;
   final LocalStorageService localStorage;
+  final SecureStorageService secureStorage;
 
   AuthCubit({
     required this.signInUseCase,
@@ -59,6 +61,7 @@ class AuthCubit extends Cubit<AuthState> {
     required this.setUpProfileUseCase,
     required this.checkSetupUseCase,
     required this.localStorage,
+    required this.secureStorage,
   }) : super(AuthState.initial());
 
   // ===================== SIGN IN =====================
@@ -126,6 +129,9 @@ class AuthCubit extends Cubit<AuthState> {
       ),
       (_) async {
         // Profile setup completed successfully
+        // Update cached setup status to true
+        await secureStorage.saveSetupStatus(true);
+
         // The server now knows the profile is complete
         emit(
           state.copyWith(
@@ -191,7 +197,7 @@ class AuthCubit extends Cubit<AuthState> {
 
     await result.fold(
       (_) async {
-        MyLogger.info('[AuthCubit] Not signed in → unauthenticated');
+        MyLogger.info('[AuthCubit] Not signed in â†’ unauthenticated');
         emit(
           state.copyWith(
             status: AuthStatus.unauthenticated,
@@ -201,7 +207,7 @@ class AuthCubit extends Cubit<AuthState> {
       },
       (loggedIn) async {
         if (!loggedIn) {
-          MyLogger.info('[AuthCubit] User not logged in → unauthenticated');
+          MyLogger.info('[AuthCubit] User not logged in â†’ unauthenticated');
           emit(
             state.copyWith(
               status: AuthStatus.unauthenticated,
@@ -215,13 +221,13 @@ class AuthCubit extends Cubit<AuthState> {
           verifiedResult.fold(
             (_) {
               MyLogger.info(
-                '[AuthCubit] Verification check failed → authenticated',
+                '[AuthCubit] Verification check failed â†’ authenticated',
               );
               emit(state.copyWith(status: AuthStatus.authenticated));
             },
             (isVerified) {
               MyLogger.info(
-                '[AuthCubit] Verification status: $isVerified → ${isVerified ? "authenticated" : "unverified"}',
+                '[AuthCubit] Verification status: $isVerified â†’ ${isVerified ? "authenticated" : "unverified"}',
               );
               emit(
                 state.copyWith(

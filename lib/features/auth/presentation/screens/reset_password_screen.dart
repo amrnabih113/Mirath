@@ -1,15 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+
 import '../../../../core/helpers/my_loaders.dart';
 import '../../../../core/utils/my_colors.dart';
 import '../../../../core/utils/my_extenstions.dart';
 import '../../../../core/utils/my_sizes.dart';
 import '../../../../core/utils/my_validators.dart';
-import '../cubit/auth_cubit.dart';
+import '../../../../generated/l10n.dart';
 import '../../../common/widgets/my_back_icon.dart';
 import '../../../common/widgets/screen_decoration.dart';
-import '../../../../generated/l10n.dart';
+import '../cubit/auth_cubit.dart';
 
 class ResetPasswordScreen extends StatefulWidget {
   const ResetPasswordScreen({super.key});
@@ -144,35 +145,32 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
                                   ),
                                   SizedBox(height: MySizes.spaceLg(context)),
 
-                                  SizedBox(
-                                    width: MySizes.buttonWidth(context),
-                                    child: BlocBuilder<AuthCubit, AuthState>(
-                                      builder: (context, state) {
-                                        final isLoading =
-                                            state.status == AuthStatus.loading;
+                                  BlocBuilder<AuthCubit, AuthState>(
+                                    builder: (context, state) {
+                                      final isLoading =
+                                          state.status == AuthStatus.loading;
 
-                                        return ElevatedButton(
-                                          onPressed:
-                                              (!isButtonEnabled || isLoading)
-                                              ? null
-                                              : _handleResetPassword,
+                                      return ElevatedButton(
+                                        onPressed:
+                                            (!isButtonEnabled || isLoading)
+                                            ? null
+                                            : _handleResetPassword,
 
-                                          child: isLoading
-                                              ? const SizedBox(
-                                                  height: 22,
-                                                  width: 22,
-                                                  child:
-                                                      CircularProgressIndicator(
-                                                        strokeWidth: 2,
-                                                        color: MyColors.light,
-                                                      ),
-                                                )
-                                              : Text(
-                                                  S.of(context).Update_password,
-                                                ),
-                                        );
-                                      },
-                                    ),
+                                        child: isLoading
+                                            ? const SizedBox(
+                                                height: 22,
+                                                width: 22,
+                                                child:
+                                                    CircularProgressIndicator(
+                                                      strokeWidth: 2,
+                                                      color: MyColors.light,
+                                                    ),
+                                              )
+                                            : Text(
+                                                S.of(context).Update_password,
+                                              ),
+                                      );
+                                    },
                                   ),
                                 ],
                               ),

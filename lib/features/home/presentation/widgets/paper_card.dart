@@ -1,14 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:hugeicons_pro/hugeicons.dart';
-import 'package:mirath/core/helpers/responsive_helper.dart';
-import 'package:mirath/core/utils/my_colors.dart';
-import 'package:mirath/core/utils/my_extenstions.dart';
-import 'package:mirath/core/utils/my_sizes.dart';
 
-class PaperCardItems extends StatelessWidget {
-  const PaperCardItems({super.key});
+import '../../../../core/helpers/responsive_helper.dart';
+import '../../../../core/utils/my_colors.dart';
+import '../../../../core/utils/my_extenstions.dart';
+import '../../../../core/utils/my_sizes.dart';
 
+class PaperCard extends StatelessWidget {
+  const PaperCard({super.key, this.number});
+  final int? number;
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
@@ -31,12 +32,28 @@ class PaperCardItems extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                Text(
-                  'J. Phys. Commun. • 2022',
-                  style: context.bodySmall.copyWith(
-                    color: MyColors.primaryShade700,
-                    fontWeight: FontWeight.w500,
-                  ),
+                Row(
+                  children: [
+                    if (number != null) ...[
+                      Text(
+                        '$number.',
+                        style: context.titleSmall.copyWith(
+                          color: MyColors.black,
+                          fontWeight: FontWeight.w900,
+                        ),
+                      ),
+                      SizedBox(
+                        width: ResponsiveHelper.responsiveValue(context, 6),
+                      ),
+                    ],
+                    Text(
+                      'J. Phys. Commun. • 2022',
+                      style: context.bodySmall.copyWith(
+                        color: MyColors.primaryShade700,
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                  ],
                 ),
                 IconButton(
                   onPressed: () {},

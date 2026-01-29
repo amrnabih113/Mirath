@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 
-import 'package:mirath/core/helpers/responsive_helper.dart';
-import 'package:mirath/core/utils/my_sizes.dart';
-import 'package:mirath/features/common/widgets/section_title.dart';
-import 'package:mirath/features/home/presentation/widgets/category_items.dart';
-import 'package:mirath/features/home/presentation/widgets/home_search_bar.dart';
-import 'package:mirath/features/home/presentation/widgets/paper_card_items.dart';
-import 'package:mirath/features/home/presentation/widgets/welcome_header.dart';
+import '../../../../core/helpers/responsive_helper.dart';
+import '../../../../core/utils/my_sizes.dart';
+import '../../../common/widgets/section_title.dart';
+import '../widgets/category_items_list.dart';
+import '../widgets/home_search_bar.dart';
+import '../widgets/paper_card.dart';
+import '../widgets/welcome_header.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -35,18 +36,12 @@ class _HomeScreenState extends State<HomeScreen> {
                 children: [
                   HomeSearchBar(),
                   SizedBox(height: MySizes.spaceMd(context)),
-                  SectionTitle(title: 'Recently Published'),
-                  SizedBox(height: MySizes.spaceSm(context)),
-                  SizedBox(
-                    height: ResponsiveHelper.responsiveValue(context, 40),
-                    child: ListView.builder(
-                      scrollDirection: Axis.horizontal,
-                      itemCount: 4,
-                      itemBuilder: (context, index) {
-                        return CategoryItems();
-                      },
-                    ),
+                  SectionTitle(
+                    title: 'Recently Published',
+                    onTap: () => context.push("/recentely-published"),
                   ),
+                  SizedBox(height: MySizes.spaceSm(context)),
+                  CategoryItemsList(),
                   SizedBox(height: MySizes.spaceLg(context)),
                   SectionTitle(title: 'You might also like', showSeeAll: false),
                   SizedBox(height: MySizes.spaceSm(context)),
@@ -58,7 +53,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     physics: NeverScrollableScrollPhysics(),
                     itemCount: 10,
                     itemBuilder: (context, index) {
-                      return PaperCardItems();
+                      return PaperCard();
                     },
                   ),
                 ],
