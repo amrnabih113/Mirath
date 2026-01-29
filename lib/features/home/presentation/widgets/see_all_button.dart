@@ -1,17 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:hugeicons/hugeicons.dart';
-import 'package:mirath/core/helpers/responsive_helper.dart';
-import 'package:mirath/core/utils/my_colors.dart';
-import 'package:mirath/core/utils/my_extenstions.dart';
-import 'package:mirath/core/utils/my_sizes.dart';
+
+import '../../../../core/helpers/responsive_helper.dart';
+import '../../../../core/utils/my_colors.dart';
+import '../../../../core/utils/my_extenstions.dart';
+import '../../../../core/utils/my_sizes.dart';
 
 class SeeAllButton extends StatelessWidget {
-  const SeeAllButton({super.key});
-
+  const SeeAllButton({super.key, this.onTap});
+  final void Function()? onTap;
   @override
   Widget build(BuildContext context) {
     return InkWell(
-      onTap: () {},
+      onTap: onTap,
       child: Container(
         decoration: BoxDecoration(
           color: MyColors.primaryShade700,
@@ -35,12 +36,12 @@ class SeeAllButton extends StatelessWidget {
                 color: MyColors.white,
               ),
             ),
-            HugeIcon(
-              icon: HugeIcons.strokeRoundedArrowRight01,
-              strokeWidth: ResponsiveHelper.responsiveValue(context, 4),
-              size: MySizes.spaceMd(context),
-              color: MyColors.white,
-            ),
+            // HugeIcon(
+            //   icon: HugeIcons.strokeRoundedArrowRight01,
+            //   strokeWidth: ResponsiveHelper.responsiveValue(context, 4),
+            //   size: MySizes.spaceMd(context),
+            //   color: MyColors.white,
+            // ),
           ],
         ),
       ),

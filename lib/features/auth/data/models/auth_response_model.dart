@@ -1,4 +1,4 @@
-import 'package:mirath/features/auth/data/models/auth_user_data.dart';
+import 'auth_user_data.dart';
 
 /// Response model for authentication endpoints (login, google auth, refresh).
 ///

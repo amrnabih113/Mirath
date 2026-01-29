@@ -28,17 +28,17 @@ class MyTextTheme {
         fontWeight: FontWeight.w500,
         color: MyColors.textPrimary,
       ),
-      titleLarge: font(
+      titleLarge: GoogleFonts.sourceSerif4(
         fontSize: MySizes.titleLarge(context),
         fontWeight: FontWeight.w600,
         color: MyColors.textPrimary,
       ),
-      titleMedium: font(
+      titleMedium: GoogleFonts.sourceSerif4(
         fontSize: MySizes.titleMedium(context),
         fontWeight: FontWeight.w500,
         color: MyColors.textPrimary,
       ),
-      titleSmall: font(
+      titleSmall: GoogleFonts.sourceSerif4(
         fontSize: MySizes.titleSmall(context),
         fontWeight: FontWeight.w500,
         color: MyColors.textPrimary,
@@ -96,17 +96,17 @@ class MyTextTheme {
         fontWeight: FontWeight.w500,
         color: MyColors.primaryShade50,
       ),
-      titleLarge: font(
+      titleLarge: GoogleFonts.sourceSerif4(
         fontSize: MySizes.titleLarge(context),
         fontWeight: FontWeight.w600,
         color: MyColors.primaryShade50,
       ),
-      titleMedium: font(
+      titleMedium: GoogleFonts.sourceSerif4(
         fontSize: MySizes.titleMedium(context),
         fontWeight: FontWeight.w500,
         color: MyColors.primaryShade50,
       ),
-      titleSmall: font(
+      titleSmall: GoogleFonts.sourceSerif4(
         fontSize: MySizes.titleSmall(context),
         fontWeight: FontWeight.w500,
         color: MyColors.primaryShade50,

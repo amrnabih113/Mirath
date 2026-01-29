@@ -13,6 +13,8 @@ class MyConstants {
   static const String accessTokenKey = 'access_token';
   static const String refreshTokenKey = 'refresh_token';
   static const String emailKey = 'user_email';
+  static const String setupStatusKey = 'setup_status';
+
   // base url
   // Use 10.0.2.2 for Android emulator (maps to host machine's localhost)
   // Use your computer's IP (e.g., 192.168.x.x) for real devices
@@ -61,4 +63,11 @@ class MyConstants {
   static const String getAllInterests = "api/v1/interests";
   // get
   static const String getInterestById = "api/v1/interests/{id}";
+
+  // ***Home endpoints***
+  // get
+  static const String getRecent = "api/v1/feed/recent";
+  // get
+  static const String getRecommended = "api/v1/feed/recommendations";
+
 }

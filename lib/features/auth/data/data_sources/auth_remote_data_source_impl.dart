@@ -1,10 +1,10 @@
-import 'package:mirath/core/network/dio_client.dart';
-import 'package:mirath/core/utils/my_constants.dart';
-import 'package:mirath/features/auth/data/data_sources/auth_remote_data_source.dart';
-import 'package:mirath/features/auth/data/models/auth_response_model.dart';
-import 'package:mirath/features/auth/data/models/check_setup_response_model.dart';
-import 'package:mirath/features/auth/data/models/is_verified_response_model.dart';
-import 'package:mirath/features/auth/data/models/signup_response_model.dart';
+import '../../../../core/network/dio_client.dart';
+import '../../../../core/utils/my_constants.dart';
+import '../models/auth_response_model.dart';
+import '../models/check_setup_response_model.dart';
+import '../models/is_verified_response_model.dart';
+import '../models/signup_response_model.dart';
+import 'auth_remote_data_source.dart';
 
 class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
   final DioClient _dioClient;
@@ -48,11 +48,18 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
   }
 
   @override
-  Future<void> verifyEmail({required String email, required String otp}) async {
-    await _dioClient.post(
+  Future<String> verifyEmail({
+    required String email,
+    required String otp,
+  }) async {
+    final response = await _dioClient.post(
       MyConstants.verifyEmail,
       data: {'email': email, 'otp': otp},
     );
+
+    // Extract access token from response
+    final data = response.data as Map<String, dynamic>;
+    return data['accessToken'] as String? ?? '';
   }
 
   @override

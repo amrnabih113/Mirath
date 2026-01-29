@@ -1,12 +1,12 @@
 import 'package:dartz/dartz.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:google_sign_in/google_sign_in.dart';
-import 'package:mirath/core/utils/my_constants.dart';
-import 'package:mirath/core/utils/my_logger.dart';
 
 import '../../../../core/error/failuors.dart';
 import '../../../../core/services/secure_storage_service.dart';
 import '../../../../core/services/user_cache_service.dart';
+import '../../../../core/utils/my_constants.dart';
+import '../../../../core/utils/my_logger.dart';
 import '../../domain/entities/signin_data.dart';
 import '../../domain/entities/signup_data.dart';
 import '../../domain/repositories/auth_repository.dart';
@@ -228,7 +228,13 @@ class AuthRepositoryImpl implements AuthRepository {
       if (email == null) {
         return const Left(UnauthorizedFailure('No user email cached'));
       }
-      await _remoteDataSource.verifyEmail(email: email, otp: otp);
+      final accessToken = await _remoteDataSource.verifyEmail(
+        email: email,
+        otp: otp,
+      );
+      // Save access token
+      await _secureStorage.saveAccessToken(accessToken);
+
       return const Right(null);
     } catch (e) {
       return Left(mapExceptionToFailure(e));
@@ -292,8 +298,20 @@ class AuthRepositoryImpl implements AuthRepository {
   @override
   Future<Either<Failure, bool>> checkSetup() async {
     try {
+      // First check local cache
+      final cachedStatus = await _secureStorage.getSetupStatus();
+      if (cachedStatus != null) {
+        return Right(cachedStatus);
+      }
+
+      // If no cached value, fetch from API
       final response = await _remoteDataSource.checkSetup();
-      return Right(response.isSetupCompleted);
+      final isSetupCompleted = response.isSetupCompleted;
+
+      // Cache the result for future use
+      await _secureStorage.saveSetupStatus(isSetupCompleted);
+
+      return Right(isSetupCompleted);
     } catch (e) {
       return Left(mapExceptionToFailure(e));
     }
