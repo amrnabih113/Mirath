@@ -215,11 +215,8 @@ final appRouter = GoRouter(
         GoRoute(
           path: '/home',
           pageBuilder: (context, state) => NoTransitionPage(
-            child: BlocProvider(
-              create: (_) => HomeCubit(
-                getRecentPapersUseCase: sl(),
-                getRecommendationsUseCase: sl(),
-              )..loadAllPapers(),
+            child: BlocProvider.value(
+              value: sl<HomeCubit>()..getRecommendations(),
               child: const HomeScreen(),
             ),
           ),
@@ -334,11 +331,8 @@ final appRouter = GoRouter(
     GoRoute(
       path: '/recentely-published',
       pageBuilder: (context, state) => NoTransitionPage(
-        child: BlocProvider(
-          create: (_) => HomeCubit(
-            getRecentPapersUseCase: sl(),
-            getRecommendationsUseCase: sl(),
-          )..getRecentPapers(),
+        child: BlocProvider.value(
+          value: sl<HomeCubit>()..getRecentPapers(),
           child: const RecentelyPublishedScreen(),
         ),
       ),

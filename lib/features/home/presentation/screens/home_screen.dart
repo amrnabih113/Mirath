@@ -31,7 +31,6 @@ class _HomeScreenState extends State<HomeScreen> {
     if (scrollController.position.pixels ==
         scrollController.position.maxScrollExtent) {
       final cubit = context.read<HomeCubit>();
-      cubit.loadMoreRecentPapers();
       cubit.loadMoreRecommendations();
     }
   }
@@ -92,24 +91,6 @@ class _HomeScreenState extends State<HomeScreen> {
                     ),
                     SizedBox(height: MySizes.spaceMd(context)),
 
-                    // recent papers
-                    ListView.separated(
-                      padding: EdgeInsets.zero,
-                      shrinkWrap: true,
-                      physics: const NeverScrollableScrollPhysics(),
-                      itemCount: recentPapers.length + (isLoadingMore ? 1 : 0),
-                      separatorBuilder: (_, _) =>
-                          SizedBox(height: MySizes.spaceMd(context)),
-                      itemBuilder: (context, index) {
-                        if (index >= recentPapers.length) {
-                          return const Padding(
-                            padding: EdgeInsets.all(8),
-                            child: Center(child: CircularProgressIndicator()),
-                          );
-                        }
-                        return PaperCard(paper: recentPapers[index]);
-                      },
-                    ),
                     ListView.separated(
                       padding: EdgeInsets.zero,
                       shrinkWrap: true,
