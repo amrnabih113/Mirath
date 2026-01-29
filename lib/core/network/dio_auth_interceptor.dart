@@ -100,11 +100,20 @@ class AuthInterceptor extends Interceptor {
             '[AuthInterceptor] Refreshing token (attempt $attempt/$_maxRetries)...',
           );
 
+          // Get the refresh token from secure storage
+          final refreshToken = await secureStorage.getRefreshToken();
+          if (refreshToken == null) {
+            MyLogger.error(
+              '[AuthInterceptor] No refresh token found in secure storage',
+            );
+            break;
+          }
+
           final response = await dio
               .post(
                 MyConstants.refreshToken,
+                data: {'refreshToken': refreshToken},
                 options: Options(
-                  headers: {'Authorization': null},
                   // Ensure cookies are sent for refresh token
                   extra: {'withCredentials': true},
                   sendTimeout: _refreshTimeout,
@@ -113,10 +122,14 @@ class AuthInterceptor extends Interceptor {
               )
               .timeout(_refreshTimeout);
 
-          final newAccessToken = response.data['access_token'] as String?;
+          final newAccessToken = response.data['accessToken'] as String?;
+          final newRefreshToken = response.data['refreshToken'] as String?;
 
           if (newAccessToken != null) {
             await secureStorage.saveAccessToken(newAccessToken);
+            if (newRefreshToken != null) {
+              await secureStorage.saveRefreshToken(newRefreshToken);
+            }
             MyLogger.info('[AuthInterceptor] Token refreshed successfully');
             result = newAccessToken;
             break; // Success, exit retry loop

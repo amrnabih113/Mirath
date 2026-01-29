@@ -100,11 +100,7 @@ class _RecentelyPublishedScreenState extends State<RecentelyPublishedScreen> {
                               controller: scrollController,
                               padding: EdgeInsets.zero,
                               physics: const AlwaysScrollableScrollPhysics(),
-                              itemCount:
-                                  papers.length +
-                                  (hasMore
-                                      ? 1
-                                      : 0), // +1 للspinner لو فيه بيانات زيادة
+                              itemCount: papers.length + (hasMore ? 1 : 0),
                               separatorBuilder: (_, _) =>
                                   SizedBox(height: MySizes.spaceMd(context)),
                               itemBuilder: (context, index) {

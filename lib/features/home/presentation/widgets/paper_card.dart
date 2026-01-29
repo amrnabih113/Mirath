@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:hugeicons_pro/hugeicons.dart';
+import 'package:mirath/features/common/widgets/tag_chip.dart';
 import 'package:mirath/features/home/domain/entities/paper_entity.dart';
 
 import '../../../../core/helpers/responsive_helper.dart';
@@ -32,10 +33,10 @@ class _PaperCardState extends State<PaperCard> {
           borderRadius: BorderRadius.circular(
             ResponsiveHelper.responsiveValue(context, 16),
           ),
-          // border: Border.all(
-          //   color: MyColors.primaryShade500.withValues(alpha: 0.3),
-          //   width: 1,
-          // ),
+          border: Border.all(
+            color: MyColors.primaryShade500.withValues(alpha: 0.3),
+            width: 1,
+          ),
           boxShadow: [
             BoxShadow(
               color: MyColors.primaryShade900.withValues(alpha: 0.06),
@@ -142,42 +143,11 @@ class _PaperCardState extends State<PaperCard> {
               spacing: MySizes.spaceXs(context) / 2,
               runSpacing: MySizes.spaceXs(context),
               children: [
-                _tag(context, widget.paper.categories[0]),
-                _tag(context, widget.paper.categories[1]),
+                TagChip(label: 'Quantum Mechanics'),
+                TagChip(label: 'The Measurement Problem'),
               ],
             ),
           ],
-        ),
-      ),
-    );
-  }
-
-  Widget _tag(BuildContext context, String text) {
-    return Container(
-      padding: EdgeInsets.symmetric(
-        horizontal: ResponsiveHelper.responsiveValue(context, 12),
-        vertical: ResponsiveHelper.responsiveValue(context, 6),
-      ),
-      decoration: BoxDecoration(
-        gradient: LinearGradient(
-          colors: [
-            MyColors.primaryShade200.withValues(alpha: 0.4),
-            MyColors.primaryShade300.withValues(alpha: 0.3),
-          ],
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-        ),
-        borderRadius: BorderRadius.circular(
-          ResponsiveHelper.responsiveValue(context, 8),
-        ),
-      ),
-      child: Text(
-        text,
-        style: context.bodySmall.copyWith(
-          fontSize: ResponsiveHelper.responsiveValue(context, 11.5),
-          color: MyColors.primaryShade900,
-          fontWeight: FontWeight.w600,
-          letterSpacing: 0.2,
         ),
       ),
     );

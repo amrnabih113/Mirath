@@ -9,7 +9,7 @@ import 'package:mirath/features/common/widgets/profile_avatar.dart';
 import '../../../../core/helpers/responsive_helper.dart';
 import '../../../../core/utils/my_sizes.dart';
 import '../../../common/widgets/my_back_icon.dart';
-import '../widgets/tag_chip.dart';
+import '../../../common/widgets/tag_chip.dart';
 
 class DisscussionDetailsScreen extends StatelessWidget {
   const DisscussionDetailsScreen({super.key});

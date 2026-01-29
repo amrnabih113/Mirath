@@ -3,7 +3,7 @@ import 'package:hugeicons/hugeicons.dart';
 import 'package:mirath/core/utils/my_colors.dart';
 import 'package:mirath/core/utils/my_extenstions.dart';
 import 'package:mirath/core/utils/my_sizes.dart';
-import 'package:mirath/features/community/presentation/widgets/tag_chip.dart';
+import 'package:mirath/features/common/widgets/tag_chip.dart';
 
 import '../../../../core/helpers/responsive_helper.dart';
 

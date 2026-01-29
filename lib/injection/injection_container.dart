@@ -12,7 +12,7 @@ import 'package:mirath/features/home/presentation/cubit/home_cubit.dart';
 
 import '../core/network/dio_client.dart';
 import '../core/network/network_manager.dart';
-// import '../core/services/image_picker_service.dart';
+import '../core/services/image_picker_service.dart';
 import '../core/services/local_storage_service.dart';
 import '../core/services/secure_storage_service.dart';
 import '../core/services/user_cache_service.dart';
@@ -51,7 +51,7 @@ import '../features/users/domain/usecases/follow_user_usecase.dart';
 import '../features/users/domain/usecases/get_current_user_usecase.dart';
 import '../features/users/domain/usecases/setup_profile_usecase.dart';
 import '../features/users/domain/usecases/unfollow_user_usecase.dart';
-// import '../features/users/presentation/cubit/set_up_profile_cubit.dart';
+import '../features/users/presentation/cubit/set_up_profile_cubit.dart';
 
 final sl = GetIt.instance;
 
@@ -75,7 +75,7 @@ class DI {
     sl.registerLazySingleton<UserCacheService>(() => UserCacheService(sl()));
 
     /// Image Picker Service ///
-    // sl.registerLazySingleton<ImagePickerService>(() => ImagePickerService());
+    sl.registerLazySingleton<ImagePickerService>(() => ImagePickerService());
 
     //** Features **//
 
@@ -154,7 +154,7 @@ class DI {
     sl.registerLazySingleton(() => UnfollowUserUsecase(sl()));
 
     /// Users Cubits ///
-    // sl.registerFactory(() => SetUpProfileCubit(imagePickerService: sl()));
+    sl.registerFactory(() => SetUpProfileCubit(imagePickerService: sl()));
 
     //================ Interests ========================
 

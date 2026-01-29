@@ -10,7 +10,7 @@ import '../../../../core/utils/my_sizes.dart';
 import '../../../common/widgets/profile_avatar.dart';
 import 'follow_button.dart';
 import 'interaction_button.dart';
-import 'tag_chip.dart';
+import '../../../common/widgets/tag_chip.dart';
 
 class DiscussionCard extends StatefulWidget {
   const DiscussionCard({super.key});

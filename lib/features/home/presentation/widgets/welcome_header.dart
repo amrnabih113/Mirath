@@ -59,17 +59,17 @@ class WelcomeHeader extends StatelessWidget {
               ),
             ),
             Positioned(
-              right: ResponsiveHelper.responsiveValue(context, 10),
+              right: ResponsiveHelper.responsiveValue(context, 12),
               top: ResponsiveHelper.responsiveValue(context, -2),
               child: Container(
-                width: ResponsiveHelper.responsiveValue(context, 10),
-                height: ResponsiveHelper.responsiveValue(context, 10),
+                width: ResponsiveHelper.responsiveValue(context, 8),
+                height: ResponsiveHelper.responsiveValue(context, 8),
                 decoration: BoxDecoration(
                   color: Colors.red,
                   shape: BoxShape.circle,
                   border: Border.all(
                     color: Colors.white,
-                    width: ResponsiveHelper.responsiveValue(context, 2),
+                    width: ResponsiveHelper.responsiveValue(context, 1),
                   ),
                   boxShadow: [
                     BoxShadow(
