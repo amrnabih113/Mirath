@@ -86,17 +86,17 @@ class DI {
       () => AuthRemoteDataSourceImpl(dioClient: sl()),
     );
 
-    // ///   Auth Repository ///
-    // ///
-    // sl.registerLazySingleton<AuthRepository>(
-    //   () => AuthRepositoryImpl(
-    //     remoteDataSource: sl(),
-    //     secureStorage: sl(),
-    //     userCache: sl(),
-    //   ),
-    // );
+    ///   Auth Repository ///
+    ///
+    sl.registerLazySingleton<AuthRepository>(
+      () => AuthRepositoryImpl(
+        remoteDataSource: sl(),
+        secureStorage: sl(),
+        userCache: sl(),
+      ),
+    );
 
-    sl.registerLazySingleton<AuthRepository>(() => FakeAuthRepositoryImpl());
+    // sl.registerLazySingleton<AuthRepository>(() => FakeAuthRepositoryImpl());
 
     /// Auth UseCases ///
     sl.registerLazySingleton(() => SignInUseCase(sl()));
