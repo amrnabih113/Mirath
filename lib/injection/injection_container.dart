@@ -2,6 +2,20 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:get_it/get_it.dart';
 // ignore: unused_import
 import 'package:mirath/features/auth/data/repositories/fake_auth_repository_impl.dart';
+import 'package:mirath/features/community/data/data_sources/community_remote_data_source.dart';
+import 'package:mirath/features/community/data/data_sources/community_remote_data_source_impl.dart';
+import 'package:mirath/features/community/data/repositories/community_repository_impl.dart';
+import 'package:mirath/features/community/domain/repositories/community_repository.dart';
+import 'package:mirath/features/community/domain/usecases/create_comment_usecase.dart';
+import 'package:mirath/features/community/domain/usecases/create_discussion_usecase.dart';
+import 'package:mirath/features/community/domain/usecases/delete_comment_vote_usecase.dart';
+import 'package:mirath/features/community/domain/usecases/delete_discussion_usecase.dart';
+import 'package:mirath/features/community/domain/usecases/delete_discussion_vote_usecase.dart';
+import 'package:mirath/features/community/domain/usecases/get_all_discussions_usecase.dart';
+import 'package:mirath/features/community/domain/usecases/get_discussion_by_id_usecase.dart';
+import 'package:mirath/features/community/domain/usecases/get_discussion_comments_usecase.dart';
+import 'package:mirath/features/community/domain/usecases/vote_on_comment_usecase.dart';
+import 'package:mirath/features/community/domain/usecases/vote_on_discussion_usecase.dart';
 import 'package:mirath/features/home/data/data_sources/home_remote_data_source.dart';
 import 'package:mirath/features/home/data/data_sources/home_remote_data_source_impl.dart';
 import 'package:mirath/features/home/data/repositories/home_repository_impl.dart';
@@ -134,6 +148,30 @@ class DI {
         secureStorage: sl(),
       ),
     ); // Cubit
+
+    //================ Community ========================
+
+    /// Community Data Sources ///
+    sl.registerLazySingleton<CommunityRemoteDataSource>(
+      () => CommunityRemoteDataSourceImpl(dioClient: sl()),
+    );
+
+    /// Community Repository ///
+    sl.registerLazySingleton<CommunityRepository>(
+      () => CommunityRepositoryImpl(remoteDataSource: sl()),
+    );
+
+    /// Community UseCases ///
+    sl.registerLazySingleton(() => CreateDiscussionUseCase(sl()));
+    sl.registerLazySingleton(() => GetAllDiscussionsUseCase(sl()));
+    sl.registerLazySingleton(() => GetDiscussionByIdUseCase(sl()));
+    sl.registerLazySingleton(() => DeleteDiscussionUseCase(sl()));
+    sl.registerLazySingleton(() => VoteOnDiscussionUseCase(sl()));
+    sl.registerLazySingleton(() => DeleteDiscussionVoteUseCase(sl()));
+    sl.registerLazySingleton(() => CreateCommentUseCase(sl()));
+    sl.registerLazySingleton(() => GetDiscussionCommentsUseCase(sl()));
+    sl.registerLazySingleton(() => VoteOnCommentUseCase(sl()));
+    sl.registerLazySingleton(() => DeleteCommentVoteUseCase(sl()));
 
     //================ Users ========================
 
