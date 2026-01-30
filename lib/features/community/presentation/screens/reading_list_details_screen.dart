@@ -3,12 +3,11 @@ import 'package:hugeicons/hugeicons.dart';
 import 'package:mirath/core/utils/my_colors.dart';
 import 'package:mirath/core/utils/my_extenstions.dart';
 import 'package:mirath/features/common/widgets/profile_avatar.dart';
-import 'package:mirath/features/home/presentation/widgets/paper_card.dart';
 
 import '../../../../core/helpers/responsive_helper.dart';
 import '../../../../core/utils/my_sizes.dart';
 import '../../../common/widgets/my_back_icon.dart';
-import '../widgets/tag_chip.dart';
+import '../../../common/widgets/tag_chip.dart';
 
 class ReadingListDetailsScreen extends StatelessWidget {
   const ReadingListDetailsScreen({super.key});
@@ -150,7 +149,8 @@ class ReadingListDetailsScreen extends StatelessWidget {
                             padding: EdgeInsets.only(
                               bottom: MySizes.spaceMd(context),
                             ),
-                            child: PaperCard(number: index + 1),
+                            child: SizedBox(),
+                            // PaperCard(number: index + 1),
                           );
                         }, childCount: 3),
                       ),

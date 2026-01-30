@@ -24,12 +24,34 @@ class UsersRemoteDataSourceImpl implements UsersRemoteDataSource {
       final formData = FormData.fromMap({
         'name': profileSetupData.name,
         'levelOfEducation': profileSetupData.levelOfEducation,
-        'interests': profileSetupData.interests.join(', '),
         // Only include university if it has valid content (2+ characters)
         if (profileSetupData.university != null &&
             profileSetupData.university!.length >= 2)
           'university': profileSetupData.university,
       });
+
+      // Add interests as individual fields (proper multipart/form-data array)
+      for (var interest in profileSetupData.interests) {
+        formData.fields.add(MapEntry('interests', interest));
+      }
+
+      MyLogger.debug(
+        '[UsersRemoteDataSource] Form fields: ${formData.fields.map((e) => '${e.key}=${e.value}').join(', ')}',
+      );
+
+      // Add profile photo if available
+      if (profileSetupData.profilePhoto != null) {
+        final file = profileSetupData.profilePhoto!;
+        formData.files.add(
+          MapEntry(
+            'profilePhoto',
+            await MultipartFile.fromFile(file.path, filename: file.name),
+          ),
+        );
+        MyLogger.info(
+          '[UsersRemoteDataSource] Profile photo added: ${file.name}',
+        );
+      }
 
       final response = await dioClient.post(
         MyConstants.setupProfile,
@@ -38,6 +60,17 @@ class UsersRemoteDataSourceImpl implements UsersRemoteDataSource {
 
       MyLogger.info('[UsersRemoteDataSource] Profile setup successful');
       return ProfileSetupResponseModel.fromJson(response.data);
+    } on DioException catch (e) {
+      MyLogger.error('[UsersRemoteDataSource] Profile setup failed: $e');
+      if (e.response != null) {
+        MyLogger.error(
+          '[UsersRemoteDataSource] Response data: ${e.response?.data}',
+        );
+        MyLogger.error(
+          '[UsersRemoteDataSource] Status code: ${e.response?.statusCode}',
+        );
+      }
+      rethrow;
     } catch (e) {
       MyLogger.error('[UsersRemoteDataSource] Profile setup failed: $e');
       rethrow;

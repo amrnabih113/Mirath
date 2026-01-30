@@ -68,7 +68,7 @@ class _SearchScreenState extends State<SearchScreen> {
     return Scaffold(
       appBar: PreferredSize(
         preferredSize: Size.fromHeight(
-          ResponsiveHelper.responsiveValue(context, 50),
+          ResponsiveHelper.responsiveValue(context, 60),
         ),
         child: Center(
           child: LayoutBuilder(

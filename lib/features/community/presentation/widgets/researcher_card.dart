@@ -14,13 +14,30 @@ class ResearcherCard extends StatelessWidget {
     return Container(
       decoration: BoxDecoration(
         color: MyColors.white,
-        borderRadius: BorderRadius.circular(MySizes.borderRadiusMd(context)),
-        border: Border.all(color: MyColors.primaryShade500),
+        borderRadius: BorderRadius.circular(
+          ResponsiveHelper.responsiveValue(context, 18),
+        ),
+        border: Border.all(
+          color: MyColors.primaryShade300.withValues(alpha: 0.5),
+          width: 1.5,
+        ),
         boxShadow: [
           BoxShadow(
-            color: MyColors.black.withValues(alpha: 0.1),
-            blurRadius: 6,
-            offset: const Offset(0, 2),
+            color: MyColors.primaryShade500.withValues(alpha: 0.12),
+            blurRadius: 20,
+            offset: const Offset(0, 6),
+            spreadRadius: -3,
+          ),
+          BoxShadow(
+            color: MyColors.primaryShade900.withValues(alpha: 0.06),
+            blurRadius: 10,
+            offset: const Offset(0, 3),
+            spreadRadius: -1,
+          ),
+          BoxShadow(
+            color: MyColors.white.withValues(alpha: 0.6),
+            blurRadius: 1,
+            offset: const Offset(0, -1),
           ),
         ],
       ),
@@ -55,11 +72,36 @@ class ResearcherCard extends StatelessWidget {
                 ],
               ),
             ),
-            HugeIcon(
-              icon: HugeIcons.strokeRoundedUserAdd01,
-              size: ResponsiveHelper.responsiveValue(context, 25),
-              strokeWidth: ResponsiveHelper.responsiveValue(context, 2),
-              color: MyColors.primaryShade700,
+            Container(
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  colors: [MyColors.primaryShade500, MyColors.primaryShade600],
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
+                ),
+                borderRadius: BorderRadius.circular(
+                  ResponsiveHelper.responsiveValue(context, 12),
+                ),
+                boxShadow: [
+                  BoxShadow(
+                    color: MyColors.primaryShade500.withValues(alpha: 0.3),
+                    blurRadius: 8,
+                    offset: const Offset(0, 3),
+                  ),
+                ],
+              ),
+              child: IconButton(
+                onPressed: () {},
+                icon: HugeIcon(
+                  icon: HugeIcons.strokeRoundedUserAdd01,
+                  size: ResponsiveHelper.responsiveValue(context, 20),
+                  strokeWidth: ResponsiveHelper.responsiveValue(context, 2),
+                  color: MyColors.white,
+                ),
+                padding: EdgeInsets.all(
+                  ResponsiveHelper.responsiveValue(context, 8),
+                ),
+              ),
             ),
           ],
         ),

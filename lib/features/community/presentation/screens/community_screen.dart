@@ -61,6 +61,7 @@ class _CommunityScreenState extends State<CommunityScreen>
                         delegate: TabBarSliverDelegate(
                           TabBar(
                             controller: _tabController,
+                            indicatorSize: TabBarIndicatorSize.label,
                             indicatorColor: MyColors.primaryShade700,
                             labelStyle: context.titleSmall.copyWith(
                               fontWeight: FontWeight.w800,
@@ -69,6 +70,7 @@ class _CommunityScreenState extends State<CommunityScreen>
                               fontWeight: FontWeight.w400,
                               color: MyColors.textSecondary,
                             ),
+
                             tabs: const [
                               Tab(text: 'Discussions'),
                               Tab(text: 'Reading Lists'),

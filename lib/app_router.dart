@@ -6,12 +6,10 @@ import 'package:mirath/features/community/presentation/screens/reading_list_deta
 import 'package:mirath/features/home/presentation/cubit/home_cubit.dart';
 
 import 'core/services/local_storage_service.dart';
-import 'core/services/user_cache_service.dart';
 import 'core/utils/my_logger.dart';
 import 'core/utils/page_transitions.dart';
 import 'features/Layout/presentation/cubit/layout_cubit.dart';
 import 'features/Layout/presentation/screens/main_layout.dart';
-import 'features/auth/data/models/auth_user_data.dart';
 import 'features/auth/presentation/cubit/auth_cubit.dart';
 import 'features/auth/presentation/screens/forget_password_screen.dart';
 import 'features/auth/presentation/screens/otp_screen.dart';
@@ -160,7 +158,7 @@ final appRouter = GoRouter(
 
     // Handle authentication errors - allow staying on current auth pages
     if (authStatus == AuthStatus.error) {
-      if (authPaths.contains(currentLocation) ||
+      if (authPaths.contains(currentLocation)||
           currentLocation == '/set-up-profile' ||
           currentLocation == '/interests') {
         return null; // Stay on current page
@@ -220,8 +218,8 @@ final appRouter = GoRouter(
           path: '/home',
           pageBuilder: (context, state) => NoTransitionPage(
             child: BlocProvider.value(
-              value: sl<HomeCubit>(),
-              child: HomeScreen(),
+              value: sl<HomeCubit>()..getRecommendations(),
+              child: const HomeScreen(),
             ),
           ),
         ),
@@ -239,7 +237,16 @@ final appRouter = GoRouter(
         GoRoute(
           path: '/profile',
           pageBuilder: (context, state) => NoTransitionPage(
-            child: Scaffold(body: Center(child: Text('Profile Screen'))),
+            child: Scaffold(
+              body: Center(
+                child: ElevatedButton(
+                  onPressed: () {
+                    sl<AuthCubit>().signOut();
+                  },
+                  child: Text('Sign Out'),
+                ),
+              ),
+            ),
           ),
         ),
       ],
@@ -285,11 +292,7 @@ final appRouter = GoRouter(
     GoRoute(
       path: '/set-up-profile',
       pageBuilder: (context, state) {
-        final userCacheService = sl<UserCacheService>();
-        final user = userCacheService.getCachedUser();
-        return PageTransitions.smoothTransition(
-          SetUpProfileScreen(user: user ?? AuthUserData.empty()),
-        );
+        return PageTransitions.smoothTransition(SetUpProfileScreen());
       },
     ),
     GoRoute(
@@ -338,8 +341,12 @@ final appRouter = GoRouter(
     ),
     GoRoute(
       path: '/recentely-published',
-      pageBuilder: (context, state) =>
-          PageTransitions.smoothTransition(const RecentelyPublishedScreen()),
+      pageBuilder: (context, state) => NoTransitionPage(
+        child: BlocProvider.value(
+          value: sl<HomeCubit>()..getRecentPapers(),
+          child: const RecentelyPublishedScreen(),
+        ),
+      ),
     ),
     GoRoute(
       path: '/community-search-results',

@@ -48,11 +48,16 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
   }
 
   @override
-  Future<void> verifyEmail({required String email, required String otp}) async {
-    await _dioClient.post(
+  Future<AuthResponseModel> verifyEmail({
+    required String email,
+    required String otp,
+  }) async {
+    final response = await _dioClient.post(
       MyConstants.verifyEmail,
       data: {'email': email, 'otp': otp},
     );
+
+    return AuthResponseModel.fromJson(response.data as Map<String, dynamic>);
   }
 
   @override

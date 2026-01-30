@@ -4,23 +4,26 @@ class MyColors {
   MyColors._();
 
   // App basic Colors
-  static const Color primaryColor = Color(0xFFB9A082);
+  static const Color primaryColor = Color(0xFFB8956A);
 
-  // Primary Color Shades (from darkest to lightest)
-  static const Color primaryShade900 = Color(0xFF25201A);
-  static const Color primaryShade800 = Color(0xFF4A4034);
-  static const Color primaryShade700 = Color(0xFF4A4034);
-  static const Color primaryShade600 = Color(0xFF948068);
-  static const Color primaryShade500 = Color(0xFFB9A082); // Base primary color
-  static const Color primaryShade400 = Color(0xFFC7B39B);
-  static const Color primaryShade300 = Color(0xFFD5C6B4);
-  static const Color primaryShade200 = Color(0xFFDECFBE);
-  static const Color primaryShade100 = Color(0xFFEBE3D6);
-  static const Color primaryShade50 = Color(0xFFF7F3EF);
+  // Primary Color Shades (from darkest to lightest) - Enhanced warm golden palette
+  static const Color primaryShade900 = Color(0xFF2A2419);
+  static const Color primaryShade800 = Color(0xFF3E3426);
+  static const Color primaryShade700 = Color(0xFF5D4E38);
+  static const Color primaryShade600 = Color(0xFF8C7350);
+  static const Color primaryShade500 = Color(
+    0xFFB8956A,
+  ); // Base primary color - richer gold
+  static const Color primaryShade400 = Color(0xFFC7A87D);
+  static const Color primaryShade300 = Color(0xFFD6BC96);
+  static const Color primaryShade200 = Color(0xFFE5D1AF);
+  static const Color primaryShade100 = Color(0xFFF0E5D3);
+  static const Color primaryShade50 = Color(0xFFF8F4ED);
 
-  static const Color secondaryColor = primaryShade700;
+  static const Color secondaryColor = Color(0xFF6B5D4F);
 
-  static const Color lightCircle = Color(0xffE3D9CD); // Base primary color
+
+  static const Color lightCircle = Color(0xFFE8DCC8); // Base primary color
 
   // //Gradient Colors
   // static const Gradient orangeGradient = LinearGradient(
@@ -69,57 +72,50 @@ class MyColors {
     );
   }
 
-  // Text Colors
-  static const Color textPrimary = primaryShade900;
-  static Color textSecondary = primaryShade900.withValues(alpha: 0.8);
-  static const Color textWhite = Colors.white;
+  // Text Colors - Improved contrast
+  static const Color textPrimary = Color(0xFF2A2419);
+  static Color textSecondary = Color(0xFF5D4E38).withValues(alpha: 0.85);
+  static const Color textWhite = Color(0xFFFFFFFF);
 
-  // Dark Mode Text Colors
-  static const Color textPrimaryDark = Color(
-    0xFFF5F1ED,
-  ); // Warm white for dark mode
-  static Color textSecondaryDark = Color(
-    0xFFD4C9BD,
-  ).withValues(alpha: 0.9); // Muted warm text
+  // Dark Mode Text Colors - Better visibility
+  static const Color textPrimaryDark = Color(0xFFF8F4ED);
+  static Color textSecondaryDark = Color(0xFFD6BC96).withValues(alpha: 0.9);
 
-  static const Color cardColor = primaryShade50;
-  // Background Colors
-  static const Color light = Color(0xFFFBFAF8); // Light warm background
-  static const Color dark = Color(
-    0xFF2D2926,
-  ); // Medium-dark with warm undertone
-  static const Color darker = Color(0xFF252220); // Slightly deeper warm dark
+  static const Color cardColor = Color(0xFFFFFBF5);
 
-  //Background container Colors
-  static Color lightContainer = Color(0xFF6F604E).withValues(alpha: 0.05);
+  // Background Colors - Refined for better readability
+  static const Color light = Color(0xFFFFFDF8); // Softer warm white
+  static const Color dark = Color(0xFF1F1B16); // Deeper warm dark
+  static const Color darker = Color(0xFF171410); // Rich dark with warmth
+
+  // Container Colors with better contrast
+  static Color lightContainer = Color(0xFF7A6A54).withValues(alpha: 0.06);
   static const Color darkContainer = Color(
-    0xFF3A3530,
-  ); // Elevated container for medium-dark mode
+    0xFF2D2822,
+  ); // Better elevated container
 
-  //Navigation Colors
-  static const Color lightNav = primaryShade500;
-  static const Color darkNav = Color(
-    0xFF332E2A,
-  ); // Navigation bar for medium-dark mode
+  // Navigation Colors - Enhanced visibility
+  static const Color lightNav = Color(0xFFFFFFFF);
+  static const Color darkNav = Color(0xFF252018);
 
-  // Button Colors
-  static const Color primaryButton = primaryShade500;
-  static const Color secondaryButton = Color(0xff6c757d);
-  static const Color disabledButton = Color.fromARGB(255, 40, 32, 32);
+  // Button Colors - More vibrant and professional
+  static const Color primaryButton = Color(0xFFB8956A);
+  static const Color secondaryButton = Color(0xFF7A6A54);
+  static const Color disabledButton = Color(0xFFBDB5AA);
 
-  //Error Colors
-  static const Color error = Color.fromARGB(255, 129, 67, 50);
-  static const Color success = Color(0xFF28A745);
-  static const Color warning = Color(0xFFFFC107);
-  static const Color info = Color(0xFF17A2B8);
+  // Semantic Colors - Modern and accessible
+  static const Color error = Color(0xFFDC3545);
+  static const Color success = Color(0xFF28C76F);
+  static const Color warning = Color(0xFFFFA726);
+  static const Color info = Color(0xFF00BCD4);
 
-  // Neutral Shades
-  static const Color black = Color(0xFF232323);
-  static const Color darkerGrey = Color(0xFF4F4F4F);
-  static const Color darkGrey = Color(0xFF939393);
-  static const Color grey = Color(0xFFE0E0E0);
-  static const Color softGrey = Color(0xFFF4F4F4);
-  static const Color lightGrey = Color(0xFFF9F9F9);
+  // Neutral Shades - Enhanced contrast and hierarchy
+  static const Color black = Color(0xFF1A1614);
+  static const Color darkerGrey = Color(0xFF4A4542);
+  static const Color darkGrey = Color(0xFF857F78);
+  static const Color grey = Color(0xFFD1CCC4);
+  static const Color softGrey = Color(0xFFF2EFE9);
+  static const Color lightGrey = Color(0xFFFAF8F5);
   static const Color white = Color(0xFFFFFFFF);
   static const Color transparent = Colors.transparent;
 

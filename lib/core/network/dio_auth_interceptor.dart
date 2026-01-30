@@ -113,7 +113,8 @@ class AuthInterceptor extends Interceptor {
               )
               .timeout(_refreshTimeout);
 
-          final newAccessToken = response.data['access_token'] as String?;
+          // API returns "accessToken" not "access_token"
+          final newAccessToken = response.data['accessToken'] as String?;
 
           if (newAccessToken != null) {
             await secureStorage.saveAccessToken(newAccessToken);
