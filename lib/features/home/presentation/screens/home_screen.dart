@@ -62,7 +62,6 @@ class _HomeScreenState extends State<HomeScreen> {
                 constraints: const BoxConstraints(maxWidth: 850),
                 child: BlocBuilder<HomeCubit, HomeState>(
                   builder: (context, state) {
-                   
                     return WelcomeHeader();
                   },
                 ),
@@ -98,7 +97,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   }
 
                   if (state is HomePapersLoaded) {
-                    final recommendPapers = state.recommendations;
+                    final recommendPapers = state.recentPapers;
                     final isLoadingMore = state.isLoadingMoreRecent;
 
                     // Handle empty papers list
@@ -152,7 +151,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   return const SizedBox.shrink();
                 },
               ),
-              SizedBox(height: MySizes.spaceLg(context)),
+              SizedBox(height: MySizes.spaceLg(context) * 4),
             ],
           ),
         ),

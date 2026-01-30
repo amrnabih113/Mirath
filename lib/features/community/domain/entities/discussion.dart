@@ -31,4 +31,36 @@ class Discussion {
     required this.topics,
     required this.author,
   });
+
+  Discussion copyWith({
+    String? id,
+    String? title,
+    String? content,
+    int? voteScore,
+    int? commentCount,
+    String? authorId,
+    List<String>? paperIds,
+    DateTime? createdAt,
+    DateTime? updatedAt,
+    bool? hasVoted,
+    String? userVoteType,
+    List<DiscussionTopic>? topics,
+    DiscussionAuthor? author,
+  }) {
+    return Discussion(
+      id: id ?? this.id,
+      title: title ?? this.title,
+      content: content ?? this.content,
+      voteScore: voteScore ?? this.voteScore,
+      commentCount: commentCount ?? this.commentCount,
+      authorId: authorId ?? this.authorId,
+      paperIds: paperIds ?? this.paperIds,
+      createdAt: createdAt ?? this.createdAt,
+      updatedAt: updatedAt ?? this.updatedAt,
+      hasVoted: hasVoted ?? this.hasVoted,
+      userVoteType: userVoteType ?? this.userVoteType,
+      topics: topics ?? this.topics,
+      author: author ?? this.author,
+    );
+  }
 }

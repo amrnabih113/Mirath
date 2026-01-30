@@ -16,6 +16,8 @@ import 'package:mirath/features/community/domain/usecases/get_discussion_by_id_u
 import 'package:mirath/features/community/domain/usecases/get_discussion_comments_usecase.dart';
 import 'package:mirath/features/community/domain/usecases/vote_on_comment_usecase.dart';
 import 'package:mirath/features/community/domain/usecases/vote_on_discussion_usecase.dart';
+import 'package:mirath/features/community/presentation/cubit/community_cubit.dart';
+import 'package:mirath/features/community/presentation/cubit/discussion_details_cubit.dart';
 import 'package:mirath/features/home/data/data_sources/home_remote_data_source.dart';
 import 'package:mirath/features/home/data/data_sources/home_remote_data_source_impl.dart';
 import 'package:mirath/features/home/data/repositories/home_repository_impl.dart';
@@ -30,6 +32,7 @@ import '../core/services/image_picker_service.dart';
 import '../core/services/local_storage_service.dart';
 import '../core/services/secure_storage_service.dart';
 import '../core/services/user_cache_service.dart';
+import '../core/utils/my_logger.dart';
 import '../features/auth/data/data_sources/auth_remote_data_source.dart';
 import '../features/auth/data/data_sources/auth_remote_data_source_impl.dart';
 import '../features/auth/data/repositories/auth_repository_impl.dart';
@@ -72,7 +75,16 @@ final sl = GetIt.instance;
 class DI {
   static Future<void> init() async {
     // Core
-    sl.registerLazySingleton(() => DioClient(secureStorage: sl()));
+    sl.registerLazySingleton(() {
+      final dioClient = DioClient(secureStorage: sl());
+      // Set up auth failure callback to trigger logout
+      dioClient.onAuthFailure = () {
+        final authCubit = sl<AuthCubit>();
+        MyLogger.warning('[DI] Auth failure detected, triggering logout...');
+        authCubit.signOut();
+      };
+      return dioClient;
+    });
     sl.registerLazySingleton(() => sl<DioClient>().dio);
     sl.registerLazySingleton(() => NetworkManager.instance..initialize());
 
@@ -173,6 +185,23 @@ class DI {
     sl.registerLazySingleton(() => VoteOnCommentUseCase(sl()));
     sl.registerLazySingleton(() => DeleteCommentVoteUseCase(sl()));
 
+    /// Community Cubit ///
+    sl.registerFactory(
+      () => CommunityCubit(
+        getAllDiscussionsUseCase: sl(),
+        voteOnDiscussionUseCase: sl(),
+      ),
+    );
+    sl.registerFactory(
+      () => DiscussionDetailsCubit(
+        getDiscussionByIdUseCase: sl(),
+        getDiscussionCommentsUseCase: sl(),
+        createCommentUseCase: sl(),
+        voteOnCommentUseCase: sl(),
+        userCacheService: sl(),
+      ),
+    );
+
     //================ Users ========================
 
     /// Users Data Sources ///
@@ -241,7 +270,6 @@ class DI {
         getRecentPapersUseCase: sl(),
         getRecommendationsUseCase: sl(),
         getCurrentUserUsecase: sl(),
-      
       ),
     );
   }

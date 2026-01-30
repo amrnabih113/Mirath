@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:hugeicons_pro/hugeicons.dart';
+import 'package:mirath/features/common/widgets/tag_chip.dart';
 import 'package:mirath/features/home/domain/entities/paper_entity.dart';
 
 import '../../../../core/helpers/responsive_helper.dart';
@@ -116,13 +117,12 @@ class _PaperCardState extends State<PaperCard> {
               ],
             ),
             SizedBox(height: MySizes.spaceXs(context) * 0.5),
-            
+
             Text(
               widget.paper.title,
               //  maxLines: 2,
               style: context.titleMedium.copyWith(
-                color: MyColors.primaryShade900,
-                fontFamily: GoogleFonts.sourceSerif4().fontFamily,
+                color: const Color.fromRGBO(42, 36, 25, 1),
                 fontWeight: FontWeight.w700,
                 height: 1.3,
                 letterSpacing: -0.2,
@@ -141,15 +141,19 @@ class _PaperCardState extends State<PaperCard> {
               ),
             ),
             SizedBox(height: MySizes.spaceSm(context)),
-            // Wrap(
-            //   spacing: MySizes.spaceXs(context) / 2,
-            //   runSpacing: MySizes.spaceXs(context),
-            //   children: [
-            //     ...widget.paper.categories
-            //          .map((tag) => TagChip(label: tag))
-            //         .toList(),
-            //   ],
-            // ),
+            SizedBox(
+              height: ResponsiveHelper.responsiveValue(context, 28),
+              child: ListView.separated(
+                scrollDirection: Axis.horizontal,
+                itemCount: widget.paper.categories.length,
+                itemBuilder: (_, index) {
+                  return TagChip(label: widget.paper.categories[index]);
+                },
+                separatorBuilder: (_, index) => SizedBox(
+                  width: ResponsiveHelper.responsiveValue(context, 8),
+                ),
+              ),
+            ),
           ],
         ),
       ),

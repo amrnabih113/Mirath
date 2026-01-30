@@ -1,22 +1,147 @@
-﻿import 'package:flutter/material.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:hugeicons/hugeicons.dart';
+import 'package:mirath/core/services/user_cache_service.dart';
 import 'package:mirath/core/utils/my_colors.dart';
 import 'package:mirath/core/utils/my_extenstions.dart';
+import 'package:mirath/core/utils/my_formaters.dart';
+import 'package:mirath/features/auth/data/models/auth_user_data.dart';
+import 'package:mirath/features/community/domain/entities/comment.dart';
+import 'package:mirath/features/community/domain/entities/discussion.dart';
+import 'package:mirath/features/community/presentation/cubit/discussion_details_cubit.dart';
+import 'package:mirath/features/community/presentation/cubit/discussion_details_state.dart';
 import 'package:mirath/features/community/presentation/widgets/discussion_card.dart';
 import 'package:hugeicons_pro/hugeicons.dart';
 import 'package:mirath/features/common/widgets/profile_avatar.dart';
+import 'package:mirath/features/community/presentation/widgets/disscusion_action_buttons.dart';
+import 'package:mirath/features/community/presentation/widgets/disscussion_paper_card.dart';
+import 'package:mirath/features/community/presentation/widgets/user_information_header.dart';
+import 'package:mirath/injection/injection_container.dart';
 
 import '../../../../core/helpers/responsive_helper.dart';
 import '../../../../core/utils/my_sizes.dart';
 import '../../../common/widgets/my_back_icon.dart';
 import '../../../common/widgets/tag_chip.dart';
 
-class DisscussionDetailsScreen extends StatelessWidget {
-  const DisscussionDetailsScreen({super.key});
+class DisscussionDetailsScreen extends StatefulWidget {
+  final Discussion? discussion;
+  final String? discussionId;
+
+  const DisscussionDetailsScreen({
+    super.key,
+    this.discussion,
+    this.discussionId,
+  });
+
+  @override
+  State<DisscussionDetailsScreen> createState() =>
+      _DisscussionDetailsScreenState();
+}
+
+class _DisscussionDetailsScreenState extends State<DisscussionDetailsScreen> {
+  late TextEditingController _commentController;
+  late AuthUserData? cachedUser;
+  @override
+  void initState() {
+    super.initState();
+    _commentController = TextEditingController();
+
+    // Load discussion details
+    if (widget.discussion != null) {
+      // If we have a discussion, load its comments
+      context.read<DiscussionDetailsCubit>().loadDiscussionDetails(
+        widget.discussion!.id,
+      );
+    } else if (widget.discussionId != null) {
+      // If we only have an ID, load full discussion details
+      context.read<DiscussionDetailsCubit>().loadDiscussionDetails(
+        widget.discussionId!,
+      );
+    }
+    cachedUser = sl<UserCacheService>().getCachedUser();
+  }
+
+  @override
+  void dispose() {
+    _commentController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
-    final comments = mockComments;
+    return BlocListener<DiscussionDetailsCubit, DiscussionDetailsState>(
+      listener: (context, state) {
+        if (state is DiscussionDetailsLoaded &&
+            state.commentSubmissionError != null) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text(state.commentSubmissionError!)),
+          );
+        }
+      },
+      child: BlocBuilder<DiscussionDetailsCubit, DiscussionDetailsState>(
+        builder: (context, state) {
+          if (state is DiscussionDetailsLoading) {
+            return const Scaffold(
+              body: Center(child: CircularProgressIndicator()),
+            );
+          }
+
+          if (state is DiscussionDetailsError) {
+            return Scaffold(body: Center(child: Text(state.message)));
+          }
+
+          if (state is DiscussionDetailsLoaded) {
+            return _buildDiscussionContent(context, state);
+          }
+
+          // If we already have discussion data, show it
+          if (widget.discussion != null) {
+            return _buildDiscussionContent(
+              context,
+              DiscussionDetailsLoaded(
+                discussion: widget.discussion!,
+                comments: [],
+              ),
+            );
+          }
+
+          return const Scaffold(
+            body: Center(child: Text('No discussion data')),
+          );
+        },
+      ),
+    );
+  }
+
+  void _submitComment(BuildContext context, DiscussionDetailsLoaded state) {
+    final content = _commentController.text.trim();
+    print('[SCREEN] 📝 Submit button tapped, content: "$content"');
+
+    if (content.isEmpty) {
+      print('[SCREEN] ⚠️ Content is empty, showing snackbar');
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(const SnackBar(content: Text('Please write a comment')));
+      return;
+    }
+
+    print(
+      '[SCREEN] ✓ Calling addComment on cubit with discussionId=${state.discussion.id}',
+    );
+    context.read<DiscussionDetailsCubit>().addComment(
+      discussionId: state.discussion.id,
+      content: content,
+    );
+
+    print('[SCREEN] ✓ Clearing text controller');
+    _commentController.clear();
+  }
+
+  Widget _buildDiscussionContent(
+    BuildContext context,
+    DiscussionDetailsLoaded state,
+  ) {
+    final discussion = state.discussion;
     return Scaffold(
       appBar: AppBar(
         toolbarHeight: ResponsiveHelper.responsiveValue(context, 50),
@@ -52,14 +177,17 @@ class DisscussionDetailsScreen extends StatelessWidget {
                   child: CustomScrollView(
                     slivers: [
                       SliverToBoxAdapter(
-                        child: UserInformationHeader(showMoreButton: false),
+                        child: UserInformationHeader(
+                          showMoreButton: false,
+                          discussion: discussion,
+                        ),
                       ),
                       SliverToBoxAdapter(
                         child: SizedBox(height: MySizes.spaceMd(context)),
                       ),
                       SliverToBoxAdapter(
                         child: Text(
-                          'Quantum Computing and Cybersecurity',
+                          discussion.title,
                           style: context.titleSmall.copyWith(
                             fontWeight: FontWeight.w800,
                           ),
@@ -70,7 +198,7 @@ class DisscussionDetailsScreen extends StatelessWidget {
                       ),
                       SliverToBoxAdapter(
                         child: Text(
-                          'Quantum computing is an emerging technology that leverages the principles of quantum mechanics to perform computations at speeds unattainable by classical computers. As quantum computers become more powerful, they pose significant challenges to traditional cybersecurity measures, particularly in the realm of encryption. This discussion explores the implications of quantum computing on cybersecurity, including potential threats and strategies for mitigation. The conversation will cover topics such as quantum-resistant algorithms, the timeline for quantum advancements, and the role of governments and organizations in preparing for a quantum future.',
+                          discussion.content,
                           style: context.bodyMedium.copyWith(
                             height: 1.5,
                             fontWeight: FontWeight.w600,
@@ -80,23 +208,30 @@ class DisscussionDetailsScreen extends StatelessWidget {
                       SliverToBoxAdapter(
                         child: SizedBox(height: MySizes.spaceMd(context)),
                       ),
-                      const SliverToBoxAdapter(child: DisscussionPaperCard()),
-                      SliverToBoxAdapter(
-                        child: SizedBox(height: MySizes.spaceMd(context)),
-                      ),
+                      if (discussion.paperIds.isNotEmpty)
+                        SliverToBoxAdapter(
+                          child: DisscussionPaperCard(
+                            paperId: discussion.paperIds.first,
+                          ),
+                        ),
+                      if (discussion.paperIds.isNotEmpty)
+                        SliverToBoxAdapter(
+                          child: SizedBox(height: MySizes.spaceMd(context)),
+                        ),
                       SliverToBoxAdapter(
                         child: Wrap(
                           spacing: MySizes.spaceXs(context),
-                          children: [
-                            TagChip(label: 'Quantum Computing'),
-                            TagChip(label: 'Cybersecurity'),
-                          ],
+                          children: discussion.topics
+                              .map((topic) => TagChip(label: topic.name))
+                              .toList(),
                         ),
                       ),
                       SliverToBoxAdapter(
                         child: SizedBox(height: MySizes.spaceMd(context)),
                       ),
-                      SliverToBoxAdapter(child: DisscusionActionButtons()),
+                      SliverToBoxAdapter(
+                        child: DisscusionActionButtons(discussion: discussion),
+                      ),
                       SliverToBoxAdapter(
                         child: SizedBox(height: MySizes.spaceXs(context)),
                       ),
@@ -113,16 +248,18 @@ class DisscussionDetailsScreen extends StatelessWidget {
                           children: [
                             Expanded(
                               child: TextField(
+                                controller: _commentController,
                                 cursorColor: MyColors.primaryColor,
                                 maxLines: 4,
                                 minLines: 1,
                                 decoration: InputDecoration(
                                   hintText: 'Write a comment...',
+                                  errorText: state.commentSubmissionError,
                                 ),
                               ),
                             ),
                             IconButton(
-                              onPressed: () {},
+                              onPressed: () => _submitComment(context, state),
                               padding: EdgeInsets.zero,
                               icon: Icon(
                                 HugeIconsStroke.sent,
@@ -136,7 +273,7 @@ class DisscussionDetailsScreen extends StatelessWidget {
                         child: SizedBox(height: MySizes.spaceMd(context)),
                       ),
                       SliverToBoxAdapter(
-                        child: CommentList(comments: comments),
+                        child: _CommentsList(comments: state.comments),
                       ),
                     ],
                   ),
@@ -150,68 +287,126 @@ class DisscussionDetailsScreen extends StatelessWidget {
   }
 }
 
-class CommentList extends StatelessWidget {
-  const CommentList({super.key, required this.comments});
-  final List<CommentNode> comments;
+class _CommentsList extends StatelessWidget {
+  final List<Comment> comments;
+
+  const _CommentsList({required this.comments});
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        ...comments.map((c) => CommentTile(node: c, isNested: false)),
-        Padding(
-          padding: EdgeInsets.only(top: MySizes.spaceXs(context)),
-          child: TextButton(
-            onPressed: () {},
-            style: TextButton.styleFrom(
-              padding: EdgeInsets.zero,
-              minimumSize: Size.zero,
-              tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-            ),
-            child: Text(
-              'See more replies',
-              style: context.bodyMedium.copyWith(fontWeight: FontWeight.w700),
-            ),
+    print(
+      '[UI] 🎨 _CommentsList building with ${comments.length} total comments',
+    );
+
+    // Filter top-level comments (no parent)
+    final topLevelComments = comments.where((c) => c.parentId == null).toList();
+    print('[UI] 📋 Filtered to ${topLevelComments.length} top-level comments');
+
+    // Log pending comments
+    final pendingComments = comments.where((c) => c.isPending).toList();
+    if (pendingComments.isNotEmpty) {
+      print(
+        '[UI] ⏳ Found ${pendingComments.length} pending comments: ${pendingComments.map((c) => c.id).join(", ")}',
+      );
+    }
+
+    if (topLevelComments.isEmpty) {
+      print('[UI] ℹ️ No top-level comments, showing empty state');
+      return Center(
+        child: Padding(
+          padding: EdgeInsets.all(MySizes.spaceMd(context)),
+          child: Text(
+            'No comments yet. Be the first to comment!',
+            style: context.bodyMedium.copyWith(color: MyColors.textSecondary),
           ),
         ),
-      ],
+      );
+    }
+
+    print('[UI] ✓ Building ${topLevelComments.length} comment tiles');
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: topLevelComments
+          .map(
+            (comment) => CommentTile(comment: comment, allComments: comments),
+          )
+          .toList(),
     );
   }
 }
 
 class CommentTile extends StatefulWidget {
-  const CommentTile({super.key, required this.node, required this.isNested});
+  final Comment comment;
+  final List<Comment> allComments;
 
-  final CommentNode node;
-  final bool isNested;
+  const CommentTile({
+    super.key,
+    required this.comment,
+    required this.allComments,
+  });
 
   @override
-  State<CommentTile> createState() => _CommentTileState();
+  State<CommentTile> createState() => CommentTileState();
 }
 
-class _CommentTileState extends State<CommentTile> {
+class CommentTileState extends State<CommentTile> {
   bool isExpanded = false;
   bool isRepliesExpanded = false;
   bool isReplyingActive = false;
+  late TextEditingController _replyController;
+  late AuthUserData? cachedUser;
+
+  @override
+  void initState() {
+    super.initState();
+    _replyController = TextEditingController();
+    cachedUser = sl<UserCacheService>().getCachedUser();
+  }
+
+  @override
+  void dispose() {
+    _replyController.dispose();
+    super.dispose();
+  }
+
+  List<Comment> get _replies {
+    // Only show replies for top-level comments (flatten nested replies)
+    if (widget.comment.parentId != null) {
+      return []; // Don't nest further
+    }
+    return widget.allComments
+        .where((c) => c.parentId == widget.comment.id)
+        .toList();
+  }
+
+  // Get all replies under the top-level comment (including nested ones)
+  List<Comment> get _allRepliesFlattened {
+    if (widget.comment.parentId != null) {
+      return [];
+    }
+    // Get all comments that have this comment as ancestor
+    final directReplies = widget.allComments
+        .where((c) => c.parentId == widget.comment.id)
+        .toList();
+
+    final nestedReplies = <Comment>[];
+    for (final reply in directReplies) {
+      final repliesOfReply = widget.allComments
+          .where((c) => c.parentId == reply.id)
+          .toList();
+      nestedReplies.addAll(repliesOfReply);
+    }
+
+    return [...directReplies, ...nestedReplies];
+  }
 
   @override
   Widget build(BuildContext context) {
+    final hasReplies =
+        widget.comment.parentId == null && _allRepliesFlattened.isNotEmpty;
+
     return Container(
-      margin: EdgeInsets.only(
-        bottom: MySizes.spaceMd(context),
-        left: widget.isNested ? MySizes.spaceLg(context) : 0,
-      ),
-      decoration: widget.isNested
-          ? BoxDecoration(
-              border: Border(
-                left: BorderSide(color: MyColors.primaryShade700, width: 1.2),
-              ),
-            )
-          : null,
-      padding: EdgeInsets.only(
-        left: widget.isNested ? MySizes.spaceMd(context) : 0,
-      ),
+      margin: EdgeInsets.only(bottom: MySizes.spaceMd(context)),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -219,6 +414,7 @@ class _CommentTileState extends State<CommentTile> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               ProfileAvatar(
+                imageUrl: widget.comment.author.photoUrl,
                 size: ResponsiveHelper.responsiveValue(context, 32),
               ),
               SizedBox(width: MySizes.spaceSm(context)),
@@ -229,33 +425,71 @@ class _CommentTileState extends State<CommentTile> {
                     /// HEADER
                     Row(
                       children: [
-                        Text(
-                          widget.node.author,
-                          style: context.bodyMedium.copyWith(
-                            fontWeight: FontWeight.w700,
+                        ConstrainedBox(
+                          constraints: BoxConstraints(
+                            maxWidth: ResponsiveHelper.responsiveValue(
+                              context,
+                              120,
+                            ),
+                          ),
+                          child: Text(
+                            widget.comment.author.fullName,
+                            overflow: TextOverflow.ellipsis,
+                            style: context.bodyMedium.copyWith(
+                              fontWeight: FontWeight.w700,
+                              fontSize: ResponsiveHelper.responsiveValue(
+                                context,
+                                14,
+                              ),
+                              color: MyColors.primaryShade900,
+                            ),
                           ),
                         ),
                         const SizedBox(width: 6),
-                        Text(
-                          widget.node.time,
-                          style: context.bodySmall.copyWith(
-                            color: MyColors.textSecondary,
+                        if (widget.comment.isPending)
+                          Row(
+                            children: [
+                              SizedBox(
+                                width: 12,
+                                height: 12,
+                                child: CircularProgressIndicator(
+                                  strokeWidth: 1.5,
+                                  valueColor: AlwaysStoppedAnimation<Color>(
+                                    MyColors.textSecondary,
+                                  ),
+                                ),
+                              ),
+                              const SizedBox(width: 6),
+                              Text(
+                                'Sending...',
+                                style: context.bodySmall.copyWith(
+                                  color: MyColors.textSecondary,
+                                  fontStyle: FontStyle.italic,
+                                ),
+                              ),
+                            ],
+                          )
+                        else
+                          Text(
+                            MyFormaters.relativeTime(widget.comment.createdAt),
+                            style: context.bodySmall.copyWith(
+                              color: MyColors.textSecondary,
+                            ),
                           ),
-                        ),
                         const Spacer(),
-                        IconButton(
-                          onPressed: () {},
-                          icon: Icon(
-                            HugeIconsStroke.moreHorizontal,
-                            size: MySizes.iconSmall(context) * 0.9,
-                            color: MyColors.textSecondary,
+                        if (!widget.comment.isPending)
+                          IconButton(
+                            onPressed: () {},
+                            icon: Icon(
+                              HugeIconsStroke.moreHorizontal,
+                              size: MySizes.iconSmall(context) * 0.9,
+                              color: MyColors.textSecondary,
+                            ),
+                            padding: EdgeInsets.zero,
+                            constraints: const BoxConstraints(),
                           ),
-                          padding: EdgeInsets.zero,
-                          constraints: const BoxConstraints(),
-                        ),
                       ],
                     ),
-
                     SizedBox(height: MySizes.spaceXs(context) * 0.5),
 
                     /// COMMENT TEXT
@@ -266,17 +500,49 @@ class _CommentTileState extends State<CommentTile> {
                     /// ACTION ROW
                     Row(
                       children: [
-                        _VoteButton(
-                          icon: HugeIconsStroke.arrowUp01,
-                          count: widget.node.upVotes,
+                        GestureDetector(
+                          onTap: () {
+                            context
+                                .read<DiscussionDetailsCubit>()
+                                .voteOnComment(
+                                  commentId: widget.comment.id,
+                                  voteType: 'UP',
+                                );
+                          },
+                          child: _VoteButton(
+                            icon: HugeIconsStroke.arrowUp01,
+                            count: widget.comment.voteScore > 0
+                                ? widget.comment.voteScore
+                                : 0,
+                            isVoted:
+                                widget.comment.hasVoted &&
+                                widget.comment.userVoteType == 'UP',
+                            voteType: 'UP',
+                          ),
                         ),
                         const SizedBox(width: 12),
-                        _VoteButton(
-                          icon: HugeIconsStroke.arrowDown01,
-                          count: widget.node.downVotes,
+                        GestureDetector(
+                          onTap: () {
+                            context
+                                .read<DiscussionDetailsCubit>()
+                                .voteOnComment(
+                                  commentId: widget.comment.id,
+                                  voteType: 'DOWN',
+                                );
+                          },
+                          child: _VoteButton(
+                            icon: HugeIconsStroke.arrowDown01,
+                            count: widget.comment.voteScore < 0
+                                ? -widget.comment.voteScore
+                                : 0,
+                            isVoted:
+                                widget.comment.hasVoted &&
+                                widget.comment.userVoteType == 'DOWN',
+                            voteType: 'DOWN',
+                          ),
                         ),
                         const SizedBox(width: 14),
-                        if (widget.node.replies.isNotEmpty)
+                        if (hasReplies)
                           GestureDetector(
                             onTap: () {
                               setState(() {
@@ -292,7 +558,7 @@ class _CommentTileState extends State<CommentTile> {
                                 ),
                                 const SizedBox(width: 4),
                                 Text(
-                                  widget.node.commentCount.toString(),
+                                  _allRepliesFlattened.length.toString(),
                                   style: context.bodySmall.copyWith(
                                     color: MyColors.textSecondary,
                                   ),
@@ -326,38 +592,75 @@ class _CommentTileState extends State<CommentTile> {
                     if (isReplyingActive)
                       Padding(
                         padding: EdgeInsets.only(top: MySizes.spaceSm(context)),
-                        child: Row(
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: [
-                            ProfileAvatar(
-                              size: ResponsiveHelper.responsiveValue(
-                                context,
-                                28,
-                              ),
+                        child:
+                            BlocBuilder<
+                              DiscussionDetailsCubit,
+                              DiscussionDetailsState
+                            >(
+                              builder: (context, state) {
+                                final isLoaded =
+                                    state is DiscussionDetailsLoaded;
+                                final loadedState = isLoaded
+                                    ? state as DiscussionDetailsLoaded
+                                    : null;
+                                final isSubmitting =
+                                    loadedState?.isSubmittingComment ?? false;
+
+                                return Row(
+                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                  children: [
+                                    ProfileAvatar(
+                                      imageUrl: cachedUser?.photoURL ?? '',
+                                      size: ResponsiveHelper.responsiveValue(
+                                        context,
+                                        28,
+                                      ),
+                                    ),
+                                    SizedBox(width: MySizes.spaceSm(context)),
+                                    Expanded(
+                                      child: TextField(
+                                        controller: _replyController,
+                                        cursorColor: MyColors.primaryColor,
+                                        maxLines: 3,
+                                        minLines: 1,
+                                        enabled: !isSubmitting,
+                                        decoration: InputDecoration(
+                                          hintText: 'Write a reply...',
+                                        ),
+                                      ),
+                                    ),
+                                    SizedBox(width: MySizes.spaceSm(context)),
+                                    IconButton(
+                                      onPressed: isLoaded && !isSubmitting
+                                          ? () => _submitReply(
+                                              context,
+                                              loadedState!,
+                                            )
+                                          : null,
+                                      padding: EdgeInsets.zero,
+                                      constraints: const BoxConstraints(),
+                                      icon: isSubmitting
+                                          ? SizedBox(
+                                              width:
+                                                  MySizes.iconSmall(context) *
+                                                  0.8,
+                                              height:
+                                                  MySizes.iconSmall(context) *
+                                                  0.8,
+                                              child:
+                                                  const CircularProgressIndicator(
+                                                    strokeWidth: 2,
+                                                  ),
+                                            )
+                                          : Icon(
+                                              HugeIconsStroke.sent,
+                                              size: MySizes.iconSmall(context),
+                                            ),
+                                    ),
+                                  ],
+                                );
+                              },
                             ),
-                            SizedBox(width: MySizes.spaceSm(context)),
-                            Expanded(
-                              child: TextField(
-                                cursorColor: MyColors.primaryColor,
-                                maxLines: 3,
-                                minLines: 1,
-                                decoration: InputDecoration(
-                                  hintText: 'Write a reply...',
-                                ),
-                              ),
-                            ),
-                            SizedBox(width: MySizes.spaceSm(context)),
-                            IconButton(
-                              onPressed: () {},
-                              padding: EdgeInsets.zero,
-                              constraints: const BoxConstraints(),
-                              icon: Icon(
-                                HugeIconsStroke.sent,
-                                size: MySizes.iconSmall(context),
-                              ),
-                            ),
-                          ],
-                        ),
                       ),
                   ],
                 ),
@@ -365,14 +668,28 @@ class _CommentTileState extends State<CommentTile> {
             ],
           ),
 
-          /// REPLIES (Hidden by default, shown when comment icon clicked)
-          if (isRepliesExpanded && widget.node.replies.isNotEmpty)
+          /// REPLIES (flattened - only one level)
+          if (isRepliesExpanded && _allRepliesFlattened.isNotEmpty)
             Padding(
-              padding: EdgeInsets.only(top: MySizes.spaceSm(context)),
-              child: Column(
-                children: widget.node.replies
-                    .map((reply) => CommentTile(node: reply, isNested: true))
-                    .toList(),
+              padding: EdgeInsets.only(
+                top: MySizes.spaceSm(context),
+                left: MySizes.spaceLg(context),
+              ),
+              child: Container(
+                decoration: BoxDecoration(
+                  border: Border(
+                    left: BorderSide(
+                      color: MyColors.primaryShade700,
+                      width: 1.2,
+                    ),
+                  ),
+                ),
+                padding: EdgeInsets.only(left: MySizes.spaceMd(context)),
+                child: Column(
+                  children: _allRepliesFlattened
+                      .map((reply) => _buildReplyTile(context, reply))
+                      .toList(),
+                ),
               ),
             ),
         ],
@@ -380,63 +697,275 @@ class _CommentTileState extends State<CommentTile> {
     );
   }
 
-  Widget _buildCommentText(BuildContext context) {
-    const maxLength = 120;
-    final text = widget.node.text;
-    final hasMore = text.length > maxLength && !isExpanded;
+  void _submitReply(BuildContext context, DiscussionDetailsLoaded state) {
+    final content = _replyController.text.trim();
+    if (content.isEmpty) {
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(const SnackBar(content: Text('Please write a reply')));
+      return;
+    }
 
-    final textStyle = context.bodyMedium.copyWith(height: 1.45);
+    context.read<DiscussionDetailsCubit>().addComment(
+      discussionId: state.discussion.id,
+      content: content,
+      parentId: widget.comment.id,
+    );
 
-    if (widget.node.mentionedUser != null &&
-        widget.node.mentionedUser!.isNotEmpty) {
-      return RichText(
-        text: TextSpan(
-          style: textStyle,
-          children: [
-            TextSpan(
-              text: '${widget.node.mentionedUser} ',
-              style: textStyle.copyWith(
-                color: const Color(0xFF4A9EFF),
-                fontWeight: FontWeight.w700,
-              ),
-            ),
-            TextSpan(
-              text: hasMore ? '${text.substring(0, maxLength)}...' : text,
-            ),
-            if (hasMore)
-              WidgetSpan(
-                alignment: PlaceholderAlignment.middle,
-                child: Padding(
-                  padding: const EdgeInsets.only(left: 4),
-                  child: GestureDetector(
-                    behavior: HitTestBehavior.opaque,
-                    onTap: () {
-                      setState(() {
-                        isExpanded = true;
-                      });
-                    },
-                    child: Text(
-                      'more',
-                      style: context.bodySmall.copyWith(
-                        color: MyColors.primaryShade700,
-                        fontWeight: FontWeight.w600,
+    _replyController.clear();
+    setState(() {
+      isReplyingActive = false;
+    });
+  }
+
+  Widget _buildReplyTile(BuildContext context, Comment reply) {
+    // Get parent comment to show mention if needed
+    Comment? parentComment;
+    if (reply.parentId != null) {
+      try {
+        parentComment = widget.allComments.firstWhere(
+          (c) => c.id == reply.parentId,
+        );
+      } catch (e) {
+        parentComment = null;
+      }
+    }
+
+    final isReplyToReply =
+        parentComment != null && parentComment.parentId != null;
+    final mentionedAuthor = isReplyToReply
+        ? parentComment.author.username
+        : null;
+
+    return Container(
+      margin: EdgeInsets.only(bottom: MySizes.spaceMd(context)),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          ProfileAvatar(
+            imageUrl: reply.author.photoUrl,
+            size: ResponsiveHelper.responsiveValue(context, 32),
+          ),
+          SizedBox(width: MySizes.spaceSm(context)),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                /// HEADER
+                Row(
+                  children: [
+                    ConstrainedBox(
+                      constraints: BoxConstraints(
+                        maxWidth: ResponsiveHelper.responsiveValue(
+                          context,
+                          100,
+                        ),
+                      ),
+                      child: Text(
+                        reply.author.fullName,
+                        overflow: TextOverflow.ellipsis,
+                        style: context.bodyMedium.copyWith(
+                          fontWeight: FontWeight.w700,
+                        ),
                       ),
                     ),
-                  ),
+                    const SizedBox(width: 6),
+                    if (reply.isPending)
+                      Row(
+                        children: [
+                          SizedBox(
+                            width: 12,
+                            height: 12,
+                            child: CircularProgressIndicator(
+                              strokeWidth: 1.5,
+                              valueColor: AlwaysStoppedAnimation<Color>(
+                                MyColors.textSecondary,
+                              ),
+                            ),
+                          ),
+                          const SizedBox(width: 6),
+                          Text(
+                            'Sending...',
+                            style: context.bodySmall.copyWith(
+                              color: MyColors.textSecondary,
+                              fontStyle: FontStyle.italic,
+                            ),
+                          ),
+                        ],
+                      )
+                    else
+                      Text(
+                        MyFormaters.relativeTime(reply.createdAt),
+                        style: context.bodySmall.copyWith(
+                          color: MyColors.textSecondary,
+                        ),
+                      ),
+                    const Spacer(),
+                    if (!reply.isPending)
+                      IconButton(
+                        onPressed: () {},
+                        icon: Icon(
+                          HugeIconsStroke.moreHorizontal,
+                          size: MySizes.iconSmall(context) * 0.9,
+                          color: MyColors.textSecondary,
+                        ),
+                        padding: EdgeInsets.zero,
+                        constraints: const BoxConstraints(),
+                      ),
+                  ],
                 ),
-              ),
-          ],
-        ),
-      );
+                SizedBox(height: MySizes.spaceXs(context) * 0.5),
+
+                /// REPLY TEXT with mention
+                if (mentionedAuthor != null)
+                  RichText(
+                    text: TextSpan(
+                      children: [
+                        TextSpan(
+                          text: '@$mentionedAuthor ',
+                          style: context.bodyMedium.copyWith(
+                            color: MyColors.primaryColor,
+                            fontWeight: FontWeight.w600,
+                            height: 1.45,
+                          ),
+                        ),
+                        TextSpan(
+                          text: reply.content,
+                          style: context.bodyMedium.copyWith(height: 1.45),
+                        ),
+                      ],
+                    ),
+                  )
+                else
+                  Text(
+                    reply.content,
+                    style: context.bodyMedium.copyWith(height: 1.45),
+                  ),
+                SizedBox(height: MySizes.spaceXs(context)),
+
+                /// ACTION ROW
+                Row(
+                  children: [
+                    GestureDetector(
+                      onTap: () {
+                        context.read<DiscussionDetailsCubit>().voteOnComment(
+                          commentId: reply.id,
+                          voteType: 'UP',
+                        );
+                      },
+                      child: _VoteButton(
+                        icon: HugeIconsStroke.arrowUp01,
+                        count: reply.voteScore > 0 ? reply.voteScore : 0,
+                        isVoted: reply.hasVoted && reply.userVoteType == 'UP',
+                        voteType: 'UP',
+                      ),
+                    ),
+                    const SizedBox(width: 12),
+                    GestureDetector(
+                      onTap: () {
+                        context.read<DiscussionDetailsCubit>().voteOnComment(
+                          commentId: reply.id,
+                          voteType: 'DOWN',
+                        );
+                      },
+                      child: _VoteButton(
+                        icon: HugeIconsStroke.arrowDown01,
+                        count: reply.voteScore < 0 ? -reply.voteScore : 0,
+                        isVoted: reply.hasVoted && reply.userVoteType == 'DOWN',
+                        voteType: 'DOWN',
+                      ),
+                    ),
+                    const SizedBox(width: 12),
+                    TextButton(
+                      onPressed: () {
+                        // Reply to this reply - will show mention
+                        _replyToComment(context, reply);
+                      },
+                      style: TextButton.styleFrom(
+                        padding: EdgeInsets.zero,
+                        minimumSize: Size.zero,
+                        tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                      ),
+                      child: Text(
+                        'Reply',
+                        style: context.bodySmall.copyWith(
+                          fontWeight: FontWeight.w700,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  void _replyToComment(BuildContext context, Comment targetComment) {
+    // Scroll to main comment reply field and focus it
+    setState(() {
+      isReplyingActive = true;
+    });
+    // The parent ID should be the target comment ID for backend
+    // This will make the API create the proper parent-child relationship
+  }
+
+  Widget _buildCommentText(BuildContext context) {
+    const maxLength = 120;
+    final text = widget.comment.content;
+    final hasMore = text.length > maxLength && !isExpanded;
+
+    final textStyle = context.bodyMedium.copyWith(
+      height: 1.45,
+      fontWeight: FontWeight.w500,
+    );
+
+    // Check if this is a reply to a reply (parent has a parent)
+    Comment? parentComment;
+    if (widget.comment.parentId != null) {
+      try {
+        parentComment = widget.allComments.firstWhere(
+          (c) => c.id == widget.comment.parentId,
+        );
+      } catch (e) {
+        parentComment = null;
+      }
     }
+
+    final isReplyToReply =
+        parentComment != null && parentComment.parentId != null;
+    final mentionedAuthor = isReplyToReply
+        ? parentComment.author.username
+        : null;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(
-          hasMore ? '${text.substring(0, maxLength)}...' : text,
-          style: textStyle,
-        ),
+        if (mentionedAuthor != null)
+          RichText(
+            text: TextSpan(
+              children: [
+                TextSpan(
+                  text: '@$mentionedAuthor ',
+                  style: textStyle.copyWith(
+                    color: MyColors.primaryColor,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+                TextSpan(
+                  text: hasMore ? '${text.substring(0, maxLength)}...' : text,
+                  style: textStyle,
+                ),
+              ],
+            ),
+          )
+        else
+          Text(
+            hasMore ? '${text.substring(0, maxLength)}...' : text,
+            style: textStyle,
+          ),
         if (hasMore)
           GestureDetector(
             behavior: HitTestBehavior.opaque,
@@ -463,109 +992,44 @@ class _CommentTileState extends State<CommentTile> {
 
 /// VOTE BUTTON
 class _VoteButton extends StatelessWidget {
-  const _VoteButton({required this.icon, required this.count});
-
   final IconData icon;
   final int count;
+  final bool isVoted;
+  final String? voteType; // 'UP' or 'DOWN'
+
+  const _VoteButton({
+    required this.icon,
+    required this.count,
+    this.isVoted = false,
+    this.voteType,
+  });
 
   @override
   Widget build(BuildContext context) {
+    late final Color buttonColor;
+
+    if (!isVoted) {
+      buttonColor = MyColors.textSecondary;
+    } else {
+      // Different colors for UP vote (green) and DOWN vote (redish pink)
+      if (voteType == 'UP') {
+        buttonColor = MyColors.success; // Green color
+      } else if (voteType == 'DOWN') {
+        buttonColor = const Color(0xFFE94B8F); // Redish pink color
+      } else {
+        buttonColor = MyColors.primaryColor; // Default fallback
+      }
+    }
+
     return Row(
       children: [
-        Icon(
-          icon,
-          size: MySizes.iconSmall(context),
-          color: MyColors.textSecondary,
-        ),
+        Icon(icon, size: MySizes.iconSmall(context), color: buttonColor),
         const SizedBox(width: 4),
         Text(
           count.toString(),
-          style: context.bodySmall.copyWith(color: MyColors.textSecondary),
+          style: context.bodySmall.copyWith(color: buttonColor),
         ),
       ],
     );
   }
 }
-
-/// DATA MODEL
-class CommentNode {
-  CommentNode({
-    required this.author,
-    required this.time,
-    required this.text,
-    required this.upVotes,
-    required this.downVotes,
-    required this.commentCount,
-    this.mentionedUser,
-    this.replies = const [],
-  });
-
-  final String author;
-  final String time;
-  final String text;
-  final int upVotes;
-  final int downVotes;
-  final int commentCount;
-  final String? mentionedUser;
-  final List<CommentNode> replies;
-}
-
-/// MOCK DATA
-final List<CommentNode> mockComments = [
-  CommentNode(
-    author: 'Jane Doe',
-    time: '11h',
-    text:
-        'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque ante dui, lobortis sed orci vitae, molestie convallis justo.',
-    upVotes: 12,
-    downVotes: 0,
-    commentCount: 4,
-    replies: [
-      CommentNode(
-        author: 'John Smith',
-        time: '10h',
-        text: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
-        upVotes: 2,
-        downVotes: 0,
-        commentCount: 1,
-      ),
-      CommentNode(
-        author: 'Jane Doe',
-        time: '9h',
-        text: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
-        upVotes: 1,
-        downVotes: 0,
-        commentCount: 1,
-        mentionedUser: 'John Smith',
-      ),
-    ],
-  ),
-  CommentNode(
-    author: 'Jane Doe',
-    time: '11h',
-    text:
-        'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque ante dui, lobortis sed orci vitae, molestie convallis justo.',
-    upVotes: 12,
-    downVotes: 0,
-    commentCount: 4,
-    replies: [
-      CommentNode(
-        author: 'John Smith',
-        time: '10h',
-        text: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
-        upVotes: 2,
-        downVotes: 0,
-        commentCount: 1,
-      ),
-      CommentNode(
-        author: 'Jane Doe',
-        time: '9h',
-        text: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
-        upVotes: 1,
-        downVotes: 0,
-        commentCount: 1,
-        mentionedUser: 'John Smith',
-      ),
-    ],
-  ),
-];

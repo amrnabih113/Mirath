@@ -98,13 +98,18 @@ class CommunityRepositoryImpl implements CommunityRepository {
     CreateCommentParams params,
   ) async {
     try {
+      print(
+        '[REPO] Creating comment: discussionId=${params.discussionId}, content=${params.content}, parentId=${params.parentId}',
+      );
       final response = await _remoteDataSource.createComment(
         discussionId: params.discussionId,
         content: params.content,
         parentId: params.parentId,
       );
+      print('[REPO] Comment created successfully: ${response.data.id}');
       return Right(response.data);
     } catch (e) {
+      print('[REPO] Error creating comment: $e');
       return Left(mapExceptionToFailure(e));
     }
   }

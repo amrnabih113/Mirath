@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'package:mirath/features/community/domain/entities/discussion.dart';
+import 'package:mirath/features/community/presentation/cubit/community_cubit.dart';
+import 'package:mirath/features/community/presentation/cubit/discussion_details_cubit.dart';
 import 'package:mirath/features/community/presentation/screens/community_search_result.dart';
 import 'package:mirath/features/community/presentation/screens/reading_list_details_screen.dart';
 import 'package:mirath/features/home/presentation/cubit/home_cubit.dart';
@@ -158,7 +161,7 @@ final appRouter = GoRouter(
 
     // Handle authentication errors - allow staying on current auth pages
     if (authStatus == AuthStatus.error) {
-      if (authPaths.contains(currentLocation)||
+      if (authPaths.contains(currentLocation) ||
           currentLocation == '/set-up-profile' ||
           currentLocation == '/interests') {
         return null; // Stay on current page
@@ -218,15 +221,19 @@ final appRouter = GoRouter(
           path: '/home',
           pageBuilder: (context, state) => NoTransitionPage(
             child: BlocProvider.value(
-              value: sl<HomeCubit>()..getRecommendations(),
+              value: sl<HomeCubit>()..loadAllPapers(),
               child: const HomeScreen(),
             ),
           ),
         ),
         GoRoute(
           path: '/community',
-          pageBuilder: (context, state) =>
-              const NoTransitionPage(child: CommunityScreen()),
+          pageBuilder: (context, state) => NoTransitionPage(
+            child: BlocProvider.value(
+              value: sl<CommunityCubit>()..getDiscussions(),
+              child: const CommunityScreen(),
+            ),
+          ),
         ),
         GoRoute(
           path: '/library',
@@ -356,8 +363,15 @@ final appRouter = GoRouter(
 
     GoRoute(
       path: '/disscussion-details',
-      pageBuilder: (context, state) =>
-          PageTransitions.smoothTransition(const DisscussionDetailsScreen()),
+      pageBuilder: (context, state) {
+        final discussion = state.extra as Discussion?;
+        return PageTransitions.smoothTransition(
+          BlocProvider(
+            create: (_) => sl<DiscussionDetailsCubit>(),
+            child: DisscussionDetailsScreen(discussion: discussion),
+          ),
+        );
+      },
     ),
     GoRoute(
       path: '/reading-list-details',

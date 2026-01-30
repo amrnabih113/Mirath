@@ -20,7 +20,8 @@ class ReadingListsTab extends StatelessWidget {
           SizedBox(height: MySizes.spaceMd(context)),
       itemBuilder: (context, index) => InkWell(
         onTap: () => context.push('/reading-list-details'),
-        child: const ReadingListCard()),
+        child: const ReadingListCard(),
+      ),
       itemCount: 10,
     );
   }

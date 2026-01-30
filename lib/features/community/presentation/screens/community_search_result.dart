@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:mirath/core/helpers/responsive_helper.dart';
 import 'package:mirath/features/common/widgets/my_back_icon.dart';
 import 'package:mirath/features/common/widgets/search_with_filter.dart';
 import 'package:mirath/features/common/widgets/section_title.dart';
+import 'package:mirath/features/community/presentation/cubit/community_cubit.dart';
+import 'package:mirath/features/community/presentation/cubit/community_state.dart';
 import 'package:mirath/features/community/presentation/widgets/discussion_card.dart';
 import 'package:mirath/features/community/presentation/widgets/reading_list_card.dart';
 import 'package:mirath/features/community/presentation/widgets/researcher_card.dart';
@@ -119,18 +122,49 @@ class _CommunitySearchResultState extends State<CommunitySearchResult> {
                         SliverToBoxAdapter(
                           child: SizedBox(height: MySizes.spaceSm(context)),
                         ),
-                        SliverList(
-                          delegate: SliverChildBuilderDelegate((
-                            context,
-                            index,
-                          ) {
-                            return Padding(
-                              padding: EdgeInsets.only(
-                                bottom: MySizes.spaceXs(context),
+                        BlocBuilder<CommunityCubit, CommunityState>(
+                          builder: (context, state) {
+                            if (state is CommunityDiscussionsLoaded) {
+                              final discussions = state.discussions
+                                  .take(3)
+                                  .toList();
+
+                              if (discussions.isEmpty) {
+                                return const SliverToBoxAdapter(
+                                  child: Center(
+                                    child: Text('No discussions found'),
+                                  ),
+                                );
+                              }
+
+                              return SliverList(
+                                delegate: SliverChildBuilderDelegate((
+                                  context,
+                                  index,
+                                ) {
+                                  return Padding(
+                                    padding: EdgeInsets.only(
+                                      bottom: MySizes.spaceXs(context),
+                                    ),
+                                    child: DiscussionCard(
+                                      discussion: discussions[index],
+                                    ),
+                                  );
+                                }, childCount: discussions.length),
+                              );
+                            }
+
+                            return SliverToBoxAdapter(
+                              child: Center(
+                                child: Padding(
+                                  padding: EdgeInsets.all(
+                                    MySizes.spaceMd(context),
+                                  ),
+                                  child: const CircularProgressIndicator(),
+                                ),
                               ),
-                              child: DiscussionCard(),
                             );
-                          }, childCount: 3),
+                          },
                         ),
                         SliverToBoxAdapter(
                           child: SizedBox(height: MySizes.spaceMd(context)),
