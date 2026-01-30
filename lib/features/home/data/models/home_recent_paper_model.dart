@@ -41,6 +41,7 @@ import '../../domain/entities/paper_entity.dart';
 class HomeRecentPaperModel {
   final String id;
   final String title;
+  final String preprint;
   final String abstract;
   final String publishedAt;
   final List<String> authors;
@@ -55,6 +56,7 @@ class HomeRecentPaperModel {
     required this.authors,
     required this.categories,
     required this.isSaved,
+    required this.preprint,
   });
 
   factory HomeRecentPaperModel.fromJson(Map<String, dynamic> json) {
@@ -74,12 +76,14 @@ class HomeRecentPaperModel {
               .toList() ??
           [],
       isSaved: json['isSaved'] ?? false,
+      preprint: json['preprint'] ?? '',
     );
   }
   Map<String, dynamic> toJson() {
     return {
       'id': id,
       'title': title,
+      'preprint': preprint,
       'abstract': abstract,
       'publishedAt': publishedAt,
       'authors': authors,
@@ -96,6 +100,7 @@ class HomeRecentPaperModel {
     authors: [],
     categories: [],
     isSaved: false,
+    preprint: '',
   );
 }
 
@@ -109,6 +114,7 @@ extension HomeRecentPaperModelX on HomeRecentPaperModel {
       authors: authors,
       categories: categories,
       isSaved: isSaved,
+      preprint: '',
     );
   }
 }

@@ -228,12 +228,23 @@ class AuthRepositoryImpl implements AuthRepository {
       if (email == null) {
         return const Left(UnauthorizedFailure('No user email cached'));
       }
-      final accessToken = await _remoteDataSource.verifyEmail(
+      final response = await _remoteDataSource.verifyEmail(
         email: email,
         otp: otp,
       );
+
       // Save access token
-      await _secureStorage.saveAccessToken(accessToken);
+      if (response.accessToken != null) {
+        await _secureStorage.saveAccessToken(response.accessToken!);
+      }
+
+      // Cache user data if available (refresh token is in HttpOnly cookie)
+      if (response.user != null) {
+        await _userCache.saveUser(response.user!);
+        MyLogger.info(
+          '[AuthRepository] User data cached after email verification',
+        );
+      }
 
       return const Right(null);
     } catch (e) {

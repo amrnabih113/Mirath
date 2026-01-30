@@ -26,28 +26,21 @@ class _CategoryItemState extends State<CategoryItem> {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTapDown: (_) => setState(() => _isPressed = true),
-      onTapUp: (_) => setState(() => _isPressed = false),
-      onTapCancel: () => setState(() => _isPressed = false),
       onTap: widget.onTap,
-      child: AnimatedContainer(
-        duration: const Duration(milliseconds: 150),
-        curve: Curves.easeOut,
+      child: Container(
         margin: EdgeInsets.only(
           right: ResponsiveHelper.responsiveValue(context, 8),
         ),
         height: ResponsiveHelper.responsiveValue(context, 35),
         decoration: BoxDecoration(
-          color: widget.isSelected
-              ? MyColors.primaryShade500
-              : MyColors.primaryShade100,
+          color: widget.isSelected ? MyColors.primaryShade100 : MyColors.white,
           borderRadius: BorderRadius.circular(MySizes.borderRadiusMd(context)),
-          // border: Border.all(
-          //   color: widget.isSelected
-          //       ? MyColors.primaryShade600
-          //       : MyColors.primaryShade300,
-          //   width: 1,
-          // ),
+          border: Border.all(
+            color: widget.isSelected
+                ? MyColors.primaryShade300
+                : MyColors.primaryShade100,
+            width: 1,
+          ),
           boxShadow: [
             BoxShadow(
               color: widget.isSelected
@@ -77,9 +70,7 @@ class _CategoryItemState extends State<CategoryItem> {
             child: Text(
               widget.categoryName,
               style: context.bodySmall.copyWith(
-                color: widget.isSelected
-                    ? MyColors.white
-                    : MyColors.primaryShade900,
+                color: MyColors.primaryShade900,
                 fontWeight: FontWeight.w800,
                 fontSize: ResponsiveHelper.responsiveValue(context, 12),
                 letterSpacing: 0.2,

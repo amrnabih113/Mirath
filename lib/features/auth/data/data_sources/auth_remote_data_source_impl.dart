@@ -48,7 +48,7 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
   }
 
   @override
-  Future<String> verifyEmail({
+  Future<AuthResponseModel> verifyEmail({
     required String email,
     required String otp,
   }) async {
@@ -57,9 +57,7 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
       data: {'email': email, 'otp': otp},
     );
 
-    // Extract access token from response
-    final data = response.data as Map<String, dynamic>;
-    return data['accessToken'] as String? ?? '';
+    return AuthResponseModel.fromJson(response.data as Map<String, dynamic>);
   }
 
   @override

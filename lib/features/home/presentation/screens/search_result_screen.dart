@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import '../../../../core/helpers/responsive_helper.dart';
 import '../../../../core/utils/my_sizes.dart';
 import '../../../common/widgets/my_back_icon.dart';
-import '../widgets/paper_card.dart';
 import '../widgets/search_text_field.dart';
 
 class HomeSearchResultScreen extends StatelessWidget {
@@ -55,7 +54,8 @@ class HomeSearchResultScreen extends StatelessWidget {
                   ),
                   itemCount: 5,
                   itemBuilder: (context, index) {
-                    return PaperCard();
+                    return SizedBox();
+                    //PaperCard();
                   },
                 ),
               ),

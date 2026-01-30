@@ -82,6 +82,7 @@ class MyBottomNavBar extends StatelessWidget {
                               context.go('/home');
                             },
                           ),
+
                           NavItem(
                             icon: HugeIcons.strokeRoundedUserGroup03,
                             label: 'Community',
@@ -95,7 +96,7 @@ class MyBottomNavBar extends StatelessWidget {
                           SizedBox(
                             width: ResponsiveHelper.responsiveValue(
                               context,
-                              80,
+                              60,
                             ),
                           ),
                           NavItem(
@@ -126,8 +127,8 @@ class MyBottomNavBar extends StatelessWidget {
                   Positioned(
                     top: ResponsiveHelper.responsiveValue(context, -15),
                     child: Container(
-                      width: ResponsiveHelper.responsiveValue(context, 65),
-                      height: ResponsiveHelper.responsiveValue(context, 65),
+                      width: ResponsiveHelper.responsiveValue(context, 60),
+                      height: ResponsiveHelper.responsiveValue(context, 60),
                       padding: EdgeInsets.all(MySizes.spaceXs(context) * 0.6),
                       decoration: BoxDecoration(
                         shape: BoxShape.circle,

@@ -1,15 +1,56 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:hugeicons/hugeicons.dart';
+import 'package:mirath/core/services/local_storage_service.dart';
+import 'package:mirath/core/services/user_cache_service.dart';
+import 'package:mirath/core/utils/my_constants.dart';
+import 'package:mirath/features/auth/data/models/auth_user_data.dart';
+import 'package:mirath/injection/injection_container.dart';
 
 import '../../../../core/helpers/responsive_helper.dart';
 import '../../../../core/utils/my_colors.dart';
 import '../../../../core/utils/my_extenstions.dart';
 import '../../../../core/utils/my_sizes.dart';
 import '../../../common/widgets/profile_avatar.dart';
+import '../../../users/domain/entities/user.dart';
 
-class WelcomeHeader extends StatelessWidget {
+class WelcomeHeader extends StatefulWidget {
   const WelcomeHeader({super.key});
+
+  @override
+  State<WelcomeHeader> createState() => _WelcomeHeaderState();
+}
+
+class _WelcomeHeaderState extends State<WelcomeHeader> {
+  User? currentUser;
+  AuthUserData? userData;
+
+  @override
+  initState() {
+    super.initState();
+    userData = sl<UserCacheService>().getCachedUser();
+    // Load current user data here if needed
+    final data = sl<LocalStorageService>().getData(MyConstants.userDataKey);
+    if (data != null) {
+      final json = jsonDecode(data);
+      setState(() {
+        currentUser = User.fromJson(json);
+      });
+    }
+  }
+
+  String _getUserName() {
+    return currentUser?.fullName ??
+        currentUser?.username ??
+        userData?.username ??
+        'User';
+  }
+
+  String? _getUserPhoto() {
+    return currentUser?.photoUrl ?? userData?.photoURL ?? null;
+  }
 
   String _getGreeting() {
     final hour = DateTime.now().hour;
@@ -40,7 +81,9 @@ class WelcomeHeader extends StatelessWidget {
           bottom: ResponsiveHelper.responsiveValue(context, 8),
           right: 0,
         ),
-        child: ProfileAvatar(),
+        child: GestureDetector(
+          child: ProfileAvatar(imageUrl: _getUserPhoto(), size: 50),
+        ),
       ),
       actions: [
         Stack(
@@ -59,17 +102,17 @@ class WelcomeHeader extends StatelessWidget {
               ),
             ),
             Positioned(
-              right: ResponsiveHelper.responsiveValue(context, 10),
+              right: ResponsiveHelper.responsiveValue(context, 12),
               top: ResponsiveHelper.responsiveValue(context, -2),
               child: Container(
-                width: ResponsiveHelper.responsiveValue(context, 10),
-                height: ResponsiveHelper.responsiveValue(context, 10),
+                width: ResponsiveHelper.responsiveValue(context, 8),
+                height: ResponsiveHelper.responsiveValue(context, 8),
                 decoration: BoxDecoration(
                   color: Colors.red,
                   shape: BoxShape.circle,
                   border: Border.all(
                     color: Colors.white,
-                    width: ResponsiveHelper.responsiveValue(context, 2),
+                    width: ResponsiveHelper.responsiveValue(context, 1),
                   ),
                   boxShadow: [
                     BoxShadow(
@@ -115,7 +158,7 @@ class WelcomeHeader extends StatelessWidget {
             ],
           ),
           Text(
-            'John Doe',
+            _getUserName(),
             style: context.bodyMedium.copyWith(
               fontFamily: GoogleFonts.sourceSerif4().fontFamily,
               fontWeight: FontWeight.w800,

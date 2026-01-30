@@ -36,7 +36,7 @@ class _CommunitySearchResultState extends State<CommunitySearchResult> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        toolbarHeight: ResponsiveHelper.responsiveValue(context, 50),
+        toolbarHeight: ResponsiveHelper.responsiveValue(context, 60),
         leadingWidth: ResponsiveHelper.responsiveValue(context, 50),
         leading: MyBackIcon(),
         titleSpacing: 0,

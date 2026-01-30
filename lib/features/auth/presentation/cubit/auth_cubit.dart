@@ -1,5 +1,8 @@
-﻿import 'package:bloc/bloc.dart';
+﻿import 'dart:convert';
+
+import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
+import 'package:mirath/core/utils/my_constants.dart';
 
 import '../../../../core/error/failuors.dart';
 import '../../../../core/helpers/failure_handler.dart';
@@ -127,11 +130,12 @@ class AuthCubit extends Cubit<AuthState> {
       (failure) => emit(
         state.copyWith(status: AuthStatus.error, message: failure.message),
       ),
-      (_) async {
+      (user) async {
         // Profile setup completed successfully
         // Update cached setup status to true
         await secureStorage.saveSetupStatus(true);
-
+        final jsonString = jsonEncode(user.toJson());
+        await localStorage.setData(MyConstants.userDataKey, jsonString);
         // The server now knows the profile is complete
         emit(
           state.copyWith(

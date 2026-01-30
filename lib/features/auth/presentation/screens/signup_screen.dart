@@ -32,7 +32,7 @@ class SignupScreen extends StatelessWidget {
               message: state.message ?? S.of(context).account_created_verify,
             );
             context.pushReplacement('/verify-account');
-          } else if (state.message != null && state.message!.isNotEmpty) {
+          } else if (state.status == AuthStatus.error) {
             MyLoaders.errorSnackBar(
               context: context,
               title: S.of(context).error_title,
