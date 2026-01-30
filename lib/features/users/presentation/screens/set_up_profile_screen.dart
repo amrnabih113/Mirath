@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:hugeicons/hugeicons.dart';
 import 'package:iconsax/iconsax.dart';
+import 'package:mirath/core/utils/my_logger.dart';
 
 import '../../../../core/helpers/my_loaders.dart';
 import '../../../../core/services/local_storage_service.dart';
@@ -427,6 +428,10 @@ class _SetUpProfileScreenContentState
                                             _universityController.text.isEmpty
                                             ? null
                                             : _universityController.text,
+                                        profilePhoto: state.pickedImage,
+                                      );
+                                      MyLogger.info(
+                                        'Navigating to interests selection with profile data: $userProfile',
                                       );
                                       context.push(
                                         '/interests',

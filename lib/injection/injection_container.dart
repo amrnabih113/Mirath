@@ -202,6 +202,7 @@ class DI {
       () => HomeCubit(
         getRecentPapersUseCase: sl(),
         getRecommendationsUseCase: sl(),
+        getCurrentUserUsecase: sl(),
       ),
     );
   }

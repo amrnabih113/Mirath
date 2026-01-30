@@ -7,9 +7,20 @@ import '../../../../core/utils/my_colors.dart';
 import '../../../../core/utils/my_extenstions.dart';
 import '../../../../core/utils/my_sizes.dart';
 import '../../../common/widgets/profile_avatar.dart';
+import '../../../users/domain/entities/user.dart';
 
 class WelcomeHeader extends StatelessWidget {
-  const WelcomeHeader({super.key});
+  final User? currentUser;
+  
+  const WelcomeHeader({super.key, this.currentUser});
+
+  String _getUserName() {
+    return currentUser?.fullName ?? currentUser?.username ?? 'User';
+  }
+
+  String? _getUserPhoto() {
+    return currentUser?.photoUrl;
+  }
 
   String _getGreeting() {
     final hour = DateTime.now().hour;
@@ -40,7 +51,8 @@ class WelcomeHeader extends StatelessWidget {
           bottom: ResponsiveHelper.responsiveValue(context, 8),
           right: 0,
         ),
-        child: ProfileAvatar(),
+
+        child: ProfileAvatar(imageUrl: _getUserPhoto(), size: 50),
       ),
       actions: [
         Stack(
@@ -115,7 +127,7 @@ class WelcomeHeader extends StatelessWidget {
             ],
           ),
           Text(
-            'John Doe',
+            _getUserName(),
             style: context.bodyMedium.copyWith(
               fontFamily: GoogleFonts.sourceSerif4().fontFamily,
               fontWeight: FontWeight.w800,

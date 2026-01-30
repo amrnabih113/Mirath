@@ -21,6 +21,9 @@ class InterestsBottomButtonWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final hasExceededLimit = selectedInterests.length > 10;
+    final isValid = selectedInterests.isNotEmpty && !hasExceededLimit;
+    
     return BlocListener<AuthCubit, AuthState>(
       listener: (context, state) {
         if (state.status == AuthStatus.success) {
@@ -45,7 +48,7 @@ class InterestsBottomButtonWidget extends StatelessWidget {
           return SizedBox(
             width: MySizes.buttonWidth(context),
             child: ElevatedButton(
-              onPressed: selectedInterests.isEmpty || isLoading
+              onPressed: !isValid || isLoading
                   ? null
                   : () {
                       context.read<AuthCubit>().setUpProfile(
@@ -69,11 +72,23 @@ class InterestsBottomButtonWidget extends StatelessWidget {
                         ),
                       ),
                     )
-                  : Text(
-                      'Next',
-                      style: context.titleMedium.copyWith(
-                        color: MyColors.light,
-                      ),
+                  : Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Text(
+                          'Next',
+                          style: context.titleMedium.copyWith(
+                            color: MyColors.light,
+                          ),
+                        ),
+                        if (hasExceededLimit)
+                          Text(
+                            '(Max 10 interests)',
+                            style: context.bodySmall.copyWith(
+                              color: MyColors.light.withOpacity(0.8),
+                            ),
+                          ),
+                      ],
                     ),
             ),
           );

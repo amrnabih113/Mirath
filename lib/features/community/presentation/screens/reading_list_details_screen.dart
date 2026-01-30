@@ -3,7 +3,6 @@ import 'package:hugeicons/hugeicons.dart';
 import 'package:mirath/core/utils/my_colors.dart';
 import 'package:mirath/core/utils/my_extenstions.dart';
 import 'package:mirath/features/common/widgets/profile_avatar.dart';
-import 'package:mirath/features/home/presentation/widgets/paper_card.dart';
 
 import '../../../../core/helpers/responsive_helper.dart';
 import '../../../../core/utils/my_sizes.dart';

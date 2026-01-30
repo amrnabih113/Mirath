@@ -2,8 +2,10 @@ import 'dart:io';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
+import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
 
+import '../utils/my_colors.dart';
 import '../utils/my_logger.dart';
 
 /// Service for handling image picking operations
@@ -39,6 +41,59 @@ class ImagePickerService {
     }
   }
 
+  /// Crop an image with customizable aspect ratio
+  /// Returns [CroppedFile] on success, null if cancelled
+  Future<CroppedFile?> cropImage({
+    required String imagePath,
+    CropAspectRatio aspectRatio = const CropAspectRatio(ratioX: 1, ratioY: 1),
+  }) async {
+    try {
+      MyLogger.info('[ImagePickerService] Opening image cropper...');
+
+      final croppedFile = await ImageCropper().cropImage(
+        sourcePath: imagePath,
+        aspectRatio: aspectRatio,
+        uiSettings: [
+          AndroidUiSettings(
+            toolbarTitle: 'Crop Image',
+            toolbarColor: MyColors.primaryShade500,
+            toolbarWidgetColor: MyColors.light,
+            backgroundColor: MyColors.dark,
+            activeControlsWidgetColor: MyColors.primaryShade500,
+            initAspectRatio: CropAspectRatioPreset.square,
+            lockAspectRatio: true,
+            hideBottomControls: false,
+          ),
+          IOSUiSettings(
+            title: 'Crop Image',
+            aspectRatioLockEnabled: true,
+            resetAspectRatioEnabled: false,
+            aspectRatioPickerButtonHidden: true,
+          ),
+          WebUiSettings(
+            context: null,
+            presentStyle: WebPresentStyle.dialog,
+            viewPort: const CroppersViewPort(
+              width: 520,
+              height: 520,
+            ),
+          ),
+        ],
+      );
+
+      if (croppedFile == null) {
+        MyLogger.debug('[ImagePickerService] Image cropping cancelled');
+        return null;
+      }
+
+      MyLogger.info('[ImagePickerService] Image cropped successfully');
+      return croppedFile;
+    } catch (e) {
+      MyLogger.error('[ImagePickerService] Error cropping image: $e');
+      rethrow;
+    }
+  }
+
   /// Convert XFile image to bytes (useful for web platform)
   Future<Uint8List?> getImageBytes(XFile image) async {
     try {
@@ -52,12 +107,24 @@ class ImagePickerService {
     }
   }
 
-  /// Build ImageProvider from XFile
+  /// Build ImageProvider from XFile or CroppedFile
   /// Returns appropriate image provider based on platform
   ImageProvider? buildImageProvider({
-    required XFile? xFile,
+    XFile? xFile,
+    CroppedFile? croppedFile,
     Uint8List? webImageBytes,
   }) {
+    // Prioritize cropped file if available
+    if (croppedFile != null) {
+      if (kIsWeb) {
+        // For web, we need to read bytes from CroppedFile
+        // Note: This requires async, so for web cropped files,
+        // consider using FutureBuilder or loading bytes beforehand
+        return null; // Handle web case separately if needed
+      }
+      return FileImage(File(croppedFile.path));
+    }
+
     if (xFile == null) return null;
 
     if (kIsWeb) {

@@ -21,7 +21,10 @@ abstract class AuthRemoteDataSource {
   Future<void> signout();
 
   /// Verify email with OTP code.
-  Future<String> verifyEmail({required String email, required String otp});
+  Future<AuthResponseModel> verifyEmail({
+    required String email,
+    required String otp,
+  });
 
   /// Resend verification OTP to email.
   Future<void> resendVerification({required String email});

@@ -158,7 +158,9 @@ final appRouter = GoRouter(
 
     // Handle authentication errors - allow staying on current auth pages
     if (authStatus == AuthStatus.error) {
-      if (authPaths.contains(currentLocation)) {
+      if (authPaths.contains(currentLocation) ||
+          currentLocation == '/set-up-profile' ||
+          currentLocation == '/interests') {
         return null; // Stay on current page
       }
       // For other pages, redirect to signin
@@ -199,8 +201,11 @@ final appRouter = GoRouter(
     // ===================== LAYOUT SHELL For NavBar =====================
     ShellRoute(
       builder: (context, state, child) {
-        return BlocProvider(
-          create: (_) => LayoutCubit(),
+        return MultiBlocProvider(
+          providers: [
+            BlocProvider(create: (_) => LayoutCubit()),
+            BlocProvider(create: (_) => sl<HomeCubit>()),
+          ],
           child: Builder(
             builder: (context) {
               context.read<LayoutCubit>().syncWithLocation(
@@ -214,12 +219,8 @@ final appRouter = GoRouter(
       routes: [
         GoRoute(
           path: '/home',
-          pageBuilder: (context, state) => NoTransitionPage(
-            child: BlocProvider.value(
-              value: sl<HomeCubit>()..getRecommendations(),
-              child: const HomeScreen(),
-            ),
-          ),
+          pageBuilder: (context, state) =>
+              const NoTransitionPage(child: HomeScreen()),
         ),
         GoRoute(
           path: '/community',
@@ -235,7 +236,16 @@ final appRouter = GoRouter(
         GoRoute(
           path: '/profile',
           pageBuilder: (context, state) => NoTransitionPage(
-            child: Scaffold(body: Center(child: Text('Profile Screen'))),
+            child: Scaffold(
+              body: Center(
+                child: ElevatedButton(
+                  onPressed: () {
+                    sl<AuthCubit>().signOut();
+                  },
+                  child: Text('Sign Out'),
+                ),
+              ),
+            ),
           ),
         ),
       ],

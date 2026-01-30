@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:hugeicons_pro/hugeicons.dart';
-import 'package:mirath/features/common/widgets/tag_chip.dart';
 import 'package:mirath/features/home/domain/entities/paper_entity.dart';
 
 import '../../../../core/helpers/responsive_helper.dart';
@@ -95,7 +94,7 @@ class _PaperCardState extends State<PaperCard> {
               children: [
                 Text(
                   maxLines: 1,
-                  'preprint',
+                  'preprint  • ${DateTime.parse(widget.paper.publishedAt).year.toString()}',
                   style: context.bodySmall.copyWith(
                     color: MyColors.primaryShade600,
                     fontWeight: FontWeight.w600,
@@ -118,20 +117,23 @@ class _PaperCardState extends State<PaperCard> {
             ),
             SizedBox(height: MySizes.spaceXs(context) * 0.5),
             Text(
-              '${widget.paper.authors[0]}• ${DateTime.parse(widget.paper.publishedAt).year.toString()}',
-              maxLines: 2,
+              widget.paper.title,
+              //  maxLines: 2,
               style: context.titleMedium.copyWith(
+                
                 color: MyColors.primaryShade900,
                 fontFamily: GoogleFonts.sourceSerif4().fontFamily,
                 fontWeight: FontWeight.w700,
                 height: 1.3,
                 letterSpacing: -0.2,
-                overflow: TextOverflow.ellipsis,
+                // overflow: TextOverflow.ellipsis,
               ),
             ),
             SizedBox(height: MySizes.spaceXs(context)),
             Text(
-              widget.paper.title,
+              widget.paper.authors.join(', '),
+              maxLines: 2,
+              overflow: TextOverflow.ellipsis,
               style: context.bodySmall.copyWith(
                 color: MyColors.primaryShade700,
                 fontWeight: FontWeight.w500,
@@ -139,14 +141,15 @@ class _PaperCardState extends State<PaperCard> {
               ),
             ),
             SizedBox(height: MySizes.spaceSm(context)),
-            Wrap(
-              spacing: MySizes.spaceXs(context) / 2,
-              runSpacing: MySizes.spaceXs(context),
-              children: [
-                TagChip(label: 'Quantum Mechanics'),
-                TagChip(label: 'The Measurement Problem'),
-              ],
-            ),
+            // Wrap(
+            //   spacing: MySizes.spaceXs(context) / 2,
+            //   runSpacing: MySizes.spaceXs(context),
+            //   children: [
+            //     ...widget.paper.categories
+            //          .map((tag) => TagChip(label: tag))
+            //         .toList(),
+            //   ],
+            // ),
           ],
         ),
       ),

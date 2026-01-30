@@ -1,21 +1,33 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:mirath/core/usecases/no_params.dart';
 import 'package:mirath/features/home/domain/usecases/get_recent_papers_usecase.dart';
 import 'package:mirath/features/home/domain/usecases/get_recommendations_usecase.dart';
 import 'package:mirath/features/home/presentation/cubit/home_state.dart';
+import 'package:mirath/features/users/domain/entities/user.dart';
+import 'package:mirath/features/users/domain/usecases/get_current_user_usecase.dart';
 
 class HomeCubit extends Cubit<HomeState> {
   final GetRecentPapersUseCase getRecentPapersUseCase;
   final GetRecommendationsUseCase getRecommendationsUseCase;
+  final GetCurrentUserUsecase getCurrentUserUsecase;
 
   HomeCubit({
     required this.getRecentPapersUseCase,
     required this.getRecommendationsUseCase,
+    required this.getCurrentUserUsecase,
   }) : super(const HomeInitial());
-  int _recentPage = 1;
+
+  // Track current page for pagination
   int _recommendationPage = 1;
 
-  bool _hasReachedMaxRecent = false;
-  bool _hasReachedMaxRecommendations = false;
+  Future<User?> loadCurrentUser() async {
+    final result = await getCurrentUserUsecase(NoParams());
+    
+    return result.fold(
+      (failure) => null,
+      (user) => user,
+    );
+  }
 
   Future<void> getRecentPapers({
     String? category,
@@ -23,13 +35,11 @@ class HomeCubit extends Cubit<HomeState> {
     int limit = 10,
   }) async {
     emit(const HomeLoading());
-    _recentPage = 1;
-    _hasReachedMaxRecent = false;
 
     final result = await getRecentPapersUseCase(
       GetRecentPapersParams(
         category: category,
-        page: _recentPage,
+        page: page,
         limit: limit,
       ),
     );
@@ -46,11 +56,8 @@ class HomeCubit extends Cubit<HomeState> {
 
   Future<void> getRecommendations({int page = 1, int limit = 5}) async {
     emit(const HomeLoading());
-
-    _recommendationPage = 1;
-    _hasReachedMaxRecommendations = false;
     final result = await getRecommendationsUseCase(
-      GetRecommendationsParams(page: _recommendationPage, limit: limit),
+      GetRecommendationsParams(page: page, limit: limit),
     );
 
     result.fold(
@@ -70,15 +77,16 @@ class HomeCubit extends Cubit<HomeState> {
   }) async {
     emit(const HomeLoading());
 
-    _recentPage = 1;
+    // Reset pagination
     _recommendationPage = 1;
-    _hasReachedMaxRecent = false;
-    _hasReachedMaxRecommendations = false;
+
+    // Load user data
+    final user = await loadCurrentUser();
 
     final recentResult = await getRecentPapersUseCase(
       GetRecentPapersParams(
         category: category,
-        page: _recentPage,
+        page: 1,
         limit: recentLimit,
       ),
     );
@@ -104,6 +112,8 @@ class HomeCubit extends Cubit<HomeState> {
               HomePapersLoaded(
                 recentPapers: recentPapers,
                 recommendations: recommendations,
+                currentUser: user,
+                hasReachedMaxRecommendations: recommendations.length < recommendationLimit,
               ),
             );
           },
@@ -112,47 +122,11 @@ class HomeCubit extends Cubit<HomeState> {
     );
   }
 
-  Future<void> loadMoreRecentPapers({String? category, int limit = 10}) async {
-    if (state is! HomePapersLoaded || _hasReachedMaxRecent) return;
-
-    final currentState = state as HomePapersLoaded;
-
-    emit(currentState.copyWith(isLoadingMoreRecent: true));
-
-    _recentPage++;
-
-    final result = await getRecentPapersUseCase(
-      GetRecentPapersParams(
-        category: category,
-        page: _recentPage,
-        limit: limit,
-      ),
-    );
-
-    result.fold(
-      (failure) {
-        emit(currentState.copyWith(isLoadingMoreRecent: false));
-      },
-      (newPapers) {
-        final allPapers = List.of(currentState.recentPapers)..addAll(newPapers);
-
-        _hasReachedMaxRecent = newPapers.isEmpty;
-
-        emit(
-          currentState.copyWith(
-            recentPapers: allPapers,
-            isLoadingMoreRecent: false,
-            hasReachedMaxRecent: _hasReachedMaxRecent,
-          ),
-        );
-      },
-    );
-  }
-
   Future<void> loadMoreRecommendations({int limit = 5}) async {
-    if (state is! HomePapersLoaded || _hasReachedMaxRecommendations) return;
-
-    final currentState = state as HomePapersLoaded;
+    final currentState = state;
+    if (currentState is! HomePapersLoaded) return;
+    if (currentState.hasReachedMaxRecommendations) return;
+    if (currentState.isLoadingMoreRecommendations) return;
 
     emit(currentState.copyWith(isLoadingMoreRecommendations: true));
 
@@ -167,16 +141,13 @@ class HomeCubit extends Cubit<HomeState> {
         emit(currentState.copyWith(isLoadingMoreRecommendations: false));
       },
       (newPapers) {
-        final allPapers = List.of(currentState.recommendations)
-          ..addAll(newPapers);
-
-        _hasReachedMaxRecommendations = newPapers.isEmpty;
+        final allPapers = List.of(currentState.recommendations)..addAll(newPapers);
 
         emit(
           currentState.copyWith(
             recommendations: allPapers,
             isLoadingMoreRecommendations: false,
-            hasReachedMaxRecommendations: _hasReachedMaxRecommendations,
+            hasReachedMaxRecommendations: newPapers.length < limit,
           ),
         );
       },

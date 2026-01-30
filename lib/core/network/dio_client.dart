@@ -13,12 +13,13 @@ class DioClient {
   final Dio dio;
   final CookieJar? cookieJar;
   final SecureStorageService _secureStorage;
+  final String? header;
 
   /// Callback invoked when authentication fails and tokens are cleared.
   /// Use this to trigger logout/redirect to login screen.
   OnAuthFailure? onAuthFailure;
 
-  DioClient({required SecureStorageService secureStorage, this.onAuthFailure})
+  DioClient({required SecureStorageService secureStorage, this.onAuthFailure, this.header})
     : _secureStorage = secureStorage,
       cookieJar = kIsWeb ? null : CookieJar(),
       dio = Dio(
