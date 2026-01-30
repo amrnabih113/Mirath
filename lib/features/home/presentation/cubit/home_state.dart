@@ -85,7 +85,6 @@ class HomeRecommendationsLoaded extends HomeState {
 class HomePapersLoaded extends HomeState {
   final List<PaperEntity> recentPapers;
   final List<PaperEntity> recommendations;
-  final User? currentUser;
   final bool isLoadingMoreRecent;
   final bool isLoadingMoreRecommendations;
   final bool hasReachedMaxRecent;
@@ -94,7 +93,7 @@ class HomePapersLoaded extends HomeState {
   const HomePapersLoaded({
     required this.recentPapers,
     required this.recommendations,
-    this.currentUser,
+   
     this.isLoadingMoreRecent = false,
     this.isLoadingMoreRecommendations = false,
     this.hasReachedMaxRecent = false,
@@ -113,7 +112,6 @@ class HomePapersLoaded extends HomeState {
     return HomePapersLoaded(
       recentPapers: recentPapers ?? this.recentPapers,
       recommendations: recommendations ?? this.recommendations,
-      currentUser: currentUser ?? this.currentUser,
       isLoadingMoreRecent: isLoadingMoreRecent ?? this.isLoadingMoreRecent,
       isLoadingMoreRecommendations:
           isLoadingMoreRecommendations ?? this.isLoadingMoreRecommendations,
@@ -127,7 +125,6 @@ class HomePapersLoaded extends HomeState {
   List<Object?> get props => [
     recentPapers,
     recommendations,
-    currentUser,
     isLoadingMoreRecent,
     isLoadingMoreRecommendations,
     hasReachedMaxRecent,

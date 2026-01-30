@@ -116,11 +116,11 @@ class _PaperCardState extends State<PaperCard> {
               ],
             ),
             SizedBox(height: MySizes.spaceXs(context) * 0.5),
+            
             Text(
               widget.paper.title,
               //  maxLines: 2,
               style: context.titleMedium.copyWith(
-                
                 color: MyColors.primaryShade900,
                 fontFamily: GoogleFonts.sourceSerif4().fontFamily,
                 fontWeight: FontWeight.w700,

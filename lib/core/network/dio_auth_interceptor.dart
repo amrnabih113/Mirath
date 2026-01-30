@@ -100,11 +100,11 @@ class AuthInterceptor extends Interceptor {
             '[AuthInterceptor] Refreshing token (attempt $attempt/$_maxRetries)...',
           );
 
-          // Refresh token is sent via HttpOnly cookie automatically
           final response = await dio
               .post(
                 MyConstants.refreshToken,
                 options: Options(
+                  headers: {'Authorization': null},
                   // Ensure cookies are sent for refresh token
                   extra: {'withCredentials': true},
                   sendTimeout: _refreshTimeout,
@@ -113,6 +113,7 @@ class AuthInterceptor extends Interceptor {
               )
               .timeout(_refreshTimeout);
 
+          // API returns "accessToken" not "access_token"
           final newAccessToken = response.data['accessToken'] as String?;
 
           if (newAccessToken != null) {

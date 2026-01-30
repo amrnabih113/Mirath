@@ -68,6 +68,64 @@ class User extends Equatable {
     followersCount,
     followingCount,
   ];
+  factory User.fromJson(Map<String, dynamic> json) {
+    return User(
+      id: json['id'],
+      username: json['username'],
+      email: json['email'],
+      fullName: json['fullName'],
+      photoUrl: json['photoUrl'],
+      bio: json['bio'],
+      birthDate: json['birthDate'] != null
+          ? DateTime.parse(json['birthDate'])
+          : null,
+      country: json['country'],
+      levelOfEducation: json['levelOfEducation'],
+      university: json['university'],
+      role: json['role'],
+      status: json['status'],
+      isEmailVisible: json['isEmailVisible'],
+      isPremium: json['isPremium'],
+      createdAt: DateTime.parse(json['createdAt']),
+      updatedAt: DateTime.parse(json['updatedAt']),
+      interests: (json['interests'] as List<dynamic>)
+          .map((e) => Interest(id: e['id'], name: e['name']))
+          .toList(),
+      fieldsOfStudy: (json['fieldsOfStudy'] as List<dynamic>)
+          .map((e) => FieldOfStudy(id: e['id'], name: e['name']))
+          .toList(),
+      followersCount: json['followersCount'],
+      followingCount: json['followingCount'],
+    );
+  }
+  Map<String, dynamic> toJson() {
+    return {
+      'id': id,
+      'username': username,
+      'email': email,
+      'fullName': fullName,
+      'photoUrl': photoUrl,
+      'bio': bio,
+      'birthDate': birthDate?.toIso8601String(),
+      'country': country,
+      'levelOfEducation': levelOfEducation,
+      'university': university,
+      'role': role,
+      'status': status,
+      'isEmailVisible': isEmailVisible,
+      'isPremium': isPremium,
+      'createdAt': createdAt.toIso8601String(),
+      'updatedAt': updatedAt.toIso8601String(),
+      'interests': interests
+          .map((interest) => {'id': interest.id, 'name': interest.name})
+          .toList(),
+      'fieldsOfStudy': fieldsOfStudy
+          .map((field) => {'id': field.id, 'name': field.name})
+          .toList(),
+      'followersCount': followersCount,
+      'followingCount': followingCount,
+    };
+  }
 }
 
 class Interest extends Equatable {

@@ -40,4 +40,6 @@ class ProfileSetupData extends Equatable {
       profilePhoto: profilePhoto ?? this.profilePhoto,
     );
   }
+  
+  
 }

@@ -62,10 +62,8 @@ class _HomeScreenState extends State<HomeScreen> {
                 constraints: const BoxConstraints(maxWidth: 850),
                 child: BlocBuilder<HomeCubit, HomeState>(
                   builder: (context, state) {
-                    final currentUser = state is HomePapersLoaded 
-                        ? state.currentUser 
-                        : null;
-                    return WelcomeHeader(currentUser: currentUser);
+                   
+                    return WelcomeHeader();
                   },
                 ),
               );

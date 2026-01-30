@@ -56,20 +56,36 @@ class SetUpProfileCubit extends Cubit<SetUpProfileState> {
 
       MyLogger.info('[SetUpProfile] Image selected: ${image.name}');
 
+      // Crop the selected image
+      final croppedFile = await _imagePickerService.cropImage(
+        imagePath: image.path,
+      );
+
+      if (croppedFile == null) {
+        MyLogger.debug('[SetUpProfile] Image cropping cancelled');
+        emit(state.copyWith(isPickingImage: false));
+        return;
+      }
+
+      MyLogger.info('[SetUpProfile] Image cropped successfully');
+
+      // Convert CroppedFile to XFile for compatibility
+      final croppedXFile = XFile(croppedFile.path);
+
       // Get image bytes for web platform
-      final bytes = await _imagePickerService.getImageBytes(image);
+      final bytes = await _imagePickerService.getImageBytes(croppedXFile);
 
       emit(
         state.copyWith(
-          pickedImage: image,
+          pickedImage: croppedXFile,
           pickedImageBytes: bytes,
           isPickingImage: false,
         ),
       );
 
-      MyLogger.info('[SetUpProfile] Image loaded successfully');
+      MyLogger.info('[SetUpProfile] Cropped image loaded successfully');
     } catch (e) {
-      MyLogger.error('[SetUpProfile] Error picking image: $e');
+      MyLogger.error('[SetUpProfile] Error picking/cropping image: $e');
       emit(state.copyWith(isPickingImage: false));
       rethrow;
     }

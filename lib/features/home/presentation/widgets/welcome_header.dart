@@ -1,6 +1,13 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:hugeicons/hugeicons.dart';
+import 'package:mirath/core/services/local_storage_service.dart';
+import 'package:mirath/core/services/user_cache_service.dart';
+import 'package:mirath/core/utils/my_constants.dart';
+import 'package:mirath/features/auth/data/models/auth_user_data.dart';
+import 'package:mirath/injection/injection_container.dart';
 
 import '../../../../core/helpers/responsive_helper.dart';
 import '../../../../core/utils/my_colors.dart';
@@ -9,17 +16,40 @@ import '../../../../core/utils/my_sizes.dart';
 import '../../../common/widgets/profile_avatar.dart';
 import '../../../users/domain/entities/user.dart';
 
-class WelcomeHeader extends StatelessWidget {
-  final User? currentUser;
-  
-  const WelcomeHeader({super.key, this.currentUser});
+class WelcomeHeader extends StatefulWidget {
+  const WelcomeHeader({super.key});
+
+  @override
+  State<WelcomeHeader> createState() => _WelcomeHeaderState();
+}
+
+class _WelcomeHeaderState extends State<WelcomeHeader> {
+  User? currentUser;
+  AuthUserData? userData;
+
+  @override
+  initState() {
+    super.initState();
+    userData = sl<UserCacheService>().getCachedUser();
+    // Load current user data here if needed
+    final data = sl<LocalStorageService>().getData(MyConstants.userDataKey);
+    if (data != null) {
+      final json = jsonDecode(data);
+      setState(() {
+        currentUser = User.fromJson(json);
+      });
+    }
+  }
 
   String _getUserName() {
-    return currentUser?.fullName ?? currentUser?.username ?? 'User';
+    return currentUser?.fullName ??
+        currentUser?.username ??
+        userData?.username ??
+        'User';
   }
 
   String? _getUserPhoto() {
-    return currentUser?.photoUrl;
+    return currentUser?.photoUrl ?? userData?.photoURL ?? null;
   }
 
   String _getGreeting() {
@@ -51,8 +81,9 @@ class WelcomeHeader extends StatelessWidget {
           bottom: ResponsiveHelper.responsiveValue(context, 8),
           right: 0,
         ),
-
-        child: ProfileAvatar(imageUrl: _getUserPhoto(), size: 50),
+        child: GestureDetector(
+          child: ProfileAvatar(imageUrl: _getUserPhoto(), size: 50),
+        ),
       ),
       actions: [
         Stack(

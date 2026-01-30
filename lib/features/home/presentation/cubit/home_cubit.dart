@@ -80,8 +80,6 @@ class HomeCubit extends Cubit<HomeState> {
     // Reset pagination
     _recommendationPage = 1;
 
-    // Load user data
-    final user = await loadCurrentUser();
 
     final recentResult = await getRecentPapersUseCase(
       GetRecentPapersParams(
@@ -112,7 +110,6 @@ class HomeCubit extends Cubit<HomeState> {
               HomePapersLoaded(
                 recentPapers: recentPapers,
                 recommendations: recommendations,
-                currentUser: user,
                 hasReachedMaxRecommendations: recommendations.length < recommendationLimit,
               ),
             );

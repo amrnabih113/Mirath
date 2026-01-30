@@ -23,7 +23,7 @@ class InterestsBottomButtonWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     final hasExceededLimit = selectedInterests.length > 10;
     final isValid = selectedInterests.isNotEmpty && !hasExceededLimit;
-    
+
     return BlocListener<AuthCubit, AuthState>(
       listener: (context, state) {
         if (state.status == AuthStatus.success) {

@@ -203,6 +203,7 @@ class DI {
         getRecentPapersUseCase: sl(),
         getRecommendationsUseCase: sl(),
         getCurrentUserUsecase: sl(),
+      
       ),
     );
   }

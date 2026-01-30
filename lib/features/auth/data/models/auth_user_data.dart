@@ -18,7 +18,7 @@ class AuthUserData {
       id: json['id'] ?? '',
       email: json['email'] ?? '',
       username: json['username'] ?? '',
-      photoURL: json['photoURL'],
+      photoURL: json['photoUrl'],
       status: json['status'] ?? 'active',
     );
   }
@@ -28,7 +28,7 @@ class AuthUserData {
       'id': id,
       'email': email,
       'username': username,
-      'photoURL': photoURL,
+      'photoUrl': photoURL,
       'status': status,
     };
   }

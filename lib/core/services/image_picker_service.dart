@@ -70,14 +70,6 @@ class ImagePickerService {
             resetAspectRatioEnabled: false,
             aspectRatioPickerButtonHidden: true,
           ),
-          WebUiSettings(
-            context: null,
-            presentStyle: WebPresentStyle.dialog,
-            viewPort: const CroppersViewPort(
-              width: 520,
-              height: 520,
-            ),
-          ),
         ],
       );
 
