@@ -1,15 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:hugeicons/hugeicons.dart';
 import 'package:mirath/core/helpers/responsive_helper.dart';
-import 'package:mirath/core/utils/my_colors.dart';
-import 'package:mirath/core/utils/my_extenstions.dart';
 import 'package:mirath/core/utils/my_sizes.dart';
 import 'package:mirath/features/common/widgets/my_back_icon.dart';
-import 'package:mirath/features/common/widgets/tag_chip.dart';
 import 'package:mirath/features/papers/presentation/widgets/abstract_section.dart';
 import 'package:mirath/features/papers/presentation/widgets/expainsion_tile_widget.dart';
-import 'package:mirath/features/papers/presentation/widgets/my_text_icon.dart';
 import 'package:mirath/features/papers/presentation/widgets/paper_info.dart';
 
 class PaperScreen extends StatelessWidget {
