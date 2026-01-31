@@ -1,9 +1,9 @@
 import 'package:dartz/dartz.dart';
-import 'package:mirath/core/usecases/usecase.dart';
-import 'package:mirath/features/home/domain/entities/paper_entity.dart';
-import 'package:mirath/features/home/domain/repositories/home_repository.dart';
 
 import '../../../../core/error/failuors.dart';
+import '../../../../core/usecases/usecase.dart';
+import '../entities/paper_entity.dart';
+import '../repositories/home_repository.dart';
 
 class GetRecentPapersUseCase
     implements UseCase<List<PaperEntity>, GetRecentPapersParams> {

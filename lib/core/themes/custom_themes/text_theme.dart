@@ -9,7 +9,7 @@ class MyTextTheme {
 
   static TextTheme getLightTextTheme(BuildContext context, Locale? locale) {
     final isArabic = locale?.languageCode == 'ar';
-    final font = isArabic ? GoogleFonts.balooBhai2 : GoogleFonts.sourceSans3;
+    final font = isArabic ? GoogleFonts.balooBhai2 : GoogleFonts.roboto;
 
     return TextTheme(
       headlineLarge: font(

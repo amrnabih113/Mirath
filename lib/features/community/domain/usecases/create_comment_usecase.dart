@@ -13,6 +13,20 @@ class CreateCommentUseCase implements UseCase<Comment, CreateCommentParams> {
 
   @override
   Future<Either<Failure, Comment>> call(CreateCommentParams params) async {
-    return await repository.createComment(params);
+    print(
+      '[USECASE] 🟢 CreateCommentUseCase called with: discussionId=${params.discussionId}',
+    );
+    final result = await repository.createComment(params);
+    result.fold(
+      (failure) {
+        print('[USECASE] ❌ CreateCommentUseCase failed: ${failure.message}');
+      },
+      (comment) {
+        print(
+          '[USECASE] ✅ CreateCommentUseCase success: comment id=${comment.id}',
+        );
+      },
+    );
+    return result;
   }
 }

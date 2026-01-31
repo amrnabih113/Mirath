@@ -3,6 +3,7 @@ import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:hugeicons_pro/hugeicons.dart';
 import 'package:mirath/features/home/domain/entities/paper_entity.dart';
+import 'package:mirath/features/papers/presentation/screens/paper_screen.dart';
 
 import '../../../../core/helpers/responsive_helper.dart';
 import '../../../../core/utils/my_colors.dart';

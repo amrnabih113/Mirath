@@ -1,8 +1,8 @@
-import 'package:mirath/core/network/dio_client.dart';
-import 'package:mirath/core/utils/my_constants.dart';
-import 'package:mirath/features/home/data/data_sources/home_remote_data_source.dart';
-import 'package:mirath/features/home/data/models/home_recent_response_model.dart';
-import 'package:mirath/features/home/data/models/home_recommendations_response_model.dart';
+import '../../../../core/network/dio_client.dart';
+import '../../../../core/utils/my_constants.dart';
+import '../models/home_recent_response_model.dart';
+import '../models/home_recommendations_response_model.dart';
+import 'home_remote_data_source.dart';
 
 class HomeRemoteDataSourceImpl implements HomeRemoteDataSource {
   final DioClient dioClient;

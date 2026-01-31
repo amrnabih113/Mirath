@@ -5,7 +5,8 @@ class Discussion {
   final String id;
   final String title;
   final String content;
-  final int voteScore;
+  final int upvoteCount;
+  final int downvoteCount;
   final int commentCount;
   final String authorId;
   final List<String> paperIds;
@@ -20,7 +21,8 @@ class Discussion {
     required this.id,
     required this.title,
     required this.content,
-    required this.voteScore,
+    required this.upvoteCount,
+    required this.downvoteCount,
     required this.commentCount,
     required this.authorId,
     required this.paperIds,
@@ -31,4 +33,40 @@ class Discussion {
     required this.topics,
     required this.author,
   });
+
+  int get voteScore => upvoteCount - downvoteCount;
+
+  Discussion copyWith({
+    String? id,
+    String? title,
+    String? content,
+    int? upvoteCount,
+    int? downvoteCount,
+    int? commentCount,
+    String? authorId,
+    List<String>? paperIds,
+    DateTime? createdAt,
+    DateTime? updatedAt,
+    bool? hasVoted,
+    String? userVoteType,
+    List<DiscussionTopic>? topics,
+    DiscussionAuthor? author,
+  }) {
+    return Discussion(
+      id: id ?? this.id,
+      title: title ?? this.title,
+      content: content ?? this.content,
+      upvoteCount: upvoteCount ?? this.upvoteCount,
+      downvoteCount: downvoteCount ?? this.downvoteCount,
+      commentCount: commentCount ?? this.commentCount,
+      authorId: authorId ?? this.authorId,
+      paperIds: paperIds ?? this.paperIds,
+      createdAt: createdAt ?? this.createdAt,
+      updatedAt: updatedAt ?? this.updatedAt,
+      hasVoted: hasVoted ?? this.hasVoted,
+      userVoteType: userVoteType ?? this.userVoteType,
+      topics: topics ?? this.topics,
+      author: author ?? this.author,
+    );
+  }
 }

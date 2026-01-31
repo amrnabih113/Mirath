@@ -1,10 +1,11 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:mirath/core/usecases/no_params.dart';
-import 'package:mirath/features/home/domain/usecases/get_recent_papers_usecase.dart';
-import 'package:mirath/features/home/domain/usecases/get_recommendations_usecase.dart';
-import 'package:mirath/features/home/presentation/cubit/home_state.dart';
-import 'package:mirath/features/users/domain/entities/user.dart';
-import 'package:mirath/features/users/domain/usecases/get_current_user_usecase.dart';
+
+import '../../../../core/usecases/no_params.dart';
+import '../../../users/domain/entities/user.dart';
+import '../../../users/domain/usecases/get_current_user_usecase.dart';
+import '../../domain/usecases/get_recent_papers_usecase.dart';
+import '../../domain/usecases/get_recommendations_usecase.dart';
+import 'home_state.dart';
 
 class HomeCubit extends Cubit<HomeState> {
   final GetRecentPapersUseCase getRecentPapersUseCase;

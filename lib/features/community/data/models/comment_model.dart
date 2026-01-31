@@ -5,7 +5,8 @@ class CommentModel extends Comment {
   const CommentModel({
     required super.id,
     required super.content,
-    required super.voteScore,
+    required super.upvoteCount,
+    required super.downvoteCount,
     required super.authorId,
     required super.discussionId,
     super.parentId,
@@ -20,7 +21,8 @@ class CommentModel extends Comment {
     return CommentModel(
       id: json['id'] ?? '',
       content: json['content'] ?? '',
-      voteScore: json['voteScore'] ?? 0,
+      upvoteCount: json['upvoteCount'] ?? 0,
+      downvoteCount: json['downvoteCount'] ?? 0,
       authorId: json['authorId'] ?? '',
       discussionId: json['discussionId'] ?? '',
       parentId: json['parentId'],
@@ -42,7 +44,8 @@ class CommentModel extends Comment {
     return {
       'id': id,
       'content': content,
-      'voteScore': voteScore,
+      'upvoteCount': upvoteCount,
+      'downvoteCount': downvoteCount,
       'authorId': authorId,
       'discussionId': discussionId,
       'parentId': parentId,
