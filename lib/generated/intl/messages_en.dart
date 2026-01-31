@@ -106,10 +106,14 @@ class MessageLookup extends MessageLookupByLibrary {
             "No internet connection. Please check your connection and try again."),
         "error_not_found": MessageLookupByLibrary.simpleMessage(
             "Requested resource was not found."),
+        "error_password_number": MessageLookupByLibrary.simpleMessage(
+            "Password must contain at least one number."),
         "error_password_required":
             MessageLookupByLibrary.simpleMessage("Password is required."),
         "error_password_short": MessageLookupByLibrary.simpleMessage(
             "Password must be at least 6 characters long."),
+        "error_password_uppercase": MessageLookupByLibrary.simpleMessage(
+            "Password must contain at least one uppercase letter."),
         "error_passwords_not_match":
             MessageLookupByLibrary.simpleMessage("Passwords do not match."),
         "error_phone_invalid": MessageLookupByLibrary.simpleMessage(

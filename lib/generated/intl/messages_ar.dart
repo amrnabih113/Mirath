@@ -107,10 +107,14 @@ class MessageLookup extends MessageLookupByLibrary {
             "لا يوجد اتصال بالإنترنت. يرجى التحقق من اتصالك."),
         "error_not_found": MessageLookupByLibrary.simpleMessage(
             "لم يتم العثور على المورد المطلوب."),
+        "error_password_number": MessageLookupByLibrary.simpleMessage(
+            "يجب أن تحتوي كلمة المرور على رقم واحد على الأقل."),
         "error_password_required":
             MessageLookupByLibrary.simpleMessage("كلمة المرور مطلوبة."),
         "error_password_short": MessageLookupByLibrary.simpleMessage(
             "يجب أن تكون كلمة المرور 6 أحرف على الأقل."),
+        "error_password_uppercase": MessageLookupByLibrary.simpleMessage(
+            "يجب أن تحتوي كلمة المرور على حرف واحد على الأقل بأحرف كبيرة."),
         "error_passwords_not_match":
             MessageLookupByLibrary.simpleMessage("كلمات المرور غير متطابقة."),
         "error_phone_invalid":
