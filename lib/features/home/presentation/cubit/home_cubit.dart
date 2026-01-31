@@ -1,21 +1,28 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:mirath/features/home/domain/entities/paper_entity.dart';
 
 import '../../../../core/usecases/no_params.dart';
 import '../../../users/domain/entities/user.dart';
 import '../../../users/domain/usecases/get_current_user_usecase.dart';
 import '../../domain/usecases/get_recent_papers_usecase.dart';
 import '../../domain/usecases/get_recommendations_usecase.dart';
+import '../../domain/usecases/save_paper_usecase.dart';
+import '../../domain/usecases/unsave_paper_usecase.dart';
 import 'home_state.dart';
 
 class HomeCubit extends Cubit<HomeState> {
   final GetRecentPapersUseCase getRecentPapersUseCase;
   final GetRecommendationsUseCase getRecommendationsUseCase;
   final GetCurrentUserUsecase getCurrentUserUsecase;
+  final SavePaperUseCase savePaperUseCase;
+  final UnsavePaperUseCase unsavePaperUseCase;
 
   HomeCubit({
     required this.getRecentPapersUseCase,
     required this.getRecommendationsUseCase,
     required this.getCurrentUserUsecase,
+    required this.savePaperUseCase,
+    required this.unsavePaperUseCase,
   }) : super(const HomeInitial());
 
   // Track current page for pagination
@@ -23,11 +30,8 @@ class HomeCubit extends Cubit<HomeState> {
 
   Future<User?> loadCurrentUser() async {
     final result = await getCurrentUserUsecase(NoParams());
-    
-    return result.fold(
-      (failure) => null,
-      (user) => user,
-    );
+
+    return result.fold((failure) => null, (user) => user);
   }
 
   Future<void> getRecentPapers({
@@ -38,11 +42,7 @@ class HomeCubit extends Cubit<HomeState> {
     emit(const HomeLoading());
 
     final result = await getRecentPapersUseCase(
-      GetRecentPapersParams(
-        category: category,
-        page: page,
-        limit: limit,
-      ),
+      GetRecentPapersParams(category: category, page: page, limit: limit),
     );
 
     result.fold(
@@ -81,13 +81,8 @@ class HomeCubit extends Cubit<HomeState> {
     // Reset pagination
     _recommendationPage = 1;
 
-
     final recentResult = await getRecentPapersUseCase(
-      GetRecentPapersParams(
-        category: category,
-        page: 1,
-        limit: recentLimit,
-      ),
+      GetRecentPapersParams(category: category, page: 1, limit: recentLimit),
     );
 
     final recommendationResult = await getRecommendationsUseCase(
@@ -111,7 +106,8 @@ class HomeCubit extends Cubit<HomeState> {
               HomePapersLoaded(
                 recentPapers: recentPapers,
                 recommendations: recommendations,
-                hasReachedMaxRecommendations: recommendations.length < recommendationLimit,
+                hasReachedMaxRecommendations:
+                    recommendations.length < recommendationLimit,
               ),
             );
           },
@@ -139,7 +135,8 @@ class HomeCubit extends Cubit<HomeState> {
         emit(currentState.copyWith(isLoadingMoreRecommendations: false));
       },
       (newPapers) {
-        final allPapers = List.of(currentState.recommendations)..addAll(newPapers);
+        final allPapers = List.of(currentState.recommendations)
+          ..addAll(newPapers);
 
         emit(
           currentState.copyWith(
@@ -150,5 +147,78 @@ class HomeCubit extends Cubit<HomeState> {
         );
       },
     );
+  }
+
+  Future<void> savePaper(String paperId) async {
+    final result = await savePaperUseCase(paperId);
+
+    result.fold(
+      (failure) {
+        // Handle error if needed
+      },
+      (_) {
+        // Update paper isSaved status in state
+        _updatePaperSavedStatus(paperId, true);
+      },
+    );
+  }
+
+  Future<void> unsavePaper(String paperId) async {
+    final result = await unsavePaperUseCase(paperId);
+
+    result.fold(
+      (failure) {
+        // Handle error if needed
+      },
+      (_) {
+        // Update paper isSaved status in state
+        _updatePaperSavedStatus(paperId, false);
+      },
+    );
+  }
+
+  void _updatePaperSavedStatus(String paperId, bool isSaved) {
+    final currentState = state;
+
+    if (currentState is HomePapersLoaded) {
+      final updatedRecentPapers = currentState.recentPapers.map((paper) {
+        if (paper.id == paperId) {
+          return PaperEntity(
+            id: paper.id,
+            title: paper.title,
+            abstract: paper.abstract,
+            publishedAt: paper.publishedAt,
+            authors: paper.authors,
+            categories: paper.categories,
+            isSaved: isSaved,
+            preprint: paper.preprint,
+          );
+        }
+        return paper;
+      }).toList();
+
+      final updatedRecommendations = currentState.recommendations.map((paper) {
+        if (paper.id == paperId) {
+          return PaperEntity(
+            id: paper.id,
+            title: paper.title,
+            abstract: paper.abstract,
+            publishedAt: paper.publishedAt,
+            authors: paper.authors,
+            categories: paper.categories,
+            isSaved: isSaved,
+            preprint: paper.preprint,
+          );
+        }
+        return paper;
+      }).toList();
+
+      emit(
+        currentState.copyWith(
+          recentPapers: updatedRecentPapers,
+          recommendations: updatedRecommendations,
+        ),
+      );
+    }
   }
 }

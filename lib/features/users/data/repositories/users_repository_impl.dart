@@ -69,6 +69,32 @@ class UsersRepositoryImpl implements UsersRepository {
   }
 
   @override
+  Future<Either<Failure, User>> getUserProfileHeader(String userId) async {
+    try {
+      MyLogger.info('[UsersRepository] Getting user profile header: $userId');
+
+      if (await networkManager.isConnected) {
+        final result = await remoteDataSource.getUserProfileHeader(userId);
+        MyLogger.info('[UsersRepository] Get user profile header successful');
+        return Right(result.profile);
+      } else {
+        MyLogger.error('[UsersRepository] No internet connection');
+        return const Left(NetworkFailure());
+      }
+    } on DioException catch (error) {
+      MyLogger.error(
+        '[UsersRepository] Get user profile header DioException: $error',
+      );
+      return Left(mapExceptionToFailure(error));
+    } catch (error) {
+      MyLogger.error(
+        '[UsersRepository] Get user profile header unexpected error: $error',
+      );
+      return Left(UnexpectedFailure(error.toString()));
+    }
+  }
+
+  @override
   Future<Either<Failure, void>> followUser(String userId) async {
     try {
       MyLogger.info('[UsersRepository] Following user: $userId');

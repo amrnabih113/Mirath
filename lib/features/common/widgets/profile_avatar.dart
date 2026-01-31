@@ -7,19 +7,24 @@ import '../../../core/utils/my_colors.dart';
 class ProfileAvatar extends StatelessWidget {
   const ProfileAvatar({
     super.key,
-    this.size = 40,
+    this.size,
     this.imageUrl,
     this.borderWidth,
     this.borderColor,
   });
-  final double size;
+  final double? size;
   final String? imageUrl;
   final double? borderWidth;
   final Color? borderColor;
 
   @override
   Widget build(BuildContext context) {
-    final responsiveSize = ResponsiveHelper.responsiveValue(context, size);
+    final responsiveSize = ResponsiveHelper.responsiveValue(
+      context,
+      ResponsiveHelper.deviceTypeFromContext(context) != DeviceType.phone
+          ? 35
+          : 40,
+    );
     final effectiveBorderWidth = borderWidth ?? 0;
     final contentSize = responsiveSize - (effectiveBorderWidth * 2);
 

@@ -4,6 +4,8 @@ import '../../../../core/helpers/responsive_helper.dart';
 import '../../../common/widgets/my_back_icon.dart';
 import '../../../common/widgets/search_with_filter.dart';
 import '../../../common/widgets/section_title.dart';
+import '../../domain/entities/reading_list.dart';
+import '../../domain/entities/reading_list_owner.dart';
 import '../cubit/community_cubit.dart';
 import '../cubit/community_state.dart';
 import '../widgets/discussion_card.dart';
@@ -190,11 +192,31 @@ class _CommunitySearchResultState extends State<CommunitySearchResult> {
                             context,
                             index,
                           ) {
+                            // Mock reading list data for search results
+                            final mockReadingList = ReadingList(
+                              id: 'mock-$index',
+                              title: 'Reading List ${index + 1}',
+                              description: 'Mock description for reading list',
+                              isPublic: true,
+                              ownerId: 'mock-owner',
+                              createdAt: DateTime.now(),
+                              updatedAt: DateTime.now(),
+                              paperCount: 5 + index,
+                              previewTags: ['AI', 'ML', 'Research'],
+                              owner: const ReadingListOwner(
+                                id: 'mock-owner',
+                                username: 'researcher',
+                                fullName: 'Mock Researcher',
+                              ),
+                            );
+
                             return Padding(
                               padding: EdgeInsets.only(
                                 bottom: MySizes.spaceXs(context),
                               ),
-                              child: ReadingListCard(),
+                              child: ReadingListCard(
+                                readingList: mockReadingList,
+                              ),
                             );
                           }, childCount: 3),
                         ),

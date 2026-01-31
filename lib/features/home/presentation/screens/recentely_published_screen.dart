@@ -124,7 +124,8 @@ class _RecentelyPublishedScreenState extends State<RecentelyPublishedScreen> {
                               separatorBuilder: (_, _) =>
                                   SizedBox(height: MySizes.spaceMd(context)),
                               itemBuilder: (context, index) {
-                                return PaperCard(paper: papers[index]);
+                                final paper = papers[index];
+                                return PaperCard(paper: paper);
                               },
                             );
                           }

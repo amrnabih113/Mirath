@@ -7,6 +7,7 @@ import '../../../../../core/utils/my_colors.dart';
 import '../../../../../core/utils/my_extenstions.dart';
 import '../../../../../core/utils/my_formaters.dart';
 import '../../../../../core/utils/my_sizes.dart';
+import '../../../../../core/helpers/my_loaders.dart';
 import '../../../../../injection/injection_container.dart';
 import '../../../../auth/data/models/auth_user_data.dart';
 import '../../../../common/widgets/profile_avatar.dart';
@@ -93,10 +94,7 @@ class CommentTileState extends State<CommentTile> {
           Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              ProfileAvatar(
-                imageUrl: widget.comment.author.photoUrl,
-                size: ResponsiveHelper.responsiveValue(context, 32),
-              ),
+              ProfileAvatar(imageUrl: widget.comment.author.photoUrl),
               SizedBox(width: MySizes.spaceSm(context)),
               Expanded(
                 child: Column(
@@ -363,9 +361,11 @@ class CommentTileState extends State<CommentTile> {
   void _submitReply(BuildContext context, DiscussionDetailsLoaded state) {
     final content = _replyController.text.trim();
     if (content.isEmpty) {
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(const SnackBar(content: Text('Please write a reply')));
+      MyLoaders.warningSnackBar(
+        context: context,
+        title: 'Warning',
+        message: 'Please write a reply',
+      );
       return;
     }
 

@@ -220,8 +220,8 @@ final appRouter = GoRouter(
         GoRoute(
           path: '/home',
           pageBuilder: (context, state) => NoTransitionPage(
-            child: BlocProvider.value(
-              value: sl<HomeCubit>()..loadAllPapers(),
+            child: BlocProvider(
+              create: (_) => sl<HomeCubit>()..loadAllPapers(),
               child: const HomeScreen(),
             ),
           ),
@@ -349,8 +349,8 @@ final appRouter = GoRouter(
     GoRoute(
       path: '/recentely-published',
       pageBuilder: (context, state) => NoTransitionPage(
-        child: BlocProvider.value(
-          value: sl<HomeCubit>()..getRecentPapers(),
+        child: BlocProvider(
+          create: (_) => sl<HomeCubit>()..getRecentPapers(),
           child: const RecentelyPublishedScreen(),
         ),
       ),
@@ -375,8 +375,12 @@ final appRouter = GoRouter(
     ),
     GoRoute(
       path: '/reading-list-details',
-      pageBuilder: (context, state) =>
-          PageTransitions.smoothTransition(const ReadingListDetailsScreen()),
+      pageBuilder: (context, state) {
+        final readingList = state.extra as dynamic;
+        return PageTransitions.smoothTransition(
+          ReadingListDetailsScreen(readingList: readingList),
+        );
+      },
     ),
   ],
 );

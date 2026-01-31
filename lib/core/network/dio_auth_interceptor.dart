@@ -1,6 +1,5 @@
 import 'dart:async';
 import 'package:dio/dio.dart';
-import 'package:flutter/foundation.dart' show kIsWeb;
 
 import '../services/secure_storage_service.dart';
 import '../utils/my_constants.dart';

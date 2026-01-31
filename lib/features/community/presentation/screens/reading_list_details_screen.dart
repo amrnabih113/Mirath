@@ -1,16 +1,58 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:hugeicons/hugeicons.dart';
+import 'package:intl/intl.dart';
 
 import '../../../../core/helpers/responsive_helper.dart';
 import '../../../../core/utils/my_colors.dart';
 import '../../../../core/utils/my_extenstions.dart';
 import '../../../../core/utils/my_sizes.dart';
+import '../../../../injection/injection_container.dart';
+import '../../../../core/services/user_cache_service.dart';
 import '../../../common/widgets/my_back_icon.dart';
 import '../../../common/widgets/profile_avatar.dart';
 import '../../../common/widgets/tag_chip.dart';
+import '../../../home/presentation/widgets/paper_card.dart';
+import '../../domain/entities/reading_list.dart';
+import '../../../home/domain/entities/paper_entity.dart';
+import '../../../users/domain/entities/user.dart';
+import '../../../users/domain/usecases/get_user_profile_header_usecase.dart';
+import '../cubit/reading_list_cubit.dart';
+import '../cubit/reading_list_state.dart';
+import '../widgets/reading_list_details_shimmer_loading.dart';
 
-class ReadingListDetailsScreen extends StatelessWidget {
-  const ReadingListDetailsScreen({super.key});
+class ReadingListDetailsScreen extends StatefulWidget {
+  final ReadingList readingList;
+
+  const ReadingListDetailsScreen({super.key, required this.readingList});
+
+  @override
+  State<ReadingListDetailsScreen> createState() =>
+      _ReadingListDetailsScreenState();
+}
+
+class _ReadingListDetailsScreenState extends State<ReadingListDetailsScreen> {
+  late ReadingListCubit _cubit;
+  User? _ownerProfile;
+
+  @override
+  void initState() {
+    super.initState();
+    _cubit = sl<ReadingListCubit>();
+    _cubit.getReadingListById(widget.readingList.id);
+    _loadOwnerProfile();
+  }
+
+  Future<void> _loadOwnerProfile() async {
+    final result = await sl<GetUserProfileHeaderUsecase>()(
+      widget.readingList.ownerId,
+    );
+
+    result.fold((_) {}, (user) {
+      if (!mounted) return;
+      setState(() => _ownerProfile = user);
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -18,7 +60,7 @@ class ReadingListDetailsScreen extends StatelessWidget {
       appBar: AppBar(
         toolbarHeight: ResponsiveHelper.responsiveValue(context, 50),
         leadingWidth: ResponsiveHelper.responsiveValue(context, 50),
-        leading: MyBackIcon(),
+        leading: const MyBackIcon(),
         titleSpacing: 0,
         actions: [
           Padding(
@@ -36,134 +78,223 @@ class ReadingListDetailsScreen extends StatelessWidget {
           ),
         ],
       ),
-      body: LayoutBuilder(
-        builder: (context, constraints) {
-          return Center(
-            child: ConstrainedBox(
-              constraints: const BoxConstraints(maxWidth: 850),
-              child: Padding(
-                padding: MySizes.paddingMd(context),
-                child: SafeArea(
-                  bottom: false,
-                  child: CustomScrollView(
-                    slivers: [
-                      /// USER HEADER
-                      SliverToBoxAdapter(
-                        child: Row(
-                          children: [
-                            ProfileAvatar(
-                              size: ResponsiveHelper.responsiveValue(
-                                context,
-                                40,
-                              ),
-                            ),
-                            SizedBox(width: MySizes.spaceSm(context)),
-                            Expanded(
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    'Jane Doe',
-                                    style: context.titleSmall.copyWith(
-                                      fontWeight: FontWeight.w900,
-                                    ),
-                                  ),
-                                  SizedBox(
-                                    height: MySizes.spaceXs(context) * 0.5,
-                                  ),
-                                  Text(
-                                    '3 papers • 5 saves • Updated 2 days ago',
-                                    style: context.bodySmall.copyWith(
-                                      color: MyColors.textSecondary,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                      SliverToBoxAdapter(
-                        child: SizedBox(height: MySizes.spaceMd(context)),
-                      ),
+      body: BlocProvider.value(
+        value: _cubit,
+        child: BlocBuilder<ReadingListCubit, ReadingListState>(
+          builder: (context, state) {
+            if (state is ReadingListLoading) {
+              return const ReadingListDetailsShimmerLoading();
+            }
 
-                      /// TITLE
-                      SliverToBoxAdapter(
-                        child: Text(
-                          'Introduction to CNN',
-                          style: context.titleSmall.copyWith(
-                            fontWeight: FontWeight.w800,
+            if (state is ReadingListError) {
+              return Center(child: Text(state.message));
+            }
+
+            if (state is ReadingListDetailsLoaded) {
+              final readingList = state.readingList;
+              return _buildContent(context, readingList);
+            }
+
+            return const SizedBox();
+          },
+        ),
+      ),
+    );
+  }
+
+  Widget _buildContent(BuildContext context, ReadingList readingList) {
+    final cachedUser = sl<UserCacheService>().getCachedUser();
+    final isOwner = cachedUser?.id == readingList.ownerId;
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        return Center(
+          child: ConstrainedBox(
+            constraints: const BoxConstraints(maxWidth: 850),
+            child: Padding(
+              padding: MySizes.paddingMd(context),
+              child: SafeArea(
+                bottom: false,
+                child: CustomScrollView(
+                  slivers: [
+                    /// USER HEADER
+                    SliverToBoxAdapter(
+                      child: Row(
+                        children: [
+                          ProfileAvatar(
+                            size: ResponsiveHelper.responsiveValue(context, 40),
+                            imageUrl:
+                                _ownerProfile?.photoUrl ??
+                                _buildOwnerAvatarUrl(readingList),
                           ),
-                        ),
+                          SizedBox(width: MySizes.spaceSm(context)),
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  _ownerProfile?.fullName ??
+                                      readingList.owner?.fullName ??
+                                      'Unknown',
+                                  style: context.titleSmall.copyWith(
+                                    fontWeight: FontWeight.w900,
+                                  ),
+                                ),
+                                SizedBox(
+                                  height: MySizes.spaceXs(context) * 0.5,
+                                ),
+                                Text(
+                                  '${readingList.papers?.length ?? readingList.paperCount} papers • Updated ${_formatDate(readingList.updatedAt)}',
+                                  style: context.bodySmall.copyWith(
+                                    color: MyColors.textSecondary,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
                       ),
-                      SliverToBoxAdapter(
-                        child: SizedBox(height: MySizes.spaceSm(context)),
-                      ),
+                    ),
+                    SliverToBoxAdapter(
+                      child: SizedBox(height: MySizes.spaceMd(context)),
+                    ),
 
-                      /// DESCRIPTION
-                      SliverToBoxAdapter(
-                        child: ExpandableText(
-                          text:
-                              'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Morbi egestas ex in mi ultrices tincidunt. Sed euismod, nisl eget ultricies tincidunt, nisl nisl aliquam nisl, nec aliquam nisl nisl sit amet nisl.',
+                    /// TITLE
+                    SliverToBoxAdapter(
+                      child: Text(
+                        readingList.title,
+                        style: context.titleSmall.copyWith(
+                          fontWeight: FontWeight.w800,
                         ),
                       ),
+                    ),
+                    SliverToBoxAdapter(
+                      child: SizedBox(height: MySizes.spaceSm(context)),
+                    ),
+
+                    /// DESCRIPTION
+                    if (readingList.description != null)
+                      SliverToBoxAdapter(
+                        child: ExpandableText(text: readingList.description!),
+                      ),
+                    if (readingList.description != null)
                       SliverToBoxAdapter(
                         child: SizedBox(height: MySizes.spaceMd(context)),
                       ),
 
-                      /// TAGS
-                      SliverToBoxAdapter(
-                        child: Wrap(
-                          spacing: MySizes.spaceXs(context),
-                          runSpacing: MySizes.spaceXs(context) * 0.5,
-                          children: const [
-                            TagChip(label: 'Artificial Intelligence'),
-                            TagChip(label: 'CNN'),
-                            TagChip(label: 'Machine Learning'),
-                            TagChip(label: 'Computer Vision'),
-                          ],
-                        ),
-                      ),
-                      SliverToBoxAdapter(
-                        child: SizedBox(height: MySizes.spaceMd(context)),
-                      ),
-
-                      /// SAVE BUTTON
+                    /// TAGS
+                    if (readingList.previewTags.isNotEmpty)
                       SliverToBoxAdapter(
                         child: SizedBox(
-                          width: double.infinity,
-                          child: ElevatedButton(
-                            onPressed: () {},
-                            child: Text('Save Full List'),
+                          height: ResponsiveHelper.responsiveValue(context, 28),
+                          child: ListView.separated(
+                            scrollDirection: Axis.horizontal,
+                            itemCount: readingList.previewTags.length,
+                            separatorBuilder: (_, __) =>
+                                SizedBox(width: MySizes.spaceXs(context)),
+                            itemBuilder: (_, index) =>
+                                TagChip(label: readingList.previewTags[index]),
                           ),
                         ),
                       ),
+                    if (readingList.previewTags.isNotEmpty)
                       SliverToBoxAdapter(
-                        child: SizedBox(height: MySizes.spaceLg(context)),
+                        child: SizedBox(height: MySizes.spaceMd(context)),
                       ),
 
-                      /// PAPERS LIST
+                    /// SAVE BUTTON
+                    SliverToBoxAdapter(
+                      child: SizedBox(
+                        width: double.infinity,
+                        child: ElevatedButton(
+                          onPressed: () {},
+                          child: const Text('Save Full List'),
+                        ),
+                      ),
+                    ),
+                    SliverToBoxAdapter(
+                      child: SizedBox(height: MySizes.spaceLg(context)),
+                    ),
+
+                    /// PAPERS LIST
+                    if (_buildPapers(readingList).isNotEmpty)
                       SliverList(
                         delegate: SliverChildBuilderDelegate((context, index) {
+                          final paper = _buildPapers(readingList)[index];
                           return Padding(
                             padding: EdgeInsets.only(
                               bottom: MySizes.spaceMd(context),
                             ),
-                            child: SizedBox(),
-                            // PaperCard(number: index + 1),
+                            child: PaperCard(number: index + 1, paper: paper),
                           );
-                        }, childCount: 3),
+                        }, childCount: _buildPapers(readingList).length),
                       ),
-                    ],
-                  ),
+                    if (_buildPapers(readingList).isEmpty)
+                      SliverToBoxAdapter(
+                        child: Center(
+                          child: Text(
+                            'No papers in this list yet',
+                            style: context.bodyMedium.copyWith(
+                              color: MyColors.textSecondary,
+                            ),
+                          ),
+                        ),
+                      ),
+                  ],
                 ),
               ),
             ),
-          );
-        },
-      ),
+          ),
+        );
+      },
     );
   }
+
+  String _formatDate(DateTime dateTime) {
+    final now = DateTime.now();
+    final difference = now.difference(dateTime);
+
+    if (difference.inDays == 0) {
+      return 'today';
+    } else if (difference.inDays == 1) {
+      return 'yesterday';
+    } else if (difference.inDays < 7) {
+      return '${difference.inDays} days ago';
+    } else if (difference.inDays < 30) {
+      final weeks = (difference.inDays / 7).floor();
+      return '$weeks week${weeks > 1 ? 's' : ''} ago';
+    } else {
+      return DateFormat('MMM d, yyyy').format(dateTime);
+    }
+  }
+}
+
+String? _buildOwnerAvatarUrl(ReadingList readingList) {
+  final username = readingList.owner?.username;
+  if (username == null || username.trim().isEmpty) {
+    return null;
+  }
+  return 'https://github.com/$username.png?size=200';
+}
+
+List<PaperEntity> _buildPapers(ReadingList readingList) {
+  final papers =
+      readingList.papers
+          ?.where((paper) => paper.paper != null)
+          .map(
+            (paper) => PaperEntity(
+              id: paper.paper!.id,
+              title: paper.paper!.title,
+              abstract: paper.paper!.abstract,
+              publishedAt: paper.paper!.publishedAt.toIso8601String(),
+              authors: paper.paper!.authors,
+              categories: paper.paper!.categories,
+              isSaved: true,
+              preprint: paper.paper!.citation,
+            ),
+          )
+          .toList() ??
+      [];
+  return papers;
 }
 
 class ExpandableText extends StatefulWidget {
