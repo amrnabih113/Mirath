@@ -1,22 +1,23 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:hugeicons/hugeicons.dart';
-import 'package:mirath/core/services/user_cache_service.dart';
-import 'package:mirath/core/utils/my_colors.dart';
-import 'package:mirath/core/utils/my_extenstions.dart';
-import 'package:mirath/core/utils/my_formaters.dart';
-import 'package:mirath/features/auth/data/models/auth_user_data.dart';
-import 'package:mirath/features/community/domain/entities/comment.dart';
-import 'package:mirath/features/community/domain/entities/discussion.dart';
-import 'package:mirath/features/community/presentation/cubit/discussion_details_cubit.dart';
-import 'package:mirath/features/community/presentation/cubit/discussion_details_state.dart';
-import 'package:mirath/features/community/presentation/widgets/discussion_card.dart';
+import '../../../../core/services/user_cache_service.dart';
+import '../../../../core/utils/my_colors.dart';
+import '../../../../core/utils/my_extenstions.dart';
+import '../../../../core/utils/my_formaters.dart';
+import '../../../../core/utils/my_logger.dart';
+import '../../../auth/data/models/auth_user_data.dart';
+import '../../domain/entities/comment.dart';
+import '../../domain/entities/discussion.dart';
+import '../cubit/discussion_details_cubit.dart';
+import '../cubit/discussion_details_state.dart';
+import '../widgets/discussion_details_shimmer_loading.dart';
 import 'package:hugeicons_pro/hugeicons.dart';
-import 'package:mirath/features/common/widgets/profile_avatar.dart';
-import 'package:mirath/features/community/presentation/widgets/disscusion_action_buttons.dart';
-import 'package:mirath/features/community/presentation/widgets/disscussion_paper_card.dart';
-import 'package:mirath/features/community/presentation/widgets/user_information_header.dart';
-import 'package:mirath/injection/injection_container.dart';
+import '../../../common/widgets/profile_avatar.dart';
+import '../widgets/disscusion_action_buttons.dart';
+import '../widgets/disscussion_paper_card.dart';
+import '../widgets/user_information_header.dart';
+import '../../../../injection/injection_container.dart';
 
 import '../../../../core/helpers/responsive_helper.dart';
 import '../../../../core/utils/my_sizes.dart';
@@ -81,9 +82,7 @@ class _DisscussionDetailsScreenState extends State<DisscussionDetailsScreen> {
       child: BlocBuilder<DiscussionDetailsCubit, DiscussionDetailsState>(
         builder: (context, state) {
           if (state is DiscussionDetailsLoading) {
-            return const Scaffold(
-              body: Center(child: CircularProgressIndicator()),
-            );
+            return const DiscussionDetailsShimmerLoading();
           }
 
           if (state is DiscussionDetailsError) {
@@ -115,17 +114,17 @@ class _DisscussionDetailsScreenState extends State<DisscussionDetailsScreen> {
 
   void _submitComment(BuildContext context, DiscussionDetailsLoaded state) {
     final content = _commentController.text.trim();
-    print('[SCREEN] 📝 Submit button tapped, content: "$content"');
+    MyLogger.info('[SCREEN] 📝 Submit button tapped, content: "$content"');
 
     if (content.isEmpty) {
-      print('[SCREEN] ⚠️ Content is empty, showing snackbar');
+      MyLogger.info('[SCREEN] ⚠️ Content is empty, showing snackbar');
       ScaffoldMessenger.of(
         context,
       ).showSnackBar(const SnackBar(content: Text('Please write a comment')));
       return;
     }
 
-    print(
+    MyLogger.info(
       '[SCREEN] ✓ Calling addComment on cubit with discussionId=${state.discussion.id}',
     );
     context.read<DiscussionDetailsCubit>().addComment(
@@ -133,7 +132,7 @@ class _DisscussionDetailsScreenState extends State<DisscussionDetailsScreen> {
       content: content,
     );
 
-    print('[SCREEN] ✓ Clearing text controller');
+    MyLogger.info('[SCREEN] ✓ Clearing text controller');
     _commentController.clear();
   }
 
@@ -294,24 +293,26 @@ class _CommentsList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    print(
+    MyLogger.info(
       '[UI] 🎨 _CommentsList building with ${comments.length} total comments',
     );
 
     // Filter top-level comments (no parent)
     final topLevelComments = comments.where((c) => c.parentId == null).toList();
-    print('[UI] 📋 Filtered to ${topLevelComments.length} top-level comments');
+    MyLogger.info(
+      '[UI] 📋 Filtered to ${topLevelComments.length} top-level comments',
+    );
 
     // Log pending comments
     final pendingComments = comments.where((c) => c.isPending).toList();
     if (pendingComments.isNotEmpty) {
-      print(
+      MyLogger.info(
         '[UI] ⏳ Found ${pendingComments.length} pending comments: ${pendingComments.map((c) => c.id).join(", ")}',
       );
     }
 
     if (topLevelComments.isEmpty) {
-      print('[UI] ℹ️ No top-level comments, showing empty state');
+      MyLogger.info('[UI] ℹ️ No top-level comments, showing empty state');
       return Center(
         child: Padding(
           padding: EdgeInsets.all(MySizes.spaceMd(context)),
@@ -323,7 +324,7 @@ class _CommentsList extends StatelessWidget {
       );
     }
 
-    print('[UI] ✓ Building ${topLevelComments.length} comment tiles');
+    MyLogger.info('[UI] ✓ Building ${topLevelComments.length} comment tiles');
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: topLevelComments
@@ -369,7 +370,7 @@ class CommentTileState extends State<CommentTile> {
     super.dispose();
   }
 
-  List<Comment> get _replies {
+  List<Comment> get replies {
     // Only show replies for top-level comments (flatten nested replies)
     if (widget.comment.parentId != null) {
       return []; // Don't nest further
@@ -447,27 +448,12 @@ class CommentTileState extends State<CommentTile> {
                         ),
                         const SizedBox(width: 6),
                         if (widget.comment.isPending)
-                          Row(
-                            children: [
-                              SizedBox(
-                                width: 12,
-                                height: 12,
-                                child: CircularProgressIndicator(
-                                  strokeWidth: 1.5,
-                                  valueColor: AlwaysStoppedAnimation<Color>(
-                                    MyColors.textSecondary,
-                                  ),
-                                ),
-                              ),
-                              const SizedBox(width: 6),
-                              Text(
-                                'Sending...',
-                                style: context.bodySmall.copyWith(
-                                  color: MyColors.textSecondary,
-                                  fontStyle: FontStyle.italic,
-                                ),
-                              ),
-                            ],
+                          Text(
+                            'Sending...',
+                            style: context.bodySmall.copyWith(
+                              color: MyColors.textSecondary,
+                              fontStyle: FontStyle.italic,
+                            ),
                           )
                         else
                           Text(
@@ -600,11 +586,13 @@ class CommentTileState extends State<CommentTile> {
                               builder: (context, state) {
                                 final isLoaded =
                                     state is DiscussionDetailsLoaded;
-                                final loadedState = isLoaded
-                                    ? state as DiscussionDetailsLoaded
-                                    : null;
+                                final loadedState = isLoaded ? state : null;
                                 final isSubmitting =
                                     loadedState?.isSubmittingComment ?? false;
+
+                                // if (isSubmitting) {
+                                //   return const CommentShimmerLoading();
+                                // }
 
                                 return Row(
                                   crossAxisAlignment: CrossAxisAlignment.center,
@@ -639,23 +627,10 @@ class CommentTileState extends State<CommentTile> {
                                           : null,
                                       padding: EdgeInsets.zero,
                                       constraints: const BoxConstraints(),
-                                      icon: isSubmitting
-                                          ? SizedBox(
-                                              width:
-                                                  MySizes.iconSmall(context) *
-                                                  0.8,
-                                              height:
-                                                  MySizes.iconSmall(context) *
-                                                  0.8,
-                                              child:
-                                                  const CircularProgressIndicator(
-                                                    strokeWidth: 2,
-                                                  ),
-                                            )
-                                          : Icon(
-                                              HugeIconsStroke.sent,
-                                              size: MySizes.iconSmall(context),
-                                            ),
+                                      icon: Icon(
+                                        HugeIconsStroke.sent,
+                                        size: MySizes.iconSmall(context),
+                                      ),
                                     ),
                                   ],
                                 );
@@ -771,27 +746,12 @@ class CommentTileState extends State<CommentTile> {
                     ),
                     const SizedBox(width: 6),
                     if (reply.isPending)
-                      Row(
-                        children: [
-                          SizedBox(
-                            width: 12,
-                            height: 12,
-                            child: CircularProgressIndicator(
-                              strokeWidth: 1.5,
-                              valueColor: AlwaysStoppedAnimation<Color>(
-                                MyColors.textSecondary,
-                              ),
-                            ),
-                          ),
-                          const SizedBox(width: 6),
-                          Text(
-                            'Sending...',
-                            style: context.bodySmall.copyWith(
-                              color: MyColors.textSecondary,
-                              fontStyle: FontStyle.italic,
-                            ),
-                          ),
-                        ],
+                      Text(
+                        'Sending...',
+                        style: context.bodySmall.copyWith(
+                          color: MyColors.textSecondary,
+                          fontStyle: FontStyle.italic,
+                        ),
                       )
                     else
                       Text(

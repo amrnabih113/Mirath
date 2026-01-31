@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
-import 'package:mirath/features/home/presentation/cubit/home_cubit.dart';
-import 'package:mirath/features/home/presentation/cubit/home_state.dart';
+import '../cubit/home_cubit.dart';
+import '../cubit/home_state.dart';
 import '../../../../core/helpers/responsive_helper.dart';
 import '../../../../core/utils/my_sizes.dart';
 import '../../../common/widgets/section_title.dart';

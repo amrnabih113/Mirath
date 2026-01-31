@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
-import 'package:mirath/core/utils/my_sizes.dart';
-import 'package:mirath/features/community/presentation/cubit/community_cubit.dart';
-import 'package:mirath/features/community/presentation/cubit/community_state.dart';
-import 'package:mirath/features/community/presentation/widgets/discussion_card.dart';
-import 'package:mirath/features/community/presentation/widgets/discussion_shimmer_loading.dart';
+import 'package:mirath/core/utils/my_colors.dart';
+import '../../../../core/utils/my_sizes.dart';
+import '../cubit/community_cubit.dart';
+import '../cubit/community_state.dart';
+import '../widgets/discussion_card.dart';
+import '../widgets/discussion_shimmer_loading.dart';
 
 class DiscussionTab extends StatefulWidget {
   const DiscussionTab({super.key});
@@ -68,7 +69,9 @@ class _DiscussionTabState extends State<DiscussionTab> {
                 return const Center(
                   child: Padding(
                     padding: EdgeInsets.all(16.0),
-                    child: CircularProgressIndicator(),
+                    child: CircularProgressIndicator(
+                      color:MyColors.primaryColor,
+                    ),
                   ),
                 );
               }

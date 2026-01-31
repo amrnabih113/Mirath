@@ -1,6 +1,6 @@
 import 'package:equatable/equatable.dart';
-import 'package:mirath/features/home/domain/entities/paper_entity.dart';
-import 'package:mirath/features/users/domain/entities/user.dart';
+import '../../domain/entities/paper_entity.dart';
+import '../../../users/domain/entities/user.dart';
 
 abstract class HomeState extends Equatable {
   const HomeState();

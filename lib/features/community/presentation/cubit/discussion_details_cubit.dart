@@ -1,15 +1,15 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:mirath/core/error/failuors.dart';
-import 'package:mirath/core/services/user_cache_service.dart';
-import 'package:mirath/features/community/domain/entities/comment.dart';
-import 'package:mirath/features/community/domain/entities/create_comment_params.dart';
-import 'package:mirath/features/community/domain/entities/discussion_author.dart';
-import 'package:mirath/features/community/domain/entities/vote_params.dart';
-import 'package:mirath/features/community/domain/usecases/create_comment_usecase.dart';
-import 'package:mirath/features/community/domain/usecases/get_discussion_by_id_usecase.dart';
-import 'package:mirath/features/community/domain/usecases/get_discussion_comments_usecase.dart';
-import 'package:mirath/features/community/domain/usecases/vote_on_comment_usecase.dart';
-import 'package:mirath/features/community/presentation/cubit/discussion_details_state.dart';
+import '../../../../core/error/failuors.dart';
+import '../../../../core/services/user_cache_service.dart';
+import '../../domain/entities/comment.dart';
+import '../../domain/entities/create_comment_params.dart';
+import '../../domain/entities/discussion_author.dart';
+import '../../domain/entities/vote_params.dart';
+import '../../domain/usecases/create_comment_usecase.dart';
+import '../../domain/usecases/get_discussion_by_id_usecase.dart';
+import '../../domain/usecases/get_discussion_comments_usecase.dart';
+import '../../domain/usecases/vote_on_comment_usecase.dart';
+import 'discussion_details_state.dart';
 
 class DiscussionDetailsCubit extends Cubit<DiscussionDetailsState> {
   final GetDiscussionByIdUseCase getDiscussionByIdUseCase;

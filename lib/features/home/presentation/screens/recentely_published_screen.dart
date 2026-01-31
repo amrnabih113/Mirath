@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:mirath/features/home/presentation/cubit/home_cubit.dart';
-import 'package:mirath/features/home/presentation/cubit/home_state.dart';
+
 import '../../../../core/helpers/responsive_helper.dart';
 import '../../../../core/utils/my_extenstions.dart';
 import '../../../../core/utils/my_sizes.dart';
 import '../../../common/widgets/my_back_icon.dart';
+import '../cubit/home_cubit.dart';
+import '../cubit/home_state.dart';
 import '../widgets/category_items_list.dart';
 import '../widgets/home_search_bar.dart';
 import '../widgets/home_shimmer_loading.dart';

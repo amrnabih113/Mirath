@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
-import '../../../common/widgets/my_search_bar.dart';
+
 import '../../../../core/helpers/responsive_helper.dart';
 import '../../../../core/utils/my_sizes.dart';
 import '../../../common/widgets/my_back_icon.dart';
+import '../../../common/widgets/my_search_bar.dart';
 import '../widgets/search_item.dart';
 import '../widgets/search_screen_heading.dart';
 

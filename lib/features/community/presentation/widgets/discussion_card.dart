@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
-import 'package:mirath/core/helpers/responsive_helper.dart';
-import 'package:mirath/features/community/domain/entities/discussion.dart';
-import 'package:mirath/features/community/presentation/widgets/disscusion_action_buttons.dart';
-import 'package:mirath/features/community/presentation/widgets/disscussion_paper_card.dart';
-import 'package:mirath/features/community/presentation/widgets/user_information_header.dart';
 
+import '../../../../core/helpers/responsive_helper.dart';
 import '../../../../core/utils/my_colors.dart';
 import '../../../../core/utils/my_extenstions.dart';
 import '../../../../core/utils/my_sizes.dart';
 import '../../../common/widgets/tag_chip.dart';
+import '../../domain/entities/discussion.dart';
+import 'disscusion_action_buttons.dart';
+import 'disscussion_paper_card.dart';
+import 'user_information_header.dart';
 
 class DiscussionCard extends StatefulWidget {
   final Discussion discussion;

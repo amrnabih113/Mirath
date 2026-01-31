@@ -3,16 +3,16 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:hugeicons/hugeicons.dart';
-import 'package:mirath/core/services/local_storage_service.dart';
-import 'package:mirath/core/services/user_cache_service.dart';
-import 'package:mirath/core/utils/my_constants.dart';
-import 'package:mirath/features/auth/data/models/auth_user_data.dart';
-import 'package:mirath/injection/injection_container.dart';
 
 import '../../../../core/helpers/responsive_helper.dart';
+import '../../../../core/services/local_storage_service.dart';
+import '../../../../core/services/user_cache_service.dart';
 import '../../../../core/utils/my_colors.dart';
+import '../../../../core/utils/my_constants.dart';
 import '../../../../core/utils/my_extenstions.dart';
 import '../../../../core/utils/my_sizes.dart';
+import '../../../../injection/injection_container.dart';
+import '../../../auth/data/models/auth_user_data.dart';
 import '../../../common/widgets/profile_avatar.dart';
 import '../../../users/domain/entities/user.dart';
 

@@ -1,15 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:mirath/core/helpers/responsive_helper.dart';
-import 'package:mirath/features/common/widgets/my_back_icon.dart';
-import 'package:mirath/features/common/widgets/search_with_filter.dart';
-import 'package:mirath/features/common/widgets/section_title.dart';
-import 'package:mirath/features/community/presentation/cubit/community_cubit.dart';
-import 'package:mirath/features/community/presentation/cubit/community_state.dart';
-import 'package:mirath/features/community/presentation/widgets/discussion_card.dart';
-import 'package:mirath/features/community/presentation/widgets/reading_list_card.dart';
-import 'package:mirath/features/community/presentation/widgets/researcher_card.dart';
-import 'package:mirath/features/home/presentation/widgets/category_items_list.dart';
+import '../../../../core/helpers/responsive_helper.dart';
+import '../../../common/widgets/my_back_icon.dart';
+import '../../../common/widgets/search_with_filter.dart';
+import '../../../common/widgets/section_title.dart';
+import '../cubit/community_cubit.dart';
+import '../cubit/community_state.dart';
+import '../widgets/discussion_card.dart';
+import '../widgets/reading_list_card.dart';
+import '../widgets/researcher_card.dart';
+import '../../../home/presentation/widgets/category_items_list.dart';
 
 import '../../../../core/utils/my_sizes.dart';
 

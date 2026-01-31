@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:hugeicons/hugeicons.dart';
-import 'package:mirath/core/helpers/responsive_helper.dart';
-import 'package:mirath/core/utils/my_extenstions.dart';
-import 'package:mirath/core/utils/my_sizes.dart';
-import 'package:mirath/features/common/widgets/profile_avatar.dart';
-import 'package:mirath/features/community/domain/entities/discussion.dart';
-import 'package:mirath/features/community/presentation/widgets/follow_button.dart';
+
+import '../../../../core/helpers/responsive_helper.dart';
+import '../../../../core/utils/my_extenstions.dart';
+import '../../../../core/utils/my_sizes.dart';
+import '../../../common/widgets/profile_avatar.dart';
+import '../../domain/entities/discussion.dart';
+import 'follow_button.dart';
 
 class UserInformationHeader extends StatelessWidget {
   final Discussion discussion;

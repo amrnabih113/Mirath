@@ -1,13 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:hugeicons/hugeicons.dart';
-import 'package:mirath/core/utils/my_colors.dart';
-import 'package:mirath/core/utils/my_extenstions.dart';
-import 'package:mirath/core/utils/my_formaters.dart';
-import 'package:mirath/core/utils/my_sizes.dart';
-import 'package:mirath/features/community/domain/entities/discussion.dart';
-import 'package:mirath/features/community/presentation/cubit/community_cubit.dart';
-import 'package:mirath/features/community/presentation/widgets/interaction_button.dart';
+
+import '../../../../core/utils/my_colors.dart';
+import '../../../../core/utils/my_extenstions.dart';
+import '../../../../core/utils/my_formaters.dart';
+import '../../../../core/utils/my_sizes.dart';
+import '../../domain/entities/discussion.dart';
+import '../cubit/community_cubit.dart';
+import 'interaction_button.dart';
 
 class DisscusionActionButtons extends StatelessWidget {
   final Discussion discussion;

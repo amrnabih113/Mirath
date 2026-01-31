@@ -1,5 +1,5 @@
-import 'package:mirath/features/home/data/models/home_recent_response_model.dart';
-import 'package:mirath/features/home/data/models/home_recommendations_response_model.dart';
+import '../models/home_recent_response_model.dart';
+import '../models/home_recommendations_response_model.dart';
 
 abstract class HomeRemoteDataSource {
   Future<HomeRecentResponseModel> getRecentPapers({

@@ -1,5 +1,5 @@
 import 'package:equatable/equatable.dart';
-import 'package:mirath/features/community/domain/entities/discussion.dart';
+import '../../domain/entities/discussion.dart';
 
 abstract class CommunityState extends Equatable {
   const CommunityState();
