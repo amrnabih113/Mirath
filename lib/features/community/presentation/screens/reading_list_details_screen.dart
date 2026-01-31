@@ -189,7 +189,7 @@ class _ReadingListDetailsScreenState extends State<ReadingListDetailsScreen> {
                           child: ListView.separated(
                             scrollDirection: Axis.horizontal,
                             itemCount: readingList.previewTags.length,
-                            separatorBuilder: (_, __) =>
+                            separatorBuilder: (_, _) =>
                                 SizedBox(width: MySizes.spaceXs(context)),
                             itemBuilder: (_, index) =>
                                 TagChip(label: readingList.previewTags[index]),

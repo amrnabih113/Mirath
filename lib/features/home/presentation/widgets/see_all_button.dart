@@ -18,14 +18,14 @@ class SeeAllButton extends StatelessWidget {
         borderRadius: BorderRadius.circular(
           ResponsiveHelper.responsiveValue(context, 8),
         ),
-        splashColor: MyColors.white.withOpacity(0.2),
-        highlightColor: MyColors.white.withOpacity(0.1),
+        splashColor: MyColors.white.withValues(alpha: 0.2),
+        highlightColor: MyColors.white.withValues(alpha: 0.1),
         child: Container(
           decoration: BoxDecoration(
             gradient: LinearGradient(
               colors: [
                 MyColors.primaryShade700,
-                MyColors.primaryShade700.withOpacity(0.9),
+                MyColors.primaryShade700.withValues(alpha: 0.9),
               ],
               begin: Alignment.topLeft,
               end: Alignment.bottomRight,
@@ -35,7 +35,7 @@ class SeeAllButton extends StatelessWidget {
             ),
             boxShadow: [
               BoxShadow(
-                color: MyColors.primaryShade700.withOpacity(0.3),
+                color: MyColors.primaryShade700.withValues(alpha: 0.3),
                 blurRadius: 8,
                 offset: const Offset(0, 2),
               ),

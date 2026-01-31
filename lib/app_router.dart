@@ -65,8 +65,21 @@ final appRouter = GoRouter(
 
     // Check profile setup status from server for authenticated users
     bool hasSetupProfile = false;
-    if (authStatus == AuthStatus.authenticated) {
+    if (authStatus == AuthStatus.authenticated ||
+        authStatus == AuthStatus.loading) {
       hasSetupProfile = await authCubit.checkSetup();
+    }
+
+    // If auth is loading/processing, stay on current page or splash
+    if (authStatus == AuthStatus.loading) {
+      if (currentLocation == '/set-up-profile' ||
+          currentLocation == '/interests') {
+        return null; // Stay on current setup/interests page
+      }
+      if (currentLocation != '/splash') {
+        return '/splash';
+      }
+      return null;
     }
 
     const authPaths = [
@@ -156,6 +169,21 @@ final appRouter = GoRouter(
         return '/home';
       }
 
+      return null;
+    }
+
+    // Successfully authenticated user (after setup completion)
+    if (authStatus == AuthStatus.success) {
+      // Block navigation to public/auth pages
+      if (publicPaths.contains(currentLocation)) {
+        MyLogger.info(
+          '[Router] Redirecting to /home (block public page access)',
+        );
+        return '/home';
+      }
+
+      // For any other page during success, allow it temporarily
+      // The success listener in the UI will handle navigation to /home
       return null;
     }
 
@@ -306,20 +334,12 @@ final appRouter = GoRouter(
       path: '/interests',
       pageBuilder: (context, state) {
         final userProfile = state.extra as ProfileSetupData?;
-        if (userProfile == null) {
-          // If no user profile data is provided, redirect to setup profile
-          return PageTransitions.smoothTransition(
-            const Scaffold(
-              body: Center(
-                child: Text('Invalid navigation - missing profile data'),
-              ),
-            ),
-          );
-        }
         return PageTransitions.smoothTransition(
           BlocProvider.value(
             value: sl<InterestsCubit>(),
-            child: InterestsScreen(userProfile: userProfile),
+            child: InterestsScreen(
+              userProfile: userProfile ?? ProfileSetupData.empty(),
+            ),
           ),
         );
       },

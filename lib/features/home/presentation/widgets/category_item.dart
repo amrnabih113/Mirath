@@ -21,8 +21,7 @@ class CategoryItem extends StatefulWidget {
 }
 
 class _CategoryItemState extends State<CategoryItem> {
-  bool _isPressed = false;
-
+  bool isPressed = false;
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
@@ -44,7 +43,7 @@ class _CategoryItemState extends State<CategoryItem> {
         ),
         transform: Matrix4.translationValues(
           0,
-          ResponsiveHelper.responsiveValue(context, _isPressed ? 1 : 0),
+          ResponsiveHelper.responsiveValue(context, isPressed ? 1 : 0),
           0,
         ),
         child: Center(

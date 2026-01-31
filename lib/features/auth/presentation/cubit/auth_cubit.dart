@@ -143,6 +143,12 @@ class AuthCubit extends Cubit<AuthState> {
             message: "Profile set up successfully",
           ),
         );
+        // After a brief delay, transition to authenticated state
+        // This prevents the router from getting confused on subsequent navigations
+        await Future.delayed(const Duration(milliseconds: 1200));
+        emit(
+          state.copyWith(status: AuthStatus.authenticated, clearMessage: true),
+        );
       },
     );
   }

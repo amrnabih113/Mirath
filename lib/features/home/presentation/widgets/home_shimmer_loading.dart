@@ -5,10 +5,10 @@ import 'paper_shimmer_loading.dart';
 class PaperListShimmer extends PaperShimmerLoading {
   const PaperListShimmer({
     super.key,
-    int itemCount = 3,
-    EdgeInsets? padding,
-    bool shrinkWrap = true,
-  }) : super(itemCount: itemCount, padding: padding, shrinkWrap: shrinkWrap);
+    super.itemCount = 3,
+    super.padding,
+    super.shrinkWrap,
+  });
 }
 
 /// Backwards compatibility class for individual paper card shimmer

@@ -87,7 +87,7 @@ class _DiscussionCardState extends State<DiscussionCard> {
                       final topic = widget.discussion.topics[index];
                       return TagChip(label: topic.name);
                     },
-                    separatorBuilder: (_, __) =>
+                    separatorBuilder: (_, _) =>
                         SizedBox(width: MySizes.spaceXs(context)),
                     itemCount: widget.discussion.topics.length,
                   ),
