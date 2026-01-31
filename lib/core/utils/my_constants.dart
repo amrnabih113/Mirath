@@ -55,6 +55,8 @@ class MyConstants {
   static const String setupProfile = "api/v1/users/profile/setup";
   // get
   static const String getMe = "api/v1/users/me";
+  // get
+  static const String getUserProfileHeader = "api/v1/users/{id}/profile";
   // post
   static const String followUser = "api/v1/users/{id}/follow";
   // delete
@@ -96,4 +98,23 @@ class MyConstants {
   static const String voteOnComment = "api/v1/comments/{id}/vote";
   // delete
   static const String deleteCommentVote = "api/v1/comments/{id}/vote";
+
+  // ***Reading Lists endpoints***
+  // get
+  static const String getReadingLists = "api/v1/reading-lists";
+  // post
+  static const String createReadingList = "api/v1/reading-lists";
+  // get
+  static const String getReadingListById = "api/v1/reading-lists/{id}";
+  // post
+  static const String addPaperToList = "api/v1/reading-lists/{id}/papers";
+  // delete
+  static const String removePaperFromList =
+      "api/v1/reading-lists/{id}/papers/{paperId}";
+
+  // ***Papers endpoints***
+  // post
+  static const String savePaper = "api/v1/papers/{id}/save";
+  // delete
+  static const String unsavePaper = "api/v1/papers/{id}/save";
 }

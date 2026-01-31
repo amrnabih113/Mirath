@@ -40,6 +40,14 @@ class ProfileSetupData extends Equatable {
       profilePhoto: profilePhoto ?? this.profilePhoto,
     );
   }
-  
+  factory ProfileSetupData.empty() {
+    return const ProfileSetupData(
+      interests: [],
+      levelOfEducation: '',
+      name: '',
+      university: null,
+      profilePhoto: null,
+    );
+  }
   
 }

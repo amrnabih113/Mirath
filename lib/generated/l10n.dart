@@ -724,6 +724,26 @@ class S {
     );
   }
 
+  /// `Password must contain at least one uppercase letter.`
+  String get error_password_uppercase {
+    return Intl.message(
+      'Password must contain at least one uppercase letter.',
+      name: 'error_password_uppercase',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Password must contain at least one number.`
+  String get error_password_number {
+    return Intl.message(
+      'Password must contain at least one number.',
+      name: 'error_password_number',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `This field is required.`
   String get error_field_required {
     return Intl.message(

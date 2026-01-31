@@ -6,6 +6,7 @@ import 'package:hugeicons/hugeicons.dart';
 import '../../../../core/helpers/responsive_helper.dart';
 import '../../../../core/utils/my_colors.dart';
 import '../../../../core/utils/my_sizes.dart';
+import '../../../../core/helpers/my_loaders.dart';
 import '../cubit/layout_cubit.dart';
 import 'nav_item.dart';
 
@@ -147,8 +148,10 @@ class MyBottomNavBar extends StatelessWidget {
                           height: ResponsiveHelper.responsiveValue(context, 56),
                           child: FloatingActionButton(
                             onPressed: () {
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                const SnackBar(content: Text('FAB Pressed!')),
+                              MyLoaders.successSnackBar(
+                                context: context,
+                                title: 'Sparkle',
+                                message: 'FAB Pressed!',
                               );
                             },
                             backgroundColor: MyColors.primaryShade800,

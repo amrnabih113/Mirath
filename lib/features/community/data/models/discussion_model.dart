@@ -1,5 +1,6 @@
 import '../../domain/entities/discussion.dart';
 import 'discussion_author_model.dart';
+import 'discussion_paper_model.dart';
 import 'discussion_topic_model.dart';
 
 class DiscussionModel extends Discussion {
@@ -12,6 +13,7 @@ class DiscussionModel extends Discussion {
     required super.commentCount,
     required super.authorId,
     required super.paperIds,
+    required super.papers,
     required super.createdAt,
     required super.updatedAt,
     required super.hasVoted,
@@ -32,6 +34,13 @@ class DiscussionModel extends Discussion {
       paperIds:
           (json['paperIds'] as List<dynamic>?)
               ?.map((e) => e.toString())
+              .toList() ??
+          [],
+      papers:
+          (json['papers'] as List<dynamic>?)
+              ?.map(
+                (e) => DiscussionPaperModel.fromJson(e as Map<String, dynamic>),
+              )
               .toList() ??
           [],
       createdAt: json['createdAt'] != null
@@ -65,6 +74,9 @@ class DiscussionModel extends Discussion {
       'commentCount': commentCount,
       'authorId': authorId,
       'paperIds': paperIds,
+      'papers': papers
+          .map((p) => (p as DiscussionPaperModel).toJson())
+          .toList(),
       'createdAt': createdAt.toIso8601String(),
       'updatedAt': updatedAt.toIso8601String(),
       'hasVoted': hasVoted,

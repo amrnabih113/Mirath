@@ -35,6 +35,16 @@ class MyValidator {
       return S.of(context).error_password_short;
     }
 
+    // Check for at least one uppercase letter
+    if (!RegExp(r'[A-Z]').hasMatch(password)) {
+      return S.of(context).error_password_uppercase;
+    }
+
+    // Check for at least one number
+    if (!RegExp(r'[0-9]').hasMatch(password)) {
+      return S.of(context).error_password_number;
+    }
+
     return null;
   }
 

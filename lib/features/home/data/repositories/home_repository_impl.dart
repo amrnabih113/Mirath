@@ -68,4 +68,32 @@ class HomeRepositoryImpl implements HomeRepository {
       return Left(ServerFailure());
     }
   }
+
+  @override
+  Future<Either<Failure, void>> savePaper(String paperId) async {
+    if (!await networkManager.isConnected) {
+      return Left(NetworkFailure());
+    }
+
+    try {
+      await remoteDataSource.savePaper(paperId);
+      return const Right(null);
+    } catch (e) {
+      return Left(ServerFailure());
+    }
+  }
+
+  @override
+  Future<Either<Failure, void>> unsavePaper(String paperId) async {
+    if (!await networkManager.isConnected) {
+      return Left(NetworkFailure());
+    }
+
+    try {
+      await remoteDataSource.unsavePaper(paperId);
+      return const Right(null);
+    } catch (e) {
+      return Left(ServerFailure());
+    }
+  }
 }

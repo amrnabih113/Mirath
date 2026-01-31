@@ -143,7 +143,11 @@ class _HomeScreenState extends State<HomeScreen> {
                             child: Center(child: CircularProgressIndicator()),
                           );
                         }
-                        return PaperCard(paper: recommendPapers[index]);
+                        final paper = recommendPapers[index];
+                        return PaperCard(
+                          paper: paper,
+                        
+                        );
                       },
                     );
                   }

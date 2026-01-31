@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:hugeicons_pro/hugeicons.dart';
-import 'package:mirath/features/home/domain/entities/paper_entity.dart';
-import 'package:mirath/features/papers/presentation/screens/paper_screen.dart';
+import 'package:mirath/core/helpers/my_loaders.dart';
+import 'package:mirath/features/common/widgets/tag_chip.dart';
+import 'package:mirath/features/home/presentation/cubit/home_cubit.dart';
+import '../../domain/entities/paper_entity.dart';
 
 import '../../../../core/helpers/responsive_helper.dart';
 import '../../../../core/utils/my_colors.dart';
@@ -19,9 +21,14 @@ class PaperCard extends StatefulWidget {
   State<PaperCard> createState() => _PaperCardState();
 }
 
-bool isSaved = false;
-
 class _PaperCardState extends State<PaperCard> {
+  late bool isBookmarked;
+  @override
+  void initState() {
+    super.initState();
+    isBookmarked = widget.paper.isSaved;
+  }
+
   @override
   Widget build(BuildContext context) {
     final isTopRanked = widget.number != null && widget.number! <= 3;
@@ -107,9 +114,30 @@ class _PaperCardState extends State<PaperCard> {
                   overflow: TextOverflow.ellipsis,
                 ),
                 IconButton(
-                  onPressed: () => setState(() => isSaved = !isSaved),
+                  onPressed: () {
+                    final cubit = context.read<HomeCubit>();
+                    if (isBookmarked) {
+                      cubit.unsavePaper(widget.paper.id);
+                      setState(() {
+                        isBookmarked = false;
+                      });
+                      MyLoaders.customToast(
+                        context: context,
+                        message: 'Paper unsaved ',
+                      );
+                    } else {
+                      cubit.savePaper(widget.paper.id);
+                      setState(() {
+                        isBookmarked = true;
+                      });
+                      MyLoaders.customToast(
+                        context: context,
+                        message: 'Paper saved ',
+                      );
+                    }
+                  },
                   icon: Icon(
-                    isSaved
+                    isBookmarked
                         ? HugeIconsSolid.bookmark02
                         : HugeIconsStroke.bookmark02,
                     color: MyColors.primaryShade700,
@@ -126,7 +154,6 @@ class _PaperCardState extends State<PaperCard> {
               //  maxLines: 2,
               style: context.titleMedium.copyWith(
                 color: MyColors.primaryShade900,
-                fontFamily: GoogleFonts.sourceSerif4().fontFamily,
                 fontWeight: FontWeight.w700,
                 height: 1.3,
                 letterSpacing: -0.2,
@@ -145,15 +172,19 @@ class _PaperCardState extends State<PaperCard> {
               ),
             ),
             SizedBox(height: MySizes.spaceSm(context)),
-            // Wrap(
-            //   spacing: MySizes.spaceXs(context) / 2,
-            //   runSpacing: MySizes.spaceXs(context),
-            //   children: [
-            //     ...widget.paper.categories
-            //          .map((tag) => TagChip(label: tag))
-            //         .toList(),
-            //   ],
-            // ),
+            SizedBox(
+              height: ResponsiveHelper.responsiveValue(context, 28),
+              child: ListView.separated(
+                scrollDirection: Axis.horizontal,
+                itemCount: widget.paper.categories.length,
+                itemBuilder: (_, index) {
+                  return TagChip(label: widget.paper.categories[index]);
+                },
+                separatorBuilder: (_, index) => SizedBox(
+                  width: ResponsiveHelper.responsiveValue(context, 8),
+                ),
+              ),
+            ),
           ],
         ),
       ),
