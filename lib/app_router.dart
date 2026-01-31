@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 import 'package:mirath/features/community/presentation/screens/community_search_result.dart';
 import 'package:mirath/features/community/presentation/screens/reading_list_details_screen.dart';
 import 'package:mirath/features/home/presentation/cubit/home_cubit.dart';
+import 'package:mirath/features/papers/presentation/screens/paper_screen.dart';
 
 import 'core/services/local_storage_service.dart';
 import 'core/utils/my_logger.dart';
@@ -158,7 +159,7 @@ final appRouter = GoRouter(
 
     // Handle authentication errors - allow staying on current auth pages
     if (authStatus == AuthStatus.error) {
-      if (authPaths.contains(currentLocation)||
+      if (authPaths.contains(currentLocation) ||
           currentLocation == '/set-up-profile' ||
           currentLocation == '/interests') {
         return null; // Stay on current page
@@ -363,6 +364,11 @@ final appRouter = GoRouter(
       path: '/reading-list-details',
       pageBuilder: (context, state) =>
           PageTransitions.smoothTransition(const ReadingListDetailsScreen()),
+    ),
+    GoRoute(
+      path: '/paper-screen',
+      pageBuilder: (context, state) =>
+          PageTransitions.smoothTransition(const PaperScreen()),
     ),
   ],
 );

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:hugeicons_pro/hugeicons.dart';
 import 'package:mirath/features/home/domain/entities/paper_entity.dart';
@@ -24,7 +25,9 @@ class _PaperCardState extends State<PaperCard> {
   Widget build(BuildContext context) {
     final isTopRanked = widget.number != null && widget.number! <= 3;
     return GestureDetector(
-      onTap: () {},
+      onTap: () {
+        context.push('/paper-screen');
+      },
       child: Container(
         padding: EdgeInsets.all(ResponsiveHelper.responsiveValue(context, 16)),
         decoration: BoxDecoration(
@@ -116,7 +119,7 @@ class _PaperCardState extends State<PaperCard> {
               ],
             ),
             SizedBox(height: MySizes.spaceXs(context) * 0.5),
-            
+
             Text(
               widget.paper.title,
               //  maxLines: 2,

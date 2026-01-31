@@ -62,7 +62,6 @@ class _HomeScreenState extends State<HomeScreen> {
                 constraints: const BoxConstraints(maxWidth: 850),
                 child: BlocBuilder<HomeCubit, HomeState>(
                   builder: (context, state) {
-                   
                     return WelcomeHeader();
                   },
                 ),
