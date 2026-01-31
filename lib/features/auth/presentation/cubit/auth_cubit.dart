@@ -2,7 +2,7 @@
 
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
-import 'package:mirath/core/utils/my_constants.dart';
+import '../../../../core/utils/my_constants.dart';
 
 import '../../../../core/error/failuors.dart';
 import '../../../../core/helpers/failure_handler.dart';

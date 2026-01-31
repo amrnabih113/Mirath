@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:mirath/features/community/presentation/screens/discussion_tab.dart';
-import 'package:mirath/features/community/presentation/screens/reading_lists_tab.dart';
-import 'package:mirath/features/community/presentation/widgets/tab_bar_sliver_delegate.dart';
+import 'discussion_tab.dart';
+import 'reading_lists_tab.dart';
+import '../widgets/tab_bar_sliver_delegate.dart';
 
 import '../../../../core/utils/my_colors.dart';
 import '../../../../core/utils/my_extenstions.dart';

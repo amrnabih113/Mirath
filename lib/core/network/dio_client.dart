@@ -4,6 +4,7 @@ import 'package:cookie_jar/cookie_jar.dart';
 import 'package:dio/dio.dart';
 import 'package:dio_cookie_manager/dio_cookie_manager.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
+import 'package:path_provider/path_provider.dart';
 
 import '../services/secure_storage_service.dart';
 import '../utils/my_constants.dart';
@@ -11,29 +12,22 @@ import 'dio_auth_interceptor.dart';
 
 class DioClient {
   final Dio dio;
-  final CookieJar? cookieJar;
   final SecureStorageService _secureStorage;
-  final String? header;
-
-  /// Callback invoked when authentication fails and tokens are cleared.
-  /// Use this to trigger logout/redirect to login screen.
+  CookieJar? cookieJar;
   OnAuthFailure? onAuthFailure;
 
-  DioClient({required SecureStorageService secureStorage, this.onAuthFailure, this.header})
-    : _secureStorage = secureStorage,
-      cookieJar = kIsWeb ? null : CookieJar(),
-      dio = Dio(
-        BaseOptions(
-          baseUrl: MyConstants.baseUrl,
-          connectTimeout: const Duration(seconds: 15),
-          receiveTimeout: const Duration(seconds: 15),
-          sendTimeout: const Duration(seconds: 15),
-          responseType: ResponseType.json,
-          headers: kIsWeb
-              ? {'Accept': 'application/json'}
-              : {HttpHeaders.acceptHeader: 'application/json'},
-        ),
-      ) {
+  DioClient({
+    required this.dio,
+    required SecureStorageService secureStorage,
+    this.onAuthFailure,
+  }) : _secureStorage = secureStorage;
+
+  /// Must call this before using the client
+  Future<void> init() async {
+    // Configure base URL
+    dio.options.baseUrl = MyConstants.baseUrl;
+
+    // Logging
     dio.interceptors.add(
       LogInterceptor(
         request: true,
@@ -44,16 +38,21 @@ class DioClient {
       ),
     );
 
-    // Only add cookie manager on non-web platforms
-    if (!kIsWeb && cookieJar != null) {
+    // Cookies
+    if (kIsWeb) {
+      dio.options.extra['withCredentials'] = true;
+    } else {
+      final dir = await getApplicationDocumentsDirectory();
+      cookieJar = PersistCookieJar(storage: FileStorage('${dir.path}/cookies'));
       dio.interceptors.add(CookieManager(cookieJar!));
     }
 
+    // Auth
     dio.interceptors.add(
       AuthInterceptor(
         dio: dio,
         secureStorage: _secureStorage,
-        onAuthFailure: () => onAuthFailure?.call(),
+        onAuthFailure: onAuthFailure,
       ),
     );
   }
@@ -98,6 +97,7 @@ class DioClient {
         path,
         data: data,
         queryParameters: queryParameters,
+        options: options,
         cancelToken: cancelToken,
         onSendProgress: onSendProgress,
         onReceiveProgress: onReceiveProgress,

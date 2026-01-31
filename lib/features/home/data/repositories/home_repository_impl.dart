@@ -1,12 +1,12 @@
-import 'package:mirath/core/network/network_manager.dart';
-import 'package:mirath/features/home/data/data_sources/home_remote_data_source.dart';
-import 'package:mirath/features/home/data/models/home_recent_paper_model.dart';
 import 'package:dartz/dartz.dart';
-import 'package:mirath/features/home/data/models/home_recommendation_paper_model.dart';
-import 'package:mirath/features/home/domain/entities/paper_entity.dart';
-import 'package:mirath/features/home/domain/repositories/home_repository.dart';
 
 import '../../../../core/error/failuors.dart';
+import '../../../../core/network/network_manager.dart';
+import '../../domain/entities/paper_entity.dart';
+import '../../domain/repositories/home_repository.dart';
+import '../data_sources/home_remote_data_source.dart';
+import '../models/home_recent_paper_model.dart';
+import '../models/home_recommendation_paper_model.dart';
 
 class HomeRepositoryImpl implements HomeRepository {
   final HomeRemoteDataSource remoteDataSource;

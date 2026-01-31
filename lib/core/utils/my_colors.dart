@@ -4,24 +4,38 @@ class MyColors {
   MyColors._();
 
   // App basic Colors
-  static const Color primaryColor = Color(0xFFB8956A);
+  //static const Color primaryColor = Color(0xFFB8956A);
 
-  // Primary Color Shades (from darkest to lightest) - Enhanced warm golden palette
-  static const Color primaryShade900 = Color(0xFF2A2419);
-  static const Color primaryShade800 = Color(0xFF3E3426);
-  static const Color primaryShade700 = Color(0xFF5D4E38);
-  static const Color primaryShade600 = Color(0xFF8C7350);
-  static const Color primaryShade500 = Color(
-    0xFFB8956A,
-  ); // Base primary color - richer gold
-  static const Color primaryShade400 = Color(0xFFC7A87D);
-  static const Color primaryShade300 = Color(0xFFD6BC96);
-  static const Color primaryShade200 = Color(0xFFE5D1AF);
-  static const Color primaryShade100 = Color(0xFFF0E5D3);
-  static const Color primaryShade50 = Color(0xFFF8F4ED);
+  // // Primary Color Shades (from darkest to lightest) - Enhanced warm golden palette
+  // static const Color primaryShade900 = Color(0xFF2A2419);
+  // static const Color primaryShade800 = Color(0xFF3E3426);
+  // static const Color primaryShade700 = Color(0xFF5D4E38);
+  // static const Color primaryShade600 = Color(0xFF8C7350);
+  // static const Color primaryShade500 = Color(
+  //   0xFFB8956A,
+  // ); // Base primary color - richer gold
+  // static const Color primaryShade400 = Color(0xFFC7A87D);
+  // static const Color primaryShade300 = Color(0xFFD6BC96);
+  // static const Color primaryShade200 = Color(0xFFE5D1AF);
+  // static const Color primaryShade100 = Color(0xFFF0E5D3);
+  // static const Color primaryShade50 = Color(0xFFF8F4ED);
 
-  static const Color secondaryColor = Color(0xFF6B5D4F);
+  // static const Color secondaryColor = Color(0xFF6B5D4F);
+  static const Color primaryColor = Color(0xFFB9A082);
 
+  // Primary Color Shades (from darkest to lightest)
+  static const Color primaryShade900 = Color(0xFF25201A);
+  static const Color primaryShade800 = Color(0xFF4A4034);
+  static const Color primaryShade700 = Color(0xFF4A4034);
+  static const Color primaryShade600 = Color(0xFF948068);
+  static const Color primaryShade500 = Color(0xFFB9A082); // Base primary color
+  static const Color primaryShade400 = Color(0xFFC7B39B);
+  static const Color primaryShade300 = Color(0xFFD5C6B4);
+  static const Color primaryShade200 = Color(0xFFDECFBE);
+  static const Color primaryShade100 = Color(0xFFEBE3D6);
+  static const Color primaryShade50 = Color(0xFFF7F3EF);
+
+  static const Color secondaryColor = primaryShade700;
 
   static const Color lightCircle = Color(0xFFE8DCC8); // Base primary color
 

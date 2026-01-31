@@ -41,23 +41,6 @@ class _CategoryItemState extends State<CategoryItem> {
                 : MyColors.primaryShade100,
             width: 1,
           ),
-          boxShadow: [
-            BoxShadow(
-              color: widget.isSelected
-                  ? MyColors.primaryShade900.withValues(
-                      alpha: _isPressed ? 0.16 : 0.12,
-                    )
-                  : MyColors.primaryShade900.withValues(
-                      alpha: _isPressed ? 0.08 : 0.06,
-                    ),
-              blurRadius: widget.isSelected ? 8 : 6,
-              offset: Offset(
-                0,
-                ResponsiveHelper.responsiveValue(context, _isPressed ? 1 : 2),
-              ),
-              spreadRadius: 0,
-            ),
-          ],
         ),
         transform: Matrix4.translationValues(
           0,

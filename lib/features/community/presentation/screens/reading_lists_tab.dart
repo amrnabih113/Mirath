@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:mirath/core/utils/my_sizes.dart';
-import 'package:mirath/features/community/presentation/widgets/reading_list_card.dart';
+
+import '../../../../core/utils/my_sizes.dart';
+import '../widgets/reading_list_card.dart';
 
 class ReadingListsTab extends StatelessWidget {
   const ReadingListsTab({super.key});
@@ -20,7 +21,8 @@ class ReadingListsTab extends StatelessWidget {
           SizedBox(height: MySizes.spaceMd(context)),
       itemBuilder: (context, index) => InkWell(
         onTap: () => context.push('/reading-list-details'),
-        child: const ReadingListCard()),
+        child: const ReadingListCard(),
+      ),
       itemCount: 10,
     );
   }
