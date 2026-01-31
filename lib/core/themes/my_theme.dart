@@ -8,6 +8,7 @@ import 'custom_themes/chip_theme.dart';
 import 'custom_themes/dropdown_menu_theme.dart';
 import 'custom_themes/elevation_button_theme.dart';
 import 'custom_themes/outlined_buttom_theme.dart';
+import 'custom_themes/switch_theme.dart';
 import 'custom_themes/text_button_theme.dart';
 import 'custom_themes/text_field_theme.dart';
 import 'custom_themes/text_theme.dart';
@@ -26,6 +27,7 @@ class MyTheme {
       bottomSheetTheme: MyBottomSheetTheme.lightBottomSheetTheme,
       checkboxTheme: MyCheckboxTheme.lightCheckboxTheme,
       chipTheme: MyChipTheme.lightChipTheme,
+      switchTheme: MySwitchTheme.lightSwitchTheme,
       elevatedButtonTheme: MyElevationButtonTheme.lightElevatedButtonTheme(
         context,
       ),
@@ -51,6 +53,7 @@ class MyTheme {
       bottomSheetTheme: MyBottomSheetTheme.darkBottomSheetTheme,
       checkboxTheme: MyCheckboxTheme.darkCheckboxTheme,
       chipTheme: MyChipTheme.darkChipTheme,
+      switchTheme: MySwitchTheme.darkSwitchTheme,
       elevatedButtonTheme: MyElevationButtonTheme.darkElevatedButtonTheme(
         context,
       ),

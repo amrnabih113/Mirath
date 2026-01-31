@@ -1,5 +1,6 @@
 import '../models/home_recent_response_model.dart';
 import '../models/home_recommendations_response_model.dart';
+import '../models/save_paper_response_model.dart';
 
 abstract class HomeRemoteDataSource {
   Future<HomeRecentResponseModel> getRecentPapers({
@@ -12,4 +13,8 @@ abstract class HomeRemoteDataSource {
     int page = 1,
     int limit = 5,
   });
+
+  Future<SavePaperResponseModel> savePaper(String paperId);
+
+  Future<void> unsavePaper(String paperId);
 }

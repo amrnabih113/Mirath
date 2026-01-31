@@ -6,7 +6,6 @@ import 'package:mirath/core/helpers/responsive_helper.dart';
 import '../../../../core/utils/my_colors.dart';
 import '../../../../core/utils/my_extenstions.dart';
 import '../../../../core/utils/my_logger.dart';
-import '../../../../core/utils/my_sizes.dart';
 import '../../../auth/presentation/cubit/auth_cubit.dart';
 
 class SplashScreen extends StatefulWidget {

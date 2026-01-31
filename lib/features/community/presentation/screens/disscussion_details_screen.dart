@@ -8,6 +8,7 @@ import '../../../../core/utils/my_colors.dart';
 import '../../../../core/utils/my_extenstions.dart';
 import '../../../../core/utils/my_logger.dart';
 import '../../../../core/utils/my_sizes.dart';
+import '../../../../core/helpers/my_loaders.dart';
 import '../../../../injection/injection_container.dart';
 import '../../../auth/data/models/auth_user_data.dart';
 import '../../../common/widgets/my_back_icon.dart';
@@ -71,8 +72,10 @@ class _DisscussionDetailsScreenState extends State<DisscussionDetailsScreen> {
       listener: (context, state) {
         if (state is DiscussionDetailsLoaded &&
             state.commentSubmissionError != null) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text(state.commentSubmissionError!)),
+          MyLoaders.errorSnackBar(
+            context: context,
+            title: 'Error',
+            message: state.commentSubmissionError!,
           );
         }
       },
@@ -115,9 +118,11 @@ class _DisscussionDetailsScreenState extends State<DisscussionDetailsScreen> {
 
     if (content.isEmpty) {
       MyLogger.info('[SCREEN] ⚠️ Content is empty, showing snackbar');
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(const SnackBar(content: Text('Please write a comment')));
+      MyLoaders.warningSnackBar(
+        context: context,
+        title: 'Warning',
+        message: 'Please write a comment',
+      );
       return;
     }
 
@@ -204,13 +209,13 @@ class _DisscussionDetailsScreenState extends State<DisscussionDetailsScreen> {
                       SliverToBoxAdapter(
                         child: SizedBox(height: MySizes.spaceMd(context)),
                       ),
-                      if (discussion.paperIds.isNotEmpty)
+                      if (discussion.papers.isNotEmpty)
                         SliverToBoxAdapter(
                           child: DisscussionPaperCard(
-                            paperId: discussion.paperIds.first,
+                            paper: discussion.papers.first,
                           ),
                         ),
-                      if (discussion.paperIds.isNotEmpty)
+                      if (discussion.papers.isNotEmpty)
                         SliverToBoxAdapter(
                           child: SizedBox(height: MySizes.spaceMd(context)),
                         ),

@@ -75,6 +75,8 @@
     "error_email_invalid": "Invalid email format.",
     "error_password_required": "Password is required.",
     "error_password_short": "Password must be at least 6 characters long.",
+    "error_password_uppercase": "Password must contain at least one uppercase letter.",
+    "error_password_number": "Password must contain at least one number.",
     "error_field_required": "This field is required.",
     "error_passwords_not_match": "Passwords do not match.",
     "error_confirm_password_required": "Confirm password is required.",

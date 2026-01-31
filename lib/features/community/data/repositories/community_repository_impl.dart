@@ -1,4 +1,5 @@
 import 'package:dartz/dartz.dart';
+import 'package:mirath/core/utils/my_logger.dart';
 
 import '../../../../core/error/failuors.dart';
 import '../../domain/entities/comment.dart';
@@ -98,7 +99,7 @@ class CommunityRepositoryImpl implements CommunityRepository {
     CreateCommentParams params,
   ) async {
     try {
-      print(
+      MyLogger.debug(
         '[REPO] Creating comment: discussionId=${params.discussionId}, content=${params.content}, parentId=${params.parentId}',
       );
       final response = await _remoteDataSource.createComment(
@@ -106,10 +107,10 @@ class CommunityRepositoryImpl implements CommunityRepository {
         content: params.content,
         parentId: params.parentId,
       );
-      print('[REPO] Comment created successfully: ${response.data.id}');
+      MyLogger.debug('[REPO] Comment created successfully: ${response.data.id}');
       return Right(response.data);
     } catch (e) {
-      print('[REPO] Error creating comment: $e');
+      MyLogger.debug('[REPO] Error creating comment: $e');
       return Left(mapExceptionToFailure(e));
     }
   }

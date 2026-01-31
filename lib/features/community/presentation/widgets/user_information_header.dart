@@ -24,7 +24,12 @@ class UserInformationHeader extends StatelessWidget {
       children: [
         ProfileAvatar(
           imageUrl: discussion.author.photoUrl,
-          size: ResponsiveHelper.responsiveValue(context, 40),
+          size: ResponsiveHelper.responsiveValue(
+            context,
+            ResponsiveHelper.deviceTypeFromContext(context) != DeviceType.phone
+                ? 25
+                : 40,
+          ),
         ),
         SizedBox(width: MySizes.spaceSm(context)),
         Expanded(

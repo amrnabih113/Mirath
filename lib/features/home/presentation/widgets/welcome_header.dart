@@ -49,7 +49,7 @@ class _WelcomeHeaderState extends State<WelcomeHeader> {
   }
 
   String? _getUserPhoto() {
-    return currentUser?.photoUrl ?? userData?.photoURL ?? null;
+    return currentUser?.photoUrl ?? userData?.photoURL;
   }
 
   String _getGreeting() {

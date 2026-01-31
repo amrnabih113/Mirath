@@ -1,4 +1,5 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:mirath/core/utils/my_logger.dart';
 import '../../../../core/error/failuors.dart';
 import '../../../../core/services/user_cache_service.dart';
 import '../../domain/entities/comment.dart';
@@ -82,23 +83,27 @@ class DiscussionDetailsCubit extends Cubit<DiscussionDetailsState> {
     required String content,
     String? parentId,
   }) async {
-    print(
+    MyLogger.debug(
       '[CUBIT] 🔵 addComment called with: discussionId=$discussionId, content=$content, parentId=$parentId',
     );
 
     final currentState = state;
-    print('[CUBIT] 📋 Current state type: ${currentState.runtimeType}');
+    MyLogger.debug(
+      '[CUBIT] 📋 Current state type: ${currentState.runtimeType}',
+    );
     if (currentState is! DiscussionDetailsLoaded) {
-      print('[CUBIT] ❌ State is not DiscussionDetailsLoaded, returning');
+      MyLogger.debug(
+        '[CUBIT] ❌ State is not DiscussionDetailsLoaded, returning',
+      );
       return;
     }
-    print(
+    MyLogger.debug(
       '[CUBIT] ✓ State is DiscussionDetailsLoaded with ${currentState.comments.length} comments',
     );
 
     // Create a temporary comment with a temporary ID for optimistic update
     final tempId = 'temp_${DateTime.now().millisecondsSinceEpoch}';
-    print('[CUBIT] 🔄 Creating temp comment with ID: $tempId');
+    MyLogger.debug('[CUBIT] 🔄 Creating temp comment with ID: $tempId');
 
     // Get cached user for author info
     final cachedUser = userCacheService.getCachedUser();
@@ -111,7 +116,7 @@ class DiscussionDetailsCubit extends Cubit<DiscussionDetailsState> {
       role: 'user',
       isPremium: false,
     );
-    print(
+    MyLogger.debug(
       '[CUBIT] 👤 Using cached user: ${cachedUser?.username} (${cachedUser?.photoURL})',
     );
 
@@ -129,13 +134,13 @@ class DiscussionDetailsCubit extends Cubit<DiscussionDetailsState> {
       author: tempAuthor,
       isPending: true,
     );
-    print(
+    MyLogger.debug(
       '[CUBIT] ✓ Temp comment created: id=$tempId, isPending=${tempComment.isPending}',
     );
 
     // Add comment optimistically
     final updatedComments = [...currentState.comments, tempComment];
-    print(
+    MyLogger.debug(
       '[CUBIT] 📤 Emitting state with ${updatedComments.length} comments (added temp comment)',
     );
     emit(
@@ -144,7 +149,7 @@ class DiscussionDetailsCubit extends Cubit<DiscussionDetailsState> {
         commentSubmissionError: null,
       ),
     );
-    print('[CUBIT] ✓ State emitted successfully');
+    MyLogger.debug('[CUBIT] ✓ State emitted successfully');
 
     // Make API call in background
     final params = CreateCommentParams(
@@ -152,27 +157,27 @@ class DiscussionDetailsCubit extends Cubit<DiscussionDetailsState> {
       content: content,
       parentId: parentId,
     );
-    print('[CUBIT] 🌐 Calling createCommentUseCase...');
+    MyLogger.debug('[CUBIT] 🌐 Calling createCommentUseCase...');
 
     final result = await createCommentUseCase(params);
-    print('[CUBIT] 📨 UseCase returned result');
+    MyLogger.debug('[CUBIT] 📨 UseCase returned result');
 
     result.fold(
       (failure) {
-        print('[CUBIT] ❌ API call failed: ${failure.message}');
+        MyLogger.debug('[CUBIT] ❌ API call failed: ${failure.message}');
         final errorMessage = _getErrorMessage(failure);
 
         // Remove the pending comment on failure
         final failedComments = updatedComments
             .where((c) => c.id != tempId)
             .toList();
-        print(
+        MyLogger.debug(
           '[CUBIT] 🗑️ Removing temp comment, ${failedComments.length} comments remain',
         );
 
         final state = this.state;
         if (state is DiscussionDetailsLoaded) {
-          print('[CUBIT] 📤 Emitting error state');
+          MyLogger.debug('[CUBIT] 📤 Emitting error state');
           emit(
             state.copyWith(
               comments: failedComments,
@@ -182,25 +187,27 @@ class DiscussionDetailsCubit extends Cubit<DiscussionDetailsState> {
         }
       },
       (newComment) {
-        print('[CUBIT] ✅ API call successful: new comment id=${newComment.id}');
+        MyLogger.debug(
+          '[CUBIT] ✅ API call successful: new comment id=${newComment.id}',
+        );
         // Replace the temporary comment with the real one
         final finalComments = updatedComments
             .map((c) => c.id == tempId ? newComment : c)
             .toList();
-        print(
+        MyLogger.debug(
           '[CUBIT] 🔄 Replaced temp comment with real comment, ${finalComments.length} comments total',
         );
 
         final state = this.state;
         if (state is DiscussionDetailsLoaded) {
-          print('[CUBIT] 📤 Emitting final state with real comment');
+          MyLogger.debug('[CUBIT] 📤 Emitting final state with real comment');
           emit(
             state.copyWith(
               comments: finalComments,
               commentSubmissionError: null,
             ),
           );
-          print('[CUBIT] ✓ Final state emitted');
+          MyLogger.debug('[CUBIT] ✓ Final state emitted');
         }
       },
     );

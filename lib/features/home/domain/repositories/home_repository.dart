@@ -14,4 +14,8 @@ abstract class HomeRepository {
     int page = 1,
     int limit = 5,
   });
+
+  Future<Either<Failure, void>> savePaper(String paperId);
+
+  Future<Either<Failure, void>> unsavePaper(String paperId);
 }

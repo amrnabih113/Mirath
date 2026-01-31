@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:hugeicons_pro/hugeicons.dart';
+import 'package:mirath/core/helpers/my_loaders.dart';
+import 'package:mirath/features/home/presentation/cubit/home_cubit.dart';
 import '../../../common/widgets/tag_chip.dart';
 import '../../domain/entities/paper_entity.dart';
 
@@ -9,22 +12,27 @@ import '../../../../core/utils/my_extenstions.dart';
 import '../../../../core/utils/my_sizes.dart';
 
 class PaperCard extends StatefulWidget {
-  const PaperCard({super.key, this.number, required this.paper});
+  const PaperCard({super.key, this.number, required this.paper, this.onTap});
   final int? number;
   final PaperEntity paper;
+  final VoidCallback? onTap;
 
   @override
   State<PaperCard> createState() => _PaperCardState();
 }
 
-bool isSaved = false;
-
 class _PaperCardState extends State<PaperCard> {
+  late bool isBookmarked;
+  @override
+  void initState() {
+    super.initState();
+    isBookmarked = widget.paper.isSaved;
+  }
+
   @override
   Widget build(BuildContext context) {
     final isTopRanked = widget.number != null && widget.number! <= 3;
     return GestureDetector(
-      onTap: () {},
       child: Container(
         padding: EdgeInsets.all(ResponsiveHelper.responsiveValue(context, 16)),
         decoration: BoxDecoration(
@@ -103,9 +111,30 @@ class _PaperCardState extends State<PaperCard> {
                   overflow: TextOverflow.ellipsis,
                 ),
                 IconButton(
-                  onPressed: () => setState(() => isSaved = !isSaved),
+                  onPressed: () {
+                    final cubit = context.read<HomeCubit>();
+                    if (isBookmarked) {
+                      cubit.unsavePaper(widget.paper.id);
+                      setState(() {
+                        isBookmarked = false;
+                      });
+                      MyLoaders.customToast(
+                        context: context,
+                        message: 'Paper unsaved ',
+                      );
+                    } else {
+                      cubit.savePaper(widget.paper.id);
+                      setState(() {
+                        isBookmarked = true;
+                      });
+                      MyLoaders.customToast(
+                        context: context,
+                        message: 'Paper saved ',
+                      );
+                    }
+                  },
                   icon: Icon(
-                    isSaved
+                    isBookmarked
                         ? HugeIconsSolid.bookmark02
                         : HugeIconsStroke.bookmark02,
                     color: MyColors.primaryShade700,

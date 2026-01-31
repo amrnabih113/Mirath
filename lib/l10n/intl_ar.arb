@@ -75,6 +75,8 @@
     "error_email_invalid": "صيغة البريد الإلكتروني غير صالحة.",
     "error_password_required": "كلمة المرور مطلوبة.",
     "error_password_short": "يجب أن تكون كلمة المرور 6 أحرف على الأقل.",
+    "error_password_uppercase": "يجب أن تحتوي كلمة المرور على حرف واحد على الأقل بأحرف كبيرة.",
+    "error_password_number": "يجب أن تحتوي كلمة المرور على رقم واحد على الأقل.",
     "error_field_required": "هذا الحقل مطلوب.",
     "error_passwords_not_match": "كلمات المرور غير متطابقة.",
     "error_confirm_password_required": "تأكيد كلمة المرور مطلوب.",

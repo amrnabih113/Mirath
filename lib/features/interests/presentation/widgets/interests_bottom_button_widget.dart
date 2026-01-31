@@ -26,20 +26,24 @@ class InterestsBottomButtonWidget extends StatelessWidget {
 
     return BlocListener<AuthCubit, AuthState>(
       listener: (context, state) {
-        if (state.status == AuthStatus.success) {
-          MyLoaders.successSnackBar(
-            context: context,
-            title: 'Success',
-            message: 'Profile set up successfully!',
-          );
-          context.go('/home');
-        } else if (state.status == AuthStatus.error) {
-          // Show error message
+        if (state.status == AuthStatus.error) {
           MyLoaders.errorSnackBar(
             context: context,
-            title: 'Error',
-            message: state.message ?? 'Profile setup failed',
+            title: "Oh no! ",
+            message: state.message ?? 'Something went wrong',
           );
+        } else if (state.status == AuthStatus.success) {
+          MyLoaders.successSnackBar(
+            context: context,
+            title: "Success! ",
+            message: state.message ?? 'Profile setup completed successfully',
+          );
+          // Navigate to home after a brief delay to show the success message
+          Future.delayed(const Duration(milliseconds: 800), () {
+            if (context.mounted) {
+              context.go('/home');
+            }
+          });
         }
       },
       child: BlocBuilder<AuthCubit, AuthState>(
@@ -85,7 +89,7 @@ class InterestsBottomButtonWidget extends StatelessWidget {
                           Text(
                             '(Max 10 interests)',
                             style: context.bodySmall.copyWith(
-                              color: MyColors.light.withOpacity(0.8),
+                              color: MyColors.light.withValues(alpha: 0.8),
                             ),
                           ),
                       ],

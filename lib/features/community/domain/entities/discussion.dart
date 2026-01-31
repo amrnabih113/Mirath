@@ -1,4 +1,5 @@
 import 'discussion_author.dart';
+import 'discussion_paper.dart';
 import 'discussion_topic.dart';
 
 class Discussion {
@@ -10,6 +11,7 @@ class Discussion {
   final int commentCount;
   final String authorId;
   final List<String> paperIds;
+  final List<DiscussionPaper> papers;
   final DateTime createdAt;
   final DateTime updatedAt;
   final bool hasVoted;
@@ -26,6 +28,7 @@ class Discussion {
     required this.commentCount,
     required this.authorId,
     required this.paperIds,
+    required this.papers,
     required this.createdAt,
     required this.updatedAt,
     required this.hasVoted,
@@ -45,6 +48,7 @@ class Discussion {
     int? commentCount,
     String? authorId,
     List<String>? paperIds,
+    List<DiscussionPaper>? papers,
     DateTime? createdAt,
     DateTime? updatedAt,
     bool? hasVoted,
@@ -61,6 +65,7 @@ class Discussion {
       commentCount: commentCount ?? this.commentCount,
       authorId: authorId ?? this.authorId,
       paperIds: paperIds ?? this.paperIds,
+      papers: papers ?? this.papers,
       createdAt: createdAt ?? this.createdAt,
       updatedAt: updatedAt ?? this.updatedAt,
       hasVoted: hasVoted ?? this.hasVoted,

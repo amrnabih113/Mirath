@@ -6,6 +6,7 @@ import '../../../../core/utils/my_logger.dart';
 import '../../domain/entities/profile_setup_data.dart';
 import '../models/follow_response_model.dart';
 import '../models/get_user_response_model.dart';
+import '../models/profile_header_response_model.dart';
 import '../models/profile_setup_response_model.dart';
 import 'users_remote_data_source.dart';
 
@@ -88,6 +89,31 @@ class UsersRemoteDataSourceImpl implements UsersRemoteDataSource {
       return GetUserResponseModel.fromJson(response.data);
     } catch (e) {
       MyLogger.error('[UsersRemoteDataSource] Get current user failed: $e');
+      rethrow;
+    }
+  }
+
+  @override
+  Future<ProfileHeaderResponseModel> getUserProfileHeader(String userId) async {
+    try {
+      MyLogger.info(
+        '[UsersRemoteDataSource] Getting user profile header: $userId',
+      );
+
+      final endpoint = MyConstants.getUserProfileHeader.replaceAll(
+        '{id}',
+        userId,
+      );
+      final response = await dioClient.get(endpoint);
+
+      MyLogger.info(
+        '[UsersRemoteDataSource] Get user profile header successful',
+      );
+      return ProfileHeaderResponseModel.fromJson(response.data);
+    } catch (e) {
+      MyLogger.error(
+        '[UsersRemoteDataSource] Get user profile header failed: $e',
+      );
       rethrow;
     }
   }

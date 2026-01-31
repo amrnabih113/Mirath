@@ -1,7 +1,6 @@
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:get_it/get_it.dart';
 import 'package:dio/dio.dart';
-import 'dart:io';
 // ignore: unused_import
 import 'package:mirath/features/auth/data/repositories/fake_auth_repository_impl.dart';
 import 'package:mirath/features/community/data/data_sources/community_remote_data_source.dart';
@@ -20,12 +19,24 @@ import 'package:mirath/features/community/domain/usecases/vote_on_comment_usecas
 import 'package:mirath/features/community/domain/usecases/vote_on_discussion_usecase.dart';
 import 'package:mirath/features/community/presentation/cubit/community_cubit.dart';
 import 'package:mirath/features/community/presentation/cubit/discussion_details_cubit.dart';
+import 'package:mirath/features/community/presentation/cubit/reading_list_cubit.dart';
+import 'package:mirath/features/community/data/data_sources/reading_list_remote_data_source.dart';
+import 'package:mirath/features/community/data/data_sources/reading_list_remote_data_source_impl.dart';
+import 'package:mirath/features/community/data/repositories/reading_list_repository_impl.dart';
+import 'package:mirath/features/community/domain/repositories/reading_list_repository.dart';
+import 'package:mirath/features/community/domain/usecases/add_paper_to_list_usecase.dart';
+import 'package:mirath/features/community/domain/usecases/create_reading_list_usecase.dart';
+import 'package:mirath/features/community/domain/usecases/get_reading_list_by_id_usecase.dart';
+import 'package:mirath/features/community/domain/usecases/get_reading_lists_usecase.dart';
+import 'package:mirath/features/community/domain/usecases/remove_paper_from_list_usecase.dart';
 import 'package:mirath/features/home/data/data_sources/home_remote_data_source.dart';
 import 'package:mirath/features/home/data/data_sources/home_remote_data_source_impl.dart';
 import 'package:mirath/features/home/data/repositories/home_repository_impl.dart';
 import 'package:mirath/features/home/domain/repositories/home_repository.dart';
 import 'package:mirath/features/home/domain/usecases/get_recent_papers_usecase.dart';
 import 'package:mirath/features/home/domain/usecases/get_recommendations_usecase.dart';
+import 'package:mirath/features/home/domain/usecases/save_paper_usecase.dart';
+import 'package:mirath/features/home/domain/usecases/unsave_paper_usecase.dart';
 import 'package:mirath/features/home/presentation/cubit/home_cubit.dart';
 
 import '../core/network/dio_client.dart';
@@ -34,8 +45,6 @@ import '../core/services/image_picker_service.dart';
 import '../core/services/local_storage_service.dart';
 import '../core/services/secure_storage_service.dart';
 import '../core/services/user_cache_service.dart';
-import '../core/utils/my_constants.dart';
-import '../core/utils/my_logger.dart';
 // Auth importss
 import '../features/auth/data/data_sources/auth_remote_data_source.dart';
 import '../features/auth/data/data_sources/auth_remote_data_source_impl.dart';
@@ -70,9 +79,11 @@ import '../features/users/data/repositories/users_repository_impl.dart';
 import '../features/users/domain/repositories/users_repository.dart';
 import '../features/users/domain/usecases/follow_user_usecase.dart';
 import '../features/users/domain/usecases/get_current_user_usecase.dart';
+import '../features/users/domain/usecases/get_user_profile_header_usecase.dart';
 import '../features/users/domain/usecases/setup_profile_usecase.dart';
 import '../features/users/domain/usecases/unfollow_user_usecase.dart';
 import '../features/users/presentation/cubit/set_up_profile_cubit.dart';
+import '../features/users/presentation/cubit/profile_header_cubit.dart';
 
 final sl = GetIt.instance;
 
@@ -205,6 +216,36 @@ class DI {
       ),
     );
 
+    //================ Reading Lists ========================
+
+    /// Reading List Data Sources ///
+    sl.registerLazySingleton<ReadingListRemoteDataSource>(
+      () => ReadingListRemoteDataSourceImpl(dioClient: sl()),
+    );
+
+    /// Reading List Repository ///
+    sl.registerLazySingleton<ReadingListRepository>(
+      () => ReadingListRepositoryImpl(remoteDataSource: sl()),
+    );
+
+    /// Reading List UseCases ///
+    sl.registerLazySingleton(() => GetReadingListsUseCase(sl()));
+    sl.registerLazySingleton(() => CreateReadingListUseCase(sl()));
+    sl.registerLazySingleton(() => GetReadingListByIdUseCase(sl()));
+    sl.registerLazySingleton(() => AddPaperToListUseCase(sl()));
+    sl.registerLazySingleton(() => RemovePaperFromListUseCase(sl()));
+
+    /// Reading List Cubit ///
+    sl.registerFactory(
+      () => ReadingListCubit(
+        getReadingListsUseCase: sl(),
+        createReadingListUseCase: sl(),
+        getReadingListByIdUseCase: sl(),
+        addPaperToListUseCase: sl(),
+        removePaperFromListUseCase: sl(),
+      ),
+    );
+
     //================ Users ========================
 
     /// Users Data Sources ///
@@ -220,10 +261,14 @@ class DI {
     /// Users UseCases ///
     sl.registerLazySingleton(() => SetupProfileUsecase(sl()));
     sl.registerLazySingleton(() => GetCurrentUserUsecase(sl()));
+    sl.registerLazySingleton(() => GetUserProfileHeaderUsecase(sl()));
     sl.registerLazySingleton(() => FollowUserUsecase(sl()));
     sl.registerLazySingleton(() => UnfollowUserUsecase(sl()));
 
     /// Users Cubits ///
+    sl.registerFactory(
+      () => ProfileHeaderCubit(getUserProfileHeaderUsecase: sl()),
+    );
     sl.registerFactory(() => SetUpProfileCubit(imagePickerService: sl()));
 
     //================ Interests ========================
@@ -266,6 +311,8 @@ class DI {
     /// Home UseCases ///
     sl.registerLazySingleton(() => GetRecentPapersUseCase(repository: sl()));
     sl.registerLazySingleton(() => GetRecommendationsUseCase(repository: sl()));
+    sl.registerLazySingleton(() => SavePaperUseCase(repository: sl()));
+    sl.registerLazySingleton(() => UnsavePaperUseCase(repository: sl()));
 
     /// Home Cubit ///
     sl.registerFactory(
@@ -273,6 +320,8 @@ class DI {
         getRecentPapersUseCase: sl(),
         getRecommendationsUseCase: sl(),
         getCurrentUserUsecase: sl(),
+        savePaperUseCase: sl(),
+        unsavePaperUseCase: sl(),
       ),
     );
   }
