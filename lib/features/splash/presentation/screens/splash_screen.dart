@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:google_fonts/google_fonts.dart';
+import 'package:mirath/core/helpers/responsive_helper.dart';
 
 import '../../../../core/utils/my_colors.dart';
 import '../../../../core/utils/my_extenstions.dart';
@@ -76,35 +78,28 @@ class _SplashScreenState extends State<SplashScreen>
                   children: [
                     // App Logo/Icon
                     Container(
-                      width: 120,
-                      height: 120,
+                      width: 200,
+                      height: 200,
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(20),
-                        boxShadow: [
-                          BoxShadow(
-                            color: MyColors.primaryColor.withAlpha(30),
-                            blurRadius: 20,
-                            offset: const Offset(0, 10),
-                          ),
-                        ],
                       ),
                       child: ClipRRect(
                         borderRadius: BorderRadius.circular(20),
-                        child: Image.asset(
-                          'assets/images/Launcher_icon.png',
-                          width: 120,
-                          height: 120,
-                          fit: BoxFit.contain,
-                        ),
+                        child: Image.asset('assets/images/splash_logo.png'),
                       ),
                     ),
-                    SizedBox(height: MySizes.spaceXl(context)),
-                    // App Name
+                    // App
                     // Tagline
-                    Text('Welcome to', style: context.bodyMedium),
-                    SizedBox(height: MySizes.spaceXs(context)),
-
-                    Text('Mirath', style: context.headlineLarge),
+                    Text(
+                      'Mirath',
+                      style: context.titleLarge.copyWith(
+                        fontWeight: FontWeight.bold,
+                        fontSize: ResponsiveHelper.responsiveValue(context, 40),
+                        color: Color(0xff5C3110),
+                        fontFamily: GoogleFonts.anticDidone().fontFamily,
+                        letterSpacing: 1.2,
+                      ),
+                    ),
                   ],
                 ),
               ),

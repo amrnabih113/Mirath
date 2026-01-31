@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:dio/dio.dart';
+import 'package:flutter/foundation.dart' show kIsWeb;
 
 import '../services/secure_storage_service.dart';
 import '../utils/my_constants.dart';
@@ -30,7 +31,7 @@ class AuthInterceptor extends Interceptor {
     RequestOptions options,
     RequestInterceptorHandler handler,
   ) async {
-    // Skip auth header for refresh requests
+    // Skip auth for refresh requests
     if (options.extra['skipAuth'] == true ||
         options.path.contains(MyConstants.refreshToken)) {
       options.headers.remove('Authorization');
@@ -38,7 +39,7 @@ class AuthInterceptor extends Interceptor {
     }
 
     final token = await secureStorage.getAccessToken();
-    if (token != null) {
+    if (token != null && token.isNotEmpty) {
       options.headers['Authorization'] = 'Bearer $token';
     }
 
@@ -47,17 +48,18 @@ class AuthInterceptor extends Interceptor {
 
   @override
   void onError(DioException err, ErrorInterceptorHandler handler) async {
-    if (err.response?.statusCode != 401) {
+    if (err.response?.statusCode != 401 ||
+        err.requestOptions.extra['skipAuth'] == true ||
+        err.requestOptions.path.contains(MyConstants.logout)) {
       return handler.next(err);
     }
 
-    // Do not retry refresh endpoint itself
     if (err.requestOptions.path.contains(MyConstants.refreshToken)) {
       await _handleAuthFailure();
       return handler.next(err);
     }
 
-    MyLogger.info('[AuthInterceptor] 401 → refreshing token');
+    MyLogger.info('[AuthInterceptor] 401 → refreshing token via cookie');
 
     try {
       final newToken = await _refreshTokenWithRetry();
@@ -67,9 +69,10 @@ class AuthInterceptor extends Interceptor {
         return handler.next(err);
       }
 
-      // Retry original request with new token
-      err.requestOptions.headers['Authorization'] = 'Bearer $newToken';
-      final response = await dio.fetch(err.requestOptions);
+      // Retry original request with new access token
+      final options = err.requestOptions;
+      options.headers['Authorization'] = 'Bearer $newToken';
+      final response = await dio.fetch(options);
       return handler.resolve(response);
     } catch (e) {
       MyLogger.error('[AuthInterceptor] Refresh failed: $e');
@@ -87,7 +90,7 @@ class AuthInterceptor extends Interceptor {
     _refreshCompleter = Completer<String?>();
 
     try {
-      String? result;
+      String? newAccessToken;
 
       for (int attempt = 1; attempt <= _maxRetries; attempt++) {
         try {
@@ -95,25 +98,23 @@ class AuthInterceptor extends Interceptor {
             '[AuthInterceptor] Refresh attempt $attempt/$_maxRetries',
           );
 
-          // Use same Dio instance to send cookies
           final response = await dio.post(
             MyConstants.refreshToken,
             options: Options(
-              headers: {'Authorization': null}, // Do NOT send access token
-              extra: {'skipAuth': true}, // skip interceptor auth logic
               sendTimeout: _refreshTimeout,
               receiveTimeout: _refreshTimeout,
+              headers: {'Content-Type': 'application/json'},
+              extra: {'skipAuth': true},
             ),
           );
 
-          final newAccessToken = response.data['accessToken'] as String?;
+          newAccessToken = response.data['accessToken'] as String?;
 
-          if (newAccessToken != null) {
+          if (newAccessToken != null && newAccessToken.isNotEmpty) {
             await secureStorage.saveAccessToken(newAccessToken);
-            result = newAccessToken;
             break;
           } else {
-            result = null;
+            newAccessToken = null;
             break;
           }
         } on DioException catch (e) {
@@ -122,13 +123,13 @@ class AuthInterceptor extends Interceptor {
             await Future.delayed(delay);
             continue;
           }
-          result = null;
+          newAccessToken = null;
           break;
         }
       }
 
-      _refreshCompleter!.complete(result);
-      return result;
+      _refreshCompleter!.complete(newAccessToken);
+      return newAccessToken;
     } finally {
       _isRefreshing = false;
       _refreshCompleter = null;

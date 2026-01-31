@@ -14,29 +14,19 @@ class DioClient {
   final Dio dio;
   final SecureStorageService _secureStorage;
   CookieJar? cookieJar;
-
   OnAuthFailure? onAuthFailure;
 
   DioClient({
+    required this.dio,
     required SecureStorageService secureStorage,
     this.onAuthFailure,
-  })  : _secureStorage = secureStorage,
-        dio = Dio(
-          BaseOptions(
-            baseUrl: MyConstants.baseUrl,
-            connectTimeout: const Duration(seconds: 15),
-            receiveTimeout: const Duration(seconds: 15),
-            sendTimeout: const Duration(seconds: 15),
-            responseType: ResponseType.json,
-            headers: {
-              HttpHeaders.acceptHeader: 'application/json',
-            },
-          ),
-        ) {
-    _init();
-  }
+  }) : _secureStorage = secureStorage;
 
-  Future<void> _init() async {
+  /// Must call this before using the client
+  Future<void> init() async {
+    // Configure base URL
+    dio.options.baseUrl = MyConstants.baseUrl;
+
     // Logging
     dio.interceptors.add(
       LogInterceptor(

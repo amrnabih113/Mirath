@@ -22,6 +22,11 @@ class MyFormaters {
     return '${formatDate(dt)} ${formatTime(dt)}:$sec';
   }
 
+  /// Format a [DateTime] as `yyyy-MM-dd HH:mm`.
+  static String formatDateTimeHours(DateTime dt) {
+    return '${formatDate(dt)} ${formatTime(dt)}';
+  }
+
   /// Try to parse an ISO-8601 string into [DateTime]. Returns `null` on failure.
   static DateTime? tryParseIso(String input) {
     try {

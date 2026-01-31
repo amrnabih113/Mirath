@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:hugeicons_pro/hugeicons.dart';
 import '../../../common/widgets/tag_chip.dart';
 import '../../domain/entities/paper_entity.dart';

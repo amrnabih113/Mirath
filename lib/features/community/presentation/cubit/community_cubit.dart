@@ -128,40 +128,41 @@ class CommunityCubit extends Cubit<CommunityState> {
     final discussion = currentState.discussions[discussionIndex];
 
     // Calculate optimistic update
-    int newVoteScore = discussion.voteScore;
+    int newUpvoteCount = discussion.upvoteCount;
+    int newDownvoteCount = discussion.downvoteCount;
     bool newHasVoted = discussion.hasVoted;
     String? newUserVoteType = discussion.userVoteType;
 
-    // Determine the score change based on vote type
+    // User is removing their vote (clicking the same vote type they already voted)
     if (discussion.hasVoted && discussion.userVoteType == voteType) {
-      // User is removing their vote
       if (voteType == 'UP') {
-        newVoteScore = discussion.voteScore - 1;
+        newUpvoteCount = discussion.upvoteCount - 1;
       } else if (voteType == 'DOWN') {
-        newVoteScore = discussion.voteScore + 1;
+        newDownvoteCount = discussion.downvoteCount - 1;
       }
       newHasVoted = false;
       newUserVoteType = null;
-    } else if (discussion.hasVoted && discussion.userVoteType != voteType) {
-      // User is changing their vote
+    }
+    // User is changing their vote (from UP to DOWN or vice versa)
+    else if (discussion.hasVoted && discussion.userVoteType != voteType) {
       if (discussion.userVoteType == 'UP') {
-        newVoteScore = discussion.voteScore - 1; // Remove UP
+        newUpvoteCount = discussion.upvoteCount - 1;
       } else if (discussion.userVoteType == 'DOWN') {
-        newVoteScore = discussion.voteScore + 1; // Remove DOWN
+        newDownvoteCount = discussion.downvoteCount - 1;
       }
-
       if (voteType == 'UP') {
-        newVoteScore = newVoteScore + 1; // Add UP
+        newUpvoteCount = newUpvoteCount + 1;
       } else if (voteType == 'DOWN') {
-        newVoteScore = newVoteScore - 1; // Add DOWN
+        newDownvoteCount = newDownvoteCount + 1;
       }
       newUserVoteType = voteType;
-    } else {
-      // User is voting for the first time
+    }
+    // User is voting for the first time
+    else {
       if (voteType == 'UP') {
-        newVoteScore = discussion.voteScore + 1;
+        newUpvoteCount = discussion.upvoteCount + 1;
       } else if (voteType == 'DOWN') {
-        newVoteScore = discussion.voteScore - 1;
+        newDownvoteCount = discussion.downvoteCount + 1;
       }
       newHasVoted = true;
       newUserVoteType = voteType;
@@ -169,7 +170,8 @@ class CommunityCubit extends Cubit<CommunityState> {
 
     // Create updated discussion
     final updatedDiscussion = discussion.copyWith(
-      voteScore: newVoteScore,
+      upvoteCount: newUpvoteCount,
+      downvoteCount: newDownvoteCount,
       hasVoted: newHasVoted,
       userVoteType: newUserVoteType,
     );

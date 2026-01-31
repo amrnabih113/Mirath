@@ -118,7 +118,8 @@ class DiscussionDetailsCubit extends Cubit<DiscussionDetailsState> {
     final tempComment = Comment(
       id: tempId,
       content: content,
-      voteScore: 0,
+      upvoteCount: 0,
+      downvoteCount: 0,
       authorId: cachedUser?.id ?? currentState.discussion.authorId,
       discussionId: discussionId,
       parentId: parentId,
@@ -236,42 +237,49 @@ class DiscussionDetailsCubit extends Cubit<DiscussionDetailsState> {
 
     final comment = currentState.comments[commentIndex];
 
-    int newVoteScore = comment.voteScore;
+    int newUpvoteCount = comment.upvoteCount;
+    int newDownvoteCount = comment.downvoteCount;
     bool newHasVoted = comment.hasVoted;
     String? newUserVoteType = comment.userVoteType;
 
+    // User is removing their vote (clicking the same vote type they already voted)
     if (comment.hasVoted && comment.userVoteType == voteType) {
       if (voteType == 'UP') {
-        newVoteScore = comment.voteScore - 1;
+        newUpvoteCount = comment.upvoteCount - 1;
       } else if (voteType == 'DOWN') {
-        newVoteScore = comment.voteScore + 1;
+        newDownvoteCount = comment.downvoteCount - 1;
       }
       newHasVoted = false;
       newUserVoteType = null;
-    } else if (comment.hasVoted && comment.userVoteType != voteType) {
+    }
+    // User is changing their vote (from UP to DOWN or vice versa)
+    else if (comment.hasVoted && comment.userVoteType != voteType) {
       if (comment.userVoteType == 'UP') {
-        newVoteScore = comment.voteScore - 1;
+        newUpvoteCount = comment.upvoteCount - 1;
       } else if (comment.userVoteType == 'DOWN') {
-        newVoteScore = comment.voteScore + 1;
+        newDownvoteCount = comment.downvoteCount - 1;
       }
       if (voteType == 'UP') {
-        newVoteScore = newVoteScore + 1;
+        newUpvoteCount = newUpvoteCount + 1;
       } else if (voteType == 'DOWN') {
-        newVoteScore = newVoteScore - 1;
+        newDownvoteCount = newDownvoteCount + 1;
       }
       newUserVoteType = voteType;
-    } else {
+    }
+    // User is voting for the first time
+    else {
       if (voteType == 'UP') {
-        newVoteScore = comment.voteScore + 1;
+        newUpvoteCount = comment.upvoteCount + 1;
       } else if (voteType == 'DOWN') {
-        newVoteScore = comment.voteScore - 1;
+        newDownvoteCount = comment.downvoteCount + 1;
       }
       newHasVoted = true;
       newUserVoteType = voteType;
     }
 
     final updatedComment = comment.copyWith(
-      voteScore: newVoteScore,
+      upvoteCount: newUpvoteCount,
+      downvoteCount: newDownvoteCount,
       hasVoted: newHasVoted,
       userVoteType: newUserVoteType,
     );
