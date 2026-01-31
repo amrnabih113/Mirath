@@ -75,11 +75,9 @@ class _DiscussionCardState extends State<DiscussionCard> {
                   overflow: TextOverflow.ellipsis,
                 ),
                 SizedBox(height: MySizes.spaceMd(context)),
-                if (widget.discussion.paperIds.isNotEmpty)
-                  DisscussionPaperCard(
-                    paperId: widget.discussion.paperIds.first,
-                  ),
-                if (widget.discussion.paperIds.isNotEmpty)
+                if (widget.discussion.papers.isNotEmpty)
+                  DisscussionPaperCard(paper: widget.discussion.papers.first),
+                if (widget.discussion.papers.isNotEmpty)
                   SizedBox(height: MySizes.spaceMd(context)),
                 SizedBox(
                   height: ResponsiveHelper.responsiveValue(context, 28),

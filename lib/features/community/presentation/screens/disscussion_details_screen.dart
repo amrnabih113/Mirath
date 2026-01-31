@@ -204,13 +204,13 @@ class _DisscussionDetailsScreenState extends State<DisscussionDetailsScreen> {
                       SliverToBoxAdapter(
                         child: SizedBox(height: MySizes.spaceMd(context)),
                       ),
-                      if (discussion.paperIds.isNotEmpty)
+                      if (discussion.papers.isNotEmpty)
                         SliverToBoxAdapter(
                           child: DisscussionPaperCard(
-                            paperId: discussion.paperIds.first,
+                            paper: discussion.papers.first,
                           ),
                         ),
-                      if (discussion.paperIds.isNotEmpty)
+                      if (discussion.papers.isNotEmpty)
                         SliverToBoxAdapter(
                           child: SizedBox(height: MySizes.spaceMd(context)),
                         ),
