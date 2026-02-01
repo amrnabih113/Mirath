@@ -1,10 +1,10 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../domain/entities/discussion.dart';
-import 'package:mirath/features/community/domain/entities/get_discussions_params.dart';
-import 'package:mirath/features/community/domain/entities/vote_params.dart';
-import 'package:mirath/features/community/domain/usecases/get_all_discussions_usecase.dart';
-import 'package:mirath/features/community/domain/usecases/vote_on_discussion_usecase.dart';
-import 'package:mirath/features/community/presentation/cubit/community_state.dart';
+import 'package:mirath/features/discussions/domain/entities/get_discussions_params.dart';
+import 'package:mirath/features/discussions/domain/entities/vote_params.dart';
+import 'package:mirath/features/discussions/domain/usecases/get_all_discussions_usecase.dart';
+import 'package:mirath/features/discussions/domain/usecases/vote_on_discussion_usecase.dart';
+import 'package:mirath/features/discussions/presentation/cubit/community_state.dart';
 
 class CommunityCubit extends Cubit<CommunityState> {
   final GetAllDiscussionsUseCase getAllDiscussionsUseCase;

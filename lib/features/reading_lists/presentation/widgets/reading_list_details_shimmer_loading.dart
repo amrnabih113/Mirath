@@ -201,36 +201,23 @@ class ReadingListDetailsShimmerLoading extends StatelessWidget {
                   borderRadius: BorderRadius.circular(4),
                 ),
               ),
-              SizedBox(height: MySizes.spaceXs(context)),
+              SizedBox(height: MySizes.spaceSm(context)),
               Container(
-                width: 160,
-                height: 12,
+                width: double.infinity,
+                height: 14,
                 decoration: BoxDecoration(
                   color: MyColors.white,
                   borderRadius: BorderRadius.circular(4),
                 ),
               ),
               SizedBox(height: MySizes.spaceSm(context)),
-              Row(
-                children: [
-                  Container(
-                    width: 80,
-                    height: ResponsiveHelper.responsiveValue(context, 24),
-                    decoration: BoxDecoration(
-                      color: MyColors.white,
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                  ),
-                  SizedBox(width: MySizes.spaceXs(context)),
-                  Container(
-                    width: 60,
-                    height: ResponsiveHelper.responsiveValue(context, 24),
-                    decoration: BoxDecoration(
-                      color: MyColors.white,
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                  ),
-                ],
+              Container(
+                width: 120,
+                height: 12,
+                decoration: BoxDecoration(
+                  color: MyColors.white,
+                  borderRadius: BorderRadius.circular(4),
+                ),
               ),
             ],
           ),

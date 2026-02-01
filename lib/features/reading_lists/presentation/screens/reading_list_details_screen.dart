@@ -8,7 +8,6 @@ import '../../../../core/utils/my_colors.dart';
 import '../../../../core/utils/my_extenstions.dart';
 import '../../../../core/utils/my_sizes.dart';
 import '../../../../injection/injection_container.dart';
-import '../../../../core/services/user_cache_service.dart';
 import '../../../common/widgets/my_back_icon.dart';
 import '../../../common/widgets/profile_avatar.dart';
 import '../../../common/widgets/tag_chip.dart';
@@ -103,8 +102,6 @@ class _ReadingListDetailsScreenState extends State<ReadingListDetailsScreen> {
   }
 
   Widget _buildContent(BuildContext context, ReadingList readingList) {
-    final cachedUser = sl<UserCacheService>().getCachedUser();
-    final isOwner = cachedUser?.id == readingList.ownerId;
     return LayoutBuilder(
       builder: (context, constraints) {
         return Center(

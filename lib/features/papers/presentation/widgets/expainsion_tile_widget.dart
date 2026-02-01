@@ -89,7 +89,7 @@ class _ExpainsionTileWidgetState extends State<ExpainsionTileWidget> {
             shrinkWrap: true,
             physics: const NeverScrollableScrollPhysics(),
             itemCount: widget.references.length,
-            separatorBuilder: (_, __) =>
+            separatorBuilder: (_, _) =>
                 SizedBox(height: MySizes.spaceXs(context)),
             itemBuilder: (context, index) {
               final reference = widget.references[index];

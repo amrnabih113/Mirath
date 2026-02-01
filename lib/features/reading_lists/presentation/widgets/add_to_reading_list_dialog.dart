@@ -78,7 +78,7 @@ class _DialogContentState extends State<_DialogContent> {
   Widget build(BuildContext context) {
     // Get or create the cubit - but don't provide it here to avoid GlobalKey conflicts
     final cubit = context.read<ReadingListCubit>();
-    
+
     return Dialog(
       backgroundColor: MyColors.light,
       shape: RoundedRectangleBorder(

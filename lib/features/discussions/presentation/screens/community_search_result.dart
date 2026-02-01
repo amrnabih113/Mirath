@@ -4,12 +4,12 @@ import '../../../../core/helpers/responsive_helper.dart';
 import '../../../common/widgets/my_back_icon.dart';
 import '../../../common/widgets/search_with_filter.dart';
 import '../../../common/widgets/section_title.dart';
-import '../../domain/entities/reading_list.dart';
-import '../../domain/entities/reading_list_owner.dart';
+import '../../../reading_lists/domain/entities/reading_list.dart';
+import '../../../reading_lists/domain/entities/reading_list_owner.dart';
 import '../cubit/community_cubit.dart';
 import '../cubit/community_state.dart';
 import '../widgets/discussion_card.dart';
-import '../widgets/reading_list_card.dart';
+import '../../../reading_lists/presentation/widgets/reading_list_card.dart';
 import '../widgets/researcher_card.dart';
 import '../../../home/presentation/widgets/category_items_list.dart';
 

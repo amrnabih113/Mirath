@@ -107,7 +107,9 @@ class CommunityRepositoryImpl implements CommunityRepository {
         content: params.content,
         parentId: params.parentId,
       );
-      MyLogger.debug('[REPO] Comment created successfully: ${response.data.id}');
+      MyLogger.debug(
+        '[REPO] Comment created successfully: ${response.data.id}',
+      );
       return Right(response.data);
     } catch (e) {
       MyLogger.debug('[REPO] Error creating comment: $e');

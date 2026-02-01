@@ -91,7 +91,7 @@ class _LaTeXRendererState extends State<LaTeXRenderer> {
           // Fallback: show raw LaTeX if parsing fails
           spans.add(
             TextSpan(
-              text: '\$${mathContent}\$',
+              text: '\$$mathContent\$',
               style: textStyle.copyWith(
                 fontFamily: 'monospace',
                 backgroundColor: MyColors.primaryShade50,

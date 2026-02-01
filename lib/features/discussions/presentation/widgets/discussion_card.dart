@@ -51,10 +51,12 @@ class _DiscussionCardState extends State<DiscussionCard> {
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
+
         children: [
           InkWell(
             onTap: widget.onTap,
             child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 UserInformationHeader(discussion: widget.discussion),
                 SizedBox(height: MySizes.spaceMd(context)),
