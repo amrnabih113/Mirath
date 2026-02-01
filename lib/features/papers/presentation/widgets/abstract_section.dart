@@ -1,12 +1,23 @@
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:mirath/core/utils/my_colors.dart';
 import 'package:mirath/core/utils/my_extenstions.dart';
 import 'package:mirath/core/utils/my_sizes.dart';
+import 'package:mirath/features/papers/presentation/widgets/latex_renderer.dart';
 import 'package:mirath/features/papers/presentation/widgets/my_text_icon.dart';
 
 class AbstractSection extends StatelessWidget {
-  const AbstractSection({super.key});
+  final String abstractText;
+  final int? discussionsCount;
+  final VoidCallback? onViewDiscussions;
+  final VoidCallback? onStartDiscussion;
+
+  const AbstractSection({
+    super.key,
+    required this.abstractText,
+    this.discussionsCount,
+    this.onViewDiscussions,
+    this.onStartDiscussion,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -16,61 +27,60 @@ class AbstractSection extends StatelessWidget {
         Text(
           'Abstract',
           style: context.headlineSmall.copyWith(
-            color: MyColors.black,
             fontSize: 20,
-            fontFamily: GoogleFonts.sourceSerif4().fontFamily,
-            fontWeight: FontWeight.w600,
+            fontWeight: FontWeight.w700,
           ),
         ),
 
         SizedBox(height: MySizes.spaceXs(context)),
-        Text(
-          'This manuscript reports on the commissioning of the Resonance ionization Spectroscopy Experiment (RISE) at the BECOLA facility at FRIB. The new instrument implements the collinear resonance ionization spectroscopy technique for sensitive measurements of isotope shifts and hyperfine structure of short-lived isotopes produced at FRIB. The existing BECOLA beamline was extended to integrate an electrostatic ion-beam bender and an ion detector at ultra-high vacuum. An injection-seeded Ti:Sapphire laser, as well as a multi-harmonic pulsed Nd:YAG laser were installed to perform resonant excitation and selective ionization. Commissioning tests were performed to demonstrate the capabilities of the new instrument by measuring the hyperfine structure of stable 27Al produced in an offline ion source. The RISE instrument is ready and operational for future studies of short-lived isotopes at FRIB.',
-          style: context.bodyLarge.copyWith(
-            color: MyColors.black,
-            fontSize: 16,
-            fontFamily: GoogleFonts.sourceSerif4().fontFamily,
-            fontWeight: FontWeight.w400,
-          ),
-        ),
+        abstractText.isEmpty
+            ? Text('No abstract available.', style: context.bodyMedium)
+            : LaTeXRenderer(text: abstractText, textStyle: context.bodyMedium),
         SizedBox(height: MySizes.spaceMd(context)),
         Text(
           'Discussions',
-          style: context.headlineSmall.copyWith(
-            color: MyColors.black,
-            fontFamily: GoogleFonts.sourceSerif4().fontFamily,
-            fontWeight: FontWeight.w400,
-          ),
+          style: context.headlineSmall.copyWith(fontWeight: FontWeight.w700),
         ),
         SizedBox(height: MySizes.spaceXs(context)),
         Row(
           children: [
-            MyTextButton(
-              title: 'View Discussions (12)',
-              titleColor: MyColors.black,
-              buttonColor: MyColors.primaryShade50,
-
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(12),
+            Expanded(
+              flex: 8,
+              child: MyTextButton(
+                title: discussionsCount != null
+                    ? 'View Discussions ($discussionsCount)'
+                    : 'View Discussions',
+                titleColor: MyColors.primaryShade900,
+                buttonColor: MyColors.white,
+                // onPressed: onViewDiscussions,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(
+                    MySizes.borderRadiusLg(context),
+                  ),
+                  side: BorderSide(color: MyColors.primaryShade700),
+                ),
               ),
             ),
             SizedBox(width: MySizes.spaceXs(context)),
-            MyTextButton(
-              title: 'Start a Discussion',
-              icon: Icons.add,
-              hasIcon: true,
-              titleColor: MyColors.white,
-              buttonColor: MyColors.primaryShade800,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(
-                  MySizes.borderRadiusSm(context),
+            Expanded(
+              flex: 9,
+
+              child: MyTextButton(
+                title: 'Start a Discussion',
+                icon: Icons.add,
+                hasIcon: true,
+                titleColor: MyColors.white,
+                buttonColor: MyColors.primaryShade800,
+                // onPressed: onStartDiscussion,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(
+                    MySizes.borderRadiusLg(context),
+                  ),
                 ),
               ),
             ),
           ],
         ),
-        SizedBox(height: MySizes.spaceXs(context)),
-        Divider(color: MyColors.primaryShade800),
       ],
     );
   }

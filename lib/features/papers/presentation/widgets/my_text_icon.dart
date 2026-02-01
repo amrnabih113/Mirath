@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
+import 'package:mirath/core/helpers/responsive_helper.dart';
 import 'package:mirath/core/utils/my_colors.dart';
 import 'package:mirath/core/utils/my_extenstions.dart';
 import 'package:mirath/core/utils/my_sizes.dart';
@@ -38,21 +38,24 @@ class MyTextButton extends StatelessWidget {
         ),
         shape: shape,
       ),
-      child: Row(
-        children: [
-          hasIcon ? Icon(icon, color: MyColors.textWhite) : SizedBox(),
-          SizedBox(width: MySizes.spaceXs(context)),
-          Text(
-            title,
-            textAlign: TextAlign.center,
-            style: context.bodySmall.copyWith(
-              color: titleColor,
-              fontSize: 12,
-              fontFamily: GoogleFonts.sourceSerif4().fontFamily,
-              fontWeight: FontWeight.w500,
+      child: Center(
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            hasIcon ? Icon(icon, color: MyColors.textWhite) : SizedBox(),
+            SizedBox(width: MySizes.spaceXs(context)),
+            Text(
+              title,
+              textAlign: TextAlign.center,
+              style: context.bodySmall.copyWith(
+                color: titleColor,
+                fontSize: ResponsiveHelper.responsiveValue(context, 14),
+                fontWeight: FontWeight.w500,
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

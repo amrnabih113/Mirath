@@ -5,6 +5,7 @@ import 'package:hugeicons_pro/hugeicons.dart';
 import 'package:mirath/core/helpers/my_loaders.dart';
 import 'package:mirath/features/common/widgets/tag_chip.dart';
 import 'package:mirath/features/home/presentation/cubit/home_cubit.dart';
+import 'package:mirath/features/papers/presentation/widgets/latex_renderer.dart';
 import '../../domain/entities/paper_entity.dart';
 
 import '../../../../core/helpers/responsive_helper.dart';
@@ -34,7 +35,7 @@ class _PaperCardState extends State<PaperCard> {
     final isTopRanked = widget.number != null && widget.number! <= 3;
     return GestureDetector(
       onTap: () {
-        context.push('/paper-screen');
+        context.push('/paper-screen', extra: widget.paper);
       },
       child: Container(
         padding: EdgeInsets.all(ResponsiveHelper.responsiveValue(context, 16)),
@@ -149,15 +150,26 @@ class _PaperCardState extends State<PaperCard> {
             ),
             SizedBox(height: MySizes.spaceXs(context) * 0.5),
 
-            Text(
-              widget.paper.title,
-              //  maxLines: 2,
-              style: context.titleMedium.copyWith(
+            // Text(
+            //   widget.paper.title,
+            //   //  maxLines: 2,
+            //   style: context.titleMedium.copyWith(
+            //     color: MyColors.primaryShade900,
+            //     fontWeight: FontWeight.w700,
+            //     height: 1.3,
+            //     letterSpacing: -0.2,
+            //     // overflow: TextOverflow.ellipsis,
+            //   ),
+            // ),
+            LaTeXRenderer(
+              text: widget.paper.title,
+              height: ResponsiveHelper.responsiveValue(context, 60),
+              textStyle: context.titleMedium.copyWith(
                 color: MyColors.primaryShade900,
                 fontWeight: FontWeight.w700,
                 height: 1.3,
                 letterSpacing: -0.2,
-                // overflow: TextOverflow.ellipsis,
+                overflow: TextOverflow.ellipsis,
               ),
             ),
             SizedBox(height: MySizes.spaceXs(context)),

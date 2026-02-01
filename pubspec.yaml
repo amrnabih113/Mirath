@@ -53,15 +53,15 @@ dependencies:
   hugeicons: ^1.1.1
   hugeicons_pro: ^0.0.2
   iconsax: ^0.0.8
-  image_picker: ^1.0.7
   image_cropper: ^8.0.2
+  image_picker: ^1.0.7
   intl: ^0.20.2
   logger: ^2.6.2
+  path_provider: ^2.1.5
   pin_code_fields: ^8.0.1
   shared_preferences: ^2.3.4
   shimmer: ^3.0.0
-  flutter_tex: ^4.0.9
-  path_provider: ^2.1.5
+  flutter_math_fork: ^0.7.2
 
 dev_dependencies:
   flutter_launcher_icons: ^0.14.1
@@ -117,7 +117,7 @@ flutter_native_splash:
   image_dark: assets/images/splash_logo2.png
   android_12:
     image: assets/images/splash_logo2.png
-    color: "#e1d8c9"  
+    color: "#e1d8c9"
     image_dark: assets/images/splash_logo2.png
     color_dark: "#e1d8c9"
 
