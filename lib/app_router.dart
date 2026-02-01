@@ -70,18 +70,6 @@ final appRouter = GoRouter(
       hasSetupProfile = await authCubit.checkSetup();
     }
 
-    // If auth is loading/processing, stay on current page or splash
-    if (authStatus == AuthStatus.loading) {
-      if (currentLocation == '/set-up-profile' ||
-          currentLocation == '/interests') {
-        return null; // Stay on current setup/interests page
-      }
-      if (currentLocation != '/splash') {
-        return '/splash';
-      }
-      return null;
-    }
-
     const authPaths = [
       '/signin',
       '/signup',
@@ -276,7 +264,9 @@ final appRouter = GoRouter(
               body: Center(
                 child: ElevatedButton(
                   onPressed: () {
-                    sl<AuthCubit>().signOut();
+                    Future.delayed(const Duration(milliseconds: 100), () {
+                      context.read<AuthCubit>().signOut();
+                    });
                   },
                   child: Text('Sign Out'),
                 ),
@@ -386,8 +376,11 @@ final appRouter = GoRouter(
       pageBuilder: (context, state) {
         final discussion = state.extra as Discussion?;
         return PageTransitions.smoothTransition(
-          BlocProvider(
-            create: (_) => sl<DiscussionDetailsCubit>(),
+          MultiBlocProvider(
+            providers: [
+              BlocProvider(create: (_) => sl<DiscussionDetailsCubit>()),
+              BlocProvider(create: (_) => sl<CommunityCubit>()),
+            ],
             child: DisscussionDetailsScreen(discussion: discussion),
           ),
         );

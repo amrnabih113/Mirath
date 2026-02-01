@@ -13,8 +13,13 @@ import 'interaction_button.dart';
 
 class DisscusionActionButtons extends StatelessWidget {
   final Discussion discussion;
+  final void Function(String voteType)? onVote;
 
-  const DisscusionActionButtons({super.key, required this.discussion});
+  const DisscusionActionButtons({
+    super.key,
+    required this.discussion,
+    this.onVote,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -36,10 +41,14 @@ class DisscusionActionButtons extends StatelessWidget {
               isVoted: discussion.hasVoted && discussion.userVoteType == 'UP',
               voteType: 'UP',
               onTap: () {
-                context.read<CommunityCubit>().voteOnDiscussion(
-                  discussionId: discussion.id,
-                  voteType: 'UP',
-                );
+                if (onVote != null) {
+                  onVote!('UP');
+                } else {
+                  context.read<CommunityCubit>().voteOnDiscussion(
+                    discussionId: discussion.id,
+                    voteType: 'UP',
+                  );
+                }
               },
             ),
             SizedBox(width: MySizes.spaceSm(context)),
@@ -49,10 +58,14 @@ class DisscusionActionButtons extends StatelessWidget {
               isVoted: discussion.hasVoted && discussion.userVoteType == 'DOWN',
               voteType: 'DOWN',
               onTap: () {
-                context.read<CommunityCubit>().voteOnDiscussion(
-                  discussionId: discussion.id,
-                  voteType: 'DOWN',
-                );
+                if (onVote != null) {
+                  onVote!('DOWN');
+                } else {
+                  context.read<CommunityCubit>().voteOnDiscussion(
+                    discussionId: discussion.id,
+                    voteType: 'DOWN',
+                  );
+                }
               },
             ),
             SizedBox(width: MySizes.spaceSm(context)),
