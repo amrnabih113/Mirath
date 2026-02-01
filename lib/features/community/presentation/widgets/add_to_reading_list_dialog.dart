@@ -31,13 +31,10 @@ class AddToReadingListDialog extends StatefulWidget {
 class _AddToReadingListDialogState extends State<AddToReadingListDialog> {
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (_) => sl<ReadingListCubit>()..getReadingLists(),
-      child: _DialogContent(
-        paperId: widget.paperId,
-        isSaved: widget.isSaved,
-        onAdded: widget.onAdded,
-      ),
+    return _DialogContent(
+      paperId: widget.paperId,
+      isSaved: widget.isSaved,
+      onAdded: widget.onAdded,
     );
   }
 }
@@ -79,6 +76,9 @@ class _DialogContentState extends State<_DialogContent> {
 
   @override
   Widget build(BuildContext context) {
+    // Get or create the cubit - but don't provide it here to avoid GlobalKey conflicts
+    final cubit = context.read<ReadingListCubit>();
+    
     return Dialog(
       backgroundColor: MyColors.light,
       shape: RoundedRectangleBorder(
@@ -151,7 +151,7 @@ class _DialogContentState extends State<_DialogContent> {
                       child: ElevatedButton(
                         onPressed: () {
                           if (_titleController.text.trim().isNotEmpty) {
-                            context.read<ReadingListCubit>().createReadingList(
+                            cubit.createReadingList(
                               CreateReadingListParams(
                                 title: _titleController.text.trim(),
                                 description:
@@ -231,7 +231,7 @@ class _DialogContentState extends State<_DialogContent> {
                               ),
                               subtitle: Text('${list.paperCount} papers'),
                               onTap: () {
-                                context.read<ReadingListCubit>().addPaperToList(
+                                cubit.addPaperToList(
                                   readingListId: list.id,
                                   paperId: widget.paperId,
                                 );

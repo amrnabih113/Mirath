@@ -78,7 +78,9 @@ class CommentTileState extends State<CommentTile> {
       nestedReplies.addAll(repliesOfReply);
     }
 
-    return [...directReplies, ...nestedReplies];
+    final allReplies = [...directReplies, ...nestedReplies];
+    allReplies.sort((a, b) => a.createdAt.compareTo(b.createdAt));
+    return allReplies;
   }
 
   @override
@@ -94,7 +96,11 @@ class CommentTileState extends State<CommentTile> {
           Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              ProfileAvatar(imageUrl: widget.comment.author.photoUrl),
+              ProfileAvatar(
+                imageUrl: widget.comment.author.id == cachedUser?.id
+                    ? cachedUser?.photoURL
+                    : widget.comment.author.photoUrl,
+              ),
               SizedBox(width: MySizes.spaceSm(context)),
               Expanded(
                 child: Column(
@@ -111,7 +117,9 @@ class CommentTileState extends State<CommentTile> {
                             ),
                           ),
                           child: Text(
-                            widget.comment.author.fullName,
+                            widget.comment.author.id == cachedUser?.id
+                                ? cachedUser?.username ?? 'Unknown'
+                                : widget.comment.author.fullName,
                             overflow: TextOverflow.ellipsis,
                             style: context.bodyMedium.copyWith(
                               fontWeight: FontWeight.w700,
@@ -263,66 +271,6 @@ class CommentTileState extends State<CommentTile> {
                         ),
                       ],
                     ),
-
-                    /// REPLY TEXT FIELD
-                    if (isReplyingActive)
-                      Padding(
-                        padding: EdgeInsets.only(top: MySizes.spaceSm(context)),
-                        child:
-                            BlocBuilder<
-                              DiscussionDetailsCubit,
-                              DiscussionDetailsState
-                            >(
-                              builder: (context, state) {
-                                final isLoaded =
-                                    state is DiscussionDetailsLoaded;
-                                final loadedState = isLoaded ? state : null;
-                                final isSubmitting =
-                                    loadedState?.isSubmittingComment ?? false;
-
-                                return Row(
-                                  crossAxisAlignment: CrossAxisAlignment.center,
-                                  children: [
-                                    ProfileAvatar(
-                                      imageUrl: cachedUser?.photoURL ?? '',
-                                      size: ResponsiveHelper.responsiveValue(
-                                        context,
-                                        28,
-                                      ),
-                                    ),
-                                    SizedBox(width: MySizes.spaceSm(context)),
-                                    Expanded(
-                                      child: TextField(
-                                        controller: _replyController,
-                                        cursorColor: MyColors.primaryColor,
-                                        maxLines: 3,
-                                        minLines: 1,
-                                        enabled: !isSubmitting,
-                                        decoration: const InputDecoration(
-                                          hintText: 'Write a reply...',
-                                        ),
-                                      ),
-                                    ),
-                                    SizedBox(width: MySizes.spaceSm(context)),
-                                    IconButton(
-                                      onPressed: isLoaded && !isSubmitting
-                                          ? () => _submitReply(
-                                              context,
-                                              loadedState!,
-                                            )
-                                          : null,
-                                      padding: EdgeInsets.zero,
-                                      constraints: const BoxConstraints(),
-                                      icon: Icon(
-                                        HugeIconsStroke.sent,
-                                        size: MySizes.iconSmall(context),
-                                      ),
-                                    ),
-                                  ],
-                                );
-                              },
-                            ),
-                      ),
                   ],
                 ),
               ),
@@ -353,6 +301,59 @@ class CommentTileState extends State<CommentTile> {
                 ),
               ),
             ),
+
+          /// REPLY TEXT FIELD
+          if (isReplyingActive)
+            Padding(
+              padding: EdgeInsets.only(
+                top: MySizes.spaceSm(context),
+                left: MySizes.spaceLg(context),
+              ),
+              child:
+                  BlocBuilder<DiscussionDetailsCubit, DiscussionDetailsState>(
+                    builder: (context, state) {
+                      final isLoaded = state is DiscussionDetailsLoaded;
+                      final loadedState = isLoaded ? state : null;
+                      final isSubmitting =
+                          loadedState?.isSubmittingComment ?? false;
+
+                      return Row(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          ProfileAvatar(
+                            imageUrl: cachedUser?.photoURL,
+                            size: ResponsiveHelper.responsiveValue(context, 28),
+                          ),
+                          SizedBox(width: MySizes.spaceSm(context)),
+                          Expanded(
+                            child: TextField(
+                              controller: _replyController,
+                              cursorColor: MyColors.primaryColor,
+                              maxLines: 3,
+                              minLines: 1,
+                              enabled: !isSubmitting,
+                              decoration: const InputDecoration(
+                                hintText: 'Write a reply...',
+                              ),
+                            ),
+                          ),
+                          SizedBox(width: MySizes.spaceSm(context)),
+                          IconButton(
+                            onPressed: isLoaded && !isSubmitting
+                                ? () => _submitReply(context, loadedState!)
+                                : null,
+                            padding: EdgeInsets.zero,
+                            constraints: const BoxConstraints(),
+                            icon: Icon(
+                              HugeIconsStroke.sent,
+                              size: MySizes.iconSmall(context),
+                            ),
+                          ),
+                        ],
+                      );
+                    },
+                  ),
+            ),
         ],
       ),
     );
@@ -377,7 +378,7 @@ class CommentTileState extends State<CommentTile> {
 
     _replyController.clear();
     setState(() {
-      isReplyingActive = false;
+      isRepliesExpanded = true;
     });
   }
 
@@ -406,7 +407,9 @@ class CommentTileState extends State<CommentTile> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           ProfileAvatar(
-            imageUrl: reply.author.photoUrl,
+            imageUrl: reply.author.id == cachedUser?.id
+                ? cachedUser?.photoURL
+                : reply.author.photoUrl,
             size: ResponsiveHelper.responsiveValue(context, 32),
           ),
           SizedBox(width: MySizes.spaceSm(context)),
@@ -425,7 +428,9 @@ class CommentTileState extends State<CommentTile> {
                         ),
                       ),
                       child: Text(
-                        reply.author.fullName,
+                        reply.author.id == cachedUser?.id
+                            ? cachedUser?.username ?? 'Unknown'
+                            : reply.author.fullName,
                         overflow: TextOverflow.ellipsis,
                         style: context.bodyMedium.copyWith(
                           fontWeight: FontWeight.w700,
@@ -443,11 +448,9 @@ class CommentTileState extends State<CommentTile> {
                       )
                     else
                       Text(
-                        widget.comment.createdAt.day == DateTime.now().day
-                            ? MyFormaters.relativeTime(widget.comment.createdAt)
-                            : MyFormaters.formatDateTimeHours(
-                                widget.comment.createdAt,
-                              ),
+                        reply.createdAt.day == DateTime.now().day
+                            ? MyFormaters.relativeTime(reply.createdAt)
+                            : MyFormaters.formatDateTimeHours(reply.createdAt),
                         style: context.bodySmall.copyWith(
                           color: MyColors.textSecondary,
                           fontSize: ResponsiveHelper.responsiveValue(

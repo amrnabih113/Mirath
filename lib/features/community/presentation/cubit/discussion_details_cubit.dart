@@ -10,6 +10,7 @@ import '../../domain/usecases/create_comment_usecase.dart';
 import '../../domain/usecases/get_discussion_by_id_usecase.dart';
 import '../../domain/usecases/get_discussion_comments_usecase.dart';
 import '../../domain/usecases/vote_on_comment_usecase.dart';
+import '../../domain/usecases/vote_on_discussion_usecase.dart';
 import 'discussion_details_state.dart';
 
 class DiscussionDetailsCubit extends Cubit<DiscussionDetailsState> {
@@ -17,6 +18,7 @@ class DiscussionDetailsCubit extends Cubit<DiscussionDetailsState> {
   final GetDiscussionCommentsUseCase getDiscussionCommentsUseCase;
   final CreateCommentUseCase createCommentUseCase;
   final VoteOnCommentUseCase voteOnCommentUseCase;
+  final VoteOnDiscussionUseCase voteOnDiscussionUseCase;
   final UserCacheService userCacheService;
 
   DiscussionDetailsCubit({
@@ -24,6 +26,7 @@ class DiscussionDetailsCubit extends Cubit<DiscussionDetailsState> {
     required this.getDiscussionCommentsUseCase,
     required this.createCommentUseCase,
     required this.voteOnCommentUseCase,
+    required this.voteOnDiscussionUseCase,
     required this.userCacheService,
   }) : super(const DiscussionDetailsInitial());
 
@@ -46,10 +49,13 @@ class DiscussionDetailsCubit extends Cubit<DiscussionDetailsState> {
             emit(DiscussionDetailsLoaded(discussion: discussion, comments: []));
           },
           (comments) {
+            // Sort comments from newest to oldest
+            final sortedComments = List<Comment>.from(comments)
+              ..sort((a, b) => b.createdAt.compareTo(a.createdAt));
             emit(
               DiscussionDetailsLoaded(
                 discussion: discussion,
-                comments: comments,
+                comments: sortedComments,
               ),
             );
           },
@@ -71,8 +77,14 @@ class DiscussionDetailsCubit extends Cubit<DiscussionDetailsState> {
         emit(currentState.copyWith(isLoadingComments: false));
       },
       (comments) {
+        // Sort comments from newest to oldest
+        final sortedComments = List<Comment>.from(comments)
+          ..sort((a, b) => b.createdAt.compareTo(a.createdAt));
         emit(
-          currentState.copyWith(comments: comments, isLoadingComments: false),
+          currentState.copyWith(
+            comments: sortedComments,
+            isLoadingComments: false,
+          ),
         );
       },
     );
@@ -102,7 +114,7 @@ class DiscussionDetailsCubit extends Cubit<DiscussionDetailsState> {
     );
 
     // Create a temporary comment with a temporary ID for optimistic update
-    final tempId = 'temp_${DateTime.now().millisecondsSinceEpoch}';
+    final tempId = 'local_${DateTime.now().millisecondsSinceEpoch}';
     MyLogger.debug('[CUBIT] 🔄 Creating temp comment with ID: $tempId');
 
     // Get cached user for author info
@@ -110,14 +122,14 @@ class DiscussionDetailsCubit extends Cubit<DiscussionDetailsState> {
     final tempAuthor = DiscussionAuthor(
       id: cachedUser?.id ?? currentState.discussion.authorId,
       username: cachedUser?.username ?? 'Unknown',
-      fullName: cachedUser?.username ?? 'Unknown User',
+      fullName: cachedUser?.fullName ?? cachedUser?.username ?? 'Unknown User',
       photoUrl: cachedUser?.photoURL,
       bio: null,
       role: 'user',
       isPremium: false,
     );
     MyLogger.debug(
-      '[CUBIT] 👤 Using cached user: ${cachedUser?.username} (${cachedUser?.photoURL})',
+      '[CUBIT] 👤 Using cached user: ${cachedUser?.fullName} (${cachedUser?.photoURL})',
     );
 
     final tempComment = Comment(
@@ -138,8 +150,8 @@ class DiscussionDetailsCubit extends Cubit<DiscussionDetailsState> {
       '[CUBIT] ✓ Temp comment created: id=$tempId, isPending=${tempComment.isPending}',
     );
 
-    // Add comment optimistically
-    final updatedComments = [...currentState.comments, tempComment];
+    // Add comment optimistically (newest first)
+    final updatedComments = [tempComment, ...currentState.comments];
     MyLogger.debug(
       '[CUBIT] 📤 Emitting state with ${updatedComments.length} comments (added temp comment)',
     );
@@ -190,9 +202,18 @@ class DiscussionDetailsCubit extends Cubit<DiscussionDetailsState> {
         MyLogger.debug(
           '[CUBIT] ✅ API call successful: new comment id=${newComment.id}',
         );
+        final shouldUseCachedAuthor =
+            cachedUser?.id != null && newComment.authorId == cachedUser!.id;
+        final resolvedComment = shouldUseCachedAuthor
+            ? newComment.copyWith(
+                author: tempAuthor,
+                authorId: cachedUser.id,
+                isPending: false,
+              )
+            : newComment.copyWith(isPending: false);
         // Replace the temporary comment with the real one
         final finalComments = updatedComments
-            .map((c) => c.id == tempId ? newComment : c)
+            .map((c) => c.id == tempId ? resolvedComment : c)
             .toList();
         MyLogger.debug(
           '[CUBIT] 🔄 Replaced temp comment with real comment, ${finalComments.length} comments total',
@@ -302,6 +323,78 @@ class DiscussionDetailsCubit extends Cubit<DiscussionDetailsState> {
     result.fold(
       (failure) {
         refreshComments(currentState.discussion.id);
+      },
+      (_) {
+        // Success - keep optimistic update
+      },
+    );
+  }
+
+  Future<void> voteOnDiscussion({
+    required String discussionId,
+    required String voteType,
+  }) async {
+    final currentState = state;
+    if (currentState is! DiscussionDetailsLoaded) return;
+
+    final discussion = currentState.discussion;
+
+    int newUpvoteCount = discussion.upvoteCount;
+    int newDownvoteCount = discussion.downvoteCount;
+    bool newHasVoted = discussion.hasVoted;
+    String? newUserVoteType = discussion.userVoteType;
+
+    // User is removing their vote (clicking the same vote type they already voted)
+    if (discussion.hasVoted && discussion.userVoteType == voteType) {
+      if (voteType == 'UP') {
+        newUpvoteCount = discussion.upvoteCount - 1;
+      } else if (voteType == 'DOWN') {
+        newDownvoteCount = discussion.downvoteCount - 1;
+      }
+      newHasVoted = false;
+      newUserVoteType = null;
+    }
+    // User is changing their vote (from UP to DOWN or vice versa)
+    else if (discussion.hasVoted && discussion.userVoteType != voteType) {
+      if (discussion.userVoteType == 'UP') {
+        newUpvoteCount = discussion.upvoteCount - 1;
+      } else if (discussion.userVoteType == 'DOWN') {
+        newDownvoteCount = discussion.downvoteCount - 1;
+      }
+      if (voteType == 'UP') {
+        newUpvoteCount = newUpvoteCount + 1;
+      } else if (voteType == 'DOWN') {
+        newDownvoteCount = newDownvoteCount + 1;
+      }
+      newUserVoteType = voteType;
+    }
+    // User is voting for the first time
+    else {
+      if (voteType == 'UP') {
+        newUpvoteCount = discussion.upvoteCount + 1;
+      } else if (voteType == 'DOWN') {
+        newDownvoteCount = discussion.downvoteCount + 1;
+      }
+      newHasVoted = true;
+      newUserVoteType = voteType;
+    }
+
+    final updatedDiscussion = discussion.copyWith(
+      upvoteCount: newUpvoteCount,
+      downvoteCount: newDownvoteCount,
+      hasVoted: newHasVoted,
+      userVoteType: newUserVoteType,
+    );
+
+    emit(currentState.copyWith(discussion: updatedDiscussion));
+
+    final params = VoteParams(id: discussionId, type: voteType);
+    final result = await voteOnDiscussionUseCase(params);
+
+    result.fold(
+      (failure) {
+        // Revert on failure by reloading
+        loadDiscussionDetails(discussionId);
       },
       (_) {
         // Success - keep optimistic update

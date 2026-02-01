@@ -232,7 +232,17 @@ class _DisscussionDetailsScreenState extends State<DisscussionDetailsScreen> {
                         child: SizedBox(height: MySizes.spaceMd(context)),
                       ),
                       SliverToBoxAdapter(
-                        child: DisscusionActionButtons(discussion: discussion),
+                        child: DisscusionActionButtons(
+                          discussion: discussion,
+                          onVote: (voteType) {
+                            context
+                                .read<DiscussionDetailsCubit>()
+                                .voteOnDiscussion(
+                                  discussionId: discussion.id,
+                                  voteType: voteType,
+                                );
+                          },
+                        ),
                       ),
                       SliverToBoxAdapter(
                         child: SizedBox(height: MySizes.spaceXs(context)),

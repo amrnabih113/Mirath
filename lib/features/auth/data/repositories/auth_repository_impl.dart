@@ -1,6 +1,7 @@
 import 'package:dartz/dartz.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:mirath/core/services/local_storage_service.dart';
 
 import '../../../../core/error/failuors.dart';
 import '../../../../core/services/secure_storage_service.dart';
@@ -16,6 +17,7 @@ class AuthRepositoryImpl implements AuthRepository {
   final AuthRemoteDataSource _remoteDataSource;
   final SecureStorageService _secureStorage;
   final UserCacheService _userCache;
+  final LocalStorageService _localStorage;
 
   String? _cachedEmail;
   String? _cachedResetToken;
@@ -24,9 +26,11 @@ class AuthRepositoryImpl implements AuthRepository {
     required AuthRemoteDataSource remoteDataSource,
     required SecureStorageService secureStorage,
     required UserCacheService userCache,
+    required LocalStorageService localStorage,
   }) : _remoteDataSource = remoteDataSource,
        _secureStorage = secureStorage,
-       _userCache = userCache;
+       _userCache = userCache,
+       _localStorage = localStorage;
 
   @override
   Future<Either<Failure, void>> signIn(SigninData signinData) async {
@@ -89,6 +93,9 @@ class AuthRepositoryImpl implements AuthRepository {
       await _secureStorage.clearEmail();
       await _secureStorage.clearTokens();
       await _userCache.clearUser();
+      await _localStorage.removeData(MyConstants.userDataKey);
+      await _localStorage.clearProfileSetup();
+
       MyLogger.info('[AuthRepository] User cache cleared on signout');
       return const Right(null);
     } catch (e) {

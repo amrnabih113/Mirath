@@ -77,19 +77,27 @@ class _SetUpProfileScreenContentState
                   onPressed: () {
                     showDialog(
                       context: context,
-                      builder: (BuildContext context) {
+                      barrierDismissible: false,
+                      builder: (BuildContext dialogContext) {
                         return AlertDialog(
                           title: Text(S.of(context).sign_out),
                           content: Text('Are you sure you want to sign out?'),
                           actions: [
                             TextButton(
-                              onPressed: () => Navigator.of(context).pop(),
+                              onPressed: () =>
+                                  Navigator.of(dialogContext).pop(),
                               child: Text('Cancel'),
                             ),
                             TextButton(
                               onPressed: () {
-                                Navigator.of(context).pop();
-                                context.read<AuthCubit>().signOut();
+                                Navigator.of(dialogContext).pop();
+                                // Delay signout to ensure dialog is fully removed
+                                Future.delayed(
+                                  const Duration(milliseconds: 100),
+                                  () {
+                                    context.read<AuthCubit>().signOut();
+                                  },
+                                );
                               },
                               child: Text('Sign Out'),
                             ),

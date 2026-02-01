@@ -132,6 +132,7 @@ class DI {
       () => AuthRepositoryImpl(
         remoteDataSource: sl(),
         secureStorage: sl(),
+        localStorage: sl(),
         userCache: sl(),
       ),
     );
@@ -212,6 +213,7 @@ class DI {
         getDiscussionCommentsUseCase: sl(),
         createCommentUseCase: sl(),
         voteOnCommentUseCase: sl(),
+        voteOnDiscussionUseCase: sl(),
         userCacheService: sl(),
       ),
     );
