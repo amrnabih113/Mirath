@@ -1,6 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+<<<<<<< Updated upstream
+=======
+import 'package:mirath/features/community/presentation/screens/add_discussion_screen.dart';
+import 'package:mirath/features/papers/presentation/screens/paper_screen.dart';
+import 'features/home/domain/entities/paper_entity.dart';
+>>>>>>> Stashed changes
 import 'features/community/domain/entities/discussion.dart';
 import 'features/community/presentation/cubit/community_cubit.dart';
 import 'features/community/presentation/cubit/discussion_details_cubit.dart';
@@ -395,5 +401,24 @@ final appRouter = GoRouter(
         );
       },
     ),
+<<<<<<< Updated upstream
+=======
+    GoRoute(
+      path: '/paper-screen',
+      pageBuilder: (context, state) {
+        final paper = state.extra as PaperEntity?;
+        if (paper == null) {
+          return PageTransitions.smoothTransition(const SizedBox.shrink());
+        }
+        return PageTransitions.smoothTransition(PaperScreen(paper: paper));
+      },
+    ),
+    GoRoute(
+      path: '/add-discussion',
+      pageBuilder: (context, state) {
+        return PageTransitions.smoothTransition(const AddDiscussionScreen());
+      },
+    ),
+>>>>>>> Stashed changes
   ],
 );

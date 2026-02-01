@@ -6,6 +6,7 @@ import '../../../../core/utils/my_sizes.dart';
 import '../cubit/community_cubit.dart';
 import '../cubit/community_state.dart';
 import '../widgets/discussion_card.dart';
+import '../widgets/add_discussion_card.dart';
 import '../widgets/discussion_shimmer_loading.dart';
 
 class DiscussionTab extends StatefulWidget {
@@ -50,7 +51,55 @@ class _DiscussionTabState extends State<DiscussionTab> {
           final discussions = state.discussions;
 
           if (discussions.isEmpty) {
-            return const Center(child: Text('No discussions available'));
+            return Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Icon(
+                    Icons.forum_outlined,
+                    size: 80,
+                    color: MyColors.primaryShade300,
+                  ),
+                  SizedBox(height: MySizes.spaceMd(context)),
+                  Text(
+                    'No discussions yet',
+                    style: TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.w600,
+                      color: MyColors.primaryShade700,
+                    ),
+                  ),
+                  SizedBox(height: MySizes.spaceXs(context)),
+                  Text(
+                    'Be the first to start a discussion!',
+                    style: TextStyle(
+                      fontSize: 14,
+                      color: MyColors.primaryShade500,
+                    ),
+                  ),
+                  SizedBox(height: MySizes.spaceLg(context)),
+                  ElevatedButton.icon(
+                    onPressed: () {
+                      context.push('/create-discussion');
+                    },
+                    icon: const Icon(Icons.add_comment),
+                    label: const Text('Start a Discussion'),
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: MyColors.primaryColor,
+                      foregroundColor: Colors.white,
+                      padding: EdgeInsets.symmetric(
+                        horizontal: MySizes.spaceLg(context),
+                        vertical: MySizes.spaceSm(context),
+                      ),
+                      textStyle: const TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            );
           }
 
           return ListView.separated(
@@ -65,28 +114,50 @@ class _DiscussionTabState extends State<DiscussionTab> {
             separatorBuilder: (context, index) =>
                 SizedBox(height: MySizes.spaceMd(context)),
             itemBuilder: (context, index) {
-              if (index >= discussions.length) {
+              // Add discussion prompt card at the top
+              if (index == 0) {
+                return Column(
+                  children: [
+                    const AddDiscussionCard(),
+                    SizedBox(height: MySizes.spaceMd(context)),
+                    DiscussionCard(
+                      discussion: discussions[0],
+                      onTap: () {
+                        context.push(
+                          '/disscussion-details',
+                          extra: discussions[0],
+                        );
+                      },
+                    ),
+                  ],
+                );
+              }
+
+              // Adjust index for actual discussions
+              final discussionIndex = index - 1;
+
+              if (discussionIndex >= discussions.length) {
                 return const Center(
                   child: Padding(
                     padding: EdgeInsets.all(16.0),
                     child: CircularProgressIndicator(
-                      color:MyColors.primaryColor,
+                      color: MyColors.primaryColor,
                     ),
                   ),
                 );
               }
 
               return DiscussionCard(
-                discussion: discussions[index],
+                discussion: discussions[discussionIndex],
                 onTap: () {
                   context.push(
                     '/disscussion-details',
-                    extra: discussions[index],
+                    extra: discussions[discussionIndex],
                   );
                 },
               );
             },
-            itemCount: discussions.length + (state.isLoadingMore ? 1 : 0),
+            itemCount: discussions.length + 1 + (state.isLoadingMore ? 1 : 0),
           );
         }
 
