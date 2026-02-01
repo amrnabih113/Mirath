@@ -1,17 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
-<<<<<<< Updated upstream
-=======
-import 'package:mirath/features/community/presentation/screens/add_discussion_screen.dart';
+import 'package:mirath/features/discussions/presentation/screens/add_discussion_screen.dart';
+import 'package:mirath/features/home/domain/entities/paper_entity.dart';
 import 'package:mirath/features/papers/presentation/screens/paper_screen.dart';
-import 'features/home/domain/entities/paper_entity.dart';
->>>>>>> Stashed changes
-import 'features/community/domain/entities/discussion.dart';
-import 'features/community/presentation/cubit/community_cubit.dart';
-import 'features/community/presentation/cubit/discussion_details_cubit.dart';
-import 'features/community/presentation/screens/community_search_result.dart';
-import 'features/community/presentation/screens/reading_list_details_screen.dart';
+import 'features/discussions/domain/entities/discussion.dart';
+import 'features/discussions/presentation/cubit/community_cubit.dart';
+import 'features/discussions/presentation/cubit/discussion_details_cubit.dart';
+import 'features/discussions/presentation/screens/community_search_result.dart';
+import 'features/reading_lists/presentation/screens/reading_list_details_screen.dart';
 import 'features/home/presentation/cubit/home_cubit.dart';
 
 import 'core/services/local_storage_service.dart';
@@ -26,8 +23,8 @@ import 'features/auth/presentation/screens/reset_password_screen.dart';
 import 'features/auth/presentation/screens/signin_screen.dart';
 import 'features/auth/presentation/screens/signup_screen.dart';
 import 'features/auth/presentation/screens/verify_account_screen.dart';
-import 'features/community/presentation/screens/community_screen.dart';
-import 'features/community/presentation/screens/disscussion_details_screen.dart';
+import 'features/discussions/presentation/screens/community_screen.dart';
+import 'features/discussions/presentation/screens/disscussion_details_screen.dart';
 import 'features/home/presentation/screens/home_screen.dart';
 import 'features/home/presentation/screens/recentely_published_screen.dart';
 import 'features/home/presentation/screens/search_result_screen.dart';
@@ -401,8 +398,7 @@ final appRouter = GoRouter(
         );
       },
     ),
-<<<<<<< Updated upstream
-=======
+
     GoRoute(
       path: '/paper-screen',
       pageBuilder: (context, state) {
@@ -419,6 +415,5 @@ final appRouter = GoRouter(
         return PageTransitions.smoothTransition(const AddDiscussionScreen());
       },
     ),
->>>>>>> Stashed changes
   ],
 );
