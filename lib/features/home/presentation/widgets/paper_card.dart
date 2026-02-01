@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 import 'package:hugeicons_pro/hugeicons.dart';
 import 'package:mirath/core/helpers/my_loaders.dart';
+import 'package:mirath/features/common/widgets/tag_chip.dart';
 import 'package:mirath/features/home/presentation/cubit/home_cubit.dart';
-import '../../../common/widgets/tag_chip.dart';
 import '../../domain/entities/paper_entity.dart';
 
 import '../../../../core/helpers/responsive_helper.dart';
@@ -12,10 +13,9 @@ import '../../../../core/utils/my_extenstions.dart';
 import '../../../../core/utils/my_sizes.dart';
 
 class PaperCard extends StatefulWidget {
-  const PaperCard({super.key, this.number, required this.paper, this.onTap});
+  const PaperCard({super.key, this.number, required this.paper});
   final int? number;
   final PaperEntity paper;
-  final VoidCallback? onTap;
 
   @override
   State<PaperCard> createState() => _PaperCardState();
@@ -33,6 +33,9 @@ class _PaperCardState extends State<PaperCard> {
   Widget build(BuildContext context) {
     final isTopRanked = widget.number != null && widget.number! <= 3;
     return GestureDetector(
+      onTap: () {
+        context.push('/paper-screen');
+      },
       child: Container(
         padding: EdgeInsets.all(ResponsiveHelper.responsiveValue(context, 16)),
         decoration: BoxDecoration(
@@ -150,7 +153,7 @@ class _PaperCardState extends State<PaperCard> {
               widget.paper.title,
               //  maxLines: 2,
               style: context.titleMedium.copyWith(
-                color: const Color.fromRGBO(42, 36, 25, 1),
+                color: MyColors.primaryShade900,
                 fontWeight: FontWeight.w700,
                 height: 1.3,
                 letterSpacing: -0.2,
