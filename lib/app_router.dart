@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'package:mirath/features/papers/presentation/screens/paper_screen.dart';
+import 'features/home/domain/entities/paper_entity.dart';
 import 'features/community/domain/entities/discussion.dart';
 import 'features/community/presentation/cubit/community_cubit.dart';
 import 'features/community/presentation/cubit/discussion_details_cubit.dart';
@@ -393,6 +395,16 @@ final appRouter = GoRouter(
         return PageTransitions.smoothTransition(
           ReadingListDetailsScreen(readingList: readingList),
         );
+      },
+    ),
+    GoRoute(
+      path: '/paper-screen',
+      pageBuilder: (context, state) {
+        final paper = state.extra as PaperEntity?;
+        if (paper == null) {
+          return PageTransitions.smoothTransition(const SizedBox.shrink());
+        }
+        return PageTransitions.smoothTransition(PaperScreen(paper: paper));
       },
     ),
   ],
