@@ -3,7 +3,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:mirath/core/helpers/responsive_helper.dart';
 
-import '../../../../core/utils/my_colors.dart';
 import '../../../../core/utils/my_extenstions.dart';
 import '../../../../core/utils/my_logger.dart';
 import '../../../auth/presentation/cubit/auth_cubit.dart';
@@ -63,7 +62,7 @@ class _SplashScreenState extends State<SplashScreen>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: MyColors.primaryShade50,
+      backgroundColor: Color(0xffFBFAF8),
       body: Center(
         child: AnimatedBuilder(
           animation: _controller,
@@ -72,13 +71,12 @@ class _SplashScreenState extends State<SplashScreen>
               opacity: _fadeAnimation,
               child: ScaleTransition(
                 scale: _scaleAnimation,
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
+                child: Stack(
                   children: [
                     // App Logo/Icon
                     Container(
-                      width: 200,
-                      height: 200,
+                      width: 300,
+                      height: 300,
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(20),
                       ),
@@ -88,17 +86,24 @@ class _SplashScreenState extends State<SplashScreen>
                       ),
                     ),
                     // App
-                    // Tagline
-                    Text(
-                      'Mirath',
-                      style: context.titleLarge.copyWith(
-                        fontWeight: FontWeight.bold,
-                        fontSize: ResponsiveHelper.responsiveValue(context, 40),
-                        color: Color(0xff5C3110),
-                        fontFamily: GoogleFonts.anticDidone().fontFamily,
-                        letterSpacing: 1.2,
-                      ),
-                    ),
+                    // // Tagline
+                    // Positioned(
+                    //   bottom: 42,
+                    //   right: 50,
+                    //   child: Text(
+                    //     'Mirath',
+                    //     style: context.titleLarge.copyWith(
+                    //       fontWeight: FontWeight.bold,
+                    //       fontSize: ResponsiveHelper.responsiveValue(
+                    //         context,
+                    //         35,
+                    //       ),
+                    //       color: Color(0xff5C3110),
+                    //       fontFamily: GoogleFonts.anticDidone().fontFamily,
+                    //       letterSpacing: 1.2,
+                    //     ),
+                    //   ),
+                    // ),
                   ],
                 ),
               ),

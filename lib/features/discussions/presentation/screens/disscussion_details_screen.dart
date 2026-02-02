@@ -202,10 +202,7 @@ class _DisscussionDetailsScreenState extends State<DisscussionDetailsScreen> {
                       SliverToBoxAdapter(
                         child: Text(
                           discussion.content,
-                          style: context.bodyMedium.copyWith(
-                            height: 1.5,
-                            fontWeight: FontWeight.w600,
-                          ),
+                          style: context.bodyMedium.copyWith(height: 1.5),
                         ),
                       ),
                       SliverToBoxAdapter(

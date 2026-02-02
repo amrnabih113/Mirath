@@ -117,7 +117,6 @@ class _SetUpProfileScreenContentState
             ],
           ),
           body: ScreenDecoration(
-            dark: false,
             child: Padding(
               padding: MySizes.paddingLg(context),
               child: SafeArea(
