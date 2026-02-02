@@ -8,8 +8,9 @@ import '../../domain/entities/discussion_paper.dart';
 class DisscussionPaperCard extends StatelessWidget {
   final String? paperId;
   final DiscussionPaper? paper;
+  final VoidCallback? onTap;
 
-  const DisscussionPaperCard({super.key, this.paperId, this.paper});
+  const DisscussionPaperCard({super.key, this.paperId, this.paper, this.onTap});
 
   @override
   Widget build(BuildContext context) {
@@ -60,46 +61,50 @@ class DisscussionPaperCard extends StatelessWidget {
     }
 
     // Display actual paper data
-    return Container(
-      padding: MySizes.paddingSm(context),
-      decoration: BoxDecoration(
-        color: MyColors.primaryShade50,
-        borderRadius: BorderRadius.circular(MySizes.borderRadiusSm(context)),
-        border: Border.all(color: MyColors.primaryShade400),
-      ),
-      child: Row(
-        children: [
-          HugeIcon(
-            icon: HugeIcons.strokeRoundedFile02,
-            size: MySizes.iconLarge(context),
-            color: MyColors.textSecondary,
-          ),
-          SizedBox(width: MySizes.spaceSm(context)),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  paper!.title,
-                  style: context.titleSmall.copyWith(
-                    fontWeight: FontWeight.w800,
-                  ),
-                  maxLines: 2,
-                  overflow: TextOverflow.ellipsis,
-                ),
-                SizedBox(height: MySizes.spaceXs(context) * 0.5),
-                Text(
-                  paper!.authors.join(', '),
-                  style: context.bodySmall.copyWith(
-                    color: MyColors.textSecondary,
-                  ),
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                ),
-              ],
+    return InkWell(
+      onTap: onTap,
+      borderRadius: BorderRadius.circular(MySizes.borderRadiusSm(context)),
+      child: Container(
+        padding: MySizes.paddingSm(context),
+        decoration: BoxDecoration(
+          color: MyColors.primaryShade50,
+          borderRadius: BorderRadius.circular(MySizes.borderRadiusSm(context)),
+          border: Border.all(color: MyColors.primaryShade400),
+        ),
+        child: Row(
+          children: [
+            HugeIcon(
+              icon: HugeIcons.strokeRoundedFile02,
+              size: MySizes.iconLarge(context),
+              color: MyColors.textSecondary,
             ),
-          ),
-        ],
+            SizedBox(width: MySizes.spaceSm(context)),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    paper!.title,
+                    style: context.titleSmall.copyWith(
+                      fontWeight: FontWeight.w800,
+                    ),
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                  SizedBox(height: MySizes.spaceXs(context) * 0.5),
+                  Text(
+                    paper!.authors.join(', '),
+                    style: context.bodySmall.copyWith(
+                      color: MyColors.textSecondary,
+                    ),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }

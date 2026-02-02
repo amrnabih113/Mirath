@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 
 import '../../../../core/helpers/responsive_helper.dart';
+import '../../../home/domain/entities/paper_entity.dart';
 import '../../../../core/utils/my_colors.dart';
 import '../../../../core/utils/my_extenstions.dart';
 import '../../../../core/utils/my_sizes.dart';
@@ -78,7 +80,23 @@ class _DiscussionCardState extends State<DiscussionCard> {
                 ),
                 SizedBox(height: MySizes.spaceMd(context)),
                 if (widget.discussion.papers.isNotEmpty)
-                  DisscussionPaperCard(paper: widget.discussion.papers.first),
+                  DisscussionPaperCard(
+                    paper: widget.discussion.papers.first,
+                    onTap: () {
+                      final discussionPaper = widget.discussion.papers.first;
+                      final paperEntity = PaperEntity(
+                        id: discussionPaper.id,
+                        title: discussionPaper.title,
+                        abstract: discussionPaper.abstract,
+                        authors: discussionPaper.authors,
+                        publishedAt: '',
+                        categories: [],
+                        isSaved: false,
+                        preprint: '',
+                      );
+                      context.push('/paper-screen', extra: paperEntity);
+                    },
+                  ),
                 if (widget.discussion.papers.isNotEmpty)
                   SizedBox(height: MySizes.spaceMd(context)),
                 SizedBox(

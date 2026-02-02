@@ -37,7 +37,9 @@ class MyColors {
 
   static const Color secondaryColor = primaryShade700;
 
-  static const Color lightCircle = Color(0xFFE8DCC8); // Base primary color
+  static Color lightCircle = Color(
+    0xFFD5C6B4,
+  ); // Base primary color
 
   // //Gradient Colors
   // static const Gradient orangeGradient = LinearGradient(
@@ -87,8 +89,9 @@ class MyColors {
   }
 
   // Text Colors - Improved contrast
-  static const Color textPrimary = Color(0xFF2A2419);
-  static Color textSecondary = Color(0xFF5D4E38).withValues(alpha: 0.85);
+  static const Color textPrimary = Colors.black; //Color(0xFF2A2419);
+  static Color textSecondary =
+      Colors.black; // Color(0xFF5D4E38).withValues(alpha: 0.85);
   static const Color textWhite = Color(0xFFFFFFFF);
 
   // Dark Mode Text Colors - Better visibility

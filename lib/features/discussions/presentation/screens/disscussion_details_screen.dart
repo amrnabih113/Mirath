@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 import 'package:hugeicons/hugeicons.dart';
+import 'package:mirath/features/home/domain/entities/paper_entity.dart';
 import 'package:hugeicons_pro/hugeicons.dart';
 import '../../../../core/helpers/responsive_helper.dart';
 import '../../../../core/services/user_cache_service.dart';
@@ -200,10 +202,7 @@ class _DisscussionDetailsScreenState extends State<DisscussionDetailsScreen> {
                       SliverToBoxAdapter(
                         child: Text(
                           discussion.content,
-                          style: context.bodyMedium.copyWith(
-                            height: 1.5,
-                            fontWeight: FontWeight.w600,
-                          ),
+                          style: context.bodyMedium.copyWith(height: 1.5),
                         ),
                       ),
                       SliverToBoxAdapter(
@@ -213,6 +212,20 @@ class _DisscussionDetailsScreenState extends State<DisscussionDetailsScreen> {
                         SliverToBoxAdapter(
                           child: DisscussionPaperCard(
                             paper: discussion.papers.first,
+                            onTap: () {
+                              final discussionPaper = discussion.papers.first;
+                              final paperEntity = PaperEntity(
+                                id: discussionPaper.id,
+                                title: discussionPaper.title,
+                                abstract: discussionPaper.abstract,
+                                authors: discussionPaper.authors,
+                                publishedAt: '',
+                                categories: [],
+                                isSaved: false,
+                                preprint: '',
+                              );
+                              context.push('/paper-screen', extra: paperEntity);
+                            },
                           ),
                         ),
                       if (discussion.papers.isNotEmpty)
