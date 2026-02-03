@@ -140,3 +140,53 @@ class HomeError extends HomeState {
   @override
   List<Object?> get props => [message];
 }
+
+class HomePapersUpdated extends HomeState {
+  final List<PaperEntity> recentPapers;
+  final List<PaperEntity> recommendations;
+  final bool isLoadingMoreRecent;
+  final bool isLoadingMoreRecommendations;
+  final bool hasReachedMaxRecent;
+  final bool hasReachedMaxRecommendations;
+
+  const HomePapersUpdated({
+    required this.recentPapers,
+    required this.recommendations,
+   
+    this.isLoadingMoreRecent = false,
+    this.isLoadingMoreRecommendations = false,
+    this.hasReachedMaxRecent = false,
+    this.hasReachedMaxRecommendations = false,
+  });
+
+  HomePapersLoaded copyWith({
+    List<PaperEntity>? recentPapers,
+    List<PaperEntity>? recommendations,
+    User? currentUser,
+    bool? isLoadingMoreRecent,
+    bool? isLoadingMoreRecommendations,
+    bool? hasReachedMaxRecent,
+    bool? hasReachedMaxRecommendations,
+  }) {
+    return HomePapersLoaded(
+      recentPapers: recentPapers ?? this.recentPapers,
+      recommendations: recommendations ?? this.recommendations,
+      isLoadingMoreRecent: isLoadingMoreRecent ?? this.isLoadingMoreRecent,
+      isLoadingMoreRecommendations:
+          isLoadingMoreRecommendations ?? this.isLoadingMoreRecommendations,
+      hasReachedMaxRecent: hasReachedMaxRecent ?? this.hasReachedMaxRecent,
+      hasReachedMaxRecommendations:
+          hasReachedMaxRecommendations ?? this.hasReachedMaxRecommendations,
+    );
+  }
+
+  @override
+  List<Object?> get props => [
+    recentPapers,
+    recommendations,
+    isLoadingMoreRecent,
+    isLoadingMoreRecommendations,
+    hasReachedMaxRecent,
+    hasReachedMaxRecommendations,
+  ];
+}

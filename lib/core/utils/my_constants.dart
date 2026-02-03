@@ -102,6 +102,7 @@ class MyConstants {
   // ***Reading Lists endpoints***
   // get
   static const String getReadingLists = "api/v1/reading-lists";
+  static const String getMyReadingLists = "api/v1/reading-lists/me";
   // post
   static const String createReadingList = "api/v1/reading-lists";
   // get

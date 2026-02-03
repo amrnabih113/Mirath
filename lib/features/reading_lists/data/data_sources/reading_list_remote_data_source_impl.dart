@@ -13,13 +13,14 @@ class ReadingListRemoteDataSourceImpl implements ReadingListRemoteDataSource {
 
   @override
   Future<ReadingListsResponse> getReadingLists({String? ownerId}) async {
+    final isMyLists = ownerId == null;
     final queryParams = <String, dynamic>{};
-    if (ownerId != null) {
+    if (!isMyLists) {
       queryParams['ownerId'] = ownerId;
     }
 
     final response = await dioClient.get(
-      MyConstants.getReadingLists,
+      isMyLists ? MyConstants.getMyReadingLists : MyConstants.getReadingLists,
       queryParameters: queryParams.isNotEmpty ? queryParams : null,
     );
 

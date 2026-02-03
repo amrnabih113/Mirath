@@ -32,4 +32,26 @@ class PaperEntity extends Equatable {
     categories,
     isSaved,
   ];
+
+  PaperEntity copyWith({
+    String? id,
+    String? title,
+    String? preprint,
+    String? abstract,
+    String? publishedAt,
+    List<String>? authors,
+    List<String>? categories,
+    bool? isSaved,
+  }) {
+    return PaperEntity(
+      id: id ?? this.id,
+      title: title ?? this.title,
+      preprint: preprint ?? this.preprint,
+      abstract: abstract ?? this.abstract,
+      publishedAt: publishedAt ?? this.publishedAt,
+      authors: authors ?? this.authors,
+      categories: categories ?? this.categories,
+      isSaved: isSaved ?? this.isSaved,
+    );
+  }
 }

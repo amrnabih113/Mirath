@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 import 'package:mirath/features/discussions/presentation/screens/add_discussion_screen.dart';
 import 'package:mirath/features/home/domain/entities/paper_entity.dart';
 import 'package:mirath/features/papers/presentation/screens/paper_screen.dart';
+import 'package:mirath/features/papers/presentation/screens/paper_discussions_screen.dart';
 import 'features/discussions/domain/entities/discussion.dart';
 import 'features/discussions/presentation/cubit/community_cubit.dart';
 import 'features/discussions/presentation/cubit/discussion_details_cubit.dart';
@@ -240,7 +241,7 @@ final appRouter = GoRouter(
           path: '/home',
           pageBuilder: (context, state) => NoTransitionPage(
             child: BlocProvider(
-              create: (_) => sl<HomeCubit>()..loadAllPapers(),
+              create: (_) => sl<HomeCubit>(),
               child: const HomeScreen(),
             ),
           ),
@@ -375,7 +376,7 @@ final appRouter = GoRouter(
     ),
 
     GoRoute(
-      path: '/disscussion-details',
+      path: '/discussion-details',
       pageBuilder: (context, state) {
         final discussion = state.extra as Discussion?;
         return PageTransitions.smoothTransition(
@@ -406,7 +407,27 @@ final appRouter = GoRouter(
         if (paper == null) {
           return PageTransitions.smoothTransition(const SizedBox.shrink());
         }
-        return PageTransitions.smoothTransition(PaperScreen(paper: paper));
+        return PageTransitions.smoothTransition(
+          BlocProvider.value(
+            value: sl<HomeCubit>(),
+            child: PaperScreen(paper: paper),
+          ),
+        );
+      },
+    ),
+    GoRoute(
+      path: '/paper-discussions',
+      pageBuilder: (context, state) {
+        final paper = state.extra as PaperEntity?;
+        if (paper == null) {
+          return PageTransitions.smoothTransition(const SizedBox.shrink());
+        }
+        return PageTransitions.smoothTransition(
+          BlocProvider.value(
+            value: sl<CommunityCubit>(),
+            child: PaperDiscussionsScreen(paper: paper),
+          ),
+        );
       },
     ),
     GoRoute(

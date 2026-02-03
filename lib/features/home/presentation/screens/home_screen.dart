@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'package:mirath/features/home/domain/entities/paper_entity.dart';
 import '../cubit/home_cubit.dart';
 import '../cubit/home_state.dart';
 import '../../../../core/helpers/responsive_helper.dart';
@@ -48,8 +49,13 @@ class _HomeScreenState extends State<HomeScreen> {
     super.dispose();
   }
 
+  Future<void> _onRefresh() async {
+    await context.read<HomeCubit>().loadAllPapers();
+  }
+
   @override
   Widget build(BuildContext context) {
+    late List<PaperEntity> papers;
     return Scaffold(
       appBar: PreferredSize(
         preferredSize: Size.fromHeight(
@@ -73,90 +79,115 @@ class _HomeScreenState extends State<HomeScreen> {
       body: Center(
         child: ConstrainedBox(
           constraints: const BoxConstraints(maxWidth: 850),
-          child: ListView(
-            controller: scrollController,
-            padding: MySizes.paddingMd(context),
-            children: [
-              const HomeSearchBar(),
-              SizedBox(height: MySizes.spaceLg(context)),
-              SectionTitle(
-                title: 'Recently Published',
-                onTap: () => context.push("/recentely-published"),
-              ),
-              SizedBox(height: MySizes.spaceMd(context)),
-              const CategoryItemsList(),
-              SizedBox(height: MySizes.spaceLg(context) * 1.5),
-              SectionTitle(title: 'You might also like', showSeeAll: false),
-              SizedBox(height: MySizes.spaceMd(context)),
+          child: RefreshIndicator(
+            onRefresh: _onRefresh,
+            child: ListView(
+              controller: scrollController,
+              padding: MySizes.paddingMd(context),
+              children: [
+                const HomeSearchBar(),
+                SizedBox(height: MySizes.spaceLg(context)),
+                SectionTitle(
+                  title: 'Recently Published',
+                  onTap: () => context.push("/recentely-published"),
+                ),
+                SizedBox(height: MySizes.spaceMd(context)),
+                const CategoryItemsList(),
+                SizedBox(height: MySizes.spaceLg(context) * 1.5),
+                SectionTitle(title: 'You might also like', showSeeAll: false),
+                SizedBox(height: MySizes.spaceMd(context)),
 
-              // BlocBuilder only for the papers list section
-              BlocBuilder<HomeCubit, HomeState>(
-                builder: (context, state) {
-                  if (state is HomeLoading) {
-                    return const PaperListShimmer();
-                  }
+                // BlocBuilder only for the papers list section
+                BlocConsumer<HomeCubit, HomeState>(
+                  listener: (context, state) {
+                    if (state is HomePapersUpdated) {
+                      // Update local papers list when papers are updated
 
-                  if (state is HomePapersLoaded) {
-                    final recommendPapers = state.recentPapers;
-                    final isLoadingMore = state.isLoadingMoreRecent;
+                      setState(() {
+                        papers = state.recentPapers;
+                      });
+                    }
+                  },
+                  builder: (context, state) {
+                    return BlocBuilder<HomeCubit, HomeState>(
+                      builder: (context, state) {
+                        if (state is HomeLoading) {
+                          return const PaperListShimmer();
+                        }
 
-                    // Handle empty papers list
-                    if (recommendPapers.isEmpty) {
-                      return Padding(
-                        padding: EdgeInsets.symmetric(
-                          vertical: MySizes.spaceLg(context) * 2,
-                        ),
-                        child: Center(
-                          child: Column(
-                            children: [
-                              Icon(
-                                Icons.article_outlined,
-                                size: 64,
-                                color: Colors.grey[400],
+                        if (state is HomePapersLoaded ||
+                            state is HomePapersUpdated) {
+                          late List<PaperEntity> recentPapers;
+                          late bool isLoadingMore;
+
+                          if (state is HomePapersLoaded) {
+                            recentPapers = state.recentPapers;
+                            isLoadingMore = state.isLoadingMoreRecent;
+                          } else if (state is HomePapersUpdated) {
+                            recentPapers = state.recentPapers;
+                            isLoadingMore = state.isLoadingMoreRecent;
+                          }
+
+                          papers = recentPapers;
+
+                          // Handle empty papers list
+                          if (papers.isEmpty) {
+                            return Padding(
+                              padding: EdgeInsets.symmetric(
+                                vertical: MySizes.spaceLg(context) * 2,
                               ),
-                              SizedBox(height: MySizes.spaceMd(context)),
-                              Text(
-                                'No papers available',
-                                style: TextStyle(
-                                  fontSize: 16,
-                                  color: Colors.grey[600],
+                              child: Center(
+                                child: Column(
+                                  children: [
+                                    Icon(
+                                      Icons.article_outlined,
+                                      size: 64,
+                                      color: Colors.grey[400],
+                                    ),
+                                    SizedBox(height: MySizes.spaceMd(context)),
+                                    Text(
+                                      'No papers available',
+                                      style: TextStyle(
+                                        fontSize: 16,
+                                        color: Colors.grey[600],
+                                      ),
+                                    ),
+                                  ],
                                 ),
                               ),
-                            ],
-                          ),
-                        ),
-                      );
-                    }
+                            );
+                          }
 
-                    return ListView.separated(
-                      padding: EdgeInsets.zero,
-                      shrinkWrap: true,
-                      physics: const NeverScrollableScrollPhysics(),
-                      itemCount:
-                          recommendPapers.length + (isLoadingMore ? 1 : 0),
-                      separatorBuilder: (_, _) =>
-                          SizedBox(height: MySizes.spaceMd(context)),
-                      itemBuilder: (context, index) {
-                        if (index >= recommendPapers.length) {
-                          return const Padding(
-                            padding: EdgeInsets.all(8),
-                            child: Center(child: CircularProgressIndicator()),
+                          return ListView.separated(
+                            padding: EdgeInsets.zero,
+                            shrinkWrap: true,
+                            physics: const NeverScrollableScrollPhysics(),
+                            itemCount: papers.length + (isLoadingMore ? 1 : 0),
+                            separatorBuilder: (_, _) =>
+                                SizedBox(height: MySizes.spaceMd(context)),
+                            itemBuilder: (context, index) {
+                              if (index >= papers.length) {
+                                return const Padding(
+                                  padding: EdgeInsets.all(8),
+                                  child: Center(
+                                    child: CircularProgressIndicator(),
+                                  ),
+                                );
+                              }
+                              final paper = papers[index];
+                              return PaperCard(paper: paper);
+                            },
                           );
                         }
-                        final paper = recommendPapers[index];
-                        return PaperCard(
-                          paper: paper,
-                        
-                        );
+
+                        return const SizedBox.shrink();
                       },
                     );
-                  }
-
-                  return const SizedBox.shrink();
-                },
-              ),
-              SizedBox(height: MySizes.spaceLg(context) * 4),
-            ],
+                  },
+                ),
+                SizedBox(height: MySizes.spaceLg(context) * 4),
+              ],
+            ),
           ),
         ),
       ),
