@@ -38,6 +38,7 @@ import 'package:mirath/features/home/domain/usecases/get_recommendations_usecase
 import 'package:mirath/features/home/domain/usecases/save_paper_usecase.dart';
 import 'package:mirath/features/home/domain/usecases/unsave_paper_usecase.dart';
 import 'package:mirath/features/home/presentation/cubit/home_cubit.dart';
+import 'package:mirath/features/chatbot/presentation/cubit/chatbot_cubit.dart';
 
 import '../core/network/dio_client.dart';
 import '../core/network/network_manager.dart';
@@ -326,5 +327,8 @@ class DI {
         unsavePaperUseCase: sl(),
       ),
     );
+
+    /// Chatbot Cubit ///
+    sl.registerFactory(() => ChatbotCubit());
   }
 }

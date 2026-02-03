@@ -5,6 +5,7 @@ import 'package:mirath/features/discussions/presentation/screens/add_discussion_
 import 'package:mirath/features/home/domain/entities/paper_entity.dart';
 import 'package:mirath/features/papers/presentation/screens/paper_screen.dart';
 import 'package:mirath/features/papers/presentation/screens/paper_discussions_screen.dart';
+import 'features/chatbot/presentation/screens/chatbot_screen.dart';
 import 'features/discussions/domain/entities/discussion.dart';
 import 'features/discussions/presentation/cubit/community_cubit.dart';
 import 'features/discussions/presentation/cubit/discussion_details_cubit.dart';
@@ -434,6 +435,13 @@ final appRouter = GoRouter(
       path: '/add-discussion',
       pageBuilder: (context, state) {
         return PageTransitions.smoothTransition(const AddDiscussionScreen());
+      },
+    ),
+    // ===================== CHATBOT Feature =====================
+    GoRoute(
+      path: '/chatbot',
+      pageBuilder: (context, state) {
+        return PageTransitions.smoothTransition(const ChatbotScreen());
       },
     ),
   ],
