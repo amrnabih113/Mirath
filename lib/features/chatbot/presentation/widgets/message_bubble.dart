@@ -91,28 +91,45 @@ class MessageBubble extends StatelessWidget {
                 : MainAxisAlignment.start,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Flexible(
-                child: Column(
-                  crossAxisAlignment: message.isUser
-                      ? CrossAxisAlignment.end
-                      : CrossAxisAlignment.start,
-                  children: [
-                    if (message.text.isNotEmpty)
-                      ConstrainedBox(
-                        constraints: BoxConstraints(
-                          maxWidth: MediaQuery.of(context).size.width * 0.75,
-                        ),
-                        child: Container(
-                          padding: message.isUser
-                              ? EdgeInsets.symmetric(
+              // AI Avatar
+              // if (!message.isUser) ...[
+              //   Column(
+              //     children: [
+              //       SizedBox(height: MySizes.spaceSm(context)),
+              //       Container(
+              //         width: ResponsiveHelper.responsiveValue(context, 32),
+              //         height: ResponsiveHelper.responsiveValue(context, 32),
+              //         decoration: BoxDecoration(
+              //           color: MyColors.primaryShade700,
+              //           shape: BoxShape.circle,
+              //         ),
+              //         child: Icon(
+              //           LucideIcons.bot,
+              //           color: MyColors.white,
+              //           size: ResponsiveHelper.responsiveValue(context, 18),
+              //         ),
+              //       ),
+              //     ],
+              //   ),
+              //   SizedBox(width: MySizes.spaceSm(context)),
+              // ],
+              message.isUser
+                  ? Flexible(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.end,
+                        children: [
+                          if (message.text.isNotEmpty)
+                            ConstrainedBox(
+                              constraints: BoxConstraints(
+                                maxWidth:
+                                    MediaQuery.of(context).size.width * 0.75,
+                              ),
+                              child: Container(
+                                padding: EdgeInsets.symmetric(
                                   horizontal: MySizes.spaceMd(context),
                                   vertical: MySizes.spaceSm(context),
-                                )
-                              : EdgeInsets.symmetric(
-                                  vertical: MySizes.spaceSm(context),
                                 ),
-                          decoration: message.isUser
-                              ? BoxDecoration(
+                                decoration: BoxDecoration(
                                   color: MyColors.primaryShade100,
                                   borderRadius: BorderRadius.only(
                                     topLeft: Radius.circular(
@@ -140,124 +157,160 @@ class MessageBubble extends StatelessWidget {
                                       ),
                                     ),
                                   ),
-                                )
-                              : null,
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                message.text,
-                                style: context.bodyMedium.copyWith(
-                                  color: MyColors.textPrimary,
-                                  height: 1.5,
-                                  fontSize: ResponsiveHelper.responsiveValue(
-                                    context,
-                                    15,
+                                ),
+                                child: Text(
+                                  message.text,
+                                  style: context.bodyMedium.copyWith(
+                                    color: MyColors.textPrimary,
+                                    height: 1.5,
+                                    fontSize: ResponsiveHelper.responsiveValue(
+                                      context,
+                                      15,
+                                    ),
                                   ),
                                 ),
                               ),
-                              if (!message.isUser) ...[
-                                Row(
-                                  mainAxisSize: MainAxisSize.min,
-                                  children: [
-                                    IconButton(
-                                      icon: Icon(
-                                        LucideIcons.copy,
-                                        size: ResponsiveHelper.responsiveValue(
-                                          context,
-                                          16,
-                                        ),
-                                        color: MyColors.textSecondary,
-                                      ),
-                                      padding: EdgeInsets.zero,
-                                      onPressed: () {
-                                        Clipboard.setData(
-                                          ClipboardData(text: message.text),
-                                        );
-                                        MyLoaders.customToast(
-                                          context: context,
-                                          message: 'Copied to clipboard',
-                                        );
-                                      },
-                                    ),
-                                    IconButton(
-                                      icon: Icon(
-                                        LucideIcons.thumbsUp,
-                                        size: ResponsiveHelper.responsiveValue(
-                                          context,
-                                          16,
-                                        ),
-                                        color: MyColors.textSecondary,
-                                      ),
-                                      padding: EdgeInsets.zero,
-                                      onPressed: () {},
-                                    ),
-                                    IconButton(
-                                      icon: Icon(
-                                        LucideIcons.thumbsDown,
-                                        size: ResponsiveHelper.responsiveValue(
-                                          context,
-                                          16,
-                                        ),
-                                        color: MyColors.textSecondary,
-                                      ),
-                                      padding: EdgeInsets.zero,
-                                      onPressed: () {},
-                                    ),
-                                    IconButton(
-                                      icon: Icon(
-                                        LucideIcons.share2,
-                                        size: ResponsiveHelper.responsiveValue(
-                                          context,
-                                          16,
-                                        ),
-                                        color: MyColors.textSecondary,
-                                      ),
-                                      padding: EdgeInsets.zero,
-                                      onPressed: () {},
-                                    ),
-                                    IconButton(
-                                      icon: HugeIcon(
-                                        icon: HugeIcons
-                                            .strokeRoundedMoreHorizontalCircle01,
-                                        size: ResponsiveHelper.responsiveValue(
-                                          context,
-                                          16,
-                                        ),
-                                        color: MyColors.textSecondary,
-                                      ),
-                                      padding: EdgeInsets.zero,
-                                      onPressed: () {},
-                                    ),
-                                  ],
+                            ),
+                          if (message.text.isNotEmpty)
+                            Align(
+                              alignment: Alignment.centerRight,
+                              child: Transform.translate(
+                                offset: Offset(
+                                  0,
+                                  ResponsiveHelper.responsiveValue(
+                                    context,
+                                    -10,
+                                  ),
                                 ),
-                              ],
-                            ],
-                          ),
-                        ),
-                      ),
-                    if (message.isUser && message.text.isNotEmpty)
-                      Align(
-                        alignment: Alignment.centerRight,
-                        child: Transform.translate(
-                          offset: Offset(
-                            0,
-                            ResponsiveHelper.responsiveValue(context, -10),
-                          ),
-                          child: CustomPaint(
-                            painter: _BubbleTailPainter(
-                              color: MyColors.primaryShade100,
+                                child: CustomPaint(
+                                  painter: _BubbleTailPainter(
+                                    color: MyColors.primaryShade100,
+                                  ),
+                                  size: Size(
+                                    ResponsiveHelper.responsiveValue(
+                                      context,
+                                      10,
+                                    ),
+                                    ResponsiveHelper.responsiveValue(
+                                      context,
+                                      10,
+                                    ),
+                                  ),
+                                ),
+                              ),
                             ),
-                            size: Size(
-                              ResponsiveHelper.responsiveValue(context, 10),
-                              ResponsiveHelper.responsiveValue(context, 10),
-                            ),
-                          ),
-                        ),
+                        ],
                       ),
-                  ],
-                ),
-              ),
+                    )
+                  : Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          if (message.text.isNotEmpty)
+                            Container(
+                              padding: EdgeInsets.symmetric(
+                                vertical: MySizes.spaceSm(context),
+                              ),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    message.text,
+                                    style: context.bodyMedium.copyWith(
+                                      color: MyColors.textPrimary,
+                                      height: 1.5,
+                                      fontSize:
+                                          ResponsiveHelper.responsiveValue(
+                                            context,
+                                            15,
+                                          ),
+                                    ),
+                                  ),
+                                  Row(
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: [
+                                      IconButton(
+                                        icon: Icon(
+                                          LucideIcons.copy,
+                                          size:
+                                              ResponsiveHelper.responsiveValue(
+                                                context,
+                                                16,
+                                              ),
+                                          color: MyColors.textSecondary,
+                                        ),
+                                        padding: EdgeInsets.zero,
+                                        onPressed: () {
+                                          Clipboard.setData(
+                                            ClipboardData(text: message.text),
+                                          );
+                                          MyLoaders.customToast(
+                                            context: context,
+                                            message: 'Copied to clipboard',
+                                          );
+                                        },
+                                      ),
+                                      IconButton(
+                                        icon: Icon(
+                                          LucideIcons.thumbsUp,
+                                          size:
+                                              ResponsiveHelper.responsiveValue(
+                                                context,
+                                                16,
+                                              ),
+                                          color: MyColors.textSecondary,
+                                        ),
+                                        padding: EdgeInsets.zero,
+                                        onPressed: () {},
+                                      ),
+                                      IconButton(
+                                        icon: Icon(
+                                          LucideIcons.thumbsDown,
+                                          size:
+                                              ResponsiveHelper.responsiveValue(
+                                                context,
+                                                16,
+                                              ),
+                                          color: MyColors.textSecondary,
+                                        ),
+                                        padding: EdgeInsets.zero,
+                                        onPressed: () {},
+                                      ),
+                                      IconButton(
+                                        icon: Icon(
+                                          LucideIcons.share2,
+                                          size:
+                                              ResponsiveHelper.responsiveValue(
+                                                context,
+                                                16,
+                                              ),
+                                          color: MyColors.textSecondary,
+                                        ),
+                                        padding: EdgeInsets.zero,
+                                        onPressed: () {},
+                                      ),
+                                      IconButton(
+                                        icon: HugeIcon(
+                                          icon: HugeIcons
+                                              .strokeRoundedMoreHorizontalCircle01,
+                                          size:
+                                              ResponsiveHelper.responsiveValue(
+                                                context,
+                                                16,
+                                              ),
+                                          color: MyColors.textSecondary,
+                                        ),
+                                        padding: EdgeInsets.zero,
+                                        onPressed: () {},
+                                      ),
+                                    ],
+                                  ),
+                                ],
+                              ),
+                            ),
+                        ],
+                      ),
+                    ),
             ],
           ),
         ],
