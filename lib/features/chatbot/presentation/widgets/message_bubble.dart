@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_markdown/flutter_markdown.dart';
 import 'package:hugeicons/hugeicons.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:mirath/core/helpers/my_loaders.dart';
@@ -214,17 +215,51 @@ class MessageBubble extends StatelessWidget {
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  Text(
-                                    message.text,
-                                    style: context.bodyMedium.copyWith(
-                                      color: MyColors.textPrimary,
-                                      height: 1.5,
-                                      fontSize:
-                                          ResponsiveHelper.responsiveValue(
-                                            context,
-                                            15,
+                                  MarkdownBody(
+                                    data: message.text,
+                                    styleSheet:
+                                        MarkdownStyleSheet.fromTheme(
+                                          Theme.of(context),
+                                        ).copyWith(
+                                          p: context.bodyMedium.copyWith(
+                                            color: MyColors.textPrimary,
+                                            height: 1.5,
+                                            fontSize:
+                                                ResponsiveHelper.responsiveValue(
+                                                  context,
+                                                  15,
+                                                ),
                                           ),
-                                    ),
+                                          h1: context.headlineSmall.copyWith(
+                                            color: MyColors.textPrimary,
+                                          ),
+                                          h2: context.titleLarge.copyWith(
+                                            color: MyColors.textPrimary,
+                                          ),
+                                          h3: context.titleMedium.copyWith(
+                                            color: MyColors.textPrimary,
+                                          ),
+                                          strong: context.bodyMedium.copyWith(
+                                            fontWeight: FontWeight.w700,
+                                            color: MyColors.textPrimary,
+                                          ),
+                                          em: context.bodyMedium.copyWith(
+                                            fontStyle: FontStyle.italic,
+                                            color: MyColors.textPrimary,
+                                          ),
+                                          blockquote: context.bodyMedium
+                                              .copyWith(
+                                                color: MyColors.textSecondary,
+                                              ),
+                                          code: context.bodyMedium.copyWith(
+                                            fontFamily: 'monospace',
+                                            color: MyColors.textPrimary,
+                                          ),
+                                          listBullet: context.bodyMedium
+                                              .copyWith(
+                                                color: MyColors.textPrimary,
+                                              ),
+                                        ),
                                   ),
                                   Row(
                                     mainAxisSize: MainAxisSize.min,
