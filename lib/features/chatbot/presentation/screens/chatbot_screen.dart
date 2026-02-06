@@ -33,6 +33,11 @@ class _ChatbotScreenState extends State<ChatbotScreen> {
     _chatbotCubit = sl<ChatbotCubit>();
     _chatbotCubit.initialize();
     _loadUserName();
+
+    // Scroll to bottom after initial load
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _scrollToBottom();
+    });
   }
 
   @override
@@ -90,6 +95,9 @@ class _ChatbotScreenState extends State<ChatbotScreen> {
       return;
     }
 
+    // Unfocus the text field
+    FocusScope.of(context).unfocus();
+
     final imagePaths = _selectedImages.map((e) => e.path).toList();
     _chatbotCubit.sendMessage(
       _messageController.text.trim(),
@@ -141,8 +149,13 @@ class _ChatbotScreenState extends State<ChatbotScreen> {
         ],
       ),
       drawer: const Drawer(),
-      body: BlocBuilder<ChatbotCubit, ChatbotState>(
+      body: BlocConsumer<ChatbotCubit, ChatbotState>(
         bloc: _chatbotCubit,
+        listener: (context, state) {
+          if (state is ChatbotLoaded || state is ChatbotMessageSending) {
+            _scrollToBottom();
+          }
+        },
         builder: (context, state) {
           return Column(
             children: [

@@ -32,6 +32,15 @@ class MessagesList extends StatelessWidget {
       messages = (state as ChatbotLoaded).messages;
     } else if (state is ChatbotMessageSending) {
       messages = (state as ChatbotMessageSending).messages;
+      messages = List.from(messages)
+        ..add(
+          ChatMessage(
+            id: 'typing',
+            text: '',
+            isUser: false,
+            timestamp: DateTime.now(),
+          ),
+        );
     }
 
     if (messages.isEmpty) {

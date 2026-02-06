@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -35,6 +36,8 @@ class MessageBubble extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isTyping = message.id == 'typing';
+
     return Padding(
       padding: EdgeInsets.only(
         bottom: MySizes.spaceSm(context),
@@ -46,7 +49,6 @@ class MessageBubble extends StatelessWidget {
             ? CrossAxisAlignment.end
             : CrossAxisAlignment.start,
         children: [
-          // Images displayed in wrap above the bubble
           if (message.imagePaths != null && message.imagePaths!.isNotEmpty)
             Padding(
               padding: EdgeInsets.only(bottom: MySizes.spaceXs(context)),
@@ -84,36 +86,12 @@ class MessageBubble extends StatelessWidget {
                 ),
               ),
             ),
-
-          // Message bubble
           Row(
             mainAxisAlignment: message.isUser
                 ? MainAxisAlignment.end
                 : MainAxisAlignment.start,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // AI Avatar
-              // if (!message.isUser) ...[
-              //   Column(
-              //     children: [
-              //       SizedBox(height: MySizes.spaceSm(context)),
-              //       Container(
-              //         width: ResponsiveHelper.responsiveValue(context, 32),
-              //         height: ResponsiveHelper.responsiveValue(context, 32),
-              //         decoration: BoxDecoration(
-              //           color: MyColors.primaryShade700,
-              //           shape: BoxShape.circle,
-              //         ),
-              //         child: Icon(
-              //           LucideIcons.bot,
-              //           color: MyColors.white,
-              //           size: ResponsiveHelper.responsiveValue(context, 18),
-              //         ),
-              //       ),
-              //     ],
-              //   ),
-              //   SizedBox(width: MySizes.spaceSm(context)),
-              // ],
               message.isUser
                   ? Flexible(
                       child: Column(
@@ -207,7 +185,7 @@ class MessageBubble extends StatelessWidget {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          if (message.text.isNotEmpty)
+                          if (message.text.isNotEmpty || isTyping)
                             Container(
                               padding: EdgeInsets.symmetric(
                                 vertical: MySizes.spaceSm(context),
@@ -215,131 +193,138 @@ class MessageBubble extends StatelessWidget {
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  MarkdownBody(
-                                    data: message.text,
-                                    styleSheet:
-                                        MarkdownStyleSheet.fromTheme(
-                                          Theme.of(context),
-                                        ).copyWith(
-                                          p: context.bodyMedium.copyWith(
-                                            color: MyColors.textPrimary,
-                                            height: 1.5,
-                                            fontSize:
-                                                ResponsiveHelper.responsiveValue(
-                                                  context,
-                                                  15,
+                                  if (isTyping)
+                                    const _TypingIndicator()
+                                  else ...[
+                                    MarkdownBody(
+                                      data: message.text,
+                                      styleSheet:
+                                          MarkdownStyleSheet.fromTheme(
+                                            Theme.of(context),
+                                          ).copyWith(
+                                            p: context.bodyMedium.copyWith(
+                                              color: MyColors.textPrimary,
+                                              height: 1.5,
+                                              fontSize:
+                                                  ResponsiveHelper.responsiveValue(
+                                                    context,
+                                                    15,
+                                                  ),
+                                            ),
+                                            h1: context.headlineSmall.copyWith(
+                                              color: MyColors.textPrimary,
+                                            ),
+                                            h2: context.titleLarge.copyWith(
+                                              color: MyColors.textPrimary,
+                                            ),
+                                            h3: context.titleMedium.copyWith(
+                                              color: MyColors.textPrimary,
+                                            ),
+                                            strong: context.bodyMedium.copyWith(
+                                              fontWeight: FontWeight.w700,
+                                              color: MyColors.textPrimary,
+                                            ),
+                                            em: context.bodyMedium.copyWith(
+                                              fontStyle: FontStyle.italic,
+                                              color: MyColors.textPrimary,
+                                            ),
+                                            blockquote: context.bodyMedium
+                                                .copyWith(
+                                                  color: MyColors.textSecondary,
+                                                ),
+                                            code: context.bodyMedium.copyWith(
+                                              fontFamily: 'monospace',
+                                              color: MyColors.textPrimary,
+                                            ),
+                                            listBullet: context.bodyMedium
+                                                .copyWith(
+                                                  color: MyColors.textPrimary,
                                                 ),
                                           ),
-                                          h1: context.headlineSmall.copyWith(
-                                            color: MyColors.textPrimary,
+                                    ),
+                                    if (message.isComplete)
+                                      Row(
+                                        mainAxisSize: MainAxisSize.min,
+                                        children: [
+                                          IconButton(
+                                            icon: Icon(
+                                              LucideIcons.copy,
+                                              size:
+                                                  ResponsiveHelper.responsiveValue(
+                                                    context,
+                                                    16,
+                                                  ),
+                                              color: MyColors.textSecondary,
+                                            ),
+                                            padding: EdgeInsets.zero,
+                                            onPressed: () {
+                                              Clipboard.setData(
+                                                ClipboardData(
+                                                  text: message.text,
+                                                ),
+                                              );
+                                              MyLoaders.customToast(
+                                                context: context,
+                                                message: 'Copied to clipboard',
+                                              );
+                                            },
                                           ),
-                                          h2: context.titleLarge.copyWith(
-                                            color: MyColors.textPrimary,
+                                          IconButton(
+                                            icon: Icon(
+                                              LucideIcons.thumbsUp,
+                                              size:
+                                                  ResponsiveHelper.responsiveValue(
+                                                    context,
+                                                    16,
+                                                  ),
+                                              color: MyColors.textSecondary,
+                                            ),
+                                            padding: EdgeInsets.zero,
+                                            onPressed: () {},
                                           ),
-                                          h3: context.titleMedium.copyWith(
-                                            color: MyColors.textPrimary,
+                                          IconButton(
+                                            icon: Icon(
+                                              LucideIcons.thumbsDown,
+                                              size:
+                                                  ResponsiveHelper.responsiveValue(
+                                                    context,
+                                                    16,
+                                                  ),
+                                              color: MyColors.textSecondary,
+                                            ),
+                                            padding: EdgeInsets.zero,
+                                            onPressed: () {},
                                           ),
-                                          strong: context.bodyMedium.copyWith(
-                                            fontWeight: FontWeight.w700,
-                                            color: MyColors.textPrimary,
+                                          IconButton(
+                                            icon: Icon(
+                                              LucideIcons.share2,
+                                              size:
+                                                  ResponsiveHelper.responsiveValue(
+                                                    context,
+                                                    16,
+                                                  ),
+                                              color: MyColors.textSecondary,
+                                            ),
+                                            padding: EdgeInsets.zero,
+                                            onPressed: () {},
                                           ),
-                                          em: context.bodyMedium.copyWith(
-                                            fontStyle: FontStyle.italic,
-                                            color: MyColors.textPrimary,
+                                          IconButton(
+                                            icon: HugeIcon(
+                                              icon: HugeIcons
+                                                  .strokeRoundedMoreHorizontalCircle01,
+                                              size:
+                                                  ResponsiveHelper.responsiveValue(
+                                                    context,
+                                                    16,
+                                                  ),
+                                              color: MyColors.textSecondary,
+                                            ),
+                                            padding: EdgeInsets.zero,
+                                            onPressed: () {},
                                           ),
-                                          blockquote: context.bodyMedium
-                                              .copyWith(
-                                                color: MyColors.textSecondary,
-                                              ),
-                                          code: context.bodyMedium.copyWith(
-                                            fontFamily: 'monospace',
-                                            color: MyColors.textPrimary,
-                                          ),
-                                          listBullet: context.bodyMedium
-                                              .copyWith(
-                                                color: MyColors.textPrimary,
-                                              ),
-                                        ),
-                                  ),
-                                  Row(
-                                    mainAxisSize: MainAxisSize.min,
-                                    children: [
-                                      IconButton(
-                                        icon: Icon(
-                                          LucideIcons.copy,
-                                          size:
-                                              ResponsiveHelper.responsiveValue(
-                                                context,
-                                                16,
-                                              ),
-                                          color: MyColors.textSecondary,
-                                        ),
-                                        padding: EdgeInsets.zero,
-                                        onPressed: () {
-                                          Clipboard.setData(
-                                            ClipboardData(text: message.text),
-                                          );
-                                          MyLoaders.customToast(
-                                            context: context,
-                                            message: 'Copied to clipboard',
-                                          );
-                                        },
+                                        ],
                                       ),
-                                      IconButton(
-                                        icon: Icon(
-                                          LucideIcons.thumbsUp,
-                                          size:
-                                              ResponsiveHelper.responsiveValue(
-                                                context,
-                                                16,
-                                              ),
-                                          color: MyColors.textSecondary,
-                                        ),
-                                        padding: EdgeInsets.zero,
-                                        onPressed: () {},
-                                      ),
-                                      IconButton(
-                                        icon: Icon(
-                                          LucideIcons.thumbsDown,
-                                          size:
-                                              ResponsiveHelper.responsiveValue(
-                                                context,
-                                                16,
-                                              ),
-                                          color: MyColors.textSecondary,
-                                        ),
-                                        padding: EdgeInsets.zero,
-                                        onPressed: () {},
-                                      ),
-                                      IconButton(
-                                        icon: Icon(
-                                          LucideIcons.share2,
-                                          size:
-                                              ResponsiveHelper.responsiveValue(
-                                                context,
-                                                16,
-                                              ),
-                                          color: MyColors.textSecondary,
-                                        ),
-                                        padding: EdgeInsets.zero,
-                                        onPressed: () {},
-                                      ),
-                                      IconButton(
-                                        icon: HugeIcon(
-                                          icon: HugeIcons
-                                              .strokeRoundedMoreHorizontalCircle01,
-                                          size:
-                                              ResponsiveHelper.responsiveValue(
-                                                context,
-                                                16,
-                                              ),
-                                          color: MyColors.textSecondary,
-                                        ),
-                                        padding: EdgeInsets.zero,
-                                        onPressed: () {},
-                                      ),
-                                    ],
-                                  ),
+                                  ],
                                 ],
                               ),
                             ),
@@ -376,4 +361,64 @@ class _BubbleTailPainter extends CustomPainter {
 
   @override
   bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
+}
+
+class _TypingIndicator extends StatefulWidget {
+  const _TypingIndicator();
+
+  @override
+  State<_TypingIndicator> createState() => _TypingIndicatorState();
+}
+
+class _TypingIndicatorState extends State<_TypingIndicator>
+    with SingleTickerProviderStateMixin {
+  late final AnimationController _controller;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 900),
+    )..repeat();
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  double _dotOpacity(int index) {
+    final phase = (_controller.value + (index * 0.2)) % 1.0;
+    return 0.3 + 0.7 * (0.5 + 0.5 * math.sin(2 * math.pi * phase));
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return AnimatedBuilder(
+      animation: _controller,
+      builder: (context, child) {
+        return Row(
+          mainAxisSize: MainAxisSize.min,
+          children: List.generate(3, (index) {
+            return Padding(
+              padding: const EdgeInsets.only(right: 4),
+              child: Opacity(
+                opacity: _dotOpacity(index),
+                child: Container(
+                  width: 6,
+                  height: 6,
+                  decoration: BoxDecoration(
+                    color: MyColors.textSecondary,
+                    shape: BoxShape.circle,
+                  ),
+                ),
+              ),
+            );
+          }),
+        );
+      },
+    );
+  }
 }

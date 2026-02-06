@@ -328,7 +328,7 @@ class DI {
       ),
     );
 
-    /// Chatbot Cubit ///
+    /// Chatbot ///
     sl.registerFactory(() => ChatbotCubit());
   }
 }
