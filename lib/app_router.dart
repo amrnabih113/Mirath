@@ -4,6 +4,11 @@ import 'package:go_router/go_router.dart';
 import 'package:mirath/features/discussions/presentation/screens/add_discussion_screen.dart';
 import 'package:mirath/features/home/domain/entities/paper_entity.dart';
 import 'package:mirath/features/papers/presentation/screens/paper_screen.dart';
+import 'package:mirath/features/profile/presentation/screens/edit_intersts_screen.dart';
+import 'package:mirath/features/profile/presentation/screens/edit_profile_screen.dart';
+import 'package:mirath/features/profile/presentation/screens/follower_following_screen.dart';
+import 'package:mirath/features/profile/presentation/screens/profile_screen.dart';
+import 'package:mirath/features/profile/presentation/screens/setting_screen.dart';
 import 'features/discussions/domain/entities/discussion.dart';
 import 'features/discussions/presentation/cubit/community_cubit.dart';
 import 'features/discussions/presentation/cubit/discussion_details_cubit.dart';
@@ -263,18 +268,19 @@ final appRouter = GoRouter(
         GoRoute(
           path: '/profile',
           pageBuilder: (context, state) => NoTransitionPage(
-            child: Scaffold(
-              body: Center(
-                child: ElevatedButton(
-                  onPressed: () {
-                    Future.delayed(const Duration(milliseconds: 100), () {
-                      context.read<AuthCubit>().signOut();
-                    });
-                  },
-                  child: Text('Sign Out'),
-                ),
-              ),
-            ),
+            child: const ProfileScreen(),
+            // Scaffold(
+            //   body: Center(
+            //     child: ElevatedButton(
+            //       onPressed: () {
+            //         Future.delayed(const Duration(milliseconds: 100), () {
+            //           context.read<AuthCubit>().signOut();
+            //         });
+            //       },
+            //       child: Text('Sign Out'),
+            //     ),
+            //   ),
+            // ),
           ),
         ),
       ],
@@ -413,6 +419,32 @@ final appRouter = GoRouter(
       path: '/add-discussion',
       pageBuilder: (context, state) {
         return PageTransitions.smoothTransition(const AddDiscussionScreen());
+      },
+    ),
+    GoRoute(
+      path: '/edit_profile_screen',
+      pageBuilder: (context, state) {
+        return PageTransitions.smoothTransition(const EditProfileScreen());
+      },
+    ),
+    GoRoute(
+      path: '/follower_following_screen',
+      pageBuilder: (context, state) {
+        return PageTransitions.smoothTransition(
+          const FollowerFollowingScreen(),
+        );
+      },
+    ),
+    GoRoute(
+      path: '/setting_screen',
+      pageBuilder: (context, state) {
+        return PageTransitions.smoothTransition(const SettingScreen());
+      },
+    ),
+    GoRoute(
+      path: '/edit_intersts_screen',
+      pageBuilder: (context, state) {
+        return PageTransitions.smoothTransition(const EditInterstsScreen());
       },
     ),
   ],
