@@ -6,7 +6,6 @@ import 'package:mirath/core/utils/my_sizes.dart';
 import 'package:mirath/features/common/widgets/my_back_icon.dart';
 import 'package:mirath/features/common/widgets/tag_chip.dart';
 import 'package:mirath/features/home/presentation/widgets/search_text_field.dart';
-import 'package:mirath/features/papers/presentation/widgets/my_text_icon.dart';
 
 class EditInterstsScreen extends StatelessWidget {
   const EditInterstsScreen({super.key});

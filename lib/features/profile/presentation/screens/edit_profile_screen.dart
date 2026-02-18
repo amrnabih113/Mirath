@@ -257,7 +257,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                         mainAxisSize: MainAxisSize.min,
                         children: [
                           Text('Edit'),
-                          SizedBox(width: 8),
+                          SizedBox(width: MySizes.spaceXs(context)),
                           HugeIcon(icon: HugeIcons.strokeRoundedPencilEdit01),
                         ],
                       ),

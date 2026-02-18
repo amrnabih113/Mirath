@@ -30,7 +30,7 @@ class UserData extends StatelessWidget {
           Row(
             children: [
               CircleAvatar(
-                radius: MySizes.borderRadiusLg(context) * 2,
+                radius: MySizes.borderRadiusSm(context) * 2,
                 child: SvgPicture.asset(
                   'assets/images/Profile picture (1).svg',
                 ),
