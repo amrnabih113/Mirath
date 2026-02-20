@@ -1,29 +1,24 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 
 import '../../../../core/helpers/responsive_helper.dart';
 import '../../../../core/utils/my_sizes.dart';
 import '../../../common/widgets/my_back_icon.dart';
 import '../../../common/widgets/my_search_bar.dart';
+import '../../domain/entities/search_history_item.dart';
+import '../cubit/search_cubit.dart';
+import '../cubit/search_state.dart';
 import '../widgets/search_item.dart';
 import '../widgets/search_screen_heading.dart';
 
 class SearchScreen extends StatefulWidget {
-  final List<String> items;
   final String hintText;
-  final String? headingText;
-  final Function()? onSearchChanged;
-  final Function()? onItemTap;
   final bool showHeading;
-  final Function()? onRemoveTap;
 
   const SearchScreen({
-    required this.items,
     this.hintText = 'Search',
-    this.headingText,
-    this.onSearchChanged,
-    this.onItemTap,
     this.showHeading = true,
-    this.onRemoveTap,
     super.key,
   });
 
@@ -33,13 +28,14 @@ class SearchScreen extends StatefulWidget {
 
 class _SearchScreenState extends State<SearchScreen> {
   late TextEditingController _searchController;
-  late List<String> _filteredItems;
 
   @override
   void initState() {
     super.initState();
     _searchController = TextEditingController();
-    _filteredItems = widget.items;
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      context.read<SearchCubit>().loadSearchHistory();
+    });
   }
 
   @override
@@ -48,20 +44,14 @@ class _SearchScreenState extends State<SearchScreen> {
     super.dispose();
   }
 
-  void _filterItems(String query) {
-    setState(() {
-      if (query.isEmpty) {
-        _filteredItems = widget.items;
-      } else {
-        _filteredItems = widget.items
-            .where(
-              (item) =>
-                  item.toString().toLowerCase().contains(query.toLowerCase()),
-            )
-            .toList();
-      }
-    });
-    widget.onSearchChanged;
+  void _onQueryChanged(String query) {
+    setState(() {});
+  }
+
+  void _onSubmitSearch(String query) {
+    final trimmed = query.trim();
+    if (trimmed.isEmpty) return;
+    context.pushReplacement('/home-search-results', extra: trimmed);
   }
 
   @override
@@ -86,8 +76,9 @@ class _SearchScreenState extends State<SearchScreen> {
                     child: MySearchBar(
                       controller: _searchController,
                       hintText: widget.hintText,
-                      showSuffixIcon: true,
-                      onChanged: _filterItems,
+                      showSuffixIcon: false,
+                      onChanged: _onQueryChanged,
+                      onSubmitted: _onSubmitSearch,
                     ),
                   ),
                 ),
@@ -108,33 +99,74 @@ class _SearchScreenState extends State<SearchScreen> {
                   mainAxisAlignment: MainAxisAlignment.start,
                   children: [
                     if (widget.showHeading) ...[
-                      SearchScreenHeading(),
+                      SearchScreenHeading(
+                        onClearAll: () =>
+                            context.read<SearchCubit>().clearSearchHistory(),
+                      ),
                       SizedBox(height: MySizes.spaceSm(context)),
                     ],
                     Expanded(
-                      child: _filteredItems.isEmpty
-                          ? Center(
+                      child: BlocBuilder<SearchCubit, SearchState>(
+                        builder: (context, state) {
+                          if (state is SearchHistoryLoading ||
+                              state is SearchInitial) {
+                            return const Center(
+                              child: CircularProgressIndicator(),
+                            );
+                          }
+
+                          if (state is SearchError) {
+                            return Center(
                               child: Text(
-                                'No results found',
+                                state.message,
                                 style: Theme.of(context).textTheme.bodyMedium,
                               ),
-                            )
-                          : ListView.separated(
-                              separatorBuilder: (context, index) =>
-                                  SizedBox(height: MySizes.spaceXs(context)),
-                              padding: EdgeInsets.zero,
-                              itemCount: _filteredItems.length,
-                              itemBuilder: (context, index) {
-                                final item = _filteredItems[index];
-                                return InkWell(
-                                  onTap: () => widget.onItemTap!.call(),
-                                  child: SearchItem(
-                                    itemTitle: item.toString(),
-                                    onTap: () => widget.onRemoveTap!.call(),
-                                  ),
-                                );
-                              },
-                            ),
+                            );
+                          }
+
+                          final history = state is SearchHistoryLoaded
+                              ? state.history
+                              : <SearchHistoryItem>[];
+                          final query = _searchController.text.trim();
+                          final filtered = query.isEmpty
+                              ? history
+                              : history
+                                    .where(
+                                      (item) => item.query
+                                          .toLowerCase()
+                                          .contains(query.toLowerCase()),
+                                    )
+                                    .toList();
+
+                          if (filtered.isEmpty) {
+                            return Center(
+                              child: Text(
+                                'No recent searches',
+                                style: Theme.of(context).textTheme.bodyMedium,
+                              ),
+                            );
+                          }
+
+                          return ListView.separated(
+                            separatorBuilder: (context, index) =>
+                                SizedBox(height: MySizes.spaceXs(context)),
+                            padding: EdgeInsets.zero,
+                            itemCount: filtered.length,
+                            itemBuilder: (context, index) {
+                              final item = filtered[index];
+                              return InkWell(
+                                onTap: () => _onSubmitSearch(item.query),
+                                child: SearchItem(
+                                  itemTitle: item.query,
+                                  onTap: () => context
+                                      .read<SearchCubit>()
+                                      .deleteSearchHistoryItem(item.id),
+                                ),
+                              );
+                            },
+                          );
+                        },
+                      ),
                     ),
                   ],
                 ),

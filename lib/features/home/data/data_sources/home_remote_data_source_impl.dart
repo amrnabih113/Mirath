@@ -3,6 +3,8 @@ import '../../../../core/utils/my_constants.dart';
 import '../models/home_recent_response_model.dart';
 import '../models/home_recommendations_response_model.dart';
 import '../models/save_paper_response_model.dart';
+import '../models/search_history_response_model.dart';
+import '../models/search_paper_model.dart';
 import 'home_remote_data_source.dart';
 
 class HomeRemoteDataSourceImpl implements HomeRemoteDataSource {
@@ -62,5 +64,57 @@ class HomeRemoteDataSourceImpl implements HomeRemoteDataSource {
   Future<void> unsavePaper(String paperId) async {
     final endpoint = MyConstants.unsavePaper.replaceAll('{id}', paperId);
     await dioClient.delete(endpoint);
+  }
+
+  @override
+  Future<List<SearchPaperModel>> searchPapers(
+    String query, {
+    int page = 1,
+    int limit = 10,
+  }) {
+    final params = {'q': query, 'page': page, 'limit': limit};
+
+    return dioClient
+        .get(MyConstants.searchPapers, queryParameters: params)
+        .then((response) {
+          final data = response.data as Map<String, dynamic>;
+          final papersJson = data['data'] as List<dynamic>;
+          return papersJson
+              .map(
+                (paperJson) => SearchPaperModel.fromJson(
+                  paperJson as Map<String, dynamic>,
+                ),
+              )
+              .toList();
+        });
+  }
+
+  @override
+  Future<SearchHistoryResponseModel> getSearchHistory({int limit = 10}) async {
+    try {
+      final response = await dioClient.get(
+        MyConstants.searchHistory,
+        queryParameters: {'limit': limit},
+      );
+
+      print('Search history response: ${response.data}');
+      return SearchHistoryResponseModel.fromJson(
+        response.data as Map<String, dynamic>,
+      );
+    } catch (e) {
+      print('Error in getSearchHistory data source: $e');
+      rethrow;
+    }
+  }
+
+  @override
+  Future<void> deleteSearchHistoryById(String id) async {
+    final endpoint = MyConstants.deleteSearchHistoryById.replaceAll('{id}', id);
+    await dioClient.delete(endpoint);
+  }
+
+  @override
+  Future<void> clearSearchHistory() async {
+    await dioClient.delete(MyConstants.searchHistory);
   }
 }

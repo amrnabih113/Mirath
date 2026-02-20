@@ -70,4 +70,28 @@ class PaperModel extends Paper {
       'publishedAt': publishedAt.toIso8601String(),
     };
   }
+
+  factory PaperModel.fromEntity(Paper paper) {
+    return PaperModel(
+      id: paper.id,
+      title: paper.title,
+      abstract: paper.abstract,
+      citation: paper.citation,
+      authors: paper.authors,
+      categories: paper.categories,
+      publishedAt: paper.publishedAt,
+    );
+  }
+
+  Paper toEntity() {
+    return Paper(
+      id: id,
+      title: title,
+      abstract: abstract,
+      citation: citation,
+      authors: authors,
+      categories: categories,
+      publishedAt: publishedAt,
+    );
+  }
 }
