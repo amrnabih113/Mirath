@@ -112,12 +112,17 @@ class _ChatbotScreenState extends State<ChatbotScreen> {
     _scrollToBottom();
   }
 
-  void _scrollToBottom() {
-    Future.delayed(const Duration(milliseconds: 100), () {
+  void _scrollToBottom({bool followTyping = false}) {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
       if (_scrollController.hasClients) {
+        final maxExtent = _scrollController.position.maxScrollExtent;
+        if (followTyping) {
+          _scrollController.jumpTo(maxExtent);
+          return;
+        }
         _scrollController.animateTo(
-          _scrollController.position.maxScrollExtent,
-          duration: const Duration(milliseconds: 300),
+          maxExtent,
+          duration: const Duration(milliseconds: 200),
           curve: Curves.easeOut,
         );
       }
@@ -153,7 +158,7 @@ class _ChatbotScreenState extends State<ChatbotScreen> {
         bloc: _chatbotCubit,
         listener: (context, state) {
           if (state is ChatbotLoaded || state is ChatbotMessageSending) {
-            _scrollToBottom();
+            _scrollToBottom(followTyping: true);
           }
         },
         builder: (context, state) {

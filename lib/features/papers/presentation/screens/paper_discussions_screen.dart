@@ -110,7 +110,7 @@ class _PaperDiscussionsScreenState extends State<PaperDiscussionsScreen> {
                       padding: MySizes.paddingMd(context),
                       child: ListView.separated(
                         itemCount: discussions.length,
-                        separatorBuilder: (_, __) =>
+                        separatorBuilder: (_, _) =>
                             SizedBox(height: MySizes.spaceMd(context)),
                         itemBuilder: (context, index) {
                           final discussion = discussions[index];

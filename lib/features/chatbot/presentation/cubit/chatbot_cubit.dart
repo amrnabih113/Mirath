@@ -15,29 +15,29 @@ class ChatbotCubit extends Cubit<ChatbotState> {
     emit(ChatbotLoaded(messages: _messages));
   }
 
-  void _loadMockMessages() {
-    // Chat starts empty but bot sends three initial messages
-    _messages.addAll([
-      ChatMessage(
-        id: const Uuid().v4(),
-        text: 'Hello! 👋',
-        isUser: false,
-        timestamp: DateTime.now(),
-      ),
-      ChatMessage(
-        id: const Uuid().v4(),
-        text: 'I\'m Mirath AI, your research assistant.',
-        isUser: false,
-        timestamp: DateTime.now(),
-      ),
-      ChatMessage(
-        id: const Uuid().v4(),
-        text: 'How can I help you with your research today?',
-        isUser: false,
-        timestamp: DateTime.now(),
-      ),
-    ]);
-  }
+  // void _loadMockMessages() {
+  //   // Chat starts empty but bot sends three initial messages
+  //   _messages.addAll([
+  //     ChatMessage(
+  //       id: const Uuid().v4(),
+  //       text: 'Hello! 👋',
+  //       isUser: false,
+  //       timestamp: DateTime.now(),
+  //     ),
+  //     ChatMessage(
+  //       id: const Uuid().v4(),
+  //       text: 'I\'m Mirath AI, your research assistant.',
+  //       isUser: false,
+  //       timestamp: DateTime.now(),
+  //     ),
+  //     ChatMessage(
+  //       id: const Uuid().v4(),
+  //       text: 'How can I help you with your research today?',
+  //       isUser: false,
+  //       timestamp: DateTime.now(),
+  //     ),
+  //   ]);
+  // }
 
   void sendMessage(String text, {List<String>? imagePaths}) {
     if (text.trim().isEmpty && (imagePaths == null || imagePaths.isEmpty)) {
@@ -64,7 +64,7 @@ class ChatbotCubit extends Cubit<ChatbotState> {
     final messageId = const Uuid().v4();
     final initialMessage = ChatMessage(
       id: messageId,
-      text: '',
+      text: 'Loading...',
       isUser: false,
       timestamp: DateTime.now(),
       isComplete: false,

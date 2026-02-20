@@ -35,9 +35,14 @@ import 'package:mirath/features/home/data/repositories/home_repository_impl.dart
 import 'package:mirath/features/home/domain/repositories/home_repository.dart';
 import 'package:mirath/features/home/domain/usecases/get_recent_papers_usecase.dart';
 import 'package:mirath/features/home/domain/usecases/get_recommendations_usecase.dart';
+import 'package:mirath/features/home/domain/usecases/get_search_history_usecase.dart';
+import 'package:mirath/features/home/domain/usecases/delete_search_history_usecase.dart';
+import 'package:mirath/features/home/domain/usecases/clear_search_history_usecase.dart';
+import 'package:mirath/features/home/domain/usecases/search_papers_usecase.dart';
 import 'package:mirath/features/home/domain/usecases/save_paper_usecase.dart';
 import 'package:mirath/features/home/domain/usecases/unsave_paper_usecase.dart';
 import 'package:mirath/features/home/presentation/cubit/home_cubit.dart';
+import 'package:mirath/features/home/presentation/cubit/search_cubit.dart';
 import 'package:mirath/features/chatbot/presentation/cubit/chatbot_cubit.dart';
 
 import '../core/network/dio_client.dart';
@@ -206,6 +211,7 @@ class DI {
       () => CommunityCubit(
         getAllDiscussionsUseCase: sl(),
         voteOnDiscussionUseCase: sl(),
+        deleteDiscussionVoteUseCase: sl(),
       ),
     );
     sl.registerFactory(
@@ -215,6 +221,8 @@ class DI {
         createCommentUseCase: sl(),
         voteOnCommentUseCase: sl(),
         voteOnDiscussionUseCase: sl(),
+        deleteCommentVoteUseCase: sl(),
+        deleteDiscussionVoteUseCase: sl(),
         userCacheService: sl(),
       ),
     );
@@ -316,6 +324,12 @@ class DI {
     sl.registerLazySingleton(() => GetRecommendationsUseCase(repository: sl()));
     sl.registerLazySingleton(() => SavePaperUseCase(repository: sl()));
     sl.registerLazySingleton(() => UnsavePaperUseCase(repository: sl()));
+    sl.registerLazySingleton(() => SearchPapersUseCase(repository: sl()));
+    sl.registerLazySingleton(() => GetSearchHistoryUseCase(repository: sl()));
+    sl.registerLazySingleton(
+      () => DeleteSearchHistoryUseCase(repository: sl()),
+    );
+    sl.registerLazySingleton(() => ClearSearchHistoryUseCase(repository: sl()));
 
     /// Home Cubit ///
     sl.registerFactory(
@@ -325,6 +339,15 @@ class DI {
         getCurrentUserUsecase: sl(),
         savePaperUseCase: sl(),
         unsavePaperUseCase: sl(),
+      ),
+    );
+
+    sl.registerFactory(
+      () => SearchCubit(
+        getSearchHistoryUseCase: sl(),
+        deleteSearchHistoryUseCase: sl(),
+        clearSearchHistoryUseCase: sl(),
+        searchPapersUseCase: sl(),
       ),
     );
 

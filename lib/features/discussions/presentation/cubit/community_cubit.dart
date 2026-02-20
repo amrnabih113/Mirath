@@ -2,6 +2,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../domain/entities/discussion.dart';
 import 'package:mirath/features/discussions/domain/entities/get_discussions_params.dart';
 import 'package:mirath/features/discussions/domain/entities/vote_params.dart';
+import 'package:mirath/features/discussions/domain/usecases/delete_discussion_vote_usecase.dart';
 import 'package:mirath/features/discussions/domain/usecases/get_all_discussions_usecase.dart';
 import 'package:mirath/features/discussions/domain/usecases/vote_on_discussion_usecase.dart';
 import 'package:mirath/features/discussions/presentation/cubit/community_state.dart';
@@ -9,10 +10,12 @@ import 'package:mirath/features/discussions/presentation/cubit/community_state.d
 class CommunityCubit extends Cubit<CommunityState> {
   final GetAllDiscussionsUseCase getAllDiscussionsUseCase;
   final VoteOnDiscussionUseCase voteOnDiscussionUseCase;
+  final DeleteDiscussionVoteUseCase deleteDiscussionVoteUseCase;
 
   CommunityCubit({
     required this.getAllDiscussionsUseCase,
     required this.voteOnDiscussionUseCase,
+    required this.deleteDiscussionVoteUseCase,
   }) : super(const CommunityInitial());
 
   // Track current page for pagination
@@ -134,7 +137,9 @@ class CommunityCubit extends Cubit<CommunityState> {
     String? newUserVoteType = discussion.userVoteType;
 
     // User is removing their vote (clicking the same vote type they already voted)
-    if (discussion.hasVoted && discussion.userVoteType == voteType) {
+    final isRemovingVote =
+        discussion.hasVoted && discussion.userVoteType == voteType;
+    if (isRemovingVote) {
       if (voteType == 'UP') {
         newUpvoteCount = discussion.upvoteCount - 1;
       } else if (voteType == 'DOWN') {
@@ -183,8 +188,11 @@ class CommunityCubit extends Cubit<CommunityState> {
     emit(currentState.copyWith(discussions: updatedDiscussions));
 
     // Make API call in the background
-    final params = VoteParams(id: discussionId, type: voteType);
-    final result = await voteOnDiscussionUseCase(params);
+    final result = isRemovingVote
+        ? await deleteDiscussionVoteUseCase(discussionId)
+        : await voteOnDiscussionUseCase(
+            VoteParams(id: discussionId, type: voteType),
+          );
 
     result.fold(
       (failure) {

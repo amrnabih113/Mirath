@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:mirath/features/discussions/presentation/screens/add_discussion_screen.dart';
 import 'package:mirath/features/home/domain/entities/paper_entity.dart';
+import 'package:mirath/features/home/presentation/cubit/search_cubit.dart';
 import 'package:mirath/features/papers/presentation/screens/paper_screen.dart';
 import 'package:mirath/features/papers/presentation/screens/paper_discussions_screen.dart';
 import 'features/chatbot/presentation/screens/chatbot_screen.dart';
@@ -270,7 +271,9 @@ final appRouter = GoRouter(
                 child: ElevatedButton(
                   onPressed: () {
                     Future.delayed(const Duration(milliseconds: 100), () {
-                      context.read<AuthCubit>().signOut();
+                      if (context.mounted) {
+                        context.read<AuthCubit>().signOut();
+                      }
                     });
                   },
                   child: Text('Sign Out'),
@@ -342,24 +345,25 @@ final appRouter = GoRouter(
     GoRoute(
       path: '/search',
       pageBuilder: (context, state) {
-        final extra = state.extra as Map<String, dynamic>?;
-        return MaterialPage(
-          child: SearchScreen(
-            items: extra?['items'] ?? [],
-            hintText: extra?['hintText'] ?? 'Search',
-            headingText: extra?['headingText'],
-            onSearchChanged: extra?['onSearchChanged'],
-            onItemTap: extra?['onItemTap'],
-            showHeading: extra?['showHeading'] ?? true,
-            onRemoveTap: extra?['onRemoveTap'],
+        return PageTransitions.smoothTransition(
+          BlocProvider(
+            create: (_) => sl<SearchCubit>(),
+            child: const SearchScreen(),
           ),
         );
       },
     ),
     GoRoute(
       path: '/home-search-results',
-      pageBuilder: (context, state) =>
-          PageTransitions.smoothTransition(const HomeSearchResultScreen()),
+      pageBuilder: (context, state) => PageTransitions.smoothTransition(
+        MultiBlocProvider(
+          providers: [
+            BlocProvider(create: (_) => sl<SearchCubit>()),
+            BlocProvider(create: (_) => sl<HomeCubit>()),
+          ],
+          child: const HomeSearchResultScreen(),
+        ),
+      ),
     ),
     GoRoute(
       path: '/recentely-published',

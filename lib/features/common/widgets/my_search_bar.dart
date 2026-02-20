@@ -13,6 +13,7 @@ class MySearchBar extends StatelessWidget {
     this.showSuffixIcon = false,
     this.onSuffixIconTap,
     this.onChanged,
+    this.onSubmitted,
     this.readOnly = false,
     this.onTap,
   });
@@ -21,6 +22,7 @@ class MySearchBar extends StatelessWidget {
   final bool showSuffixIcon;
   final void Function()? onSuffixIconTap;
   final void Function(String)? onChanged;
+  final void Function(String)? onSubmitted;
   final bool? readOnly;
   final void Function()? onTap;
 
@@ -44,6 +46,7 @@ class MySearchBar extends StatelessWidget {
         cursorColor: MyColors.primaryShade500,
         controller: controller,
         onChanged: onChanged,
+        onSubmitted: onSubmitted,
         decoration: InputDecoration(
           hintText: hintText,
           hintStyle: context.bodySmall.copyWith(

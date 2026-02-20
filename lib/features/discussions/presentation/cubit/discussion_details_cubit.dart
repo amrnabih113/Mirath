@@ -7,6 +7,8 @@ import '../../domain/entities/create_comment_params.dart';
 import '../../domain/entities/discussion_author.dart';
 import '../../domain/entities/vote_params.dart';
 import '../../domain/usecases/create_comment_usecase.dart';
+import '../../domain/usecases/delete_comment_vote_usecase.dart';
+import '../../domain/usecases/delete_discussion_vote_usecase.dart';
 import '../../domain/usecases/get_discussion_by_id_usecase.dart';
 import '../../domain/usecases/get_discussion_comments_usecase.dart';
 import '../../domain/usecases/vote_on_comment_usecase.dart';
@@ -19,6 +21,8 @@ class DiscussionDetailsCubit extends Cubit<DiscussionDetailsState> {
   final CreateCommentUseCase createCommentUseCase;
   final VoteOnCommentUseCase voteOnCommentUseCase;
   final VoteOnDiscussionUseCase voteOnDiscussionUseCase;
+  final DeleteCommentVoteUseCase deleteCommentVoteUseCase;
+  final DeleteDiscussionVoteUseCase deleteDiscussionVoteUseCase;
   final UserCacheService userCacheService;
 
   DiscussionDetailsCubit({
@@ -27,6 +31,8 @@ class DiscussionDetailsCubit extends Cubit<DiscussionDetailsState> {
     required this.createCommentUseCase,
     required this.voteOnCommentUseCase,
     required this.voteOnDiscussionUseCase,
+    required this.deleteCommentVoteUseCase,
+    required this.deleteDiscussionVoteUseCase,
     required this.userCacheService,
   }) : super(const DiscussionDetailsInitial());
 
@@ -271,7 +277,8 @@ class DiscussionDetailsCubit extends Cubit<DiscussionDetailsState> {
     String? newUserVoteType = comment.userVoteType;
 
     // User is removing their vote (clicking the same vote type they already voted)
-    if (comment.hasVoted && comment.userVoteType == voteType) {
+    final isRemovingVote = comment.hasVoted && comment.userVoteType == voteType;
+    if (isRemovingVote) {
       if (voteType == 'UP') {
         newUpvoteCount = comment.upvoteCount - 1;
       } else if (voteType == 'DOWN') {
@@ -317,8 +324,9 @@ class DiscussionDetailsCubit extends Cubit<DiscussionDetailsState> {
 
     emit(currentState.copyWith(comments: updatedComments));
 
-    final params = VoteParams(id: commentId, type: voteType);
-    final result = await voteOnCommentUseCase(params);
+    final result = isRemovingVote
+        ? await deleteCommentVoteUseCase(commentId)
+        : await voteOnCommentUseCase(VoteParams(id: commentId, type: voteType));
 
     result.fold(
       (failure) {
@@ -345,7 +353,9 @@ class DiscussionDetailsCubit extends Cubit<DiscussionDetailsState> {
     String? newUserVoteType = discussion.userVoteType;
 
     // User is removing their vote (clicking the same vote type they already voted)
-    if (discussion.hasVoted && discussion.userVoteType == voteType) {
+    final isRemovingVote =
+        discussion.hasVoted && discussion.userVoteType == voteType;
+    if (isRemovingVote) {
       if (voteType == 'UP') {
         newUpvoteCount = discussion.upvoteCount - 1;
       } else if (voteType == 'DOWN') {
@@ -388,8 +398,11 @@ class DiscussionDetailsCubit extends Cubit<DiscussionDetailsState> {
 
     emit(currentState.copyWith(discussion: updatedDiscussion));
 
-    final params = VoteParams(id: discussionId, type: voteType);
-    final result = await voteOnDiscussionUseCase(params);
+    final result = isRemovingVote
+        ? await deleteDiscussionVoteUseCase(discussionId)
+        : await voteOnDiscussionUseCase(
+            VoteParams(id: discussionId, type: voteType),
+          );
 
     result.fold(
       (failure) {

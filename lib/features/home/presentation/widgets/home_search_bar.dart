@@ -28,14 +28,7 @@ class HomeSearchBar extends StatelessWidget {
 
         readOnly: true,
         onTap: () {
-          context.push(
-            '/search',
-            extra: {
-              'items': ["Item 1", "Item 2", "Item 3"],
-              'hintText': 'Search',
-              'onItemTap': () => context.push('/home-search-results'),
-            },
-          );
+          context.push('/search');
         },
 
         decoration: InputDecoration(

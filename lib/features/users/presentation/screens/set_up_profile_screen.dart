@@ -95,7 +95,9 @@ class _SetUpProfileScreenContentState
                                 Future.delayed(
                                   const Duration(milliseconds: 100),
                                   () {
-                                    context.read<AuthCubit>().signOut();
+                                    if (context.mounted) {
+                                      context.read<AuthCubit>().signOut();
+                                    }
                                   },
                                 );
                               },
@@ -235,14 +237,17 @@ class _SetUpProfileScreenContentState
                                                                   error,
                                                                   stackTrace,
                                                                 ) {
-                                                                  MyLoaders.errorSnackBar(
-                                                                    context:
-                                                                        context,
-                                                                    title:
-                                                                        'Error',
-                                                                    message:
-                                                                        'Failed to pick image. Please try again.',
-                                                                  );
+                                                                  if (context
+                                                                      .mounted) {
+                                                                    MyLoaders.errorSnackBar(
+                                                                      context:
+                                                                          context,
+                                                                      title:
+                                                                          'Error',
+                                                                      message:
+                                                                          'Failed to pick image. Please try again.',
+                                                                    );
+                                                                  }
                                                                   return null;
                                                                 });
                                                           },

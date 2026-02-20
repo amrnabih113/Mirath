@@ -20,9 +20,8 @@ class MyConstants {
   // Use 10.0.2.2 for Android emulator (maps to host machine's localhost)
   // Use your computer's IP (e.g., 192.168.x.x) for real devices
   // Use 127.0.0.1 for iOS simulator or web
-  //static const String baseUrl = "http://192.168.1.5:3000/";
+  static const String baseUrl = "http://192.168.1.5:3000/";
   // static const String baseUrl = "http://10.0.2.2:3000/";
-  static const String baseUrl = "http://192.168.88.22:3000/";
 
   // Endpoints
   // ***Auth endpoints***
@@ -119,4 +118,9 @@ class MyConstants {
   static const String savePaper = "api/v1/papers/{id}/save";
   // delete
   static const String unsavePaper = "api/v1/papers/{id}/save";
+
+  // ***search endpoints***
+  static const String searchPapers = "api/v1/papers/search";
+  static const String searchHistory = "api/v1/search/history";
+  static const String deleteSearchHistoryById = "api/v1/search/history/{id}";
 }
