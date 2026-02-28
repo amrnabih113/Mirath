@@ -1,5 +1,4 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:mirath/features/home/domain/entities/paper_entity.dart';
 
 import '../../../../core/usecases/no_params.dart';
 import '../../../users/domain/entities/user.dart';
@@ -152,15 +151,10 @@ class HomeCubit extends Cubit<HomeState> {
   Future<void> savePaper(String paperId) async {
     final result = await savePaperUseCase(paperId);
 
-    result.fold(
-      (failure) {
-        // Handle error if needed
-      },
-      (_) {
-        // Update paper isSaved status in state
-        _updatePaperSavedStatus(paperId, true);
-      },
-    );
+    result.fold((failure) {}, (_) {
+      // Update paper isSaved status in state
+      _updatePaperSavedStatus(paperId, true);
+    });
   }
 
   Future<void> unsavePaper(String paperId) async {
@@ -177,48 +171,59 @@ class HomeCubit extends Cubit<HomeState> {
     );
   }
 
+  void updatePaperSavedStatus(String paperId, bool isSaved) {
+    _updatePaperSavedStatus(paperId, isSaved);
+  }
+
   void _updatePaperSavedStatus(String paperId, bool isSaved) {
     final currentState = state;
 
     if (currentState is HomePapersLoaded) {
       final updatedRecentPapers = currentState.recentPapers.map((paper) {
         if (paper.id == paperId) {
-          return PaperEntity(
-            id: paper.id,
-            title: paper.title,
-            abstract: paper.abstract,
-            publishedAt: paper.publishedAt,
-            authors: paper.authors,
-            categories: paper.categories,
-            isSaved: isSaved,
-            preprint: paper.preprint,
-          );
+          return paper.copyWith(isSaved: isSaved);
         }
         return paper;
       }).toList();
 
       final updatedRecommendations = currentState.recommendations.map((paper) {
         if (paper.id == paperId) {
-          return PaperEntity(
-            id: paper.id,
-            title: paper.title,
-            abstract: paper.abstract,
-            publishedAt: paper.publishedAt,
-            authors: paper.authors,
-            categories: paper.categories,
-            isSaved: isSaved,
-            preprint: paper.preprint,
-          );
+          return paper.copyWith(isSaved: isSaved);
         }
         return paper;
       }).toList();
 
+      // Emit HomePapersUpdated state with updated papers
       emit(
-        currentState.copyWith(
+        HomePapersUpdated(
           recentPapers: updatedRecentPapers,
           recommendations: updatedRecommendations,
+          isLoadingMoreRecent: currentState.isLoadingMoreRecent,
+          isLoadingMoreRecommendations:
+              currentState.isLoadingMoreRecommendations,
+          hasReachedMaxRecent: currentState.hasReachedMaxRecent,
+          hasReachedMaxRecommendations:
+              currentState.hasReachedMaxRecommendations,
         ),
       );
+    } else if (currentState is HomeRecentPapersLoaded) {
+      final updatedRecentPapers = currentState.recentPapers.map((paper) {
+        if (paper.id == paperId) {
+          return paper.copyWith(isSaved: isSaved);
+        }
+        return paper;
+      }).toList();
+
+      emit(currentState.copyWith(recentPapers: updatedRecentPapers));
+    } else if (currentState is HomeRecommendationsLoaded) {
+      final updatedRecommendations = currentState.recommendations.map((paper) {
+        if (paper.id == paperId) {
+          return paper.copyWith(isSaved: isSaved);
+        }
+        return paper;
+      }).toList();
+
+      emit(currentState.copyWith(recommendations: updatedRecommendations));
     }
   }
 }

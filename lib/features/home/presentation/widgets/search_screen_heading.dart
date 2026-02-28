@@ -4,7 +4,9 @@ import '../../../../core/utils/my_colors.dart';
 import '../../../../core/utils/my_extenstions.dart';
 
 class SearchScreenHeading extends StatelessWidget {
-  const SearchScreenHeading({super.key});
+  final VoidCallback? onClearAll;
+
+  const SearchScreenHeading({super.key, this.onClearAll});
 
   @override
   Widget build(BuildContext context) {
@@ -19,7 +21,7 @@ class SearchScreenHeading extends StatelessWidget {
           ),
         ),
         TextButton(
-          onPressed: () {},
+          onPressed: onClearAll,
           child: Text(
             'Clear All',
             style: context.titleSmall.copyWith(

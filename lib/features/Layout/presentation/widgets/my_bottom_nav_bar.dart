@@ -6,7 +6,6 @@ import 'package:hugeicons/hugeicons.dart';
 import '../../../../core/helpers/responsive_helper.dart';
 import '../../../../core/utils/my_colors.dart';
 import '../../../../core/utils/my_sizes.dart';
-import '../../../../core/helpers/my_loaders.dart';
 import '../cubit/layout_cubit.dart';
 import 'nav_item.dart';
 
@@ -134,13 +133,6 @@ class MyBottomNavBar extends StatelessWidget {
                       decoration: BoxDecoration(
                         shape: BoxShape.circle,
                         color: MyColors.white,
-                        boxShadow: [
-                          BoxShadow(
-                            color: Colors.black.withAlpha(25),
-                            blurRadius: MySizes.spaceMd(context),
-                            offset: Offset(0, MySizes.spaceXs(context) * 0.5),
-                          ),
-                        ],
                       ),
                       child: FittedBox(
                         child: SizedBox(
@@ -148,11 +140,7 @@ class MyBottomNavBar extends StatelessWidget {
                           height: ResponsiveHelper.responsiveValue(context, 56),
                           child: FloatingActionButton(
                             onPressed: () {
-                              MyLoaders.successSnackBar(
-                                context: context,
-                                title: 'Sparkle',
-                                message: 'FAB Pressed!',
-                              );
+                              context.push('/chatbot');
                             },
                             backgroundColor: MyColors.primaryShade800,
                             foregroundColor: MyColors.light,

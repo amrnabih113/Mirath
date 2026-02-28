@@ -53,59 +53,89 @@ class ReadingListCard extends StatelessWidget {
           children: [
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              crossAxisAlignment: .center,
               children: [
                 readingList.owner?.fullName == null
                     ? const SizedBox.shrink()
                     : Text(
                         readingList.owner!.fullName,
                         style: context.titleSmall.copyWith(
-                          color: MyColors.textPrimary,
-                          fontWeight: FontWeight.w600,
+                          fontSize: ResponsiveHelper.responsiveValue(
+                            context,
+                            12,
+                          ),
                         ),
+
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
                       ),
+                IconButton(
+                  onPressed: () {},
+                  icon: HugeIcon(
+                    icon: HugeIcons.strokeRoundedBookmark02,
+                    size: MySizes.iconSmall(context),
+                    color: MyColors.primaryShade700,
+                  ),
+                  padding: EdgeInsets.zero,
+                  constraints: const BoxConstraints(),
+                ),
               ],
             ),
-            SizedBox(height: MySizes.spaceXs(context) * 0.5),
             Text(
               readingList.title,
-              style: context.titleLarge.copyWith(
+              style: context.titleMedium.copyWith(
                 fontWeight: FontWeight.w800,
-                color: MyColors.textPrimary,
+                fontSize: ResponsiveHelper.responsiveValue(context, 16),
               ),
               maxLines: 1,
               overflow: TextOverflow.ellipsis,
             ),
-            SizedBox(height: MySizes.spaceSm(context) * 0.75),
+            SizedBox(height: MySizes.spaceXs(context) * 0.75),
             Text(
               '${readingList.paperCount} papers  •  Updated ${_formatDate(readingList.updatedAt)}',
-              style: context.bodySmall.copyWith(
-                color: MyColors.textSecondary,
-                fontWeight: FontWeight.w600,
-              ),
+              style: context.bodySmall,
             ),
-            SizedBox(height: MySizes.spaceSm(context)),
             Divider(
               color: MyColors.primaryShade300,
               thickness: 1,
               height: MySizes.spaceMd(context),
             ),
-            if (readingList.description != null &&
-                readingList.description!.trim().isNotEmpty)
-              Text(
-                readingList.description!,
-                style: context.bodyLarge.copyWith(color: MyColors.textPrimary),
-                maxLines: 2,
-                overflow: TextOverflow.ellipsis,
-              ),
+
+            Row(
+              children: [
+                if (readingList.description != null &&
+                    readingList.description!.trim().isNotEmpty)
+                  ConstrainedBox(
+                    constraints: BoxConstraints(
+                      maxWidth: ResponsiveHelper.responsiveValue(context, 230),
+                    ),
+                    child: Text(
+                      readingList.description!,
+                      style: context.bodySmall,
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                  ),
+                Spacer(),
+                IconButton(
+                  onPressed: () {},
+                  icon: HugeIcon(
+                    icon: HugeIcons.strokeRoundedShare08,
+                    size: MySizes.iconSmall(context),
+                    color: MyColors.primaryShade700,
+                  ),
+                  padding: EdgeInsets.zero,
+                  constraints: const BoxConstraints(),
+                ),
+              ],
+            ),
             if (readingList.description != null &&
                 readingList.description!.trim().isNotEmpty)
               SizedBox(height: MySizes.spaceSm(context)),
-            if (readingList.previewTags.isNotEmpty)
-              Row(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                if (readingList.previewTags.isNotEmpty)
                   Expanded(
                     child: SizedBox(
                       height: ResponsiveHelper.responsiveValue(context, 28),
@@ -119,18 +149,8 @@ class ReadingListCard extends StatelessWidget {
                       ),
                     ),
                   ),
-                  IconButton(
-                    onPressed: () {},
-                    icon: HugeIcon(
-                      icon: HugeIcons.strokeRoundedShare01,
-                      size: MySizes.iconMedium(context),
-                      color: MyColors.textPrimary,
-                    ),
-                    padding: EdgeInsets.zero,
-                    constraints: const BoxConstraints(),
-                  ),
-                ],
-              ),
+              ],
+            ),
           ],
         ),
       ),
