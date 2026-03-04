@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hugeicons/hugeicons.dart';
+import 'package:mirath/core/utils/my_colors.dart';
 import 'package:mirath/core/utils/my_extenstions.dart';
 import 'package:mirath/core/utils/my_sizes.dart';
 import 'package:mirath/features/common/widgets/custum_text_button.dart';
@@ -30,7 +31,8 @@ class UserData extends StatelessWidget {
           Row(
             children: [
               CircleAvatar(
-                radius: MySizes.borderRadiusSm(context) * 2,
+                radius: MySizes.borderRadiusLg(context) * 2,
+                backgroundColor: MyColors.primaryShade50,
                 child: SvgPicture.asset(
                   'assets/images/Profile picture (1).svg',
                 ),
@@ -79,6 +81,7 @@ class UserData extends StatelessWidget {
               ),
             ],
           ),
+          SizedBox(height: MySizes.spaceSm(context)),
           Text(
             'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque ante dui, lobortis sed orci vitae, molestie convallis justo. Fusce...more',
             style: context.bodySmall.copyWith(

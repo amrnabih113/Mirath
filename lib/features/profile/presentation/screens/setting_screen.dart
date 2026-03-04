@@ -16,60 +16,74 @@ class SettingScreen extends StatelessWidget {
         title: Text('Settings'),
         centerTitle: true,
       ),
-      body: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Padding(
-            padding: EdgeInsetsGeometry.only(left: MySizes.spaceMd(context)),
-            child: Text(
-              'Account',
-              style: context.bodyLarge.copyWith(
-                fontSize: 16,
-                fontWeight: FontWeight.w500,
+      body: Center(
+        child: LayoutBuilder(
+          builder: (context, constraints) {
+            return ConstrainedBox(
+              constraints: const BoxConstraints(maxWidth: 850),
+
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Padding(
+                    padding: EdgeInsetsGeometry.only(
+                      left: MySizes.spaceMd(context),
+                    ),
+                    child: Text(
+                      'Account',
+                      style: context.bodyLarge.copyWith(
+                        fontSize: 16,
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                  ),
+                  SettingTiles(
+                    icon: HugeIcons.strokeRoundedUser03,
+                    text: 'Account preferences',
+                    onTap: () {},
+                  ),
+                  SettingTiles(
+                    icon: HugeIcons.strokeRoundedSecurityCheck,
+                    text: 'Sign in & security',
+                    onTap: () {},
+                  ),
+                  SettingTiles(
+                    icon: HugeIcons.strokeRoundedNotification01,
+                    text: 'Notifications',
+                    onTap: () {},
+                  ),
+                  SettingTiles(
+                    icon: HugeIcons.strokeRoundedSquareLock02,
+                    text: 'Data privacy',
+                    onTap: () {},
+                  ),
+                  Padding(
+                    padding: EdgeInsetsGeometry.only(
+                      left: MySizes.spaceMd(context),
+                    ),
+                    child: Text(
+                      'Support & about',
+                      style: context.bodyLarge.copyWith(
+                        fontSize: 16,
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                  ),
+                  SettingTiles(
+                    icon: HugeIcons.strokeRoundedHelpCircle,
+                    text: 'Help & support',
+                    onTap: () {},
+                  ),
+                  SettingTiles(
+                    icon: HugeIcons.strokeRoundedInformationCircle,
+                    text: 'Terms & policies',
+                    onTap: () {},
+                  ),
+                ],
               ),
-            ),
-          ),
-          SettingTiles(
-            icon: HugeIcons.strokeRoundedUser03,
-            text: 'Account preferences',
-            onTap: () {},
-          ),
-          SettingTiles(
-            icon: HugeIcons.strokeRoundedSecurityCheck,
-            text: 'Sign in & security',
-            onTap: () {},
-          ),
-          SettingTiles(
-            icon: HugeIcons.strokeRoundedNotification01,
-            text: 'Notifications',
-            onTap: () {},
-          ),
-          SettingTiles(
-            icon: HugeIcons.strokeRoundedSquareLock02,
-            text: 'Data privacy',
-            onTap: () {},
-          ),
-          Padding(
-            padding: EdgeInsetsGeometry.only(left: MySizes.spaceMd(context)),
-            child: Text(
-              'Support & about',
-              style: context.bodyLarge.copyWith(
-                fontSize: 16,
-                fontWeight: FontWeight.w500,
-              ),
-            ),
-          ),
-          SettingTiles(
-            icon: HugeIcons.strokeRoundedHelpCircle,
-            text: 'Help & support',
-            onTap: () {},
-          ),
-          SettingTiles(
-            icon: HugeIcons.strokeRoundedInformationCircle,
-            text: 'Terms & policies',
-            onTap: () {},
-          ),
-        ],
+            );
+          },
+        ),
       ),
     );
   }

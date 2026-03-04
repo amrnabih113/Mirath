@@ -14,58 +14,67 @@ class EditInterstsScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(leading: MyBackIcon()),
-      body: Padding(
-        padding: MySizes.paddingSm(context),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              'Edit your interests',
-              style: context.headlineLarge.copyWith(
-                fontSize: 24,
-                fontWeight: FontWeight.w500,
-              ),
-            ),
-            SearchTextField(
-              hasIcon: false,
-              hint: 'Search a topic (e.g. Computer Science)',
-            ),
-            Wrap(
-              runSpacing: MySizes.spaceSm(context),
-              children: [
-                TagChip(label: 'Physics', hasIcon: true),
-                SizedBox(width: MySizes.spaceSm(context)),
-                TagChip(label: 'Physics', hasIcon: true),
-                SizedBox(width: MySizes.spaceSm(context)),
-                TagChip(label: 'Physics', hasIcon: true),
-                SizedBox(width: MySizes.spaceSm(context)),
-                TagChip(label: 'Physics', hasIcon: true),
-                SizedBox(width: MySizes.spaceSm(context)),
-                TagChip(label: 'Physics', hasIcon: true),
-                SizedBox(width: MySizes.spaceSm(context)),
-                TagChip(label: 'Physics', hasIcon: true),
-              ],
-            ),
-            SizedBox(height: MySizes.spaceXl(context)),
-            Align(
-              alignment: AlignmentGeometry.bottomRight,
-              child: TextButton(
-                onPressed: () {
-                  context.pop();
-                },
-                style: TextButton.styleFrom(
-                  backgroundColor: MyColors.primaryShade800,
+      body: Center(
+        child: LayoutBuilder(
+          builder: (context, constraints) {
+            return ConstrainedBox(
+              constraints: const BoxConstraints(maxWidth: 850),
+              child: Padding(
+                padding: MySizes.paddingSm(context),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      'Edit your interests',
+                      style: context.headlineLarge.copyWith(
+                        fontSize: 24,
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                    SearchTextField(
+                      hasIcon: false,
+                      hint: 'Search a topic (e.g. Computer Science)',
+                    ),
+                    Wrap(
+                      runSpacing: MySizes.spaceSm(context),
+                      children: [
+                        TagChip(label: 'Physics', hasIcon: true),
+                        SizedBox(width: MySizes.spaceSm(context)),
+                        TagChip(label: 'Physics', hasIcon: true),
+                        SizedBox(width: MySizes.spaceSm(context)),
+                        TagChip(label: 'Physics', hasIcon: true),
+                        SizedBox(width: MySizes.spaceSm(context)),
+                        TagChip(label: 'Physics', hasIcon: true),
+                        SizedBox(width: MySizes.spaceSm(context)),
+                        TagChip(label: 'Physics', hasIcon: true),
+                        SizedBox(width: MySizes.spaceSm(context)),
+                        TagChip(label: 'Physics', hasIcon: true),
+                      ],
+                    ),
+                    SizedBox(height: MySizes.spaceXl(context)),
+                    Align(
+                      alignment: AlignmentGeometry.bottomRight,
+                      child: TextButton(
+                        onPressed: () {
+                          context.pop();
+                        },
+                        style: TextButton.styleFrom(
+                          backgroundColor: MyColors.primaryShade800,
+                        ),
+                        child: Text(
+                          'save changes',
+                          style: context.bodySmall.copyWith(
+                            color: MyColors.white,
+                            fontSize: 16,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
                 ),
-                child: Text(
-                  'save changes',
-                  style: context.bodySmall.copyWith(
-                    color: MyColors.white,
-                    fontSize: 16,
-                  ),
-                ),
               ),
-            ),
-          ],
+            );
+          },
         ),
       ),
     );

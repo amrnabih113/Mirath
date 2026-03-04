@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:mirath/core/utils/my_colors.dart';
+import 'package:go_router/go_router.dart';
 import 'package:mirath/core/utils/my_sizes.dart';
-import 'package:mirath/features/profile/presentation/widgets/reading_list_card.dart';
+import 'package:mirath/features/profile/presentation/widgets/profile_reading_list_card.dart';
 
 class UserTabs extends StatelessWidget {
   const UserTabs({super.key});
@@ -16,7 +16,11 @@ class UserTabs extends StatelessWidget {
           // physics: NeverScrollableScrollPhysics(),
           padding: const EdgeInsets.all(8),
           itemCount: 10,
-          itemBuilder: (context, index) => const ReadingListCard(),
+          itemBuilder: (context, index) => ProfileReadingListCard(
+            onTap: () {
+              context.push('/paper-screen');
+            },
+          ),
           separatorBuilder: (context, index) =>
               SizedBox(height: MySizes.spaceXs(context)),
         ),
@@ -27,7 +31,7 @@ class UserTabs extends StatelessWidget {
           padding: const EdgeInsets.all(8),
           itemCount: 10,
           itemBuilder: (context, index) {
-            return ReadingListCard();
+            return const ProfileReadingListCard();
             //   return  DiscussionCard(
             //   discussion:
             // );

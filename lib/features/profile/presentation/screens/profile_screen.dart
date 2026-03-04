@@ -27,7 +27,7 @@ class ProfileScreen extends StatelessWidget {
             ),
             IconButton(
               icon: HugeIcon(
-                icon: HugeIcons.strokeRoundedMenu01,
+                icon: HugeIcons.strokeRoundedSettings02,
                 size: MySizes.iconMedium(context),
                 color: Colors.black,
               ),
@@ -37,33 +37,43 @@ class ProfileScreen extends StatelessWidget {
             ),
           ],
         ),
-        body: NestedScrollView(
-          headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) {
-            return [
-              SliverToBoxAdapter(
-                child: UserData(
-                  label: 'Edit profile',
-                  color: MyColors.primaryShade50,
-                  labelColor: MyColors.primaryShade900,
+        body: Center(
+          child: LayoutBuilder(
+            builder: (context, constraints) {
+              return ConstrainedBox(
+                constraints: const BoxConstraints(maxWidth: 850),
+                child: NestedScrollView(
+                  headerSliverBuilder:
+                      (BuildContext context, bool innerBoxIsScrolled) {
+                        return [
+                          SliverToBoxAdapter(
+                            child: UserData(
+                              label: 'Edit profile',
+                              color: MyColors.primaryShade50,
+                              labelColor: MyColors.primaryShade900,
+                            ),
+                          ),
+                          SliverPersistentHeader(
+                            pinned: true,
+                            delegate: _TabBarDelegate(
+                              TabBar(
+                                indicatorColor: MyColors.primaryShade900,
+                                labelColor: Colors.black,
+                                unselectedLabelColor: Colors.grey,
+                                tabs: const [
+                                  Tab(text: 'Reading Lists'),
+                                  Tab(text: 'Discussions'),
+                                ],
+                              ),
+                            ),
+                          ),
+                        ];
+                      },
+                  body: UserTabs(),
                 ),
-              ),
-              SliverPersistentHeader(
-                pinned: true,
-                delegate: _TabBarDelegate(
-                  TabBar(
-                    indicatorColor: MyColors.primaryShade900,
-                    labelColor: Colors.black,
-                    unselectedLabelColor: Colors.grey,
-                    tabs: const [
-                      Tab(text: 'Reading Lists'),
-                      Tab(text: 'Discussions'),
-                    ],
-                  ),
-                ),
-              ),
-            ];
-          },
-          body: UserTabs(),
+              );
+            },
+          ),
         ),
       ),
     );
