@@ -118,6 +118,8 @@ class MyConstants {
   static const String savePaper = "api/v1/papers/{id}/save";
   // delete
   static const String unsavePaper = "api/v1/papers/{id}/save";
+  // get
+  static const String getPaperById = "api/v1/papers/{id}";
 
   // ***search endpoints***
   static const String searchPapers = "api/v1/papers/search";

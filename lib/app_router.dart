@@ -4,8 +4,10 @@ import 'package:go_router/go_router.dart';
 import 'package:mirath/features/discussions/presentation/screens/add_discussion_screen.dart';
 import 'package:mirath/features/home/domain/entities/paper_entity.dart';
 import 'package:mirath/features/home/presentation/cubit/search_cubit.dart';
-import 'package:mirath/features/papers/presentation/screens/paper_screen.dart';
+import 'package:mirath/features/paper_annotations/presentation/cubit/paper_reading_cubit.dart';
+import 'package:mirath/features/papers/presentation/screens/paper_reading_screen.dart';
 import 'package:mirath/features/papers/presentation/screens/paper_discussions_screen.dart';
+import 'package:mirath/features/papers/presentation/screens/paper_screen.dart';
 import 'features/chatbot/presentation/screens/chatbot_screen.dart';
 import 'features/discussions/domain/entities/discussion.dart';
 import 'features/discussions/presentation/cubit/community_cubit.dart';
@@ -416,6 +418,32 @@ final appRouter = GoRouter(
           BlocProvider.value(
             value: sl<HomeCubit>(),
             child: PaperScreen(paper: paper),
+          ),
+        );
+      },
+    ),
+    GoRoute(
+      path: '/paper-reading',
+      pageBuilder: (context, state) {
+        final paper = state.extra as PaperEntity?;
+        MyLogger.info(
+          '[Router] /paper-reading - Paper: ${paper?.id ?? "NULL"}',
+        );
+        if (paper == null) {
+          MyLogger.error(
+            '[Router] /paper-reading - Paper is NULL! Cannot load screen.',
+          );
+          return PageTransitions.smoothTransition(
+            Scaffold(
+              appBar: AppBar(title: const Text('Error')),
+              body: const Center(child: Text('Error: No paper data provided')),
+            ),
+          );
+        }
+        return PageTransitions.smoothTransition(
+          BlocProvider(
+            create: (_) => sl<PaperReadingCubit>(),
+            child: PaperReadingScreen(paper: paper),
           ),
         );
       },
