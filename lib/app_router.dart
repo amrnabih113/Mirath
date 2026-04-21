@@ -4,11 +4,21 @@ import 'package:go_router/go_router.dart';
 import 'package:mirath/features/discussions/presentation/screens/add_discussion_screen.dart';
 import 'package:mirath/features/home/domain/entities/paper_entity.dart';
 import 'package:mirath/features/home/presentation/cubit/search_cubit.dart';
+import 'package:mirath/features/library/presentation/screens/library_screen.dart';
+import 'package:mirath/features/library/presentation/screens/other_user_reading_list.dart';
+import 'package:mirath/features/library/presentation/screens/projects_screen.dart';
+import 'package:mirath/features/library/presentation/screens/reading_history_screen.dart';
+import 'package:mirath/features/library/presentation/screens/reading_later_screen.dart';
+import 'package:mirath/features/library/presentation/screens/reading_list_screen.dart';
 import 'package:mirath/features/paper_annotations/presentation/cubit/paper_reading_cubit.dart';
-import 'package:mirath/features/papers/presentation/screens/paper_reading_screen.dart';
 import 'package:mirath/features/papers/presentation/screens/paper_discussions_screen.dart';
+import 'package:mirath/features/papers/presentation/screens/paper_reading_screen.dart';
 import 'package:mirath/features/papers/presentation/screens/paper_screen.dart';
-import 'features/chatbot/presentation/screens/chatbot_screen.dart';
+import 'package:mirath/features/profile/presentation/screens/edit_intersts_screen.dart';
+import 'package:mirath/features/profile/presentation/screens/edit_profile_screen.dart';
+import 'package:mirath/features/profile/presentation/screens/follower_following_screen.dart';
+import 'package:mirath/features/profile/presentation/screens/profile_screen.dart';
+import 'package:mirath/features/profile/presentation/screens/setting_screen.dart';
 import 'features/discussions/domain/entities/discussion.dart';
 import 'features/discussions/presentation/cubit/community_cubit.dart';
 import 'features/discussions/presentation/cubit/discussion_details_cubit.dart';
@@ -261,27 +271,25 @@ final appRouter = GoRouter(
         ),
         GoRoute(
           path: '/library',
-          pageBuilder: (context, state) => const NoTransitionPage(
-            child: Scaffold(body: Center(child: Text('Library Screen'))),
-          ),
+          pageBuilder: (context, state) =>
+              const NoTransitionPage(child: LibraryScreen()),
         ),
         GoRoute(
           path: '/profile',
           pageBuilder: (context, state) => NoTransitionPage(
-            child: Scaffold(
-              body: Center(
-                child: ElevatedButton(
-                  onPressed: () {
-                    Future.delayed(const Duration(milliseconds: 100), () {
-                      if (context.mounted) {
-                        context.read<AuthCubit>().signOut();
-                      }
-                    });
-                  },
-                  child: Text('Sign Out'),
-                ),
-              ),
-            ),
+            child: const ProfileScreen(),
+            // Scaffold(
+            //   body: Center(
+            //     child: ElevatedButton(
+            //       onPressed: () {
+            //         Future.delayed(const Duration(milliseconds: 100), () {
+            //           context.read<AuthCubit>().signOut();
+            //         });
+            //       },
+            //       child: Text('Sign Out'),
+            //     ),
+            //   ),
+            // ),
           ),
         ),
       ],
@@ -469,11 +477,60 @@ final appRouter = GoRouter(
         return PageTransitions.smoothTransition(const AddDiscussionScreen());
       },
     ),
-    // ===================== CHATBOT Feature =====================
     GoRoute(
-      path: '/chatbot',
+      path: '/edit_profile_screen',
       pageBuilder: (context, state) {
-        return PageTransitions.smoothTransition(const ChatbotScreen());
+        return PageTransitions.smoothTransition(const EditProfileScreen());
+      },
+    ),
+    GoRoute(
+      path: '/follower_following_screen',
+      pageBuilder: (context, state) {
+        return PageTransitions.smoothTransition(
+          const FollowerFollowingScreen(),
+        );
+      },
+    ),
+    GoRoute(
+      path: '/setting_screen',
+      pageBuilder: (context, state) {
+        return PageTransitions.smoothTransition(const SettingScreen());
+      },
+    ),
+    GoRoute(
+      path: '/edit_intersts_screen',
+      pageBuilder: (context, state) {
+        return PageTransitions.smoothTransition(const EditInterstsScreen());
+      },
+    ),
+    GoRoute(
+      path: '/reading-lists',
+      pageBuilder: (context, state) {
+        return PageTransitions.smoothTransition(const ReadingListScreen());
+      },
+    ),
+    GoRoute(
+      path: '/reading-history',
+      pageBuilder: (context, state) {
+        return PageTransitions.smoothTransition(const ReadingHistoryScreen());
+      },
+    ),
+    GoRoute(
+      path: '/projects',
+      pageBuilder: (context, state) {
+        return PageTransitions.smoothTransition(const ProjectsScreen());
+      },
+    ),
+    GoRoute(
+      path: '/other-user-reading-list',
+      pageBuilder: (context, state) {
+        return PageTransitions.smoothTransition(const OtherUserReadingList());
+      },
+    ),
+    GoRoute(
+      path: '/read-later',
+      pageBuilder: (context, state) {
+        return PageTransitions.smoothTransition(const ReadingLaterScreen());
       },
     ),
   ],
