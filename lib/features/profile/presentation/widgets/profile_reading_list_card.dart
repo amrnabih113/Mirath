@@ -7,15 +7,13 @@ import 'package:mirath/core/utils/my_extenstions.dart';
 import 'package:mirath/core/utils/my_sizes.dart';
 import 'package:mirath/features/common/widgets/tag_chip.dart';
 
-class ReadingListCard extends StatelessWidget {
-  const ReadingListCard({super.key});
-
+class ProfileReadingListCard extends StatelessWidget {
+  const ProfileReadingListCard({super.key, this.onTap});
+  final VoidCallback? onTap;
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: () {
-        context.push('/paper-screen');
-      },
+      onTap: onTap,
       child: Container(
         padding: EdgeInsets.all(ResponsiveHelper.responsiveValue(context, 16)),
         decoration: BoxDecoration(

@@ -17,41 +17,53 @@ class FollowerFollowingScreen extends StatelessWidget {
           title: Text('username'),
           centerTitle: true,
         ),
-        body: Column(
-          children: [
-            TabBar(
-              indicatorColor: MyColors.primaryShade900,
-              labelColor: Colors.black,
-              unselectedLabelColor: Colors.grey,
-              tabs: const [
-                Tab(text: 'Followers'),
-                Tab(text: 'Following'),
-              ],
-            ),
-            Expanded(
-              child: TabBarView(
-                children: [
-                  ListView.separated(
-                    padding: const EdgeInsets.all(8),
+        body: Center(
+          child: LayoutBuilder(
+            builder: (context, constraints) {
+              return ConstrainedBox(
+                constraints: const BoxConstraints(maxWidth: 850),
+                child: Column(
+                  children: [
+                    TabBar(
+                      indicatorColor: MyColors.primaryShade900,
+                      labelColor: Colors.black,
+                      unselectedLabelColor: Colors.grey,
+                      tabs: const [
+                        Tab(text: 'Followers'),
+                        Tab(text: 'Following'),
+                      ],
+                    ),
+                    Expanded(
+                      child: TabBarView(
+                        children: [
+                          ListView.separated(
+                            padding: const EdgeInsets.all(8),
 
-                    itemCount: 10,
-                    itemBuilder: (context, index) => FollowerFollowingCard(),
-                    separatorBuilder: (context, index) =>
-                        SizedBox(height: MySizes.spaceXs(context)),
-                  ),
-                  // Discussions
-                  ListView.separated(
-                    padding: const EdgeInsets.all(8),
+                            itemCount: 10,
+                            itemBuilder: (context, index) =>
+                                FollowerFollowingCard(),
+                            separatorBuilder: (context, index) =>
+                                SizedBox(height: MySizes.spaceXs(context)),
+                          ),
+                          // Discussions
+                          ListView.separated(
+                            padding: const EdgeInsets.all(8),
 
-                    itemCount: 10,
-                    itemBuilder: (context, index) => FollowerFollowingCard(),
-                    separatorBuilder: (context, index) =>
-                        SizedBox(height: MySizes.spaceXs(context) * 0.5),
-                  ),
-                ],
-              ),
-            ),
-          ],
+                            itemCount: 10,
+                            itemBuilder: (context, index) =>
+                                FollowerFollowingCard(),
+                            separatorBuilder: (context, index) => SizedBox(
+                              height: MySizes.spaceXs(context) * 0.5,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+              );
+            },
+          ),
         ),
       ),
     );

@@ -4,6 +4,12 @@ import 'package:go_router/go_router.dart';
 import 'package:mirath/features/discussions/presentation/screens/add_discussion_screen.dart';
 import 'package:mirath/features/home/domain/entities/paper_entity.dart';
 import 'package:mirath/features/home/presentation/cubit/search_cubit.dart';
+import 'package:mirath/features/library/presentation/screens/library_screen.dart';
+import 'package:mirath/features/library/presentation/screens/other_user_reading_list.dart';
+import 'package:mirath/features/library/presentation/screens/projects_screen.dart';
+import 'package:mirath/features/library/presentation/screens/reading_history_screen.dart';
+import 'package:mirath/features/library/presentation/screens/reading_later_screen.dart';
+import 'package:mirath/features/library/presentation/screens/reading_list_screen.dart';
 import 'package:mirath/features/papers/presentation/screens/paper_discussions_screen.dart';
 import 'package:mirath/features/papers/presentation/screens/paper_screen.dart';
 import 'package:mirath/features/profile/presentation/screens/edit_intersts_screen.dart';
@@ -263,9 +269,8 @@ final appRouter = GoRouter(
         ),
         GoRoute(
           path: '/library',
-          pageBuilder: (context, state) => const NoTransitionPage(
-            child: Scaffold(body: Center(child: Text('Library Screen'))),
-          ),
+          pageBuilder: (context, state) =>
+              const NoTransitionPage(child: LibraryScreen()),
         ),
         GoRoute(
           path: '/profile',
@@ -468,6 +473,36 @@ final appRouter = GoRouter(
       path: '/edit_intersts_screen',
       pageBuilder: (context, state) {
         return PageTransitions.smoothTransition(const EditInterstsScreen());
+      },
+    ),
+    GoRoute(
+      path: '/reading-lists',
+      pageBuilder: (context, state) {
+        return PageTransitions.smoothTransition(const ReadingListScreen());
+      },
+    ),
+    GoRoute(
+      path: '/reading-history',
+      pageBuilder: (context, state) {
+        return PageTransitions.smoothTransition(const ReadingHistoryScreen());
+      },
+    ),
+    GoRoute(
+      path: '/projects',
+      pageBuilder: (context, state) {
+        return PageTransitions.smoothTransition(const ProjectsScreen());
+      },
+    ),
+    GoRoute(
+      path: '/other-user-reading-list',
+      pageBuilder: (context, state) {
+        return PageTransitions.smoothTransition(const OtherUserReadingList());
+      },
+    ),
+    GoRoute(
+      path: '/read-later',
+      pageBuilder: (context, state) {
+        return PageTransitions.smoothTransition(const ReadingLaterScreen());
       },
     ),
   ],
