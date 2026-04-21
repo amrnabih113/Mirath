@@ -9,7 +9,7 @@ class Highlight {
 
   // XPath information for efficient highlight restoration
   final String? xpathStart;
-  final String? xpathEnd;
+  final String? xpathEnd; 
   final int? startOffset;
   final int? endOffset;
   final String? plainText;

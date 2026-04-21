@@ -69,6 +69,8 @@ dependencies:
   uuid: ^4.5.2
   webview_flutter: ^4.13.1
   webview_flutter_wkwebview: ^3.23.6
+  translator: ^1.0.3+1
+  share_plus: ^11.1.0
 
 dev_dependencies:
   flutter_launcher_icons: ^0.14.1

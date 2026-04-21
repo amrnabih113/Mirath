@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:hugeicons/hugeicons.dart';
 import 'package:mirath/core/helpers/responsive_helper.dart';
+import 'package:mirath/core/services/local_storage_service.dart';
+import 'package:mirath/core/utils/my_constants.dart';
 import 'package:mirath/core/utils/my_colors.dart';
 import 'package:mirath/core/utils/my_logger.dart';
 import 'package:mirath/core/utils/my_sizes.dart';
@@ -19,6 +21,8 @@ import 'package:mirath/features/paper_annotations/presentation/widgets/paper_rea
 import 'package:mirath/features/paper_annotations/presentation/widgets/reader_action_menu.dart';
 import 'package:mirath/features/paper_annotations/presentation/widgets/reader_scroll_indicator.dart';
 import 'package:mirath/features/paper_annotations/presentation/widgets/selection_overlay.dart';
+import 'package:mirath/features/paper_annotations/presentation/widgets/translation_sheet.dart';
+import 'package:mirath/injection/injection_container.dart';
 
 class PaperReadingScreen extends StatefulWidget {
   final PaperEntity paper;
@@ -203,6 +207,57 @@ class _PaperReadingScreenState extends State<PaperReadingScreen> {
     );
   }
 
+  String? _currentTranslatableText() {
+    final active = _activeHighlight;
+    if (active != null && active.selectedText.trim().isNotEmpty) {
+      return active.selectedText.trim();
+    }
+
+    final selection = _currentSelection ?? _pendingSelection;
+    if (selection != null && selection.text.trim().isNotEmpty) {
+      return selection.text.trim();
+    }
+
+    return null;
+  }
+
+  Future<void> _openTranslateSheet() async {
+    final text = _currentTranslatableText();
+    if (text == null || text.isEmpty) {
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Select text to translate first.')),
+      );
+      return;
+    }
+
+    final storage = sl<LocalStorageService>();
+    final savedLanguageCode = storage.getData(
+      MyConstants.annotationTranslationLanguageKey,
+    );
+
+    await showModalBottomSheet<void>(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      builder: (_) {
+        return FractionallySizedBox(
+          heightFactor: 0.92,
+          child: TranslationSheet(
+            text: text,
+            initialTargetLanguageCode: savedLanguageCode,
+            onTargetLanguageChanged: (languageCode) {
+              return storage.setData(
+                MyConstants.annotationTranslationLanguageKey,
+                languageCode,
+              );
+            },
+          ),
+        );
+      },
+    );
+  }
+
   Future<void> _onHighlightTapped(AnnotationHighlightTapData tapData) async {
     final state = context.read<PaperReadingCubit>().state;
     if (state is! PaperReadingLoaded) return;
@@ -340,15 +395,15 @@ class _PaperReadingScreenState extends State<PaperReadingScreen> {
 
     final selected = await showModalBottomSheet<Highlight>(
       context: context,
+      showDragHandle: false,
       isScrollControlled: true,
       backgroundColor: Colors.transparent,
       builder: (context) => DraggableScrollableSheet(
-        initialChildSize: 0.9,
-        minChildSize: 0.5,
+        initialChildSize: 0.95,
         maxChildSize: 0.95,
         builder: (_, controller) => Container(
           decoration: BoxDecoration(
-            color: Colors.white,
+            color: MyColors.light,
             borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
           ),
           child: HighlightsListSheet(
@@ -378,17 +433,17 @@ class _PaperReadingScreenState extends State<PaperReadingScreen> {
       });
     }
 
-    final selected = await showModalBottomSheet<Highlight>(
+    final selected = await showModalBottomSheet<NotesListSheetResult>(
       context: context,
+      showDragHandle: false,
       isScrollControlled: true,
       backgroundColor: Colors.transparent,
       builder: (context) => DraggableScrollableSheet(
-        initialChildSize: 0.9,
-        minChildSize: 0.5,
+        initialChildSize: 0.95,
         maxChildSize: 0.95,
         builder: (_, controller) => Container(
           decoration: BoxDecoration(
-            color: Colors.white,
+            color: MyColors.light,
             borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
           ),
           child: NotesListSheet(
@@ -400,10 +455,34 @@ class _PaperReadingScreenState extends State<PaperReadingScreen> {
     );
 
     MyLogger.debug(
-      '[ScrollDebug] Notes sheet closed, selected: ${selected?.id}',
+      '[ScrollDebug] Notes sheet closed, selected: ${selected?.highlight.id}',
     );
     if (selected == null) return;
-    await _focusHighlightFromList(selected);
+    if (selected.action == NotesListSheetAction.edit) {
+      final highlight = selected.highlight;
+      await _openNoteEditor(
+        selectedText: highlight.selectedText,
+        selectedHtmlContent: highlight.htmlContent,
+        selectedColorHex: highlight.color,
+        initialNote: highlight.note ?? '',
+        onSave: (note) async {
+          if (!mounted) return;
+          await context.read<PaperReadingCubit>().updateHighlightNote(
+            highlight.id,
+            note,
+          );
+        },
+        onDelete: () async {
+          await context.read<PaperReadingCubit>().updateHighlightNote(
+            highlight.id,
+            '',
+          );
+        },
+      );
+      return;
+    }
+
+    await _focusHighlightFromList(selected.highlight);
   }
 
   Future<void> _openNoteEditor({
@@ -962,7 +1041,7 @@ class _PaperReadingScreenState extends State<PaperReadingScreen> {
                             ? 'Edit Note'
                             : 'Add Note',
                         onExplain: () => _showComingSoonMessage('Explain'),
-                        onTranslate: () => _showComingSoonMessage('Translate'),
+                        onTranslate: _openTranslateSheet,
                         onRemove: _activeHighlight != null
                             ? _removeActiveHighlight
                             : null,

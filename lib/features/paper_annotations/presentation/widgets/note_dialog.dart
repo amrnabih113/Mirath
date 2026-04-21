@@ -62,6 +62,8 @@ class _NoteDialogState extends State<NoteDialog> {
     final previewHex = (selectedHex?.isNotEmpty == true)
         ? selectedHex
         : '#FFE082';
+    final screenPadding = MySizes.paddingMd(context);
+    final sectionSpacing = MySizes.spaceLg(context);
 
     return Scaffold(
       resizeToAvoidBottomInset: true,
@@ -69,7 +71,7 @@ class _NoteDialogState extends State<NoteDialog> {
         key: _formKey,
         child: SafeArea(
           child: Padding(
-            padding: EdgeInsets.all(MySizes.spaceMd(context)),
+            padding: screenPadding,
             child: LayoutBuilder(
               builder: (context, constraints) {
                 final previewMaxHeight = constraints.maxHeight * 0.26;
@@ -79,7 +81,7 @@ class _NoteDialogState extends State<NoteDialog> {
                   children: [
                     Row(
                       children: [
-                        MyBackIcon(onTap: () => Navigator.of(context).pop()),
+                        MyBackIcon(padding: false),
                         const Spacer(),
                         if (_isEditing)
                           TextButton(
@@ -95,9 +97,7 @@ class _NoteDialogState extends State<NoteDialog> {
                           ),
                       ],
                     ),
-                    SizedBox(
-                      height: ResponsiveHelper.responsiveValue(context, 18),
-                    ),
+                    SizedBox(height: sectionSpacing),
                     ConstrainedBox(
                       constraints: BoxConstraints(maxHeight: previewMaxHeight),
                       child: AnnotationEquationPreview(
@@ -109,9 +109,7 @@ class _NoteDialogState extends State<NoteDialog> {
                         textStyle: context.bodyLarge,
                       ),
                     ),
-                    SizedBox(
-                      height: ResponsiveHelper.responsiveValue(context, 18),
-                    ),
+                    SizedBox(height: sectionSpacing),
                     Expanded(
                       child: TextFormField(
                         controller: _noteController,
@@ -120,6 +118,7 @@ class _NoteDialogState extends State<NoteDialog> {
                         autofocus: true,
                         style: context.bodyMedium,
                         decoration: const InputDecoration(
+                          contentPadding: EdgeInsets.zero,
                           filled: false,
                           hintText: 'Write your note...',
                           border: InputBorder.none,
