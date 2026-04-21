@@ -869,13 +869,6 @@ class AnnotationWebViewState extends State<AnnotationWebView> {
     await _controller.runJavaScript('AnnotationEngine.clearSearch();');
   }
 
-  Future<void> clearCurrentSelection() async {
-    if (!_isLoaded) return;
-    await _controller.runJavaScript(
-      'window.getSelection && window.getSelection().removeAllRanges();',
-    );
-  }
-
   Future<Map<String, dynamic>> getSearchStatus() async {
     if (!_isLoaded) {
       return const {'query': '', 'total': 0, 'current': 0, 'hasResults': false};
