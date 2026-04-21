@@ -65,7 +65,12 @@ dependencies:
   pin_code_fields: ^8.0.1
   shared_preferences: ^2.3.4
   shimmer: ^3.0.0
+  url_launcher: ^6.3.1
   uuid: ^4.5.2
+  webview_flutter: ^4.13.1
+  webview_flutter_wkwebview: ^3.23.6
+  translator: ^1.0.3+1
+  share_plus: ^11.1.0
 
 dev_dependencies:
   flutter_launcher_icons: ^0.14.1
@@ -87,6 +92,7 @@ flutter:
     - assets/images/onboarding/
     - assets/icons/
     - assets/animations/
+    - lib/features/paper_annotations/assets/
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/to/resolution-aware-images
   # For details regarding adding assets from package dependencies, see

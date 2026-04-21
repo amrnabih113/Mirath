@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:mirath/core/utils/my_colors.dart';
 import 'package:mirath/core/utils/my_extenstions.dart';
@@ -138,6 +139,9 @@ class _PaperInfoState extends State<PaperInfo> {
           children: [
             Expanded(
               child: MyTextButton(
+                onPressed : (){
+                  context.push("/paper-reading", extra: widget.paper);
+                },
                 title: 'Read',
                 titleColor: MyColors.primaryShade900,
                 buttonColor: MyColors.white,

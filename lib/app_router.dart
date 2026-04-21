@@ -10,7 +10,9 @@ import 'package:mirath/features/library/presentation/screens/projects_screen.dar
 import 'package:mirath/features/library/presentation/screens/reading_history_screen.dart';
 import 'package:mirath/features/library/presentation/screens/reading_later_screen.dart';
 import 'package:mirath/features/library/presentation/screens/reading_list_screen.dart';
+import 'package:mirath/features/paper_annotations/presentation/cubit/paper_reading_cubit.dart';
 import 'package:mirath/features/papers/presentation/screens/paper_discussions_screen.dart';
+import 'package:mirath/features/papers/presentation/screens/paper_reading_screen.dart';
 import 'package:mirath/features/papers/presentation/screens/paper_screen.dart';
 import 'package:mirath/features/profile/presentation/screens/edit_intersts_screen.dart';
 import 'package:mirath/features/profile/presentation/screens/edit_profile_screen.dart';
@@ -424,6 +426,32 @@ final appRouter = GoRouter(
           BlocProvider.value(
             value: sl<HomeCubit>(),
             child: PaperScreen(paper: paper),
+          ),
+        );
+      },
+    ),
+    GoRoute(
+      path: '/paper-reading',
+      pageBuilder: (context, state) {
+        final paper = state.extra as PaperEntity?;
+        MyLogger.info(
+          '[Router] /paper-reading - Paper: ${paper?.id ?? "NULL"}',
+        );
+        if (paper == null) {
+          MyLogger.error(
+            '[Router] /paper-reading - Paper is NULL! Cannot load screen.',
+          );
+          return PageTransitions.smoothTransition(
+            Scaffold(
+              appBar: AppBar(title: const Text('Error')),
+              body: const Center(child: Text('Error: No paper data provided')),
+            ),
+          );
+        }
+        return PageTransitions.smoothTransition(
+          BlocProvider(
+            create: (_) => sl<PaperReadingCubit>(),
+            child: PaperReadingScreen(paper: paper),
           ),
         );
       },

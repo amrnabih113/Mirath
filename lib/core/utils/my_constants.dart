@@ -15,13 +15,15 @@ class MyConstants {
   static const String emailKey = 'user_email';
   static const String setupStatusKey = 'setup_status';
   static const String userDataKey = 'user_data';
+  static const String annotationTranslationLanguageKey =
+      'annotation_translation_language';
 
   // base url
   // Use 10.0.2.2 for Android emulator (maps to host machine's localhost)
   // Use your computer's IP (e.g., 192.168.x.x) for real devices
   // Use 127.0.0.1 for iOS simulator or web
-  //static const String baseUrl = "http://192.168.1.5:3000/";
-  static const String baseUrl = "http://10.0.2.2:3000/";
+  static const String baseUrl = "http://192.168.1.5:3000/";
+  // static const String baseUrl = "http://10.0.2.2:3000/";
 
   // Endpoints
   // ***Auth endpoints***
@@ -118,6 +120,8 @@ class MyConstants {
   static const String savePaper = "api/v1/papers/{id}/save";
   // delete
   static const String unsavePaper = "api/v1/papers/{id}/save";
+  // get
+  static const String getPaperById = "api/v1/papers/{id}";
 
   // ***search endpoints***
   static const String searchPapers = "api/v1/papers/search";

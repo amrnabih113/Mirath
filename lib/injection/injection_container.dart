@@ -1,6 +1,7 @@
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:get_it/get_it.dart';
 import 'package:dio/dio.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 // ignore: unused_import
 import 'package:mirath/features/auth/data/repositories/fake_auth_repository_impl.dart';
 import 'package:mirath/features/discussions/data/data_sources/community_remote_data_source.dart';
@@ -19,6 +20,21 @@ import 'package:mirath/features/discussions/domain/usecases/vote_on_comment_usec
 import 'package:mirath/features/discussions/domain/usecases/vote_on_discussion_usecase.dart';
 import 'package:mirath/features/discussions/presentation/cubit/community_cubit.dart';
 import 'package:mirath/features/discussions/presentation/cubit/discussion_details_cubit.dart';
+import 'package:mirath/features/paper_annotations/data/data_sources/annotation_local_data_source.dart';
+import 'package:mirath/features/paper_annotations/data/data_sources/annotation_local_data_source_impl.dart';
+import 'package:mirath/features/paper_annotations/data/data_sources/annotation_remote_data_source.dart';
+import 'package:mirath/features/paper_annotations/data/data_sources/annotation_remote_data_source_impl.dart';
+import 'package:mirath/features/paper_annotations/data/repositories/annotation_repository_impl.dart';
+import 'package:mirath/features/paper_annotations/domain/repositories/annotation_repository.dart';
+import 'package:mirath/features/paper_annotations/domain/usecases/delete_highlight_usecase.dart';
+import 'package:mirath/features/paper_annotations/domain/usecases/get_highlights_usecase.dart';
+import 'package:mirath/features/paper_annotations/domain/usecases/save_highlight_usecase.dart';
+import 'package:mirath/features/paper_annotations/domain/usecases/update_highlight_usecase.dart';
+import 'package:mirath/features/paper_annotations/presentation/cubit/paper_reading_cubit.dart';
+import 'package:mirath/features/papers/data/data_sources/paper_remote_data_source.dart';
+import 'package:mirath/features/papers/data/repository/paper_repository_impl.dart';
+import 'package:mirath/features/papers/domain/repository/paper_repository.dart';
+import 'package:mirath/features/papers/domain/usecases/get_paper_by_id_usecase.dart';
 import 'package:mirath/features/reading_lists/presentation/cubit/reading_list_cubit.dart';
 import 'package:mirath/features/reading_lists/data/data_sources/reading_list_remote_data_source.dart';
 import 'package:mirath/features/reading_lists/data/data_sources/reading_list_remote_data_source_impl.dart';
@@ -96,7 +112,15 @@ final sl = GetIt.instance;
 class DI {
   static Future<void> init() async {
     /// Dio ///
-    sl.registerLazySingleton<Dio>(() => Dio());
+    sl.registerLazySingleton<Dio>(
+      () => Dio(
+        BaseOptions(
+          connectTimeout: const Duration(seconds: 20),
+          sendTimeout: const Duration(seconds: 30),
+          receiveTimeout: const Duration(seconds: 30),
+        ),
+      ),
+    );
 
     /// Secure Storage (must be registered before DioClient) ///
     sl.registerLazySingleton<SecureStorageService>(
@@ -114,6 +138,9 @@ class DI {
     sl.registerLazySingleton(() => NetworkManager.instance..initialize());
 
     /// Local Storage ///
+    final sharedPreferences = await SharedPreferences.getInstance();
+    sl.registerLazySingleton<SharedPreferences>(() => sharedPreferences);
+
     final localStorage = await LocalStorageService.init();
     sl.registerLazySingleton<LocalStorageService>(() => localStorage);
 
@@ -353,5 +380,54 @@ class DI {
 
     /// Chatbot ///
     sl.registerFactory(() => ChatbotCubit());
+
+    /// papers ///
+    // Data Sources
+    sl.registerLazySingleton<PaperRemoteDataSource>(
+      () => PaperRemoteDataSourceImpl(dioClient: sl()),
+    );
+
+    // Repository
+    sl.registerLazySingleton<PaperRepository>(
+      () => PaperRepositoryImpl(remoteDataSource: sl(), networkManager: sl()),
+    );
+
+    // UseCases
+    sl.registerLazySingleton(() => GetPaperByIdUseCase(sl()));
+
+    /// Paper Annotations ///
+    // Data Sources
+    sl.registerLazySingleton<AnnotationLocalDataSource>(
+      () => AnnotationLocalDataSourceImpl(sharedPreferences: sl()),
+    );
+
+    sl.registerLazySingleton<AnnotationRemoteDataSource>(
+      () => AnnotationRemoteDataSourceImpl(),
+    );
+
+    // Repository
+    sl.registerLazySingleton<AnnotationRepository>(
+      () => AnnotationRepositoryImpl(
+        remoteDataSource: sl(),
+        localDataSource: sl(),
+      ),
+    );
+
+    // Use Cases
+    sl.registerLazySingleton(() => GetHighlightsUseCase(sl()));
+    sl.registerLazySingleton(() => SaveHighlightUseCase(sl()));
+    sl.registerLazySingleton(() => UpdateHighlightUseCase(sl()));
+    sl.registerLazySingleton(() => DeleteHighlightUseCase(sl()));
+
+    // Cubit
+    sl.registerFactory(
+      () => PaperReadingCubit(
+        getPaperByIdUseCase: sl(),
+        getHighlightsUseCase: sl(),
+        saveHighlightUseCase: sl(),
+        updateHighlightUseCase: sl(),
+        deleteHighlightUseCase: sl(),
+      ),
+    );
   }
 }
