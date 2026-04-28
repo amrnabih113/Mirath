@@ -12,6 +12,7 @@ class ReadingListModel extends ReadingList {
     required super.createdAt,
     required super.updatedAt,
     required super.paperCount,
+    super.isSaved,
     required super.previewTags,
     super.papers,
     super.owner,
@@ -30,7 +31,8 @@ class ReadingListModel extends ReadingList {
       updatedAt: json['updatedAt'] != null
           ? DateTime.parse(json['updatedAt'])
           : DateTime.now(),
-      paperCount: json['_count']?['papers'] ?? 0,
+      paperCount: json['paperCount'] ?? json['_count']?['papers'] ?? 0,
+      isSaved: json['isSaved'] ?? false,
       previewTags:
           (json['previewTags'] as List<dynamic>?)
               ?.map((e) => e.toString())
@@ -61,7 +63,8 @@ class ReadingListModel extends ReadingList {
       'ownerId': ownerId,
       'createdAt': createdAt.toIso8601String(),
       'updatedAt': updatedAt.toIso8601String(),
-      '_count': {'papers': paperCount},
+      'paperCount': paperCount,
+      'isSaved': isSaved,
       'previewTags': previewTags,
       if (papers != null)
         'papers': papers!

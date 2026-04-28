@@ -55,48 +55,36 @@ class _ReadingListDetailsScreenState extends State<ReadingListDetailsScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        toolbarHeight: ResponsiveHelper.responsiveValue(context, 50),
-        leadingWidth: ResponsiveHelper.responsiveValue(context, 50),
-        leading: const MyBackIcon(),
-        titleSpacing: 0,
-        actions: [
-          Padding(
-            padding: EdgeInsets.only(right: MySizes.spaceSm(context)),
-            child: IconButton(
-              onPressed: () {},
-              icon: HugeIcon(
-                icon: HugeIcons.strokeRoundedMoreHorizontal,
-                size: MySizes.iconMedium(context),
-                strokeWidth: ResponsiveHelper.responsiveValue(context, 2),
-              ),
-              padding: EdgeInsets.zero,
-              constraints: const BoxConstraints(),
+    return BlocProvider.value(
+      value: _cubit,
+      child: BlocBuilder<ReadingListCubit, ReadingListState>(
+        builder: (context, state) {
+          return Scaffold(
+            appBar: AppBar(
+              toolbarHeight: ResponsiveHelper.responsiveValue(context, 50),
+              leadingWidth: ResponsiveHelper.responsiveValue(context, 50),
+              leading: const MyBackIcon(),
+              titleSpacing: 0,
             ),
-          ),
-        ],
-      ),
-      body: BlocProvider.value(
-        value: _cubit,
-        child: BlocBuilder<ReadingListCubit, ReadingListState>(
-          builder: (context, state) {
-            if (state is ReadingListLoading) {
-              return const ReadingListDetailsShimmerLoading();
-            }
+            body: Builder(
+              builder: (context) {
+                if (state is ReadingListLoading) {
+                  return const ReadingListDetailsShimmerLoading();
+                }
 
-            if (state is ReadingListError) {
-              return Center(child: Text(state.message));
-            }
+                if (state is ReadingListError) {
+                  return Center(child: Text(state.message));
+                }
 
-            if (state is ReadingListDetailsLoaded) {
-              final readingList = state.readingList;
-              return _buildContent(context, readingList);
-            }
+                if (state is ReadingListDetailsLoaded) {
+                  return _buildContent(context, state.readingList);
+                }
 
-            return const SizedBox();
-          },
-        ),
+                return const SizedBox();
+              },
+            ),
+          );
+        },
       ),
     );
   }
@@ -203,8 +191,28 @@ class _ReadingListDetailsScreenState extends State<ReadingListDetailsScreen> {
                       child: SizedBox(
                         width: double.infinity,
                         child: ElevatedButton(
-                          onPressed: () {},
-                          child: const Text('Save Full List'),
+                          onPressed: () {
+                            final currentState = _cubit.state;
+                            final currentList =
+                                currentState is ReadingListDetailsLoaded
+                                ? currentState.readingList
+                                : widget.readingList;
+
+                            if (currentList.isSaved) {
+                              _cubit.unsaveReadingList(currentList.id);
+                            } else {
+                              _cubit.saveReadingList(currentList.id);
+                            }
+                          },
+                          child: Text(
+                            ((_cubit.state is ReadingListDetailsLoaded
+                                    ? (_cubit.state as ReadingListDetailsLoaded)
+                                          .readingList
+                                          .isSaved
+                                    : widget.readingList.isSaved)
+                                ? 'Unsave List'
+                                : 'Save Full List'),
+                          ),
                         ),
                       ),
                     ),

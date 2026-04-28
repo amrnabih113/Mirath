@@ -69,15 +69,12 @@ class ReadingListCard extends StatelessWidget {
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
                       ),
-                IconButton(
-                  onPressed: () {},
-                  icon: HugeIcon(
-                    icon: HugeIcons.strokeRoundedBookmark02,
-                    size: MySizes.iconSmall(context),
-                    color: MyColors.primaryShade700,
-                  ),
-                  padding: EdgeInsets.zero,
-                  constraints: const BoxConstraints(),
+                HugeIcon(
+                  icon: readingList.isPublic
+                      ? HugeIcons.strokeRoundedGlobal
+                      : HugeIcons.strokeRoundedLocked,
+                  size: MySizes.iconSmall(context),
+                  color: MyColors.primaryShade700,
                 ),
               ],
             ),
