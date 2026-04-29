@@ -38,6 +38,22 @@ class ReadingListCubit extends Cubit<ReadingListState> {
     );
   }
 
+  Future<void> getUserReadingLists() async {
+    emit(const ReadingListLoading());
+
+    // Pass null to ownerId to get current user's lists only
+    final result = await getReadingListsUseCase(null);
+
+    result.fold(
+      (failure) {
+        emit(const ReadingListError(message: 'Failed to fetch reading lists'));
+      },
+      (readingLists) {
+        emit(ReadingListsLoaded(readingLists: readingLists));
+      },
+    );
+  }
+
   Future<void> createReadingList(CreateReadingListParams params) async {
     final result = await createReadingListUseCase(params);
 

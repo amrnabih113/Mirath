@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:mirath/core/utils/my_colors.dart';
 import 'package:mirath/core/utils/my_extenstions.dart';
@@ -10,8 +11,9 @@ import 'package:mirath/features/papers/presentation/widgets/my_text_icon.dart';
 
 class PaperInfo extends StatefulWidget {
   final PaperEntity paper;
+  final VoidCallback? onSavePressed;
 
-  const PaperInfo({super.key, required this.paper});
+  const PaperInfo({super.key, required this.paper, this.onSavePressed});
 
   @override
   State<PaperInfo> createState() => _PaperInfoState();
@@ -137,6 +139,9 @@ class _PaperInfoState extends State<PaperInfo> {
           children: [
             Expanded(
               child: MyTextButton(
+                onPressed : (){
+                  context.push("/paper-reading", extra: widget.paper);
+                },
                 title: 'Read',
                 titleColor: MyColors.primaryShade900,
                 buttonColor: MyColors.white,
@@ -154,6 +159,9 @@ class _PaperInfoState extends State<PaperInfo> {
                 title: widget.paper.isSaved ? 'Saved' : 'Save',
                 titleColor: MyColors.white,
                 buttonColor: MyColors.primaryShade800,
+                onPressed: () {
+                  widget.onSavePressed?.call();
+                },
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(
                     MySizes.borderRadiusLg(context),

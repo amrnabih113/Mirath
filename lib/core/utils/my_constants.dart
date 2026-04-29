@@ -15,6 +15,8 @@ class MyConstants {
   static const String emailKey = 'user_email';
   static const String setupStatusKey = 'setup_status';
   static const String userDataKey = 'user_data';
+  static const String annotationTranslationLanguageKey =
+      'annotation_translation_language';
 
   // base url
   // Use 10.0.2.2 for Android emulator (maps to host machine's localhost)
@@ -102,6 +104,7 @@ class MyConstants {
   // ***Reading Lists endpoints***
   // get
   static const String getReadingLists = "api/v1/reading-lists";
+  static const String getMyReadingLists = "api/v1/reading-lists/me";
   // post
   static const String createReadingList = "api/v1/reading-lists";
   // get
@@ -117,4 +120,11 @@ class MyConstants {
   static const String savePaper = "api/v1/papers/{id}/save";
   // delete
   static const String unsavePaper = "api/v1/papers/{id}/save";
+  // get
+  static const String getPaperById = "api/v1/papers/{id}";
+
+  // ***search endpoints***
+  static const String searchPapers = "api/v1/papers/search";
+  static const String searchHistory = "api/v1/search/history";
+  static const String deleteSearchHistoryById = "api/v1/search/history/{id}";
 }

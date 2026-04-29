@@ -52,7 +52,7 @@ class AbstractSection extends StatelessWidget {
                     : 'View Discussions',
                 titleColor: MyColors.primaryShade900,
                 buttonColor: MyColors.white,
-                // onPressed: onViewDiscussions,
+                onPressed: onViewDiscussions,
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(
                     MySizes.borderRadiusLg(context),
@@ -64,14 +64,13 @@ class AbstractSection extends StatelessWidget {
             SizedBox(width: MySizes.spaceXs(context)),
             Expanded(
               flex: 9,
-
               child: MyTextButton(
                 title: 'Start a Discussion',
                 icon: Icons.add,
                 hasIcon: true,
                 titleColor: MyColors.white,
                 buttonColor: MyColors.primaryShade800,
-                // onPressed: onStartDiscussion,
+                onPressed: onStartDiscussion,
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(
                     MySizes.borderRadiusLg(context),

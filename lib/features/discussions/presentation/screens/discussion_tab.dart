@@ -137,7 +137,7 @@ class _DiscussionTabState extends State<DiscussionTab> {
                 discussion: discussions[discussionIndex],
                 onTap: () {
                   context.push(
-                    '/disscussion-details',
+                    '/discussion-details',
                     extra: discussions[discussionIndex],
                   );
                 },

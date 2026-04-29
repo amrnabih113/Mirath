@@ -13,6 +13,7 @@ class MyTextButton extends StatelessWidget {
     this.shape,
     this.icon,
     this.hasIcon = false,
+    this.onPressed,
   });
   final String title;
   final Color titleColor;
@@ -20,11 +21,12 @@ class MyTextButton extends StatelessWidget {
   final OutlinedBorder? shape;
   final IconData? icon;
   final bool hasIcon;
+  final VoidCallback? onPressed;
 
   @override
   Widget build(BuildContext context) {
     return TextButton(
-      onPressed: () {},
+      onPressed: onPressed ?? () {},
       style: TextButton.styleFrom(
         backgroundColor: buttonColor,
         minimumSize: Size(

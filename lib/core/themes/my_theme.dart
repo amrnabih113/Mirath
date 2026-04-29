@@ -39,6 +39,18 @@ class MyTheme {
       dropdownMenuTheme: MyDropdownMenuTheme.lightDropdownMenuTheme(context),
       popupMenuTheme: MyDropdownMenuTheme.lightPopupMenuTheme(context),
       menuTheme: MyDropdownMenuTheme.lightMenuTheme(context),
+      // Progress indicator theme
+      progressIndicatorTheme: const ProgressIndicatorThemeData(
+        color: MyColors.primaryColor,
+        circularTrackColor: MyColors.primaryShade100,
+      ),
+      // Refresh indicator colors
+      colorScheme: ColorScheme.light(
+        primary: MyColors.primaryColor,
+        onPrimary: MyColors.white,
+        surface: MyColors.light,
+        onSurface: MyColors.primaryShade900,
+      ),
     );
   }
 
@@ -65,6 +77,18 @@ class MyTheme {
       dropdownMenuTheme: MyDropdownMenuTheme.darkDropdownMenuTheme(context),
       popupMenuTheme: MyDropdownMenuTheme.darkPopupMenuTheme(context),
       menuTheme: MyDropdownMenuTheme.darkMenuTheme(context),
+      // Progress indicator theme
+      progressIndicatorTheme: const ProgressIndicatorThemeData(
+        color: MyColors.primaryColor,
+        circularTrackColor: MyColors.primaryShade700,
+      ),
+      // Refresh indicator colors
+      colorScheme: ColorScheme.dark(
+        primary: MyColors.primaryColor,
+        onPrimary: MyColors.dark,
+        surface: MyColors.dark,
+        onSurface: MyColors.light,
+      ),
     );
   }
 }

@@ -6,7 +6,9 @@ import '../../../../core/utils/my_sizes.dart';
 
 //! deprecated use MySearchBar instead
 class SearchTextField extends StatelessWidget {
-  const SearchTextField({super.key});
+  const SearchTextField({super.key, this.hint, this.hasIcon = true});
+  final String? hint;
+  final bool? hasIcon;
 
   @override
   Widget build(BuildContext context) {
@@ -21,6 +23,7 @@ class SearchTextField extends StatelessWidget {
         controller: searchcontroller,
         cursorColor: MyColors.primaryShade500,
         decoration: InputDecoration(
+          hint: Text(hint ?? ''),
           contentPadding: EdgeInsets.symmetric(
             vertical: MySizes.spaceSm(context),
             horizontal: MySizes.spaceMd(context),
@@ -34,10 +37,12 @@ class SearchTextField extends StatelessWidget {
             ),
             child: HugeIcon(icon: HugeIcons.strokeRoundedSearch01),
           ),
-          suffixIcon: IconButton(
-            onPressed: () {},
-            icon: HugeIcon(icon: HugeIcons.strokeRoundedCamera01),
-          ),
+          suffixIcon: hasIcon!
+              ? IconButton(
+                  onPressed: () {},
+                  icon: HugeIcon(icon: HugeIcons.strokeRoundedCamera01),
+                )
+              : SizedBox.shrink(),
           enabledBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(
               MySizes.borderRadiusSm(context),
