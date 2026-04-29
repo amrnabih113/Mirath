@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../../core/usecases/no_params.dart';
 import '../../../users/domain/entities/user.dart';
 import '../../../users/domain/usecases/get_current_user_usecase.dart';
+import '../../domain/entities/paper_entity.dart';
 import '../../domain/usecases/get_recent_papers_usecase.dart';
 import '../../domain/usecases/get_recommendations_usecase.dart';
 import '../../domain/usecases/save_paper_usecase.dart';
@@ -26,6 +27,7 @@ class HomeCubit extends Cubit<HomeState> {
 
   // Track current page for pagination
   int _recommendationPage = 1;
+  int _recentPapersPage = 1;
 
   Future<User?> loadCurrentUser() async {
     final result = await getCurrentUserUsecase(NoParams());
@@ -39,6 +41,9 @@ class HomeCubit extends Cubit<HomeState> {
     int limit = 10,
   }) async {
     emit(const HomeLoading());
+
+    // Reset page number for recent papers
+    _recentPapersPage = 1;
 
     final result = await getRecentPapersUseCase(
       GetRecentPapersParams(category: category, page: page, limit: limit),
@@ -79,6 +84,7 @@ class HomeCubit extends Cubit<HomeState> {
 
     // Reset pagination
     _recommendationPage = 1;
+    _recentPapersPage = 1;
 
     final recentResult = await getRecentPapersUseCase(
       GetRecentPapersParams(category: category, page: 1, limit: recentLimit),
@@ -117,11 +123,36 @@ class HomeCubit extends Cubit<HomeState> {
 
   Future<void> loadMoreRecommendations({int limit = 5}) async {
     final currentState = state;
-    if (currentState is! HomePapersLoaded) return;
-    if (currentState.hasReachedMaxRecommendations) return;
-    if (currentState.isLoadingMoreRecommendations) return;
+    if (currentState is! HomePapersLoaded && currentState is! HomePapersUpdated)
+      return;
 
-    emit(currentState.copyWith(isLoadingMoreRecommendations: true));
+    late bool hasReachedMax;
+    late bool isLoading;
+    late HomePapersLoaded baseState;
+
+    if (currentState is HomePapersLoaded) {
+      hasReachedMax = currentState.hasReachedMaxRecommendations;
+      isLoading = currentState.isLoadingMoreRecommendations;
+      baseState = currentState;
+    } else if (currentState is HomePapersUpdated) {
+      hasReachedMax = currentState.hasReachedMaxRecommendations;
+      isLoading = currentState.isLoadingMoreRecommendations;
+      baseState = HomePapersLoaded(
+        recentPapers: currentState.recentPapers,
+        recommendations: currentState.recommendations,
+        isLoadingMoreRecent: currentState.isLoadingMoreRecent,
+        isLoadingMoreRecommendations: currentState.isLoadingMoreRecommendations,
+        hasReachedMaxRecent: currentState.hasReachedMaxRecent,
+        hasReachedMaxRecommendations: currentState.hasReachedMaxRecommendations,
+      );
+    } else {
+      return;
+    }
+
+    if (hasReachedMax) return;
+    if (isLoading) return;
+
+    emit(baseState.copyWith(isLoadingMoreRecommendations: true));
 
     _recommendationPage++;
 
@@ -131,19 +162,110 @@ class HomeCubit extends Cubit<HomeState> {
 
     result.fold(
       (failure) {
-        emit(currentState.copyWith(isLoadingMoreRecommendations: false));
+        if (isClosed) return;
+        emit(baseState.copyWith(isLoadingMoreRecommendations: false));
       },
       (newPapers) {
-        final allPapers = List.of(currentState.recommendations)
-          ..addAll(newPapers);
+        if (isClosed) return;
+        final allPapers = List.of(baseState.recommendations)..addAll(newPapers);
 
         emit(
-          currentState.copyWith(
+          baseState.copyWith(
             recommendations: allPapers,
             isLoadingMoreRecommendations: false,
             hasReachedMaxRecommendations: newPapers.length < limit,
           ),
         );
+      },
+    );
+  }
+
+  Future<void> loadMoreRecentPapers({String? category, int limit = 10}) async {
+    final currentState = state;
+
+    // Handle multiple state types
+    late List<PaperEntity> currentPapers;
+    late bool isLoading;
+    late bool hasReachedMax;
+
+    if (currentState is HomeRecentPapersLoaded) {
+      currentPapers = currentState.recentPapers;
+      isLoading = currentState.isLoadingMoreRecent;
+      hasReachedMax = currentState.hasReachedMaxRecent;
+    } else if (currentState is HomePapersLoaded) {
+      currentPapers = currentState.recentPapers;
+      isLoading = currentState.isLoadingMoreRecent;
+      hasReachedMax = currentState.hasReachedMaxRecent;
+    } else if (currentState is HomePapersUpdated) {
+      currentPapers = currentState.recentPapers;
+      isLoading = currentState.isLoadingMoreRecent;
+      hasReachedMax = currentState.hasReachedMaxRecent;
+    } else {
+      return;
+    }
+
+    if (hasReachedMax) return;
+    if (isLoading) return;
+
+    // Emit loading state
+    if (currentState is HomeRecentPapersLoaded) {
+      emit(currentState.copyWith(isLoadingMoreRecent: true));
+    } else if (currentState is HomePapersLoaded) {
+      emit(currentState.copyWith(isLoadingMoreRecent: true));
+    } else if (currentState is HomePapersUpdated) {
+      emit(currentState.copyWith(isLoadingMoreRecent: true));
+    }
+
+    _recentPapersPage++;
+
+    final result = await getRecentPapersUseCase(
+      GetRecentPapersParams(
+        category: category,
+        page: _recentPapersPage,
+        limit: limit,
+      ),
+    );
+
+    result.fold(
+      (failure) {
+        if (isClosed) return;
+        if (currentState is HomeRecentPapersLoaded) {
+          emit(currentState.copyWith(isLoadingMoreRecent: false));
+        } else if (currentState is HomePapersLoaded) {
+          emit(currentState.copyWith(isLoadingMoreRecent: false));
+        } else if (currentState is HomePapersUpdated) {
+          emit(currentState.copyWith(isLoadingMoreRecent: false));
+        }
+      },
+      (newPapers) {
+        if (isClosed) return;
+        final allPapers = List.of(currentPapers)..addAll(newPapers);
+
+        if (currentState is HomeRecentPapersLoaded) {
+          emit(
+            currentState.copyWith(
+              recentPapers: allPapers,
+              isLoadingMoreRecent: false,
+              hasReachedMaxRecent: newPapers.length < limit,
+            ),
+          );
+        } else if (currentState is HomePapersLoaded) {
+          emit(
+            currentState.copyWith(
+              recentPapers: allPapers,
+              isLoadingMoreRecent: false,
+              hasReachedMaxRecent: newPapers.length < limit,
+            ),
+          );
+        } else if (currentState is HomePapersUpdated) {
+          emit(
+            currentState.copyWith(
+              recentPapers: allPapers,
+              isLoadingMoreRecent: false,
+              hasReachedMaxRecent: newPapers.length < limit,
+            ),
+          );
+        }
       },
     );
   }

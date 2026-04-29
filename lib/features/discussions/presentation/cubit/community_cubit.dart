@@ -5,17 +5,24 @@ import 'package:mirath/features/discussions/domain/entities/vote_params.dart';
 import 'package:mirath/features/discussions/domain/usecases/delete_discussion_vote_usecase.dart';
 import 'package:mirath/features/discussions/domain/usecases/get_all_discussions_usecase.dart';
 import 'package:mirath/features/discussions/domain/usecases/vote_on_discussion_usecase.dart';
-import 'package:mirath/features/discussions/presentation/cubit/community_state.dart';
+import 'package:mirath/features/users/domain/usecases/follow_user_usecase.dart';
+import 'package:mirath/features/users/domain/usecases/unfollow_user_usecase.dart';
+import 'package:mirath/core/utils/my_logger.dart';
+import 'community_state.dart';
 
 class CommunityCubit extends Cubit<CommunityState> {
   final GetAllDiscussionsUseCase getAllDiscussionsUseCase;
   final VoteOnDiscussionUseCase voteOnDiscussionUseCase;
   final DeleteDiscussionVoteUseCase deleteDiscussionVoteUseCase;
+  final FollowUserUsecase followUserUsecase;
+  final UnfollowUserUsecase unfollowUserUsecase;
 
   CommunityCubit({
     required this.getAllDiscussionsUseCase,
     required this.voteOnDiscussionUseCase,
     required this.deleteDiscussionVoteUseCase,
+    required this.followUserUsecase,
+    required this.unfollowUserUsecase,
   }) : super(const CommunityInitial());
 
   // Track current page for pagination
@@ -210,5 +217,31 @@ class CommunityCubit extends Cubit<CommunityState> {
     if (currentState is CommunityDiscussionsLoaded) {
       emit(currentState.copyWith(scrollPosition: scrollPosition));
     }
+  }
+
+  Future<void> followUser(String userId) async {
+    final result = await followUserUsecase(userId);
+
+    result.fold(
+      (failure) {
+        MyLogger.error('Failed to follow user: $failure');
+      },
+      (success) {
+        MyLogger.debug('Successfully followed user: $userId');
+      },
+    );
+  }
+
+  Future<void> unfollowUser(String userId) async {
+    final result = await unfollowUserUsecase(userId);
+
+    result.fold(
+      (failure) {
+        MyLogger.error('Failed to unfollow user: $failure');
+      },
+      (success) {
+        MyLogger.debug('Successfully unfollowed user: $userId');
+      },
+    );
   }
 }

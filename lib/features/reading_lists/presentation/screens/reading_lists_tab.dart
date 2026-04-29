@@ -15,7 +15,7 @@ class ReadingListsTab extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (_) => sl<ReadingListCubit>()..getUserReadingLists(),
+      create: (_) => sl<ReadingListCubit>()..getReadingLists(),
       child: BlocBuilder<ReadingListCubit, ReadingListState>(
         builder: (context, state) {
           if (state is ReadingListLoading) {
