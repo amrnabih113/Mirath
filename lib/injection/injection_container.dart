@@ -113,7 +113,6 @@ import '../features/users/domain/usecases/get_user_profile_header_usecase.dart';
 import '../features/users/domain/usecases/setup_profile_usecase.dart';
 import '../features/users/domain/usecases/unfollow_user_usecase.dart';
 import '../features/users/presentation/cubit/set_up_profile_cubit.dart';
-import '../features/users/presentation/cubit/profile_header_cubit.dart';
 
 final sl = GetIt.instance;
 
@@ -247,6 +246,8 @@ class DI {
         getAllDiscussionsUseCase: sl(),
         voteOnDiscussionUseCase: sl(),
         deleteDiscussionVoteUseCase: sl(),
+        followUserUsecase: sl(),
+        unfollowUserUsecase: sl(),
       ),
     );
     sl.registerFactory(
@@ -318,9 +319,6 @@ class DI {
     sl.registerLazySingleton(() => UnfollowUserUsecase(sl()));
 
     /// Users Cubits ///
-    sl.registerFactory(
-      () => ProfileHeaderCubit(getUserProfileHeaderUsecase: sl()),
-    );
     sl.registerFactory(() => SetUpProfileCubit(imagePickerService: sl()));
 
     //================ Interests ========================

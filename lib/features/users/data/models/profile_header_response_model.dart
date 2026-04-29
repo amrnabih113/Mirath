@@ -10,12 +10,13 @@ class ProfileHeaderResponseModel {
   });
 
   factory ProfileHeaderResponseModel.fromJson(Map<String, dynamic> json) {
-    final data = json['data'] as Map<String, dynamic>?;
-    final profileJson = data?['profile'] as Map<String, dynamic>?;
+    // Handle nested data structure from API response
+    // The user profile data is directly in the 'data' field
+    final userData = json['data'] as Map<String, dynamic>?;
 
     return ProfileHeaderResponseModel(
       message: json['message'] ?? '',
-      profile: UserModel.fromJson(profileJson ?? {}),
+      profile: UserModel.fromJson(userData ?? {}),
     );
   }
 }

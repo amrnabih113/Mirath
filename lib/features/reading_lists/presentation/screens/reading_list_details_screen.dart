@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:hugeicons/hugeicons.dart';
 import 'package:intl/intl.dart';
 
 import '../../../../core/helpers/responsive_helper.dart';

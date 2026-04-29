@@ -19,11 +19,29 @@ class ProfileHeaderLoading extends ProfileHeaderState {
 
 class ProfileHeaderLoaded extends ProfileHeaderState {
   final User user;
+  final bool isFollowLoading;
+  final String? message;
 
-  const ProfileHeaderLoaded({required this.user});
+  const ProfileHeaderLoaded({
+    required this.user,
+    this.isFollowLoading = false,
+    this.message,
+  });
+
+  ProfileHeaderLoaded copyWith({
+    User? user,
+    bool? isFollowLoading,
+    String? message,
+  }) {
+    return ProfileHeaderLoaded(
+      user: user ?? this.user,
+      isFollowLoading: isFollowLoading ?? this.isFollowLoading,
+      message: message ?? this.message,
+    );
+  }
 
   @override
-  List<Object?> get props => [user];
+  List<Object?> get props => [user, isFollowLoading, message];
 }
 
 class ProfileHeaderError extends ProfileHeaderState {

@@ -17,9 +17,12 @@ class CheckSetupResponseModel {
   });
 
   factory CheckSetupResponseModel.fromJson(Map<String, dynamic> json) {
+    // Handle nested data structure from API response
+    final data = json['data'] as Map<String, dynamic>? ?? json;
+
     return CheckSetupResponseModel(
-      isSetupCompleted: json['isSetupCompleted'] as bool? ?? false,
-      status: json['status'] as String? ?? '',
+      isSetupCompleted: data['isSetupCompleted'] as bool? ?? false,
+      status: data['status'] as String? ?? '',
     );
   }
 

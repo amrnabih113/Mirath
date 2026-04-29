@@ -36,8 +36,9 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   void _onScroll() {
-    if (scrollController.position.pixels ==
-        scrollController.position.maxScrollExtent) {
+    final position = scrollController.position;
+    // Check if scrolled near the bottom (within 300 pixels)
+    if (position.pixels >= position.maxScrollExtent - 300) {
       final cubit = context.read<HomeCubit>();
       cubit.loadMoreRecommendations();
     }
@@ -163,13 +164,19 @@ class _HomeScreenState extends State<HomeScreen> {
                             shrinkWrap: true,
                             physics: const NeverScrollableScrollPhysics(),
                             itemCount: papers.length + (isLoadingMore ? 1 : 0),
-                            separatorBuilder: (_, _) =>
-                                SizedBox(height: MySizes.spaceMd(context)),
+                            separatorBuilder: (_, index) {
+                              if (index >= papers.length - 1) {
+                                return const SizedBox.shrink();
+                              }
+                              return SizedBox(height: MySizes.spaceMd(context));
+                            },
                             itemBuilder: (context, index) {
                               if (index >= papers.length) {
-                                return const Padding(
-                                  padding: EdgeInsets.all(8),
-                                  child: Center(
+                                return Padding(
+                                  padding: EdgeInsets.symmetric(
+                                    vertical: MySizes.spaceMd(context),
+                                  ),
+                                  child: const Center(
                                     child: CircularProgressIndicator(),
                                   ),
                                 );
