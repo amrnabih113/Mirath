@@ -110,16 +110,26 @@ class MyConstants {
   // ***Reading Lists endpoints***
   // get
   static const String getReadingLists = "api/v1/reading-lists";
-  static const String getMyReadingLists = "api/v1/reading-lists/me";
+  static const String getMyReadingLists = "api/v1/reading-lists";
+  // get
+  static const String getAllReadingLists = "api/v1/reading-lists/all";
   // post
   static const String createReadingList = "api/v1/reading-lists";
   // get
   static const String getReadingListById = "api/v1/reading-lists/{id}";
+  // patch
+  static const String updateReadingList = "api/v1/reading-lists/{id}";
+  // delete
+  static const String deleteReadingList = "api/v1/reading-lists/{id}";
   // post
   static const String addPaperToList = "api/v1/reading-lists/{id}/papers";
   // delete
   static const String removePaperFromList =
       "api/v1/reading-lists/{id}/papers/{paperId}";
+  // post
+  static const String saveReadingList = "api/v1/reading-lists/{id}/save";
+  // delete
+  static const String unsaveReadingList = "api/v1/reading-lists/{id}/save";
 
   // ***Papers endpoints***
   // post
