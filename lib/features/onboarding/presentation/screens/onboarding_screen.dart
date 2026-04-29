@@ -101,10 +101,12 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                                   ),
                                   // Navigation button
                                   Row(
-                                    mainAxisAlignment: .spaceBetween,
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
                                     children: [
                                       Row(
-                                        mainAxisAlignment: .end,
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.end,
                                         children: [
                                           if (!state.isLastPage)
                                             SkipButton(

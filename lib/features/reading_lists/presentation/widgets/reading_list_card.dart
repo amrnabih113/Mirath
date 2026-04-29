@@ -53,7 +53,7 @@ class ReadingListCard extends StatelessWidget {
           children: [
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              crossAxisAlignment: .center,
+              crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 readingList.owner?.fullName == null
                     ? const SizedBox.shrink()
