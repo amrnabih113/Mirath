@@ -18,10 +18,8 @@ class S {
   static S? _current;
 
   static S get current {
-    assert(
-      _current != null,
-      'No instance of S was loaded. Try to initialize the S delegate before accessing S.current.',
-    );
+    assert(_current != null,
+        'No instance of S was loaded. Try to initialize the S delegate before accessing S.current.');
     return _current!;
   }
 
@@ -43,10 +41,8 @@ class S {
 
   static S of(BuildContext context) {
     final instance = S.maybeOf(context);
-    assert(
-      instance != null,
-      'No instance of S present in the widget tree. Did you add S.delegate in localizationsDelegates?',
-    );
+    assert(instance != null,
+        'No instance of S present in the widget tree. Did you add S.delegate in localizationsDelegates?');
     return instance!;
   }
 
@@ -116,17 +112,32 @@ class S {
 
   /// `Skip`
   String get skip {
-    return Intl.message('Skip', name: 'skip', desc: '', args: []);
+    return Intl.message(
+      'Skip',
+      name: 'skip',
+      desc: '',
+      args: [],
+    );
   }
 
   /// `Next`
   String get next {
-    return Intl.message('Next', name: 'next', desc: '', args: []);
+    return Intl.message(
+      'Next',
+      name: 'next',
+      desc: '',
+      args: [],
+    );
   }
 
   /// `Get Started`
   String get get_started {
-    return Intl.message('Get Started', name: 'get_started', desc: '', args: []);
+    return Intl.message(
+      'Get Started',
+      name: 'get_started',
+      desc: '',
+      args: [],
+    );
   }
 
   /// `Password Reset`
@@ -151,7 +162,12 @@ class S {
 
   /// `Verify code`
   String get Verify_code {
-    return Intl.message('Verify code', name: 'Verify_code', desc: '', args: []);
+    return Intl.message(
+      'Verify code',
+      name: 'Verify_code',
+      desc: '',
+      args: [],
+    );
   }
 
   /// `Haven’t got the email yet?`
@@ -166,7 +182,12 @@ class S {
 
   /// `Resend code`
   String get Resend_code {
-    return Intl.message('Resend code', name: 'Resend_code', desc: '', args: []);
+    return Intl.message(
+      'Resend code',
+      name: 'Resend_code',
+      desc: '',
+      args: [],
+    );
   }
 
   /// `Set a new password`
@@ -251,7 +272,12 @@ class S {
 
   /// `Login Here`
   String get login_here {
-    return Intl.message('Login Here', name: 'login_here', desc: '', args: []);
+    return Intl.message(
+      'Login Here',
+      name: 'login_here',
+      desc: '',
+      args: [],
+    );
   }
 
   /// `Welcome back to Mirath!`
@@ -276,7 +302,12 @@ class S {
 
   /// `Password`
   String get password {
-    return Intl.message('Password', name: 'password', desc: '', args: []);
+    return Intl.message(
+      'Password',
+      name: 'password',
+      desc: '',
+      args: [],
+    );
   }
 
   /// `Forgot Password?`
@@ -291,7 +322,12 @@ class S {
 
   /// `Sign In`
   String get sign_in {
-    return Intl.message('Sign In', name: 'sign_in', desc: '', args: []);
+    return Intl.message(
+      'Sign In',
+      name: 'sign_in',
+      desc: '',
+      args: [],
+    );
   }
 
   /// `Don't have an account? `
@@ -306,7 +342,12 @@ class S {
 
   /// `Sign Up`
   String get sign_up {
-    return Intl.message('Sign Up', name: 'sign_up', desc: '', args: []);
+    return Intl.message(
+      'Sign Up',
+      name: 'sign_up',
+      desc: '',
+      args: [],
+    );
   }
 
   /// `Or sign in with`
@@ -341,12 +382,22 @@ class S {
 
   /// `Username`
   String get username {
-    return Intl.message('Username', name: 'username', desc: '', args: []);
+    return Intl.message(
+      'Username',
+      name: 'username',
+      desc: '',
+      args: [],
+    );
   }
 
   /// `Email`
   String get email {
-    return Intl.message('Email', name: 'email', desc: '', args: []);
+    return Intl.message(
+      'Email',
+      name: 'email',
+      desc: '',
+      args: [],
+    );
   }
 
   /// `Confirm Password`
@@ -391,7 +442,12 @@ class S {
 
   /// `Log in`
   String get log_in {
-    return Intl.message('Log in', name: 'log_in', desc: '', args: []);
+    return Intl.message(
+      'Log in',
+      name: 'log_in',
+      desc: '',
+      args: [],
+    );
   }
 
   /// `Forget Password`
@@ -436,12 +492,22 @@ class S {
 
   /// `Success!`
   String get success {
-    return Intl.message('Success!', name: 'success', desc: '', args: []);
+    return Intl.message(
+      'Success!',
+      name: 'success',
+      desc: '',
+      args: [],
+    );
   }
 
   /// `Verified!`
   String get verified {
-    return Intl.message('Verified!', name: 'verified', desc: '', args: []);
+    return Intl.message(
+      'Verified!',
+      name: 'verified',
+      desc: '',
+      args: [],
+    );
   }
 
   /// `OTP sent successfully.`
@@ -486,12 +552,22 @@ class S {
 
   /// `Oh no!`
   String get error_title {
-    return Intl.message('Oh no!', name: 'error_title', desc: '', args: []);
+    return Intl.message(
+      'Oh no!',
+      name: 'error_title',
+      desc: '',
+      args: [],
+    );
   }
 
   /// `Warning`
   String get warning_title {
-    return Intl.message('Warning', name: 'warning_title', desc: '', args: []);
+    return Intl.message(
+      'Warning',
+      name: 'warning_title',
+      desc: '',
+      args: [],
+    );
   }
 
   /// `Something went wrong.`
@@ -856,7 +932,12 @@ class S {
 
   /// `Name`
   String get name {
-    return Intl.message('Name', name: 'name', desc: '', args: []);
+    return Intl.message(
+      'Name',
+      name: 'name',
+      desc: '',
+      args: [],
+    );
   }
 
   /// `Enter your name`
@@ -911,7 +992,12 @@ class S {
 
   /// `High School`
   String get high_school {
-    return Intl.message('High School', name: 'high_school', desc: '', args: []);
+    return Intl.message(
+      'High School',
+      name: 'high_school',
+      desc: '',
+      args: [],
+    );
   }
 
   /// `Undergraduate`
@@ -926,7 +1012,12 @@ class S {
 
   /// `Graduated`
   String get graduated {
-    return Intl.message('Graduated', name: 'graduated', desc: '', args: []);
+    return Intl.message(
+      'Graduated',
+      name: 'graduated',
+      desc: '',
+      args: [],
+    );
   }
 
   /// `University Name`
@@ -951,7 +1042,12 @@ class S {
 
   /// `Sign Out`
   String get sign_out {
-    return Intl.message('Sign Out', name: 'sign_out', desc: '', args: []);
+    return Intl.message(
+      'Sign Out',
+      name: 'sign_out',
+      desc: '',
+      args: [],
+    );
   }
 }
 

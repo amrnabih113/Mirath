@@ -14,6 +14,9 @@ abstract class AnnotationLocalDataSource {
   /// Delete a highlight from local storage
   Future<void> deleteHighlight(String highlightId);
 
+  /// Find a highlight by id across cached papers
+  Future<HighlightModel?> getHighlightById(String highlightId);
+
   /// Clear all highlights for a paper
   Future<void> clearHighlights(String paperId);
 }

@@ -32,7 +32,7 @@ class HighlightModel extends Highlight {
       links:
           (json['links'] as List?)?.map((e) => e.toString()).toList() ??
           const <String>[],
-      color: json['color'] as String? ?? '#FFE082',
+      color: _apiColorToHex(json['color'] as String?),
       createdAt:
           DateTime.tryParse(json['createdAt'] as String? ?? '') ??
           DateTime.now(),
@@ -75,6 +75,30 @@ class HighlightModel extends Highlight {
     };
   }
 
+  Map<String, dynamic> toCreateJson() {
+    return {
+      'color': _hexColorToApi(color),
+      if (note != null) 'note': note,
+      if (xpathStart != null) 'xpathStart': xpathStart,
+      if (xpathEnd != null) 'xpathEnd': xpathEnd,
+      if (startOffset != null) 'startOffset': startOffset,
+      if (endOffset != null) 'endOffset': endOffset,
+      if (selectedText.isNotEmpty) 'selectedText': selectedText,
+      if (plainText != null) 'plainText': plainText,
+      if (htmlContent != null) 'htmlContent': htmlContent,
+      if (contextBefore != null) 'contextBefore': contextBefore,
+      if (contextAfter != null) 'contextAfter': contextAfter,
+      if (firstWord != null) 'firstWord': firstWord,
+      if (lastWord != null) 'lastWord': lastWord,
+      if (selectedWordCount != null) 'selectedWordCount': selectedWordCount,
+      if (selectedCharLength != null) 'selectedCharLength': selectedCharLength,
+    };
+  }
+
+  Map<String, dynamic> toColorUpdateJson() {
+    return {'color': _hexColorToApi(color)};
+  }
+
   factory HighlightModel.fromEntity(Highlight highlight) {
     return HighlightModel(
       id: highlight.id,
@@ -97,5 +121,48 @@ class HighlightModel extends Highlight {
       selectedWordCount: highlight.selectedWordCount,
       selectedCharLength: highlight.selectedCharLength,
     );
+  }
+
+  static String _apiColorToHex(String? color) {
+    switch ((color ?? '').toUpperCase()) {
+      case 'GREEN':
+        return '#A6E1C5';
+      case 'BLUE':
+        return '#A7E0F6';
+      case 'PURPLE':
+        return '#E1A7FB';
+      case 'PINK':
+      case 'RED':
+        return '#FF9FAE';
+      case 'YELLOW':
+        return '#FDE995';
+      default:
+        final normalized = color?.trim();
+        if (normalized == null || normalized.isEmpty) return '#FFE082';
+        if (normalized.startsWith('#')) {
+          return normalized.toUpperCase();
+        }
+        return '#FFE082';
+    }
+  }
+
+  static String _hexColorToApi(String color) {
+    final normalized = color.replaceAll('#', '').toUpperCase();
+    switch (normalized) {
+      case 'FDE995':
+      case 'FFE082':
+        return 'YELLOW';
+      case 'A6E1C5':
+        return 'GREEN';
+      case 'A7E0F6':
+      case '9FA5FF':
+        return 'BLUE';
+      case 'E1A7FB':
+        return 'PURPLE';
+      case 'FF9FAE':
+        return 'RED';
+      default:
+        return 'YELLOW';
+    }
   }
 }

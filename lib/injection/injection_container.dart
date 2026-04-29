@@ -26,9 +26,13 @@ import 'package:mirath/features/paper_annotations/data/data_sources/annotation_r
 import 'package:mirath/features/paper_annotations/data/data_sources/annotation_remote_data_source_impl.dart';
 import 'package:mirath/features/paper_annotations/data/repositories/annotation_repository_impl.dart';
 import 'package:mirath/features/paper_annotations/domain/repositories/annotation_repository.dart';
+import 'package:mirath/features/paper_annotations/domain/usecases/add_highlight_note_usecase.dart';
 import 'package:mirath/features/paper_annotations/domain/usecases/delete_highlight_usecase.dart';
+import 'package:mirath/features/paper_annotations/domain/usecases/delete_highlight_note_usecase.dart';
+import 'package:mirath/features/paper_annotations/domain/usecases/get_annotated_highlights_usecase.dart';
 import 'package:mirath/features/paper_annotations/domain/usecases/get_highlights_usecase.dart';
 import 'package:mirath/features/paper_annotations/domain/usecases/save_highlight_usecase.dart';
+import 'package:mirath/features/paper_annotations/domain/usecases/update_highlight_note_usecase.dart';
 import 'package:mirath/features/paper_annotations/domain/usecases/update_highlight_usecase.dart';
 import 'package:mirath/features/paper_annotations/presentation/cubit/paper_reading_cubit.dart';
 import 'package:mirath/features/papers/data/data_sources/paper_remote_data_source.dart';
@@ -402,7 +406,7 @@ class DI {
     );
 
     sl.registerLazySingleton<AnnotationRemoteDataSource>(
-      () => AnnotationRemoteDataSourceImpl(),
+      () => AnnotationRemoteDataSourceImpl(dioClient: sl()),
     );
 
     // Repository
@@ -415,18 +419,26 @@ class DI {
 
     // Use Cases
     sl.registerLazySingleton(() => GetHighlightsUseCase(sl()));
+    sl.registerLazySingleton(() => GetAnnotatedHighlightsUseCase(sl()));
     sl.registerLazySingleton(() => SaveHighlightUseCase(sl()));
     sl.registerLazySingleton(() => UpdateHighlightUseCase(sl()));
     sl.registerLazySingleton(() => DeleteHighlightUseCase(sl()));
+    sl.registerLazySingleton(() => AddHighlightNoteUseCase(sl()));
+    sl.registerLazySingleton(() => UpdateHighlightNoteUseCase(sl()));
+    sl.registerLazySingleton(() => DeleteHighlightNoteUseCase(sl()));
 
     // Cubit
     sl.registerFactory(
       () => PaperReadingCubit(
         getPaperByIdUseCase: sl(),
         getHighlightsUseCase: sl(),
+        getAnnotatedHighlightsUseCase: sl(),
         saveHighlightUseCase: sl(),
         updateHighlightUseCase: sl(),
         deleteHighlightUseCase: sl(),
+        addHighlightNoteUseCase: sl(),
+        updateHighlightNoteUseCase: sl(),
+        deleteHighlightNoteUseCase: sl(),
       ),
     );
   }

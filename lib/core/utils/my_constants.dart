@@ -129,6 +129,19 @@ class MyConstants {
   // get
   static const String getPaperById = "api/v1/papers/{id}";
 
+  // ***Paper Annotations endpoints***
+  // post / get
+  static const String paperHighlights = "api/v1/papers/{id}/highlights";
+  // patch / delete
+  static const String paperHighlightById =
+      "api/v1/papers/{id}/highlights/{highlightId}";
+  // post / patch / delete
+  static const String paperHighlightNote =
+      "api/v1/papers/{id}/highlights/{highlightId}/note";
+  // get
+  static const String paperHighlightsNotes =
+      "api/v1/papers/{id}/highlights/notes";
+
   // ***search endpoints***
   static const String searchPapers = "api/v1/papers/search";
   static const String searchHistory = "api/v1/search/history";
