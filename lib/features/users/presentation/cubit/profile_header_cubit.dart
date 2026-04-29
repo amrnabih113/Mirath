@@ -52,9 +52,7 @@ class ProfileHeaderCubit extends Cubit<ProfileHeaderState> {
       (_) {
         // Update user's isFollowed status
         final updatedUser = currentState.user.copyWith(isFollowed: true);
-        emit(
-          ProfileHeaderLoaded(user: updatedUser),
-        );
+        emit(ProfileHeaderLoaded(user: updatedUser));
       },
     );
   }
@@ -80,9 +78,7 @@ class ProfileHeaderCubit extends Cubit<ProfileHeaderState> {
       (_) {
         // Update user's isFollowed status
         final updatedUser = currentState.user.copyWith(isFollowed: false);
-        emit(
-          ProfileHeaderLoaded(user: updatedUser),
-        );
+        emit(ProfileHeaderLoaded(user: updatedUser));
       },
     );
   }

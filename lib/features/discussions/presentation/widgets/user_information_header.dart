@@ -36,8 +36,7 @@ class _UserInformationHeaderState extends State<UserInformationHeader> {
           imageUrl: widget.discussion.author.photoUrl,
           size: ResponsiveHelper.responsiveValue(
             context,
-            ResponsiveHelper.deviceTypeFromContext(context) !=
-                    DeviceType.phone
+            ResponsiveHelper.deviceTypeFromContext(context) != DeviceType.phone
                 ? 25
                 : 40,
           ),
@@ -51,16 +50,14 @@ class _UserInformationHeaderState extends State<UserInformationHeader> {
                 children: [
                   ConstrainedBox(
                     constraints: BoxConstraints(
-                      maxWidth:
-                          ResponsiveHelper.responsiveValue(context, 120),
+                      maxWidth: ResponsiveHelper.responsiveValue(context, 120),
                     ),
                     child: Text(
                       widget.discussion.author.fullName,
                       style: context.titleSmall.copyWith(
                         fontWeight: FontWeight.w900,
                         overflow: TextOverflow.ellipsis,
-                        fontSize:
-                            ResponsiveHelper.responsiveValue(context, 14),
+                        fontSize: ResponsiveHelper.responsiveValue(context, 14),
                       ),
                     ),
                   ),
@@ -71,9 +68,9 @@ class _UserInformationHeaderState extends State<UserInformationHeader> {
                     isLoading: _isLoadingFollow,
                     onFollowTap: () async {
                       setState(() => _isLoadingFollow = true);
-                      await context
-                          .read<CommunityCubit>()
-                          .followUser(widget.discussion.author.id);
+                      await context.read<CommunityCubit>().followUser(
+                        widget.discussion.author.id,
+                      );
                       if (mounted) {
                         setState(() {
                           _isFollowing = true;
@@ -83,9 +80,9 @@ class _UserInformationHeaderState extends State<UserInformationHeader> {
                     },
                     onUnfollowTap: () async {
                       setState(() => _isLoadingFollow = true);
-                      await context
-                          .read<CommunityCubit>()
-                          .unfollowUser(widget.discussion.author.id);
+                      await context.read<CommunityCubit>().unfollowUser(
+                        widget.discussion.author.id,
+                      );
                       if (mounted) {
                         setState(() {
                           _isFollowing = false;

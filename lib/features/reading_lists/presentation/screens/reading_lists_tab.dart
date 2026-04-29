@@ -15,7 +15,7 @@ class ReadingListsTab extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (_) => sl<ReadingListCubit>()..getReadingLists(),
+      create: (_) => sl<ReadingListCubit>()..getAllReadingLists(),
       child: BlocBuilder<ReadingListCubit, ReadingListState>(
         builder: (context, state) {
           if (state is ReadingListLoading) {
@@ -45,8 +45,12 @@ class ReadingListsTab extends StatelessWidget {
                 final readingList = state.readingLists[index];
                 return ReadingListCard(
                   readingList: readingList,
-                  onTap: () =>
-                      context.push('/reading-list-details', extra: readingList),
+                  onTap: () => readingList.isPublic
+                      ? context.push(
+                          '/reading-list-details',
+                          extra: readingList,
+                        )
+                      : null,
                 );
               },
               itemCount: state.readingLists.length,

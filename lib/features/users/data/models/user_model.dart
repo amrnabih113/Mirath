@@ -35,7 +35,9 @@ class UserModel extends User {
       fullName: json['fullName'] ?? '',
       photoUrl: json['photoUrl'],
       bio: json['bio'],
-      birthDate: json['birthDate'] != null ? DateTime.parse(json['birthDate']) : null,
+      birthDate: json['birthDate'] != null
+          ? DateTime.parse(json['birthDate'])
+          : null,
       country: json['country'],
       levelOfEducation: json['levelOfEducation'] ?? '',
       university: json['university'],
@@ -43,13 +45,19 @@ class UserModel extends User {
       status: json['status'] ?? 'ACTIVE',
       isEmailVisible: json['isEmailVisible'] ?? true,
       isPremium: json['isPremium'] ?? false,
-      createdAt: DateTime.parse(json['createdAt'] ?? DateTime.now().toIso8601String()),
-      updatedAt: DateTime.parse(json['updatedAt'] ?? DateTime.now().toIso8601String()),
-      interests: (json['interests'] as List<dynamic>?)
+      createdAt: DateTime.parse(
+        json['createdAt'] ?? DateTime.now().toIso8601String(),
+      ),
+      updatedAt: DateTime.parse(
+        json['updatedAt'] ?? DateTime.now().toIso8601String(),
+      ),
+      interests:
+          (json['interests'] as List<dynamic>?)
               ?.map((interest) => InterestModel.fromJson(interest))
               .toList() ??
           [],
-      fieldsOfStudy: (json['fieldsOfStudy'] as List<dynamic>?)
+      fieldsOfStudy:
+          (json['fieldsOfStudy'] as List<dynamic>?)
               ?.map((field) => FieldOfStudyModel.fromJson(field))
               .toList() ??
           [],
@@ -78,14 +86,12 @@ class UserModel extends User {
       'isPremium': isPremium,
       'createdAt': createdAt.toIso8601String(),
       'updatedAt': updatedAt.toIso8601String(),
-      'interests': interests.map((interest) => {
-            'id': interest.id,
-            'name': interest.name,
-          }).toList(),
-      'fieldsOfStudy': fieldsOfStudy.map((field) => {
-            'id': field.id,
-            'name': field.name,
-          }).toList(),
+      'interests': interests
+          .map((interest) => {'id': interest.id, 'name': interest.name})
+          .toList(),
+      'fieldsOfStudy': fieldsOfStudy
+          .map((field) => {'id': field.id, 'name': field.name})
+          .toList(),
       'followersCount': followersCount,
       'followingCount': followingCount,
       'isFollowed': isFollowed,
@@ -93,23 +99,23 @@ class UserModel extends User {
   }
 
   factory UserModel.empty() => UserModel(
-        id: '',
-        email: '',
-        username: '',
-        fullName: '',
-        photoUrl: '',
-        status: 'ACTIVE',
-        levelOfEducation: '',
-        university: '',
-        role: 'USER',
-        isEmailVisible: true,
-        isPremium: false,
-        createdAt: DateTime.now(),
-        updatedAt: DateTime.now(),
-        interests: const [],
-        fieldsOfStudy: const [],
-        followersCount: 0,
-        followingCount: 0,
-        isFollowed: false,
-      );
+    id: '',
+    email: '',
+    username: '',
+    fullName: '',
+    photoUrl: '',
+    status: 'ACTIVE',
+    levelOfEducation: '',
+    university: '',
+    role: 'USER',
+    isEmailVisible: true,
+    isPremium: false,
+    createdAt: DateTime.now(),
+    updatedAt: DateTime.now(),
+    interests: const [],
+    fieldsOfStudy: const [],
+    followersCount: 0,
+    followingCount: 0,
+    isFollowed: false,
+  );
 }

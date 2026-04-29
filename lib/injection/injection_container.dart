@@ -1,6 +1,10 @@
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:get_it/get_it.dart';
 import 'package:dio/dio.dart';
+import 'package:mirath/features/reading_lists/domain/usecases/delete_reading_list_usecase.dart';
+import 'package:mirath/features/reading_lists/domain/usecases/save_reading_list_usecase.dart';
+import 'package:mirath/features/reading_lists/domain/usecases/unsave_reading_list_usecase.dart';
+import 'package:mirath/features/reading_lists/domain/usecases/update_reading_list_usecase.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 // ignore: unused_import
 import 'package:mirath/features/auth/data/repositories/fake_auth_repository_impl.dart';
@@ -277,6 +281,10 @@ class DI {
     sl.registerLazySingleton(() => GetReadingListByIdUseCase(sl()));
     sl.registerLazySingleton(() => AddPaperToListUseCase(sl()));
     sl.registerLazySingleton(() => RemovePaperFromListUseCase(sl()));
+    sl.registerLazySingleton(() => SaveReadingListUseCase(sl()));
+    sl.registerLazySingleton(() => UnsaveReadingListUseCase(sl()));
+    sl.registerLazySingleton(() => UpdateReadingListUseCase(sl()));
+    sl.registerLazySingleton(() => DeleteReadingListUseCase(sl()));
 
     /// Reading List Cubit ///
     sl.registerFactory(
@@ -286,6 +294,8 @@ class DI {
         getReadingListByIdUseCase: sl(),
         addPaperToListUseCase: sl(),
         removePaperFromListUseCase: sl(),
+        saveReadingListUseCase: sl(),
+        unsaveReadingListUseCase: sl(),
       ),
     );
 
