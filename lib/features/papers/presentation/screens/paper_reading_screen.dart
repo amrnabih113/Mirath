@@ -71,6 +71,15 @@ class _PaperReadingScreenState extends State<PaperReadingScreen> {
     };
   }
 
+  String _highlightSignature(List<Highlight> highlights) {
+    return highlights
+        .map(
+          (highlight) =>
+              '${highlight.id}:${highlight.note ?? ''}:${highlight.color}',
+        )
+        .join('|');
+  }
+
   Future<bool> _attemptScrollToHighlight(
     String highlightId, {
     int attempts = 3,
@@ -141,7 +150,7 @@ class _PaperReadingScreenState extends State<PaperReadingScreen> {
       );
       final state = context.read<PaperReadingCubit>().state;
       if (state is PaperReadingLoaded) {
-        await _restoreHighlightsToWebView(state.highlights);
+        await _syncHighlightsToWebView(state.highlights);
         await Future<void>.delayed(const Duration(milliseconds: 180));
         didScroll = await _attemptScrollToHighlight(
           highlight.id,
@@ -421,7 +430,7 @@ class _PaperReadingScreenState extends State<PaperReadingScreen> {
     await _focusHighlightFromList(selected);
   }
 
-  Future<void> _showNotesList(List<Highlight> highlights) async {
+  Future<void> _showNotesList() async {
     MyLogger.info('[ScrollDebug] Opening notes list');
     if (mounted) {
       setState(() {
@@ -433,23 +442,52 @@ class _PaperReadingScreenState extends State<PaperReadingScreen> {
       });
     }
 
+    await context.read<PaperReadingCubit>().loadAnnotatedHighlights(
+      widget.paper.id,
+    );
+
     final selected = await showModalBottomSheet<NotesListSheetResult>(
       context: context,
       showDragHandle: false,
       isScrollControlled: true,
       backgroundColor: Colors.transparent,
-      builder: (context) => DraggableScrollableSheet(
-        initialChildSize: 0.95,
-        maxChildSize: 0.95,
-        builder: (_, controller) => Container(
-          decoration: BoxDecoration(
-            color: MyColors.light,
-            borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
-          ),
-          child: NotesListSheet(
-            highlights: highlights,
-            scrollController: controller,
-          ),
+      builder: (sheetContext) => BlocProvider.value(
+        value: context.read<PaperReadingCubit>(),
+        child: BlocBuilder<PaperReadingCubit, PaperReadingState>(
+          builder: (blocContext, state) {
+            if (state is! PaperReadingLoaded) {
+              return Container(
+                color: MyColors.light,
+                child: Center(child: CircularProgressIndicator()),
+              );
+            }
+
+            final notesWithNotes = state.highlights
+                .where((h) => h.note?.isNotEmpty == true)
+                .toList();
+
+            return DraggableScrollableSheet(
+              initialChildSize: 0.95,
+              maxChildSize: 0.95,
+              builder: (_, controller) => Container(
+                decoration: BoxDecoration(
+                  color: MyColors.light,
+                  borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+                ),
+                child: NotesListSheet(
+                  highlights: notesWithNotes,
+                  scrollController: controller,
+                  isLoadingMore: state.annotatedHighlightLoading,
+                  hasMore: state.annotatedHighlightHasMore,
+                  onLoadMore: () {
+                    blocContext
+                        .read<PaperReadingCubit>()
+                        .loadMoreAnnotatedHighlights(widget.paper.id);
+                  },
+                ),
+              ),
+            );
+          },
         ),
       ),
     );
@@ -473,9 +511,8 @@ class _PaperReadingScreenState extends State<PaperReadingScreen> {
           );
         },
         onDelete: () async {
-          await context.read<PaperReadingCubit>().updateHighlightNote(
+          await context.read<PaperReadingCubit>().deleteHighlightNote(
             highlight.id,
-            '',
           );
         },
       );
@@ -539,9 +576,8 @@ class _PaperReadingScreenState extends State<PaperReadingScreen> {
         });
       },
       onDelete: () async {
-        await context.read<PaperReadingCubit>().updateHighlightNote(
+        await context.read<PaperReadingCubit>().deleteHighlightNote(
           highlight.id,
-          '',
         );
         if (!mounted) return;
         setState(() {
@@ -568,13 +604,27 @@ class _PaperReadingScreenState extends State<PaperReadingScreen> {
     );
   }
 
-  Future<void> _restoreHighlightsToWebView(List<Highlight> highlights) async {
-    if (!_isWebViewReady || highlights.isEmpty) return;
+  Future<void> _syncHighlightsToWebView(List<Highlight> highlights) async {
+    if (!_isWebViewReady) return;
 
-    final paperId = highlights.first.paperId;
-    if (_activePaperId != paperId) {
+    final paperId = highlights.isNotEmpty
+        ? highlights.first.paperId
+        : _activePaperId;
+    if (paperId != null && _activePaperId != paperId) {
       _activePaperId = paperId;
       _renderedHighlightIds.clear();
+    }
+
+    final currentHighlightIds = highlights
+        .map((highlight) => highlight.id)
+        .toSet();
+
+    final removedHighlightIds = _renderedHighlightIds
+        .where((id) => !currentHighlightIds.contains(id))
+        .toList();
+    for (final highlightId in removedHighlightIds) {
+      await _webKey.currentState?.removeHighlight(highlightId);
+      _renderedHighlightIds.remove(highlightId);
     }
 
     for (final highlight in highlights) {
@@ -729,23 +779,21 @@ class _PaperReadingScreenState extends State<PaperReadingScreen> {
   Widget build(BuildContext context) {
     return BlocListener<PaperReadingCubit, PaperReadingState>(
       listenWhen: (previous, current) {
-        // Only listen when highlights are actually loaded (not empty)
         if (current is PaperReadingLoaded && current.highlights.isNotEmpty) {
           if (previous is! PaperReadingLoaded ||
-              previous.highlights.length != current.highlights.length) {
+              _highlightSignature(previous.highlights) !=
+                  _highlightSignature(current.highlights)) {
             return true;
           }
         }
         return false;
       },
       listener: (context, state) {
-        if (state is PaperReadingLoaded &&
-            state.highlights.isNotEmpty &&
-            _isWebViewReady) {
+        if (state is PaperReadingLoaded && _isWebViewReady) {
           print(
             '[PaperReadingScreen] Highlights loaded (${state.highlights.length}), restoring to WebView',
           );
-          _restoreHighlightsToWebView(state.highlights);
+          _syncHighlightsToWebView(state.highlights);
         }
       },
       child: BlocBuilder<PaperReadingCubit, PaperReadingState>(
@@ -760,7 +808,8 @@ class _PaperReadingScreenState extends State<PaperReadingScreen> {
                 current.scrollProgress != previous.scrollProgress ||
                 current.fontScale != previous.fontScale ||
                 current.searchOpen != previous.searchOpen ||
-                current.highlights.length != previous.highlights.length;
+                _highlightSignature(current.highlights) !=
+                    _highlightSignature(previous.highlights);
           }
           return false;
         },
@@ -944,7 +993,7 @@ class _PaperReadingScreenState extends State<PaperReadingScreen> {
                         await _webKey.currentState?.setFontScale(
                           state.fontScale,
                         );
-                        await _restoreHighlightsToWebView(state.highlights);
+                        await _syncHighlightsToWebView(state.highlights);
                       },
                     ),
                   ),
@@ -961,9 +1010,9 @@ class _PaperReadingScreenState extends State<PaperReadingScreen> {
                       onSearchTap: () {
                         context.read<PaperReadingCubit>().openSearch();
                       },
-                      onNotesTap: () {
+                      onNotesTap: () async {
                         context.read<PaperReadingCubit>().closeMenu();
-                        _showNotesList(state.highlights);
+                        await _showNotesList();
                       },
                       onHighlightsTap: () {
                         context.read<PaperReadingCubit>().closeMenu();

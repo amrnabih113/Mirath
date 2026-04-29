@@ -74,6 +74,25 @@ class AnnotationLocalDataSourceImpl implements AnnotationLocalDataSource {
   }
 
   @override
+  Future<HighlightModel?> getHighlightById(String highlightId) async {
+    final allKeys = sharedPreferences.getKeys();
+
+    for (final key in allKeys) {
+      if (key.startsWith('paper_annotations_')) {
+        final paperId = key.replaceFirst('paper_annotations_', '');
+        final highlights = await getHighlights(paperId);
+        for (final highlight in highlights) {
+          if (highlight.id == highlightId) {
+            return highlight;
+          }
+        }
+      }
+    }
+
+    return null;
+  }
+
+  @override
   Future<void> clearHighlights(String paperId) async {
     await sharedPreferences.remove(_getStorageKey(paperId));
   }

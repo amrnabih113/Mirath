@@ -5,20 +5,34 @@ import 'package:uuid/uuid.dart';
 import '../../../home/domain/entities/paper_entity.dart';
 import '../../../papers/domain/usecases/get_paper_by_id_usecase.dart';
 import '../../domain/entites/highlight_entity.dart';
+import '../../domain/entites/highlight_note_params.dart';
+import '../../domain/entites/paper_highlights_params.dart';
+import '../../domain/usecases/add_highlight_note_usecase.dart';
 import '../../domain/usecases/delete_highlight_usecase.dart';
+import '../../domain/usecases/delete_highlight_note_usecase.dart';
+import '../../domain/usecases/get_annotated_highlights_usecase.dart';
 import '../../domain/usecases/get_highlights_usecase.dart';
 import '../../domain/usecases/save_highlight_usecase.dart';
+import '../../domain/usecases/update_highlight_note_usecase.dart';
 import '../../domain/usecases/update_highlight_usecase.dart';
 import 'paper_reading_state.dart';
 
 class PaperReadingCubit extends Cubit<PaperReadingState> {
   final GetPaperByIdUseCase getPaperByIdUseCase;
   final GetHighlightsUseCase getHighlightsUseCase;
+  final GetAnnotatedHighlightsUseCase getAnnotatedHighlightsUseCase;
   final SaveHighlightUseCase saveHighlightUseCase;
   final UpdateHighlightUseCase updateHighlightUseCase;
   final DeleteHighlightUseCase deleteHighlightUseCase;
+  final AddHighlightNoteUseCase addHighlightNoteUseCase;
+  final UpdateHighlightNoteUseCase updateHighlightNoteUseCase;
+  final DeleteHighlightNoteUseCase deleteHighlightNoteUseCase;
 
   static const _uuid = Uuid();
+
+  // Track annotated highlights for pagination
+  List<Highlight> _annotatedHighlights = [];
+  String? _currentAnnotationPaperId;
 
   String _normalizeCssColor(String color) {
     final clean = color.replaceAll('#', '').toUpperCase();
@@ -30,9 +44,13 @@ class PaperReadingCubit extends Cubit<PaperReadingState> {
   PaperReadingCubit({
     required this.getPaperByIdUseCase,
     required this.getHighlightsUseCase,
+    required this.getAnnotatedHighlightsUseCase,
     required this.saveHighlightUseCase,
     required this.updateHighlightUseCase,
     required this.deleteHighlightUseCase,
+    required this.addHighlightNoteUseCase,
+    required this.updateHighlightNoteUseCase,
+    required this.deleteHighlightNoteUseCase,
   }) : super(const PaperReadingInitial());
 
   Future<void> loadPaper(PaperEntity paper) async {
@@ -92,6 +110,96 @@ class PaperReadingCubit extends Cubit<PaperReadingState> {
         if (currentState is PaperReadingLoaded) {
           emit(currentState.copyWith(highlights: highlights));
         }
+      },
+    );
+  }
+
+  Future<List<Highlight>> loadAnnotatedHighlights(String paperId) async {
+    final currentState = state;
+    if (currentState is PaperReadingLoaded) {
+      // Reset pagination for new paper
+      if (_currentAnnotationPaperId != paperId) {
+        _annotatedHighlights = [];
+        _currentAnnotationPaperId = paperId;
+        emit(
+          currentState.copyWith(
+            annotatedHighlightPage: 1,
+            annotatedHighlightHasMore: true,
+            annotatedHighlightLoading: true,
+          ),
+        );
+      }
+    }
+
+    final result = await getAnnotatedHighlightsUseCase(
+      PaperHighlightsParams(paperId: paperId, page: 1, limit: 20),
+    );
+
+    return result.fold(
+      (failure) {
+        MyLogger.warning(
+          '[PaperReadingCubit] Failed to load annotated highlights: $failure',
+        );
+        if (currentState is PaperReadingLoaded) {
+          emit(currentState.copyWith(annotatedHighlightLoading: false));
+        }
+        return _annotatedHighlights.isEmpty
+            ? (currentState is PaperReadingLoaded
+                  ? currentState.highlights
+                        .where(
+                          (highlight) => highlight.note?.isNotEmpty == true,
+                        )
+                        .toList()
+                  : <Highlight>[])
+            : _annotatedHighlights;
+      },
+      (highlights) {
+        _annotatedHighlights = highlights;
+        if (currentState is PaperReadingLoaded) {
+          emit(
+            currentState.copyWith(
+              annotatedHighlightPage: 1,
+              annotatedHighlightHasMore: highlights.length >= 20,
+              annotatedHighlightLoading: false,
+            ),
+          );
+        }
+        return highlights;
+      },
+    );
+  }
+
+  Future<void> loadMoreAnnotatedHighlights(String paperId) async {
+    final currentState = state;
+    if (currentState is! PaperReadingLoaded ||
+        !currentState.annotatedHighlightHasMore ||
+        currentState.annotatedHighlightLoading) {
+      return;
+    }
+
+    final nextPage = currentState.annotatedHighlightPage + 1;
+    emit(currentState.copyWith(annotatedHighlightLoading: true));
+
+    final result = await getAnnotatedHighlightsUseCase(
+      PaperHighlightsParams(paperId: paperId, page: nextPage, limit: 20),
+    );
+
+    result.fold(
+      (failure) {
+        MyLogger.error(
+          '[PaperReadingCubit] Failed to load more highlights: $failure',
+        );
+        emit(currentState.copyWith(annotatedHighlightLoading: false));
+      },
+      (highlights) {
+        _annotatedHighlights.addAll(highlights);
+        emit(
+          currentState.copyWith(
+            annotatedHighlightPage: nextPage,
+            annotatedHighlightHasMore: highlights.length >= 20,
+            annotatedHighlightLoading: false,
+          ),
+        );
       },
     );
   }
@@ -182,6 +290,18 @@ class PaperReadingCubit extends Cubit<PaperReadingState> {
         }
       },
       (savedHighlight) {
+        final latestState = state;
+        if (latestState is PaperReadingLoaded) {
+          final replacedHighlights = latestState.highlights
+              .map(
+                (currentHighlight) => currentHighlight.id == highlight.id
+                    ? savedHighlight
+                    : currentHighlight,
+              )
+              .toList();
+          emit(latestState.copyWith(highlights: replacedHighlights));
+        }
+
         MyLogger.info(
           '[PaperReadingCubit] Highlight saved: ${savedHighlight.id}',
         );
@@ -245,8 +365,15 @@ class PaperReadingCubit extends Cubit<PaperReadingState> {
     updatedHighlights[highlightIndex] = updatedHighlight;
     emit(currentState.copyWith(highlights: updatedHighlights));
 
-    // Save to repository
-    final result = await updateHighlightUseCase(updatedHighlight);
+    final params = HighlightNoteParams(
+      paperId: currentState.paper.id,
+      highlightId: highlightId,
+      note: note,
+    );
+
+    final result = oldHighlight.note?.isNotEmpty == true
+        ? await updateHighlightNoteUseCase(params)
+        : await addHighlightNoteUseCase(params);
     result.fold(
       (failure) {
         MyLogger.error(
@@ -262,6 +389,48 @@ class PaperReadingCubit extends Cubit<PaperReadingState> {
       },
       (saved) {
         MyLogger.info('[PaperReadingCubit] Highlight note updated');
+      },
+    );
+  }
+
+  Future<void> deleteHighlightNote(String highlightId) async {
+    final currentState = state;
+    if (currentState is! PaperReadingLoaded) return;
+
+    final highlightIndex = currentState.highlights.indexWhere(
+      (h) => h.id == highlightId,
+    );
+    if (highlightIndex == -1) return;
+
+    final oldHighlight = currentState.highlights[highlightIndex];
+    final updatedHighlight = oldHighlight.copyWith(note: '');
+
+    final updatedHighlights = List<Highlight>.from(currentState.highlights);
+    updatedHighlights[highlightIndex] = updatedHighlight;
+    emit(currentState.copyWith(highlights: updatedHighlights));
+
+    final result = await deleteHighlightNoteUseCase(
+      HighlightNoteParams(
+        paperId: currentState.paper.id,
+        highlightId: highlightId,
+        note: '',
+      ),
+    );
+
+    result.fold(
+      (failure) {
+        MyLogger.error(
+          '[PaperReadingCubit] Failed to delete highlight note: $failure',
+        );
+        final newState = state;
+        if (newState is PaperReadingLoaded) {
+          final rollbackHighlights = List<Highlight>.from(newState.highlights);
+          rollbackHighlights[highlightIndex] = oldHighlight;
+          emit(newState.copyWith(highlights: rollbackHighlights));
+        }
+      },
+      (_) {
+        MyLogger.info('[PaperReadingCubit] Highlight note deleted');
       },
     );
   }

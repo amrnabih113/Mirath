@@ -107,7 +107,9 @@ class AuthInterceptor extends Interceptor {
             ),
           );
 
-          newAccessToken = response.data['accessToken'] as String?;
+          final responseData = response.data is Map ? response.data : {};
+          final data = responseData['data'] is Map ? responseData['data'] : {};
+          newAccessToken = data['accessToken'] as String?;
 
           if (newAccessToken != null && newAccessToken.isNotEmpty) {
             await secureStorage.saveAccessToken(newAccessToken);

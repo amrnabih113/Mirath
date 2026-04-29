@@ -1,53 +1,131 @@
-import 'package:mirath/core/utils/my_logger.dart';
+import 'package:mirath/core/network/dio_client.dart';
+import 'package:mirath/core/utils/my_constants.dart';
+
 import '../models/highlight_model.dart';
+import '../models/paper_highlights_response.dart';
 import 'annotation_remote_data_source.dart';
 
-/// Stub implementation for remote data source
-/// TODO: Implement actual API calls when backend is ready
 class AnnotationRemoteDataSourceImpl implements AnnotationRemoteDataSource {
-  // final ApiClient apiClient;
+  final DioClient dioClient;
 
-  // AnnotationRemoteDataSourceImpl({required this.apiClient});
+  AnnotationRemoteDataSourceImpl({required this.dioClient});
 
   @override
-  Future<List<HighlightModel>> getHighlights(String paperId) async {
-    MyLogger.info(
-      '[AnnotationRemoteDataSource] TODO: Fetch highlights from backend for paper: $paperId',
+  Future<List<HighlightModel>> getHighlights(
+    String paperId, {
+    int page = 1,
+    int limit = 50,
+  }) async {
+    final response = await dioClient.get(
+      MyConstants.paperHighlights.replaceAll('{id}', paperId),
+      queryParameters: {'page': page, 'limit': limit},
     );
-    // TODO: Implement API call
-    // final response = await apiClient.get('/papers/$paperId/highlights');
-    // return (response['data'] as List).map((e) => HighlightModel.fromJson(e)).toList();
-    return [];
+
+    return PaperHighlightsResponse.fromJson(
+      response.data as Map<String, dynamic>,
+    ).data;
+  }
+
+  @override
+  Future<List<HighlightModel>> getAnnotatedHighlights(
+    String paperId, {
+    int page = 1,
+    int limit = 20,
+  }) async {
+    final response = await dioClient.get(
+      MyConstants.paperHighlightsNotes.replaceAll('{id}', paperId),
+      queryParameters: {'page': page, 'limit': limit},
+    );
+
+    return PaperHighlightsResponse.fromJson(
+      response.data as Map<String, dynamic>,
+    ).data;
   }
 
   @override
   Future<HighlightModel> saveHighlight(HighlightModel highlight) async {
-    MyLogger.info(
-      '[AnnotationRemoteDataSource] TODO: Save highlight to backend: ${highlight.id}',
+    final response = await dioClient.post(
+      MyConstants.paperHighlights.replaceAll('{id}', highlight.paperId),
+      data: highlight.toCreateJson(),
     );
-    // TODO: Implement API call
-    // final response = await apiClient.post('/highlights', body: highlight.toJson());
-    // return HighlightModel.fromJson(response['data']);
-    return highlight;
+
+    return _extractHighlight(response.data);
   }
 
   @override
   Future<HighlightModel> updateHighlight(HighlightModel highlight) async {
-    MyLogger.info(
-      '[AnnotationRemoteDataSource] TODO: Update highlight on backend: ${highlight.id}',
+    final response = await dioClient.patch(
+      MyConstants.paperHighlightById
+          .replaceAll('{id}', highlight.paperId)
+          .replaceAll('{highlightId}', highlight.id),
+      data: highlight.toColorUpdateJson(),
     );
-    // TODO: Implement API call
-    // final response = await apiClient.put('/highlights/${highlight.id}', body: highlight.toJson());
-    // return HighlightModel.fromJson(response['data']);
-    return highlight;
+
+    return _extractHighlight(response.data);
   }
 
   @override
-  Future<void> deleteHighlight(String highlightId) async {
-    MyLogger.info(
-      '[AnnotationRemoteDataSource] TODO: Delete highlight from backend: $highlightId',
+  Future<void> deleteHighlight(String paperId, String highlightId) async {
+    await dioClient.delete(
+      MyConstants.paperHighlightById
+          .replaceAll('{id}', paperId)
+          .replaceAll('{highlightId}', highlightId),
     );
-    // TODO: Implement API call
-    // await apiClient.delete('/highlights/$highlightId');
+  }
+
+  @override
+  Future<HighlightModel> addHighlightNote({
+    required String paperId,
+    required String highlightId,
+    required String note,
+  }) async {
+    final response = await dioClient.post(
+      MyConstants.paperHighlightNote
+          .replaceAll('{id}', paperId)
+          .replaceAll('{highlightId}', highlightId),
+      data: {'note': note},
+    );
+
+    return _extractHighlight(response.data);
+  }
+
+  @override
+  Future<HighlightModel> updateHighlightNote({
+    required String paperId,
+    required String highlightId,
+    required String note,
+  }) async {
+    final response = await dioClient.patch(
+      MyConstants.paperHighlightNote
+          .replaceAll('{id}', paperId)
+          .replaceAll('{highlightId}', highlightId),
+      data: {'note': note},
+    );
+
+    return _extractHighlight(response.data);
+  }
+
+  @override
+  Future<void> deleteHighlightNote({
+    required String paperId,
+    required String highlightId,
+  }) async {
+    await dioClient.delete(
+      MyConstants.paperHighlightNote
+          .replaceAll('{id}', paperId)
+          .replaceAll('{highlightId}', highlightId),
+    );
+  }
+
+  HighlightModel _extractHighlight(dynamic responseData) {
+    if (responseData is Map<String, dynamic>) {
+      final data = responseData['data'];
+      if (data is Map<String, dynamic>) {
+        return HighlightModel.fromJson(data);
+      }
+      return HighlightModel.fromJson(responseData);
+    }
+
+    throw const FormatException('Unable to parse highlight response');
   }
 }

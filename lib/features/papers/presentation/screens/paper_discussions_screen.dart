@@ -24,7 +24,6 @@ class _PaperDiscussionsScreenState extends State<PaperDiscussionsScreen> {
   @override
   void initState() {
     super.initState();
-    // Load all discussions - filtering will be done in build
     context.read<CommunityCubit>().getDiscussions();
   }
 

@@ -10,6 +10,7 @@ class ReadingList {
   final DateTime createdAt;
   final DateTime updatedAt;
   final int paperCount;
+  final bool isSaved;
   final List<String> previewTags;
   final List<ReadingListPaper>? papers;
   final ReadingListOwner? owner;
@@ -23,6 +24,7 @@ class ReadingList {
     required this.createdAt,
     required this.updatedAt,
     required this.paperCount,
+    this.isSaved = false,
     required this.previewTags,
     this.papers,
     this.owner,
@@ -37,6 +39,7 @@ class ReadingList {
     DateTime? createdAt,
     DateTime? updatedAt,
     int? paperCount,
+    bool? isSaved,
     List<String>? previewTags,
     List<ReadingListPaper>? papers,
     ReadingListOwner? owner,
@@ -50,6 +53,7 @@ class ReadingList {
       createdAt: createdAt ?? this.createdAt,
       updatedAt: updatedAt ?? this.updatedAt,
       paperCount: paperCount ?? this.paperCount,
+      isSaved: isSaved ?? this.isSaved,
       previewTags: previewTags ?? this.previewTags,
       papers: papers ?? this.papers,
       owner: owner ?? this.owner,

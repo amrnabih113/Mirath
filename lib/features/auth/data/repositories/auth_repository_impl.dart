@@ -94,7 +94,7 @@ class AuthRepositoryImpl implements AuthRepository {
       await _secureStorage.clearTokens();
       await _userCache.clearUser();
       await _localStorage.removeData(MyConstants.userDataKey);
-      await _localStorage.clearProfileSetup();
+      await _localStorage.clearAll();
 
       MyLogger.info('[AuthRepository] User cache cleared on signout');
       return const Right(null);

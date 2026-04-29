@@ -17,9 +17,12 @@ class IsVerifiedResponseModel {
   });
 
   factory IsVerifiedResponseModel.fromJson(Map<String, dynamic> json) {
+    // Handle nested data structure from API response
+    final data = json['data'] as Map<String, dynamic>? ?? json;
+
     return IsVerifiedResponseModel(
-      isVerified: json['isVerified'] as bool? ?? false,
-      status: json['status'] as String? ?? '',
+      isVerified: data['isVerified'] as bool? ?? false,
+      status: data['status'] as String? ?? '',
     );
   }
 

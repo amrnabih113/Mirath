@@ -19,6 +19,7 @@ import 'package:mirath/features/profile/presentation/screens/edit_profile_screen
 import 'package:mirath/features/profile/presentation/screens/follower_following_screen.dart';
 import 'package:mirath/features/profile/presentation/screens/profile_screen.dart';
 import 'package:mirath/features/profile/presentation/screens/setting_screen.dart';
+import 'package:mirath/features/reading_lists/presentation/cubit/reading_list_cubit.dart';
 import 'features/discussions/domain/entities/discussion.dart';
 import 'features/discussions/presentation/cubit/community_cubit.dart';
 import 'features/discussions/presentation/cubit/discussion_details_cubit.dart';
@@ -410,7 +411,17 @@ final appRouter = GoRouter(
       pageBuilder: (context, state) {
         final readingList = state.extra as dynamic;
         return PageTransitions.smoothTransition(
-          ReadingListDetailsScreen(readingList: readingList),
+          MultiBlocProvider(
+            providers: [
+              BlocProvider(
+                create: (_) =>
+                    sl<ReadingListCubit>()
+                      ..getReadingListById(readingList.id),
+              ),
+              BlocProvider(create: (_) => sl<HomeCubit>()),
+            ],
+            child: ReadingListDetailsScreen(readingList: readingList),
+          ),
         );
       },
     ),

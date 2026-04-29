@@ -35,6 +35,11 @@ class PaperReadingLoaded extends PaperReadingState {
   // UI state
   final bool menuOpen;
 
+  // Annotated highlights pagination state
+  final int annotatedHighlightPage;
+  final bool annotatedHighlightHasMore;
+  final bool annotatedHighlightLoading;
+
   const PaperReadingLoaded({
     required this.paper,
     required this.paperHtml,
@@ -47,6 +52,9 @@ class PaperReadingLoaded extends PaperReadingState {
     this.searchCurrent = 0,
     this.searchTotal = 0,
     this.menuOpen = false,
+    this.annotatedHighlightPage = 1,
+    this.annotatedHighlightHasMore = true,
+    this.annotatedHighlightLoading = false,
   });
 
   PaperReadingLoaded copyWith({
@@ -62,6 +70,9 @@ class PaperReadingLoaded extends PaperReadingState {
     int? searchCurrent,
     int? searchTotal,
     bool? menuOpen,
+    int? annotatedHighlightPage,
+    bool? annotatedHighlightHasMore,
+    bool? annotatedHighlightLoading,
   }) {
     return PaperReadingLoaded(
       paper: paper ?? this.paper,
@@ -77,6 +88,12 @@ class PaperReadingLoaded extends PaperReadingState {
       searchCurrent: searchCurrent ?? this.searchCurrent,
       searchTotal: searchTotal ?? this.searchTotal,
       menuOpen: menuOpen ?? this.menuOpen,
+      annotatedHighlightPage:
+          annotatedHighlightPage ?? this.annotatedHighlightPage,
+      annotatedHighlightHasMore:
+          annotatedHighlightHasMore ?? this.annotatedHighlightHasMore,
+      annotatedHighlightLoading:
+          annotatedHighlightLoading ?? this.annotatedHighlightLoading,
     );
   }
 
@@ -93,6 +110,9 @@ class PaperReadingLoaded extends PaperReadingState {
     searchCurrent,
     searchTotal,
     menuOpen,
+    annotatedHighlightPage,
+    annotatedHighlightHasMore,
+    annotatedHighlightLoading,
   ];
 }
 

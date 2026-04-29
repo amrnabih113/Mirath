@@ -5,6 +5,7 @@ import '../../../../core/helpers/responsive_helper.dart';
 import '../../../../core/utils/my_extenstions.dart';
 import '../../../../core/utils/my_sizes.dart';
 import '../../../common/widgets/my_back_icon.dart';
+import '../../domain/entities/paper_entity.dart';
 import '../cubit/home_cubit.dart';
 import '../cubit/home_state.dart';
 import '../widgets/category_items_list.dart';
@@ -26,16 +27,24 @@ class _RecentelyPublishedScreenState extends State<RecentelyPublishedScreen> {
   @override
   void initState() {
     super.initState();
-    //scrollController.addListener(_onScroll);
+    scrollController.addListener(_onScroll);
+
+    // Load recent papers if not already loaded
+    final cubit = context.read<HomeCubit>();
+    if (cubit.state is! HomeRecentPapersLoaded &&
+        cubit.state is! HomePapersLoaded) {
+      cubit.getRecentPapers();
+    }
   }
 
-  // void _onScroll() {
-  //   if (scrollController.position.pixels ==
-  //       scrollController.position.maxScrollExtent) {
-  //     final cubit = context.read<HomeCubit>();
-  //     cubit.loadMoreRecentPapers();
-  //   }
-  // }
+  void _onScroll() {
+    final position = scrollController.position;
+    // Check if scrolled near the bottom (within 300 pixels)
+    if (position.pixels >= position.maxScrollExtent - 300) {
+      final cubit = context.read<HomeCubit>();
+      cubit.loadMoreRecentPapers();
+    }
+  }
 
   @override
   void dispose() {
@@ -90,47 +99,72 @@ class _RecentelyPublishedScreenState extends State<RecentelyPublishedScreen> {
                             return const PaperListShimmer(itemCount: 5);
                           }
 
+                          // Handle multiple state types
+                          late List<PaperEntity> papers;
+                          late bool isLoadingMore;
+
                           if (state is HomeRecentPapersLoaded) {
-                            final papers = state.recentPapers;
+                            papers = state.recentPapers;
+                            isLoadingMore = state.isLoadingMoreRecent;
+                          } else if (state is HomePapersLoaded) {
+                            papers = state.recentPapers;
+                            isLoadingMore = state.isLoadingMoreRecent;
+                          } else if (state is HomePapersUpdated) {
+                            papers = state.recentPapers;
+                            isLoadingMore = state.isLoadingMoreRecent;
+                          } else {
+                            return const Center(child: Text('Data not loaded'));
+                          }
 
-                            if (papers.isEmpty) {
-                              return Center(
-                                child: Column(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    Icon(
-                                      Icons.article_outlined,
-                                      size: 64,
-                                      color: Colors.grey[400],
-                                    ),
-                                    SizedBox(height: MySizes.spaceMd(context)),
-                                    Text(
-                                      'No papers available',
-                                      style: TextStyle(
-                                        fontSize: 16,
-                                        color: Colors.grey[600],
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              );
-                            }
-
-                            return ListView.separated(
-                              controller: scrollController,
-                              padding: EdgeInsets.zero,
-                              physics: const AlwaysScrollableScrollPhysics(),
-                              itemCount: papers.length,
-                              separatorBuilder: (_, _) =>
+                          if (papers.isEmpty) {
+                            return Center(
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Icon(
+                                    Icons.article_outlined,
+                                    size: 64,
+                                    color: Colors.grey[400],
+                                  ),
                                   SizedBox(height: MySizes.spaceMd(context)),
-                              itemBuilder: (context, index) {
-                                final paper = papers[index];
-                                return PaperCard(paper: paper);
-                              },
+                                  Text(
+                                    'No papers available',
+                                    style: TextStyle(
+                                      fontSize: 16,
+                                      color: Colors.grey[600],
+                                    ),
+                                  ),
+                                ],
+                              ),
                             );
                           }
 
-                          return const Center(child: Text('Data not loaded'));
+                          return ListView.separated(
+                            controller: scrollController,
+                            padding: EdgeInsets.zero,
+                            physics: const AlwaysScrollableScrollPhysics(),
+                            itemCount: papers.length + (isLoadingMore ? 1 : 0),
+                            separatorBuilder: (_, index) {
+                              if (index >= papers.length - 1) {
+                                return const SizedBox.shrink();
+                              }
+                              return SizedBox(height: MySizes.spaceMd(context));
+                            },
+                            itemBuilder: (context, index) {
+                              if (index >= papers.length) {
+                                return Padding(
+                                  padding: EdgeInsets.symmetric(
+                                    vertical: MySizes.spaceMd(context),
+                                  ),
+                                  child: const Center(
+                                    child: CircularProgressIndicator(),
+                                  ),
+                                );
+                              }
+                              final paper = papers[index];
+                              return PaperCard(paper: paper);
+                            },
+                          );
                         },
                       ),
                     ),

@@ -12,10 +12,13 @@ class AuthResponseModel {
   const AuthResponseModel({this.accessToken, this.message, this.user});
 
   factory AuthResponseModel.fromJson(Map<String, dynamic> json) {
+    // Handle nested data structure from API response
+    final data = json['data'] as Map<String, dynamic>? ?? json;
+
     return AuthResponseModel(
-      accessToken: json['accessToken'] as String?,
+      accessToken: data['accessToken'] as String?,
       message: json['message'] as String?,
-      user: json['user'] != null ? AuthUserData.fromJson(json['user']) : null,
+      user: data['user'] != null ? AuthUserData.fromJson(data['user']) : null,
     );
   }
 

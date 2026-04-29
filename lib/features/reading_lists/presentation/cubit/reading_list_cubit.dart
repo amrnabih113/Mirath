@@ -1,11 +1,14 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../domain/entities/add_paper_to_list_params.dart';
 import '../../domain/entities/create_reading_list_params.dart';
+import '../../domain/entities/reading_list_query_params.dart';
 import '../../domain/usecases/add_paper_to_list_usecase.dart';
 import '../../domain/usecases/create_reading_list_usecase.dart';
+import '../../domain/usecases/save_reading_list_usecase.dart';
 import '../../domain/usecases/get_reading_list_by_id_usecase.dart';
 import '../../domain/usecases/get_reading_lists_usecase.dart';
 import '../../domain/usecases/remove_paper_from_list_usecase.dart';
+import '../../domain/usecases/unsave_reading_list_usecase.dart';
 import 'reading_list_state.dart';
 
 class ReadingListCubit extends Cubit<ReadingListState> {
@@ -14,6 +17,10 @@ class ReadingListCubit extends Cubit<ReadingListState> {
   final GetReadingListByIdUseCase getReadingListByIdUseCase;
   final AddPaperToListUseCase addPaperToListUseCase;
   final RemovePaperFromListUseCase removePaperFromListUseCase;
+  final SaveReadingListUseCase saveReadingListUseCase;
+  final UnsaveReadingListUseCase unsaveReadingListUseCase;
+
+  ReadingListQueryParams _currentQuery = const ReadingListQueryParams();
 
   ReadingListCubit({
     required this.getReadingListsUseCase,
@@ -21,12 +28,15 @@ class ReadingListCubit extends Cubit<ReadingListState> {
     required this.getReadingListByIdUseCase,
     required this.addPaperToListUseCase,
     required this.removePaperFromListUseCase,
+    required this.saveReadingListUseCase,
+    required this.unsaveReadingListUseCase,
   }) : super(const ReadingListInitial());
 
-  Future<void> getReadingLists({String? ownerId}) async {
+  Future<void> getReadingLists({ReadingListQueryParams? params}) async {
+    _currentQuery = params ?? const ReadingListQueryParams();
     emit(const ReadingListLoading());
 
-    final result = await getReadingListsUseCase(ownerId);
+    final result = await getReadingListsUseCase(_currentQuery);
 
     result.fold(
       (failure) {
@@ -39,19 +49,19 @@ class ReadingListCubit extends Cubit<ReadingListState> {
   }
 
   Future<void> getUserReadingLists() async {
-    emit(const ReadingListLoading());
+    await getReadingLists();
+  }
 
-    // Pass null to ownerId to get current user's lists only
-    final result = await getReadingListsUseCase(null);
+  Future<void> getSavedReadingLists() async {
+    await getReadingLists(params: const ReadingListQueryParams(saved: true));
+  }
 
-    result.fold(
-      (failure) {
-        emit(const ReadingListError(message: 'Failed to fetch reading lists'));
-      },
-      (readingLists) {
-        emit(ReadingListsLoaded(readingLists: readingLists));
-      },
-    );
+  Future<void> getAllReadingLists() async {
+    await getReadingLists(params: const ReadingListQueryParams(all: true));
+  }
+
+  Future<void> getOwnerReadingLists(String ownerId) async {
+    await getReadingLists(params: ReadingListQueryParams(ownerId: ownerId));
   }
 
   Future<void> createReadingList(CreateReadingListParams params) async {
@@ -63,7 +73,7 @@ class ReadingListCubit extends Cubit<ReadingListState> {
       },
       (readingList) {
         // Reload the lists after creation
-        getReadingLists();
+        getReadingLists(params: _currentQuery);
       },
     );
   }
@@ -131,6 +141,46 @@ class ReadingListCubit extends Cubit<ReadingListState> {
             message: 'Paper removed successfully',
           ),
         );
+      },
+    );
+  }
+
+  Future<void> saveReadingList(String id) async {
+    final result = await saveReadingListUseCase(id);
+
+    result.fold(
+      (failure) {
+        emit(const ReadingListError(message: 'Failed to save reading list'));
+      },
+      (_) {
+        final currentState = state;
+        if (currentState is ReadingListDetailsLoaded) {
+          emit(
+            ReadingListDetailsLoaded(
+              readingList: currentState.readingList.copyWith(isSaved: true),
+            ),
+          );
+        }
+      },
+    );
+  }
+
+  Future<void> unsaveReadingList(String id) async {
+    final result = await unsaveReadingListUseCase(id);
+
+    result.fold(
+      (failure) {
+        emit(const ReadingListError(message: 'Failed to unsave reading list'));
+      },
+      (_) {
+        final currentState = state;
+        if (currentState is ReadingListDetailsLoaded) {
+          emit(
+            ReadingListDetailsLoaded(
+              readingList: currentState.readingList.copyWith(isSaved: false),
+            ),
+          );
+        }
       },
     );
   }

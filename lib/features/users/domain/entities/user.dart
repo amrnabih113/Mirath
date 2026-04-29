@@ -21,6 +21,7 @@ class User extends Equatable {
   final List<FieldOfStudy> fieldsOfStudy;
   final int followersCount;
   final int followingCount;
+  final bool? isFollowed;
 
   const User({
     required this.id,
@@ -43,7 +44,56 @@ class User extends Equatable {
     required this.fieldsOfStudy,
     required this.followersCount,
     required this.followingCount,
+    this.isFollowed,
   });
+
+  User copyWith({
+    String? id,
+    String? username,
+    String? email,
+    String? fullName,
+    String? photoUrl,
+    String? bio,
+    DateTime? birthDate,
+    String? country,
+    String? levelOfEducation,
+    String? university,
+    String? role,
+    String? status,
+    bool? isEmailVisible,
+    bool? isPremium,
+    DateTime? createdAt,
+    DateTime? updatedAt,
+    List<Interest>? interests,
+    List<FieldOfStudy>? fieldsOfStudy,
+    int? followersCount,
+    int? followingCount,
+    bool? isFollowed,
+  }) {
+    return User(
+      id: id ?? this.id,
+      username: username ?? this.username,
+      email: email ?? this.email,
+      fullName: fullName ?? this.fullName,
+      photoUrl: photoUrl ?? this.photoUrl,
+      bio: bio ?? this.bio,
+      birthDate: birthDate ?? this.birthDate,
+      country: country ?? this.country,
+      levelOfEducation: levelOfEducation ?? this.levelOfEducation,
+      university: university ?? this.university,
+      role: role ?? this.role,
+      status: status ?? this.status,
+      isEmailVisible: isEmailVisible ?? this.isEmailVisible,
+      isPremium: isPremium ?? this.isPremium,
+      createdAt: createdAt ?? this.createdAt,
+      updatedAt: updatedAt ?? this.updatedAt,
+      interests: interests ?? this.interests,
+      fieldsOfStudy: fieldsOfStudy ?? this.fieldsOfStudy,
+      followersCount: followersCount ?? this.followersCount,
+      followingCount: followingCount ?? this.followingCount,
+      isFollowed: isFollowed ?? this.isFollowed,
+    );
+  }
 
   @override
   List<Object?> get props => [
@@ -67,6 +117,7 @@ class User extends Equatable {
     fieldsOfStudy,
     followersCount,
     followingCount,
+    isFollowed,
   ];
   factory User.fromJson(Map<String, dynamic> json) {
     return User(
@@ -96,6 +147,7 @@ class User extends Equatable {
           .toList(),
       followersCount: json['followersCount'],
       followingCount: json['followingCount'],
+      isFollowed: json['isFollowed'],
     );
   }
   Map<String, dynamic> toJson() {
