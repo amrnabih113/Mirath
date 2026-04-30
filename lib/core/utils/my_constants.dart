@@ -24,12 +24,7 @@ class MyConstants {
   // Use 10.0.2.2 for Android emulator (maps to host machine's localhost)
   // Use your computer's IP (e.g., 192.168.x.x) for real devices
   // Use 127.0.0.1 for iOS simulator or web
-  static String get baseUrl {
-    if (kIsWeb) {
-      return 'http://127.0.0.1:3000/';
-    }
-    return 'http://192.168.1.5:3000/';
-  }
+  static String baseUrl = 'http://10.0.2.2:3000/';
 
   // Endpoints
   // ***Auth endpoints***
@@ -69,6 +64,10 @@ class MyConstants {
   static const String followUser = "api/v1/users/{id}/follow";
   // delete
   static const String unfollowUser = "api/v1/users/{id}/follow";
+  //get
+  static const String getFollowers = "api/v1/users/{id}/followers";
+  //get
+  static const String getFollowing = "api/v1/users/{id}/following";
 
   // ***Interests endpoints***
   // get
