@@ -36,6 +36,19 @@ class ProjectsScreen extends StatelessWidget {
           ),
         ],
       ),
+      body: Center(
+        child: LayoutBuilder(
+          builder: (context, constraints) {
+            return ConstrainedBox(
+              constraints: const BoxConstraints(maxWidth: 850),
+              child: Padding(
+                padding: MySizes.paddingSm(context),
+                child: Column(children: [Text('No Projects Yet')]),
+              ),
+            );
+          },
+        ),
+      ),
     );
   }
 }

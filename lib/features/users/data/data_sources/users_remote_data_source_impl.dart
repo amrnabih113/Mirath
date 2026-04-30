@@ -1,4 +1,5 @@
 import 'package:dio/dio.dart';
+import 'package:mirath/features/users/data/models/follows_model.dart';
 
 import '../../../../core/network/dio_client.dart';
 import '../../../../core/utils/my_constants.dart';
@@ -148,5 +149,21 @@ class UsersRemoteDataSourceImpl implements UsersRemoteDataSource {
       MyLogger.error('[UsersRemoteDataSource] Unfollow user failed: $e');
       rethrow;
     }
+  }
+
+  @override
+  Future<FollowsModel> getUserFollowers(String id) async {
+    final response = await dioClient.get(
+      MyConstants.getFollowers.replaceAll('{id}', id),
+    );
+    return FollowsModel.fromJson(response.data);
+  }
+
+  @override
+  Future<FollowsModel> getUserFollowing(String id) async {
+    final response = await dioClient.get(
+      MyConstants.getFollowing.replaceAll('{id}', id),
+    );
+    return FollowsModel.fromJson(response.data);
   }
 }
