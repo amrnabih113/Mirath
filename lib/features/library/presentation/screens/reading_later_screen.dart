@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:mirath/core/helpers/responsive_helper.dart';
 import 'package:mirath/core/utils/my_colors.dart';
 import 'package:mirath/core/utils/my_extenstions.dart';
 import 'package:mirath/core/utils/my_sizes.dart';
 import 'package:mirath/features/common/widgets/my_back_icon.dart';
+import 'package:mirath/features/home/presentation/widgets/home_shimmer_loading.dart';
 import 'package:mirath/features/home/presentation/widgets/paper_card.dart';
+import 'package:mirath/features/library/presentation/cubit/library_cubit.dart';
 
 class ReadingLaterScreen extends StatelessWidget {
   const ReadingLaterScreen({super.key});
@@ -56,11 +59,49 @@ class ReadingLaterScreen extends StatelessWidget {
                 SliverToBoxAdapter(
                   child: SizedBox(height: MySizes.spaceMd(context)),
                 ),
-                SliverList.separated(
-                  separatorBuilder: (context, index) =>
-                      SizedBox(height: MySizes.spaceSm(context)),
-                  itemBuilder: (BuildContext context, int index) {
-                    return PaperCard(onTap: () {});
+                BlocBuilder<LibraryCubit, LibraryState>(
+                  builder: (context, state) {
+                    if (state is GetAllSavedPapersLoading) {
+                      return const SliverToBoxAdapter(
+                        child: Center(child: PaperListShimmer()),
+                      );
+                    } else if (state is GetAllSavedPapersSuccess) {
+                      if (state.savedPapers.isEmpty) {
+                        return SliverToBoxAdapter(
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: [
+                              Text('You haven’t added any research papers'),
+                              TextButton(
+                                onPressed: () {},
+                                child: Text(
+                                  'Explore',
+                                  style: context.bodyLarge.copyWith(
+                                    decoration: TextDecoration.underline,
+                                    decorationThickness: 2,
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        );
+                      } else {
+                        return SliverList.separated(
+                          separatorBuilder: (context, index) =>
+                              SizedBox(height: MySizes.spaceSm(context)),
+                          itemBuilder: (BuildContext context, int index) {
+                            return PaperCard(onTap: () {});
+                          },
+                        );
+                      }
+                    } else if (state is GetAllSavedPapersFailure) {
+                      return SliverToBoxAdapter(
+                        child: Center(child: Text(state.errorMessage)),
+                      );
+                    } else {
+                      return const SliverToBoxAdapter(child: SizedBox.shrink());
+                    }
                   },
                 ),
               ],

@@ -3,11 +3,11 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hugeicons/hugeicons.dart';
 import 'package:mirath/core/utils/my_colors.dart';
+import 'package:mirath/core/utils/my_extenstions.dart';
 import 'package:mirath/core/utils/my_sizes.dart';
 import 'package:mirath/features/common/widgets/my_back_icon.dart';
 import 'package:mirath/features/home/presentation/widgets/home_shimmer_loading.dart';
 import 'package:mirath/features/home/presentation/widgets/paper_card.dart';
-import 'package:mirath/features/library/presentation/cubit/library_cubit.dart';
 import 'package:mirath/features/library/presentation/widgets/read_later_container.dart';
 import 'package:mirath/features/library/presentation/widgets/show_create_list_dialog.dart';
 import 'package:mirath/features/reading_lists/presentation/cubit/reading_list_cubit.dart';
@@ -40,6 +40,7 @@ class ReadingListScreen extends StatelessWidget {
             ),
           ],
         ),
+
         body: Center(
           child: LayoutBuilder(
             builder: (context, constraints) {
@@ -56,68 +57,98 @@ class ReadingListScreen extends StatelessWidget {
                         Tab(text: 'Saved lists'),
                       ],
                     ),
+
                     Expanded(
                       child: Padding(
                         padding: MySizes.paddingSm(context),
                         child: TabBarView(
                           children: [
-                            SingleChildScrollView(
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  ReadLaterContainer(),
-                                  SizedBox(height: MySizes.spaceSm(context)),
-
-                                  //your lists
-                                  BlocBuilder<
-                                    ReadingListCubit,
-                                    ReadingListState
-                                  >(
-                                    builder: (context, state) {
-                                      if (state is ReadingListLoading) {
-                                        return const ReadingListShimmerLoading();
-                                      } else if (state is ReadingListsLoaded) {
-                                        return ListView.builder(
-                                          shrinkWrap: true, // 👈 add this
-                                          physics:
-                                              const NeverScrollableScrollPhysics(),
-                                          itemCount: state.readingLists.length,
-                                          itemBuilder: (context, index) =>
-                                              Padding(
-                                                padding: EdgeInsets.only(
-                                                  bottom: MySizes.spaceXs(
-                                                    context,
-                                                  ),
-                                                ),
-                                                child: ReadingListCard(
-                                                  readingList:
-                                                      state.readingLists[index],
-                                                ),
-                                              ),
-                                        );
-                                      } else if (state is ReadingListError) {
-                                        return Text('Error: ${state.message}');
-                                      } else {
-                                        return const SizedBox();
-                                      }
-                                    },
-                                  ),
-                                ],
-                              ),
-                            ),
-                            //saved lists
-                            BlocBuilder<LibraryCubit, LibraryState>(
+                            // YOUR LISTS TAB
+                            BlocBuilder<ReadingListCubit, ReadingListState>(
                               builder: (context, state) {
-                                if (state is GetAllSavedPapersLoading) {
+                                if (state is ReadingListLoading) {
+                                  return const ReadingListShimmerLoading();
+                                }
+
+                                if (state is ReadingListsLoaded) {
+                                  return ListView.builder(
+                                    padding: EdgeInsets.zero,
+                                    itemCount: state.readingLists.length + 1,
+                                    itemBuilder: (context, index) {
+                                      if (index == 0) {
+                                        return Column(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          children: [
+                                            ReadLaterContainer(),
+                                            SizedBox(
+                                              height: MySizes.spaceSm(context),
+                                            ),
+                                          ],
+                                        );
+                                      }
+
+                                      final item =
+                                          state.readingLists[index - 1];
+
+                                      return Padding(
+                                        padding: EdgeInsets.only(
+                                          bottom: MySizes.spaceXs(context),
+                                        ),
+                                        child: ReadingListCard(
+                                          readingList: item,
+                                        ),
+                                      );
+                                    },
+                                  );
+                                }
+
+                                if (state is ReadingListError) {
+                                  return Center(child: Text(state.message));
+                                }
+
+                                return const SizedBox();
+                              },
+                            ),
+
+                            // SAVED LISTS TAB
+                            BlocBuilder<ReadingListCubit, ReadingListState>(
+                              builder: (context, state) {
+                                if (state is ReadingListLoading) {
                                   return const PaperListShimmer();
-                                } else if (state is GetAllSavedPapersSuccess) {
+                                }
+
+                                if (state is ReadingListsLoaded) {
+                                  if (state.readingLists.isEmpty) {
+                                    return Center(
+                                      child: Column(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.center,
+                                        children: [
+                                          const Text(
+                                            'You haven’t added any Saved papers',
+                                          ),
+                                          TextButton(
+                                            onPressed: () {},
+                                            child: Text(
+                                              'Explore',
+                                              style: context.bodyLarge.copyWith(
+                                                decoration:
+                                                    TextDecoration.underline,
+                                                decorationThickness: 2,
+                                              ),
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    );
+                                  }
+
                                   return ListView.separated(
                                     padding: const EdgeInsets.all(8),
-
-                                    itemCount: state.savedPapers.length,
-
+                                    itemCount: state.readingLists.length,
                                     itemBuilder: (context, index) => PaperCard(
-                                      savedPaper: state.savedPapers[index],
+                                      readingList: state.readingLists[index],
                                       onTap: () {
                                         context.push(
                                           '/other-user-reading-list',
@@ -130,11 +161,13 @@ class ReadingListScreen extends StatelessWidget {
                                               MySizes.spaceXs(context) * 0.5,
                                         ),
                                   );
-                                } else if (state is GetAllSavedPapersFailure) {
-                                  return Text(state.errorMessage);
-                                } else {
-                                  return const SizedBox();
                                 }
+
+                                if (state is ReadingListError) {
+                                  return Center(child: Text(state.message));
+                                }
+
+                                return const SizedBox();
                               },
                             ),
                           ],

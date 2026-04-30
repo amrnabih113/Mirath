@@ -109,21 +109,42 @@ class _ReadingHistoryScreenState extends State<ReadingHistoryScreen> {
                           if (state is GetReadingHistoryLoading) {
                             return const PaperListShimmer();
                           } else if (state is GetReadingHistorySuccess) {
-                            return Expanded(
-                              child: ListView.separated(
-                                padding: const EdgeInsets.all(8),
+                            if (state.readingHistory.isEmpty) {
+                              return Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                children: [
+                                  Text('You haven’t read any research papers'),
+                                  TextButton(
+                                    onPressed: () {},
+                                    child: Text(
+                                      'Explore',
+                                      style: context.bodyLarge.copyWith(
+                                        decoration: TextDecoration.underline,
+                                        decorationThickness: 2,
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              );
+                            } else {
+                              return Expanded(
+                                child: ListView.separated(
+                                  padding: const EdgeInsets.all(8),
 
-                                itemCount: state.readingHistory.length,
+                                  itemCount: state.readingHistory.length,
 
-                                itemBuilder: (context, index) => PaperCard(
-                                  readingHistory: state.readingHistory[index],
-                                  onTap: () {},
+                                  itemBuilder: (context, index) => PaperCard(
+                                    readingHistory: state.readingHistory[index],
+                                    onTap: () {},
+                                  ),
+                                  separatorBuilder: (context, index) =>
+                                      SizedBox(
+                                        height: MySizes.spaceXs(context) * 0.5,
+                                      ),
                                 ),
-                                separatorBuilder: (context, index) => SizedBox(
-                                  height: MySizes.spaceXs(context) * 0.5,
-                                ),
-                              ),
-                            );
+                              );
+                            }
                           } else if (state is GetReadingHistoryFailure) {
                             return Text(state.errorMessage);
                           } else {
