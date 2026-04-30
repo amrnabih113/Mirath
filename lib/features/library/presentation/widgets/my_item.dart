@@ -28,7 +28,7 @@ class MyItem extends StatelessWidget {
               // Handle tap event
             },
             icon: HugeIcons.strokeRoundedFile02,
-            title: '$data.listsCount',
+            title: '${data.listsCount}',
             subtitle: 'Lists',
           ),
           LibItem(
@@ -36,7 +36,7 @@ class MyItem extends StatelessWidget {
               // Handle tap event
             },
             icon: HugeIcons.strokeRoundedFileEdit,
-            title: '$data.createdCount',
+            title: '${data.createdCount}',
             subtitle: 'created',
           ),
           LibItem(
@@ -44,7 +44,7 @@ class MyItem extends StatelessWidget {
               // Handle tap event
             },
             icon: HugeIcons.strokeRoundedFileBookmark,
-            title: '$data.savedCount',
+            title: '${data.savedCount}',
             subtitle: 'Saved',
           ),
           LibItem(
@@ -52,7 +52,7 @@ class MyItem extends StatelessWidget {
               // Handle tap event
             },
             icon: HugeIcons.strokeRoundedFolder02,
-            title: '$data.projectsCount',
+            title: '${data.projectsCount}',
             subtitle: 'Projects',
           ),
         ],

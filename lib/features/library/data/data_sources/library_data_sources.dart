@@ -9,7 +9,7 @@ abstract class LibraryDataSources {
 
   Future<LibraryData> getLibraryData();
 
-  Future<ReadingHistory> getReadingHistory();
+  Future<List<ReadingHistory>> getReadingHistory();
 
   Future<void> removePaperFromReadingHistory(String paperId);
 

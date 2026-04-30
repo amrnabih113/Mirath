@@ -527,10 +527,17 @@ final appRouter = GoRouter(
       path: '/reading-lists',
       pageBuilder: (context, state) {
         return PageTransitions.smoothTransition(
-          BlocProvider(
-            create: (context) => sl<ReadingListCubit>()
-              ..getUserReadingLists()
-              ..getSavedReadingLists(),
+          MultiBlocProvider(
+            providers: [
+              BlocProvider(
+                create: (context) => sl<ReadingListCubit>()
+                  ..getUserReadingLists()
+                  ..getSavedReadingLists(),
+              ),
+              BlocProvider(
+                create: (context) => sl<LibraryCubit>()..getAllSavedPapers(),
+              ),
+            ],
             child: const ReadingListScreen(),
           ),
         );

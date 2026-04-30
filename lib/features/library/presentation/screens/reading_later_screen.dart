@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:intl/intl.dart';
 import 'package:mirath/core/helpers/responsive_helper.dart';
 import 'package:mirath/core/utils/my_colors.dart';
 import 'package:mirath/core/utils/my_extenstions.dart';
 import 'package:mirath/core/utils/my_sizes.dart';
 import 'package:mirath/features/common/widgets/my_back_icon.dart';
+import 'package:mirath/features/home/domain/entities/paper_entity.dart';
 import 'package:mirath/features/home/presentation/widgets/home_shimmer_loading.dart';
 import 'package:mirath/features/home/presentation/widgets/paper_card.dart';
 import 'package:mirath/features/library/presentation/cubit/library_cubit.dart';
@@ -20,91 +22,104 @@ class ReadingLaterScreen extends StatelessWidget {
         builder: (context, constraints) {
           return ConstrainedBox(
             constraints: const BoxConstraints(maxWidth: 850),
-            child: CustomScrollView(
-              slivers: [
-                SliverToBoxAdapter(
-                  child: Container(
-                    height: 100,
-                    width: MySizes.screenWidth(context),
-                    padding: EdgeInsets.all(
-                      ResponsiveHelper.responsiveValue(context, 16),
-                    ),
-                    decoration: BoxDecoration(
-                      border: Border(
-                        bottom: BorderSide(
-                          width: 1,
-                          color: MyColors.primaryShade100,
-                        ),
-                      ),
-                    ),
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          'Read Later',
-                          style: context.headlineSmall.copyWith(
-                            color: MyColors.primaryShade900,
-                            fontWeight: FontWeight.w700,
-                            height: 1.3,
-                            letterSpacing: -0.2,
+            child: BlocBuilder<LibraryCubit, LibraryState>(
+              builder: (context, state) {
+                if (state is GetAllSavedPapersLoading) {
+                  return const Center(child: PaperListShimmer());
+                }
+
+                if (state is GetAllSavedPapersFailure) {
+                  return Center(child: Text(state.errorMessage));
+                }
+
+                if (state is GetAllSavedPapersSuccess) {
+                  final savedPapers = state.savedPapers;
+                  final formattedDate = DateFormat(
+                    'dd',
+                  ).format(savedPapers.createdAt);
+
+                  return CustomScrollView(
+                    slivers: [
+                      // HEADER
+                      SliverToBoxAdapter(
+                        child: Container(
+                          height: 100,
+                          width: MySizes.screenWidth(context),
+                          padding: EdgeInsets.all(
+                            ResponsiveHelper.responsiveValue(context, 16),
                           ),
-                        ),
-                        SizedBox(height: MySizes.spaceSm(context) * 0.5),
-                        Text('8 papers • Updated 2 days ago'),
-                      ],
-                    ),
-                  ),
-                ),
-                SliverToBoxAdapter(
-                  child: SizedBox(height: MySizes.spaceMd(context)),
-                ),
-                BlocBuilder<LibraryCubit, LibraryState>(
-                  builder: (context, state) {
-                    if (state is GetAllSavedPapersLoading) {
-                      return const SliverToBoxAdapter(
-                        child: Center(child: PaperListShimmer()),
-                      );
-                    } else if (state is GetAllSavedPapersSuccess) {
-                      if (state.savedPapers.isEmpty) {
-                        return SliverToBoxAdapter(
+                          decoration: BoxDecoration(
+                            border: Border(
+                              bottom: BorderSide(
+                                width: 1,
+                                color: MyColors.primaryShade100,
+                              ),
+                            ),
+                          ),
                           child: Column(
                             mainAxisAlignment: MainAxisAlignment.center,
-                            crossAxisAlignment: CrossAxisAlignment.center,
+                            crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Text('You haven’t added any research papers'),
+                              Text(
+                                'Read Later',
+                                style: context.headlineSmall.copyWith(
+                                  color: MyColors.primaryShade900,
+                                  fontWeight: FontWeight.w700,
+                                ),
+                              ),
+                              SizedBox(height: MySizes.spaceSm(context) * 0.5),
+
+                              Text(
+                                '${savedPapers.size} papers • Updated $formattedDate days ago',
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+
+                      SliverToBoxAdapter(
+                        child: SizedBox(height: MySizes.spaceMd(context)),
+                      ),
+
+                      // EMPTY STATE
+                      if (savedPapers.paper.isEmpty)
+                        SliverToBoxAdapter(
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              const Text(
+                                'You haven’t added any research papers',
+                              ),
                               TextButton(
                                 onPressed: () {},
                                 child: Text(
                                   'Explore',
                                   style: context.bodyLarge.copyWith(
                                     decoration: TextDecoration.underline,
-                                    decorationThickness: 2,
                                   ),
                                 ),
                               ),
                             ],
                           ),
-                        );
-                      } else {
-                        return SliverList.separated(
-                          separatorBuilder: (context, index) =>
+                        )
+                      else
+                        // LIST
+                        SliverList.separated(
+                          itemCount: savedPapers.paper.length,
+                          separatorBuilder: (_, __) =>
                               SizedBox(height: MySizes.spaceSm(context)),
-                          itemBuilder: (BuildContext context, int index) {
-                            return PaperCard(onTap: () {});
+                          itemBuilder: (context, index) {
+                            final paper = savedPapers.paper[index];
+
+                            return PaperCard(fullPaper: paper, onTap: () {});
                           },
-                        );
-                      }
-                    } else if (state is GetAllSavedPapersFailure) {
-                      return SliverToBoxAdapter(
-                        child: Center(child: Text(state.errorMessage)),
-                      );
-                    } else {
-                      return const SliverToBoxAdapter(child: SizedBox.shrink());
-                    }
-                  },
-                ),
-              ],
+                        ),
+                    ],
+                  );
+                }
+
+                return const SizedBox();
+              },
             ),
           );
         },

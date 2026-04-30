@@ -6,6 +6,7 @@ import 'package:mirath/features/common/widgets/tag_chip.dart';
 import 'package:mirath/features/home/presentation/cubit/home_cubit.dart';
 import 'package:mirath/features/library/domain/entities/reading_history.dart';
 import 'package:mirath/features/library/domain/entities/saved_papers.dart';
+import 'package:mirath/features/papers/data/models/full_paper_model.dart';
 import 'package:mirath/features/papers/presentation/widgets/latex_renderer.dart';
 import 'package:mirath/features/reading_lists/domain/entities/reading_list.dart';
 import '../../domain/entities/paper_entity.dart';
@@ -24,12 +25,14 @@ class PaperCard extends StatefulWidget {
     this.readingList,
     required this.onTap,
     this.savedPaper,
+    this.fullPaper,
   });
   final int? number;
   final PaperEntity? paper;
   final ReadingHistory? readingHistory;
   final ReadingList? readingList;
   final SavedPapers? savedPaper;
+  final FullPaperModel? fullPaper;
   final VoidCallback onTap;
 
   @override

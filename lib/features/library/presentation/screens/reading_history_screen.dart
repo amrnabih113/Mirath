@@ -7,16 +7,10 @@ import 'package:mirath/features/common/widgets/my_back_icon.dart';
 import 'package:mirath/features/home/presentation/widgets/home_shimmer_loading.dart';
 import 'package:mirath/features/home/presentation/widgets/paper_card.dart';
 import 'package:mirath/features/library/presentation/cubit/library_cubit.dart';
+import 'package:mirath/features/library/presentation/widgets/delete_button.dart';
 
-class ReadingHistoryScreen extends StatefulWidget {
+class ReadingHistoryScreen extends StatelessWidget {
   const ReadingHistoryScreen({super.key});
-
-  @override
-  State<ReadingHistoryScreen> createState() => _ReadingHistoryScreenState();
-}
-
-class _ReadingHistoryScreenState extends State<ReadingHistoryScreen> {
-  String selectedValue = 'Delete';
 
   @override
   Widget build(BuildContext context) {
@@ -31,6 +25,7 @@ class _ReadingHistoryScreenState extends State<ReadingHistoryScreen> {
           ),
         ),
         centerTitle: true,
+        actions: [DeleteButton()],
       ),
       body: Center(
         child: LayoutBuilder(
@@ -41,69 +36,9 @@ class _ReadingHistoryScreenState extends State<ReadingHistoryScreen> {
                 padding: MySizes.paddingSm(context),
                 child: SingleChildScrollView(
                   child: Column(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
-                      Align(
-                        alignment: Alignment.topRight,
-                        child: Padding(
-                          padding: EdgeInsets.only(
-                            right: MySizes.spaceXs(context),
-                            bottom: MySizes.spaceXs(context) * 0.5,
-                          ),
-                          child: PopupMenuButton<String>(
-                            initialValue: selectedValue,
-                            onSelected: (value) {
-                              setState(() {
-                                selectedValue = value;
-                              });
-                            },
-                            itemBuilder: (context) => [
-                              PopupMenuItem(
-                                value: 'Delete',
-                                child: Text(
-                                  'Delete',
-                                  style: context.bodySmall.copyWith(
-                                    color: MyColors.primaryShade900,
-                                  ),
-                                ),
-                              ),
-                              PopupMenuItem(
-                                value: 'Delete All',
-                                child: Text(
-                                  'Delete All',
-                                  style: context.bodySmall.copyWith(
-                                    color: MyColors.primaryShade900,
-                                  ),
-                                ),
-                              ),
-                            ],
-                            child: Container(
-                              padding: const EdgeInsets.symmetric(
-                                horizontal: 14,
-                                vertical: 6,
-                              ),
-                              decoration: BoxDecoration(
-                                color: Colors.white,
-                                borderRadius: BorderRadius.circular(20),
-                                border: Border.all(color: Colors.black),
-                              ),
-                              child: Row(
-                                mainAxisSize: MainAxisSize.min,
-                                children: [
-                                  Text(
-                                    selectedValue,
-                                    style: const TextStyle(color: Colors.black),
-                                  ),
-                                  const SizedBox(width: 4),
-                                  const Icon(
-                                    Icons.keyboard_arrow_down,
-                                    size: 18,
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ),
-                        ),
-                      ),
                       BlocBuilder<LibraryCubit, LibraryState>(
                         builder: (context, state) {
                           if (state is GetReadingHistoryLoading) {

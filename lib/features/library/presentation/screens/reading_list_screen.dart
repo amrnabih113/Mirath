@@ -64,51 +64,92 @@ class ReadingListScreen extends StatelessWidget {
                         child: TabBarView(
                           children: [
                             // YOUR LISTS TAB
-                            BlocBuilder<ReadingListCubit, ReadingListState>(
-                              builder: (context, state) {
-                                if (state is ReadingListLoading) {
-                                  return const ReadingListShimmerLoading();
-                                }
+                            SingleChildScrollView(
+                              child: Column(
+                                children: [
+                                  ReadLaterContainer(),
+                                  SizedBox(height: MySizes.spaceSm(context)),
 
-                                if (state is ReadingListsLoaded) {
-                                  return ListView.builder(
-                                    padding: EdgeInsets.zero,
-                                    itemCount: state.readingLists.length + 1,
-                                    itemBuilder: (context, index) {
-                                      if (index == 0) {
-                                        return Column(
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.start,
-                                          children: [
-                                            ReadLaterContainer(),
-                                            SizedBox(
-                                              height: MySizes.spaceSm(context),
+                                  BlocBuilder<
+                                    ReadingListCubit,
+                                    ReadingListState
+                                  >(
+                                    builder: (context, state) {
+                                      if (state is ReadingListLoading) {
+                                        return const ReadingListShimmerLoading();
+                                      }
+
+                                      if (state is ReadingListsLoaded) {
+                                        if (state.readingLists.isEmpty) {
+                                          return Center(
+                                            child: Column(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment.center,
+                                              children: [
+                                                const Text(
+                                                  'You haven’t created any lists',
+                                                ),
+                                                TextButton(
+                                                  onPressed: () {},
+                                                  child: Text(
+                                                    'Explore',
+                                                    style: context.bodyLarge
+                                                        .copyWith(
+                                                          decoration:
+                                                              TextDecoration
+                                                                  .underline,
+                                                          decorationThickness:
+                                                              2,
+                                                        ),
+                                                  ),
+                                                ),
+                                              ],
                                             ),
-                                          ],
+                                          );
+                                        } else {
+                                          return ListView.separated(
+                                            padding: EdgeInsets.zero,
+                                            itemCount:
+                                                state.readingLists.length,
+                                            itemBuilder: (context, index) {
+                                              final item =
+                                                  state.readingLists[index];
+
+                                              return Padding(
+                                                padding: EdgeInsets.only(
+                                                  bottom: MySizes.spaceXs(
+                                                    context,
+                                                  ),
+                                                ),
+                                                child: ReadingListCard(
+                                                  readingList: item,
+                                                ),
+                                              );
+                                            },
+                                            separatorBuilder:
+                                                (
+                                                  BuildContext context,
+                                                  int index,
+                                                ) => SizedBox(
+                                                  height: MySizes.spaceXs(
+                                                    context,
+                                                  ),
+                                                ),
+                                          );
+                                        }
+                                      }
+
+                                      if (state is ReadingListError) {
+                                        return Center(
+                                          child: Text(state.message),
                                         );
                                       }
 
-                                      final item =
-                                          state.readingLists[index - 1];
-
-                                      return Padding(
-                                        padding: EdgeInsets.only(
-                                          bottom: MySizes.spaceXs(context),
-                                        ),
-                                        child: ReadingListCard(
-                                          readingList: item,
-                                        ),
-                                      );
+                                      return const SizedBox();
                                     },
-                                  );
-                                }
-
-                                if (state is ReadingListError) {
-                                  return Center(child: Text(state.message));
-                                }
-
-                                return const SizedBox();
-                              },
+                                  ),
+                                ],
+                              ),
                             ),
 
                             // SAVED LISTS TAB

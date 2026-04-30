@@ -20,9 +20,10 @@ class LibraryDataSourcesImpl implements LibraryDataSources {
   }
 
   @override
-  Future<ReadingHistory> getReadingHistory() async {
+  Future<List<ReadingHistory>> getReadingHistory() async {
     final response = await dioClient.get(MyConstants.getReadingHistory);
-    return ReadingHistoryModel.fromJson(response.data);
+    final List data = response.data['data'] ?? [];
+    return data.map((item) => ReadingHistoryModel.fromJson(item)).toList();
   }
 
   @override

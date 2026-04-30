@@ -43,7 +43,7 @@ class ProjectsScreen extends StatelessWidget {
               constraints: const BoxConstraints(maxWidth: 850),
               child: Padding(
                 padding: MySizes.paddingSm(context),
-                child: Column(children: [Text('No Projects Yet')]),
+                child: Center(child: Text('No Projects Yet')),
               ),
             );
           },

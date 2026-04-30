@@ -60,7 +60,7 @@ class ClearAllReadingHistoryFailure extends LibraryState {
 class GetAllSavedPapersLoading extends LibraryState {}
 
 class GetAllSavedPapersSuccess extends LibraryState {
-  final List<SavedPapers> savedPapers;
+  final SavedPapers savedPapers;
 
   GetAllSavedPapersSuccess({required this.savedPapers});
 }
