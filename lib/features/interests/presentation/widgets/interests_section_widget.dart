@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:mirath/generated/l10n.dart';
 
 import '../../../../core/utils/my_extenstions.dart';
 import '../../../../core/utils/my_sizes.dart';
@@ -40,13 +41,16 @@ class InterestsSectionWidget extends StatelessWidget {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Text('Error loading interests', style: context.bodyLarge),
+                  Text(
+                    S.of(context).error_loading_interests,
+                    style: context.bodyLarge,
+                  ),
                   SizedBox(height: MySizes.spaceSm(context)),
                   ElevatedButton(
                     onPressed: () {
                       interestsCubit.getAllInterests();
                     },
-                    child: const Text('Retry'),
+                    child: Text(S.of(context).retry_button),
                   ),
                 ],
               ),

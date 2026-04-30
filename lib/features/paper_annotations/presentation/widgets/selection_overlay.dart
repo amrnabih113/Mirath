@@ -6,6 +6,7 @@ import 'package:mirath/core/helpers/responsive_helper.dart';
 import 'package:mirath/core/utils/my_colors.dart';
 import 'package:mirath/core/utils/my_sizes.dart';
 import 'package:mirath/features/paper_annotations/presentation/utils/annotation_theme_colors.dart';
+import 'package:mirath/generated/l10n.dart';
 
 enum AnnotationDialogMode { selectionActions, selectionColors, highlightColors }
 
@@ -171,7 +172,7 @@ class AnnotationSelectionOverlay extends StatelessWidget {
         children: [
           _buildActionItem(
             context: context,
-            label: 'Highlight',
+            label: S.of(context).highlight_button,
             onTap: onHighlightPressed,
             color: MyColors.black,
           ),
@@ -185,14 +186,14 @@ class AnnotationSelectionOverlay extends StatelessWidget {
           _buildDivider(context, separator),
           _buildActionItem(
             context: context,
-            label: 'Explain',
+            label: S.of(context).explain_button,
             onTap: onExplain,
             color: MyColors.black,
           ),
           _buildDivider(context, separator),
           _buildActionItem(
             context: context,
-            label: 'Translate',
+            label: S.of(context).translate_button,
             onTap: onTranslate,
             color: MyColors.black,
           ),
@@ -244,7 +245,7 @@ class AnnotationSelectionOverlay extends StatelessWidget {
           ),
           _buildActionItem(
             context: context,
-            label: 'Remove',
+            label: S.of(context).remove_button,
             onTap: onRemove!,
             color: Colors.red,
           ),

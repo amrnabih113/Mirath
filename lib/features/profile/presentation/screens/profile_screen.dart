@@ -5,6 +5,7 @@ import 'package:mirath/core/utils/my_colors.dart';
 import 'package:mirath/core/utils/my_sizes.dart';
 import 'package:mirath/features/profile/presentation/widgets/user_data.dart';
 import 'package:mirath/features/profile/presentation/widgets/user_tabs.dart';
+import 'package:mirath/generated/l10n.dart';
 
 class ProfileScreen extends StatelessWidget {
   const ProfileScreen({super.key});
@@ -15,7 +16,7 @@ class ProfileScreen extends StatelessWidget {
       length: 2,
       child: Scaffold(
         appBar: AppBar(
-          title: const Text('Profile'),
+          title: Text(S.of(context).profile),
           actions: [
             IconButton(
               icon: HugeIcon(
@@ -48,7 +49,7 @@ class ProfileScreen extends StatelessWidget {
                         return [
                           SliverToBoxAdapter(
                             child: UserData(
-                              label: 'Edit profile',
+                              label: S.of(context).edit_profile,
                               color: MyColors.primaryShade50,
                               labelColor: MyColors.primaryShade900,
                             ),
@@ -60,9 +61,9 @@ class ProfileScreen extends StatelessWidget {
                                 indicatorColor: MyColors.primaryShade900,
                                 labelColor: Colors.black,
                                 unselectedLabelColor: Colors.grey,
-                                tabs: const [
-                                  Tab(text: 'Reading Lists'),
-                                  Tab(text: 'Discussions'),
+                                tabs: [
+                                  Tab(text: S.of(context).reading_lists),
+                                  Tab(text: S.of(context).discussions),
                                 ],
                               ),
                             ),

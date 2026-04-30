@@ -6,6 +6,7 @@ import '../cubit/home_cubit.dart';
 import '../cubit/home_state.dart';
 import '../../../../core/helpers/responsive_helper.dart';
 import '../../../../core/utils/my_sizes.dart';
+import '../../../../generated/l10n.dart';
 import '../../../common/widgets/section_title.dart';
 import '../widgets/category_items_list.dart';
 import '../widgets/home_search_bar.dart';
@@ -89,13 +90,16 @@ class _HomeScreenState extends State<HomeScreen> {
                 const HomeSearchBar(),
                 SizedBox(height: MySizes.spaceLg(context)),
                 SectionTitle(
-                  title: 'Recently Published',
+                  title: S.of(context).recently_published,
                   onTap: () => context.push("/recentely-published"),
                 ),
                 SizedBox(height: MySizes.spaceMd(context)),
                 const CategoryItemsList(),
                 SizedBox(height: MySizes.spaceLg(context) * 1.5),
-                SectionTitle(title: 'You might also like', showSeeAll: false),
+                SectionTitle(
+                  title: S.of(context).you_might_also_like,
+                  showSeeAll: false,
+                ),
                 SizedBox(height: MySizes.spaceMd(context)),
 
                 // BlocBuilder only for the papers list section

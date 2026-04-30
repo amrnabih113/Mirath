@@ -4,6 +4,7 @@ import 'package:mirath/core/utils/my_extenstions.dart';
 import 'package:mirath/core/utils/my_sizes.dart';
 import 'package:mirath/features/papers/presentation/widgets/latex_renderer.dart';
 import 'package:mirath/features/papers/presentation/widgets/my_text_icon.dart';
+import 'package:mirath/generated/l10n.dart';
 
 class AbstractSection extends StatelessWidget {
   final String abstractText;
@@ -34,7 +35,10 @@ class AbstractSection extends StatelessWidget {
 
         SizedBox(height: MySizes.spaceXs(context)),
         abstractText.isEmpty
-            ? Text('No abstract available.', style: context.bodyMedium)
+            ? Text(
+                S.of(context).no_abstract_available,
+                style: context.bodyMedium,
+              )
             : LaTeXRenderer(text: abstractText, textStyle: context.bodyMedium),
         SizedBox(height: MySizes.spaceMd(context)),
         Text(

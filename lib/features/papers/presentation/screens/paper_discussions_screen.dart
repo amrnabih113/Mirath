@@ -10,6 +10,7 @@ import 'package:mirath/features/discussions/presentation/cubit/community_cubit.d
 import 'package:mirath/features/discussions/presentation/cubit/community_state.dart';
 import 'package:mirath/features/discussions/presentation/widgets/discussion_card.dart';
 import 'package:mirath/features/home/domain/entities/paper_entity.dart';
+import 'package:mirath/generated/l10n.dart';
 
 class PaperDiscussionsScreen extends StatefulWidget {
   final PaperEntity paper;
@@ -43,7 +44,10 @@ class _PaperDiscussionsScreenState extends State<PaperDiscussionsScreen> {
                   leadingWidth: ResponsiveHelper.responsiveValue(context, 50),
                   leading: MyBackIcon(),
                   titleSpacing: 0,
-                  title: Text('Discussions', style: context.titleMedium),
+                  title: Text(
+                    S.of(context).discussions_label,
+                    style: context.titleMedium,
+                  ),
                 ),
               );
             },
@@ -98,7 +102,9 @@ class _PaperDiscussionsScreenState extends State<PaperDiscussionsScreen> {
                                   extra: widget.paper,
                                 );
                               },
-                              child: const Text('Start Discussion'),
+                              child: Text(
+                                S.of(context).start_discussion_button,
+                              ),
                             ),
                           ],
                         ),

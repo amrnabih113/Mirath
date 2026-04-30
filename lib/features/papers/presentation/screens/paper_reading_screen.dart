@@ -22,6 +22,7 @@ import 'package:mirath/features/paper_annotations/presentation/widgets/reader_ac
 import 'package:mirath/features/paper_annotations/presentation/widgets/reader_scroll_indicator.dart';
 import 'package:mirath/features/paper_annotations/presentation/widgets/selection_overlay.dart';
 import 'package:mirath/features/paper_annotations/presentation/widgets/translation_sheet.dart';
+import 'package:mirath/generated/l10n.dart';
 import 'package:mirath/injection/injection_container.dart';
 
 class PaperReadingScreen extends StatefulWidget {
@@ -164,8 +165,8 @@ class _PaperReadingScreenState extends State<PaperReadingScreen> {
 
     if (!didScroll) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Could not locate this note in the rendered section.'),
+        SnackBar(
+          content: Text(S.of(context).error_note_not_located),
           duration: Duration(seconds: 2),
         ),
       );
@@ -210,7 +211,7 @@ class _PaperReadingScreenState extends State<PaperReadingScreen> {
     if (!mounted) return;
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
-        content: Text('$action will be available soon.'),
+        content: Text('$action ${S.of(context).coming_soon_message}'),
         duration: const Duration(seconds: 2),
       ),
     );
@@ -235,7 +236,7 @@ class _PaperReadingScreenState extends State<PaperReadingScreen> {
     if (text == null || text.isEmpty) {
       if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Select text to translate first.')),
+        SnackBar(content: Text(S.of(context).error_select_text_translate)),
       );
       return;
     }
@@ -665,9 +666,7 @@ class _PaperReadingScreenState extends State<PaperReadingScreen> {
     if (!applied) {
       if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Unable to place highlight in this content section.'),
-        ),
+        SnackBar(content: Text(S.of(context).error_highlight_placement)),
       );
       return;
     }
@@ -719,9 +718,7 @@ class _PaperReadingScreenState extends State<PaperReadingScreen> {
     if (!applied) {
       if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Unable to place note in this content section.'),
-        ),
+        SnackBar(content: Text(S.of(context).error_note_placement)),
       );
       return;
     }
@@ -885,7 +882,9 @@ class _PaperReadingScreenState extends State<PaperReadingScreen> {
                                             controller: _searchController,
                                             autofocus: true,
                                             decoration: InputDecoration(
-                                              hintText: 'Search in paper...',
+                                              hintText: S
+                                                  .of(context)
+                                                  .search_in_paper_hint,
                                               hintStyle: Theme.of(context)
                                                   .textTheme
                                                   .bodyMedium
@@ -921,7 +920,9 @@ class _PaperReadingScreenState extends State<PaperReadingScreen> {
                                             Icons.keyboard_arrow_up,
                                           ),
                                           iconSize: MySizes.iconMedium(context),
-                                          tooltip: 'Previous',
+                                          tooltip: S
+                                              .of(context)
+                                              .previous_button,
                                         ),
                                         IconButton(
                                           onPressed: state.searchTotal > 0
@@ -931,13 +932,15 @@ class _PaperReadingScreenState extends State<PaperReadingScreen> {
                                             Icons.keyboard_arrow_down,
                                           ),
                                           iconSize: MySizes.iconMedium(context),
-                                          tooltip: 'Next',
+                                          tooltip: S.of(context).next,
                                         ),
                                         IconButton(
                                           onPressed: _closeSearch,
                                           icon: const Icon(Icons.close),
                                           iconSize: MySizes.iconMedium(context),
-                                          tooltip: 'Close search',
+                                          tooltip: S
+                                              .of(context)
+                                              .close_search_button,
                                         ),
                                       ],
                                     ),
@@ -1087,8 +1090,8 @@ class _PaperReadingScreenState extends State<PaperReadingScreen> {
                         onNote: _handleNoteAction,
                         noteActionLabel:
                             _activeHighlight?.note?.trim().isNotEmpty == true
-                            ? 'Edit Note'
-                            : 'Add Note',
+                            ? S.of(context).edit_note_button
+                            : S.of(context).add_note_button,
                         onExplain: () => _showComingSoonMessage('Explain'),
                         onTranslate: _openTranslateSheet,
                         onRemove: _activeHighlight != null

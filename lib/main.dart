@@ -35,7 +35,7 @@ class MirathApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp.router(
-      title: 'Mirath App',
+      title: S.of(context).app_title,
       debugShowCheckedModeBanner: false,
       themeMode: ThemeMode.light,
       locale: const Locale('en'),

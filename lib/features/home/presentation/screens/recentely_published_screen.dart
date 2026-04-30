@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../../core/helpers/responsive_helper.dart';
 import '../../../../core/utils/my_extenstions.dart';
 import '../../../../core/utils/my_sizes.dart';
+import '../../../../generated/l10n.dart';
 import '../../../common/widgets/my_back_icon.dart';
 import '../../domain/entities/paper_entity.dart';
 import '../cubit/home_cubit.dart';
@@ -67,7 +68,7 @@ class _RecentelyPublishedScreenState extends State<RecentelyPublishedScreen> {
                 child: AppBar(
                   leading: const MyBackIcon(),
                   title: Text(
-                    'Recently Published',
+                    S.of(context).recently_published,
                     style: context.titleLarge.copyWith(
                       fontWeight: FontWeight.w900,
                     ),
@@ -113,7 +114,9 @@ class _RecentelyPublishedScreenState extends State<RecentelyPublishedScreen> {
                             papers = state.recentPapers;
                             isLoadingMore = state.isLoadingMoreRecent;
                           } else {
-                            return const Center(child: Text('Data not loaded'));
+                            return Center(
+                              child: Text(S.of(context).data_not_loaded),
+                            );
                           }
 
                           if (papers.isEmpty) {
@@ -128,7 +131,7 @@ class _RecentelyPublishedScreenState extends State<RecentelyPublishedScreen> {
                                   ),
                                   SizedBox(height: MySizes.spaceMd(context)),
                                   Text(
-                                    'No papers available',
+                                    S.of(context).no_results_found,
                                     style: TextStyle(
                                       fontSize: 16,
                                       color: Colors.grey[600],

@@ -32,7 +32,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
     return Scaffold(
       appBar: AppBar(
         leading: MyBackIcon(),
-        title: Text('username'),
+        title: Text(S.of(context).username_label),
         centerTitle: true,
       ),
       body: Center(
@@ -66,7 +66,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                           ],
                         ),
                         SizedBox(height: MySizes.spaceXs(context)),
-                        Text('Name'),
+                        Text(S.of(context).name_field_label),
                         SizedBox(height: MySizes.spaceXs(context)),
                         TextFormField(
                           decoration: buildInputDecoration(),
@@ -79,7 +79,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                           ),
                         ),
                         SizedBox(height: MySizes.spaceXs(context)),
-                        Text('Bio'),
+                        Text(S.of(context).bio_field_label),
                         SizedBox(height: MySizes.spaceXs(context)),
                         Stack(
                           children: [
@@ -89,7 +89,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                               maxLines: 3,
                               cursorColor: MyColors.primaryColor,
                               decoration: InputDecoration(
-                                hintText: 'Lorem ipsum dolor sit amet,',
+                                hintText: S.of(context).bio_hint,
 
                                 border: OutlineInputBorder(
                                   borderRadius: BorderRadius.circular(12),
@@ -130,7 +130,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                           ],
                         ),
                         SizedBox(height: MySizes.spaceXs(context)),
-                        Text('Level of education'),
+                        Text(S.of(context).education_level_label),
                         SizedBox(height: MySizes.spaceXs(context)),
                         SizedBox(
                           width: MySizes.buttonWidth(context) * 1.75,
@@ -182,11 +182,11 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                         ),
 
                         SizedBox(height: MySizes.spaceXs(context)),
-                        Text('University'),
+                        Text(S.of(context).university_label),
                         SizedBox(height: MySizes.spaceXs(context)),
                         TextFormField(
                           decoration: buildInputDecoration().copyWith(
-                            hint: Text(' uni'),
+                            hint: Text(S.of(context).university_hint),
                           ),
                           cursorColor: MyColors.primaryColor,
                           controller: _uiversityController,
@@ -197,7 +197,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                           ),
                         ),
                         SizedBox(height: MySizes.spaceXs(context)),
-                        Text('Current position'),
+                        Text(S.of(context).position_label),
                         SizedBox(height: MySizes.spaceXs(context)),
                         TextFormField(
                           decoration: buildInputDecoration(),
@@ -211,11 +211,11 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                           ),
                         ),
                         SizedBox(height: MySizes.spaceXs(context)),
-                        Text('Country'),
+                        Text(S.of(context).country_label),
                         SizedBox(height: MySizes.spaceXs(context)),
                         TextFormField(
                           decoration: buildInputDecoration().copyWith(
-                            hint: Text('Egypt'),
+                            hint: Text(S.of(context).country_hint),
                           ),
                           cursorColor: MyColors.primaryColor,
                           controller: _countryController,
@@ -267,7 +267,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                               child: Row(
                                 mainAxisSize: MainAxisSize.min,
                                 children: [
-                                  Text('Edit'),
+                                  Text(S.of(context).edit_button),
                                   SizedBox(width: MySizes.spaceXs(context)),
                                   HugeIcon(
                                     icon: HugeIcons.strokeRoundedPencilEdit01,

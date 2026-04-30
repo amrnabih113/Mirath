@@ -5,6 +5,7 @@ import 'package:mirath/core/utils/my_extenstions.dart';
 import 'package:mirath/core/utils/my_sizes.dart';
 import 'package:mirath/features/common/widgets/my_back_icon.dart';
 import 'package:mirath/features/profile/presentation/widgets/profile_reading_list_card.dart';
+import 'package:mirath/generated/l10n.dart';
 
 class ReadingLaterScreen extends StatelessWidget {
   const ReadingLaterScreen({super.key});
@@ -39,7 +40,7 @@ class ReadingLaterScreen extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          'Read Later',
+                          S.of(context).read_later,
                           style: context.headlineSmall.copyWith(
                             color: MyColors.primaryShade900,
                             fontWeight: FontWeight.w700,
@@ -48,7 +49,7 @@ class ReadingLaterScreen extends StatelessWidget {
                           ),
                         ),
                         SizedBox(height: MySizes.spaceSm(context) * 0.5),
-                        Text('8 papers • Updated 2 days ago'),
+                        Text(S.of(context).read_later_stats('8', '2')),
                       ],
                     ),
                   ),

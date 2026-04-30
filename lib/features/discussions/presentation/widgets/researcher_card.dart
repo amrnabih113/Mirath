@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:hugeicons/hugeicons.dart';
+import 'package:mirath/generated/l10n.dart';
 
 import '../../../../core/helpers/responsive_helper.dart';
 import '../../../../core/utils/my_colors.dart';
@@ -53,7 +54,10 @@ class ResearcherCard extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text('Jane Doe', style: context.titleMedium),
+                  Text(
+                    S.of(context).placeholder_researcher_name,
+                    style: context.titleMedium,
+                  ),
                   SizedBox(height: MySizes.spaceXs(context)),
                   Text(
                     'Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem...',

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hugeicons/hugeicons.dart';
+import 'package:mirath/generated/l10n.dart';
 
 import '../../../../core/helpers/responsive_helper.dart';
 import '../../../../core/utils/my_colors.dart';
@@ -74,7 +75,7 @@ class MyBottomNavBar extends StatelessWidget {
                         children: [
                           NavItem(
                             icon: HugeIcons.strokeRoundedHome01,
-                            label: 'Home',
+                            label: S.of(context).nav_home_label,
                             index: 0,
                             currentIndex: state.currentIndex,
                             onTap: () {
@@ -85,7 +86,7 @@ class MyBottomNavBar extends StatelessWidget {
 
                           NavItem(
                             icon: HugeIcons.strokeRoundedUserGroup03,
-                            label: 'Community',
+                            label: S.of(context).nav_community_label,
                             index: 1,
                             currentIndex: state.currentIndex,
                             onTap: () {
@@ -101,7 +102,7 @@ class MyBottomNavBar extends StatelessWidget {
                           ),
                           NavItem(
                             icon: HugeIcons.strokeRoundedBookBookmark02,
-                            label: 'Library',
+                            label: S.of(context).nav_library_label,
                             index: 2,
                             currentIndex: state.currentIndex,
                             onTap: () {
@@ -111,7 +112,7 @@ class MyBottomNavBar extends StatelessWidget {
                           ),
                           NavItem(
                             icon: HugeIcons.strokeRoundedUser,
-                            label: 'Profile',
+                            label: S.of(context).nav_profile_label,
                             index: 3,
                             currentIndex: state.currentIndex,
                             onTap: () {

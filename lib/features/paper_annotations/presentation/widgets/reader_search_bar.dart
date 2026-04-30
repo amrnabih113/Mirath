@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:mirath/core/helpers/responsive_helper.dart';
 import 'package:mirath/core/utils/my_sizes.dart';
+import 'package:mirath/generated/l10n.dart';
 
 class ReaderSearchBar extends StatelessWidget {
   final TextEditingController controller;
@@ -44,7 +45,7 @@ class ReaderSearchBar extends StatelessWidget {
               child: TextField(
                 controller: controller,
                 decoration: InputDecoration(
-                  hintText: 'Search in paper...',
+                  hintText: S.of(context).search_in_paper_hint,
                   hintStyle: Theme.of(
                     context,
                   ).textTheme.bodyMedium?.copyWith(color: Colors.grey),

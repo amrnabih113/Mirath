@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:hugeicons/hugeicons.dart';
+import 'package:mirath/generated/l10n.dart';
 import 'package:shimmer/shimmer.dart';
 import 'package:mirath/core/helpers/responsive_helper.dart';
 import 'package:mirath/core/utils/my_colors.dart';
@@ -109,7 +110,7 @@ class _AddTagBottomSheetState extends State<AddTagBottomSheet> {
                   SizedBox(height: MySizes.spaceSm(context)),
                   MySearchBar(
                     controller: _searchController,
-                    hintText: 'Search topics (e.g. Computer Science)',
+                    hintText: S.of(context).search_topics_hint,
                     onChanged: (value) => setState(() => _query = value),
                   ),
                 ],
@@ -182,7 +183,7 @@ class _AddTagBottomSheetState extends State<AddTagBottomSheet> {
                             onPressed: () {
                               context.read<InterestsCubit>().getAllInterests();
                             },
-                            child: const Text('Retry'),
+                            child: Text(S.of(context).retry_button),
                           ),
                         ],
                       ),

@@ -4,6 +4,7 @@ import 'package:hugeicons/hugeicons.dart';
 import 'package:mirath/core/utils/my_colors.dart';
 import 'package:mirath/features/home/domain/usecases/save_paper_usecase.dart';
 import 'package:mirath/features/home/domain/usecases/unsave_paper_usecase.dart';
+import 'package:mirath/generated/l10n.dart';
 import '../../../../core/utils/my_extenstions.dart';
 import '../../../../core/utils/my_sizes.dart';
 import '../../../../core/helpers/my_loaders.dart';
@@ -127,7 +128,7 @@ class _DialogContentState extends State<_DialogContent> {
                       TextField(
                         controller: _titleController,
                         decoration: InputDecoration(
-                          hintText: 'List title',
+                          hintText: S.of(context).list_title_hint,
                           border: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(
                               MySizes.borderRadiusSm(context),
@@ -140,7 +141,7 @@ class _DialogContentState extends State<_DialogContent> {
                         controller: _descriptionController,
                         maxLines: 3,
                         decoration: InputDecoration(
-                          hintText: 'Description (optional)',
+                          hintText: S.of(context).description_hint,
                           border: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(
                               MySizes.borderRadiusSm(context),
@@ -151,7 +152,7 @@ class _DialogContentState extends State<_DialogContent> {
                       SizedBox(height: MySizes.spaceSm(context)),
                       SwitchListTile.adaptive(
                         contentPadding: EdgeInsets.zero,
-                        title: const Text('Public list'),
+                        title: Text(S.of(context).public_list_label),
                         value: _isPublic,
                         onChanged: (value) {
                           setState(() => _isPublic = value);
@@ -182,7 +183,7 @@ class _DialogContentState extends State<_DialogContent> {
                                   _isPublic = true;
                                 }
                               },
-                              child: const Text('Create'),
+                              child: Text(S.of(context).create_button),
                             ),
                           ),
                           SizedBox(width: MySizes.spaceSm(context)),
@@ -193,7 +194,7 @@ class _DialogContentState extends State<_DialogContent> {
                               _descriptionController.clear();
                               _isPublic = true;
                             },
-                            child: const Text('Cancel'),
+                            child: Text(S.of(context).cancel_button),
                           ),
                         ],
                       ),
@@ -205,7 +206,7 @@ class _DialogContentState extends State<_DialogContent> {
                         if (state is ReadingListOperationSuccess) {
                           MyLoaders.successSnackBar(
                             context: context,
-                            title: 'Success',
+                            title: S.of(context).success,
                             message: state.message,
                           );
                           widget.onAdded?.call();
@@ -214,7 +215,7 @@ class _DialogContentState extends State<_DialogContent> {
                         if (state is ReadingListError) {
                           MyLoaders.errorSnackBar(
                             context: context,
-                            title: 'Error',
+                            title: S.of(context).error_title,
                             message: state.message,
                           );
                         }
@@ -243,8 +244,10 @@ class _DialogContentState extends State<_DialogContent> {
                                         (failure) {
                                           MyLoaders.errorSnackBar(
                                             context: context,
-                                            title: 'Error',
-                                            message: 'Failed to unsave paper',
+                                            title: S.of(context).error_title,
+                                            message: S
+                                                .of(context)
+                                                .failed_to_unsave_paper,
                                           );
                                         },
                                         (_) {
@@ -254,9 +257,10 @@ class _DialogContentState extends State<_DialogContent> {
                                           );
                                           MyLoaders.successSnackBar(
                                             context: context,
-                                            title: 'Success',
-                                            message:
-                                                'Paper unsaved successfully',
+                                            title: S.of(context).success,
+                                            message: S
+                                                .of(context)
+                                                .paper_unsaved_message,
                                           );
                                         },
                                       );
@@ -278,13 +282,13 @@ class _DialogContentState extends State<_DialogContent> {
                                             );
                                             MyLoaders.warningSnackBar(
                                               context: context,
-                                              title: 'Info',
+                                              title: S.of(context).info_title,
                                               message: failure.message,
                                             );
                                           } else {
                                             MyLoaders.errorSnackBar(
                                               context: context,
-                                              title: 'Error',
+                                              title: S.of(context).error_title,
                                               message: failure.message,
                                             );
                                           }
@@ -296,8 +300,10 @@ class _DialogContentState extends State<_DialogContent> {
                                           );
                                           MyLoaders.successSnackBar(
                                             context: context,
-                                            title: 'Success',
-                                            message: 'Paper saved successfully',
+                                            title: S.of(context).success,
+                                            message: S
+                                                .of(context)
+                                                .paper_saved_message,
                                           );
                                         },
                                       );
@@ -336,7 +342,9 @@ class _DialogContentState extends State<_DialogContent> {
                                   icon: const HugeIcon(
                                     icon: HugeIcons.strokeRoundedAdd01,
                                   ),
-                                  label: const Text('Create New List'),
+                                  label: Text(
+                                    S.of(context).create_new_list_button,
+                                  ),
                                   style: OutlinedButton.styleFrom(
                                     padding: MySizes.paddingSm(context),
                                     shape: RoundedRectangleBorder(

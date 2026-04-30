@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:hugeicons_pro/hugeicons.dart';
+import 'package:mirath/generated/l10n.dart';
 import '../../../../../core/helpers/responsive_helper.dart';
 import '../../../../../core/services/user_cache_service.dart';
 import '../../../../../core/utils/my_colors.dart';
@@ -332,8 +333,8 @@ class CommentTileState extends State<CommentTile> {
                               maxLines: 3,
                               minLines: 1,
                               enabled: !isSubmitting,
-                              decoration: const InputDecoration(
-                                hintText: 'Write a reply...',
+                              decoration: InputDecoration(
+                                hintText: S.of(context).reply_hint,
                               ),
                             ),
                           ),

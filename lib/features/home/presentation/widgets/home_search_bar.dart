@@ -5,6 +5,7 @@ import 'package:hugeicons/hugeicons.dart';
 import '../../../../core/utils/my_colors.dart';
 import '../../../../core/utils/my_extenstions.dart';
 import '../../../../core/utils/my_sizes.dart';
+import '../../../../generated/l10n.dart';
 
 class HomeSearchBar extends StatelessWidget {
   const HomeSearchBar({super.key});
@@ -48,7 +49,7 @@ class HomeSearchBar extends StatelessWidget {
             onPressed: () {},
             icon: HugeIcon(icon: HugeIcons.strokeRoundedCamera01),
           ),
-          hintText: 'Search papers, authors, keywords... ',
+          hintText: S.of(context).search_papers_authors_keywords,
           hintStyle: context.bodySmall,
           enabledBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(

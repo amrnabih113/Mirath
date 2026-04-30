@@ -6,6 +6,7 @@ import 'package:mirath/core/utils/my_colors.dart';
 import 'package:mirath/core/utils/my_extenstions.dart';
 import 'package:mirath/core/utils/my_sizes.dart';
 import 'package:mirath/features/paper_annotations/presentation/utils/annotation_translation_languages.dart';
+import 'package:mirath/generated/l10n.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:translator/translator.dart';
 
@@ -75,7 +76,7 @@ class _TranslationSheetState extends State<TranslationSheet> {
       setState(() {
         _translatedText = null;
         _isLoading = false;
-        _errorMessage = 'Failed to translate. Please try again.';
+        _errorMessage = S.of(context).failed_translate;
       });
     }
   }
@@ -98,7 +99,6 @@ class _TranslationSheetState extends State<TranslationSheet> {
     if (!mounted) return;
 
     final selected = await showDialog<String>(
-      
       context: context,
       barrierColor: Colors.black.withValues(alpha: 0.08),
       builder: (dialogContext) {
@@ -106,7 +106,7 @@ class _TranslationSheetState extends State<TranslationSheet> {
 
         return Dialog(
           elevation: 12,
-        
+
           insetPadding: EdgeInsets.symmetric(
             horizontal: ResponsiveHelper.responsiveValue(dialogContext, 24),
           ),
@@ -199,7 +199,7 @@ class _TranslationSheetState extends State<TranslationSheet> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            'Choose a language',
+            S.of(context).choose_language_title,
             style: Theme.of(
               context,
             ).textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.w700),
@@ -230,7 +230,7 @@ class _TranslationSheetState extends State<TranslationSheet> {
               text: TextSpan(
                 style: context.titleMedium,
                 children: [
-                  const TextSpan(text: 'Detected as '),
+                  TextSpan(text: '${S.of(context).detected_language_label} '),
                   TextSpan(
                     text: sourceLanguage,
                     style: context.titleMedium.copyWith(
@@ -306,7 +306,7 @@ class _TranslationSheetState extends State<TranslationSheet> {
                 onPressed: () {
                   Clipboard.setData(ClipboardData(text: _translatedText!));
                   ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(content: Text('Copied to clipboard')),
+                    SnackBar(content: Text(S.of(context).copied_to_clipboard)),
                   );
                 },
                 icon: HugeIcon(icon: HugeIcons.strokeRoundedCopy01),
@@ -354,7 +354,10 @@ class _TranslationSheetState extends State<TranslationSheet> {
                       ),
                     ),
                     const Spacer(),
-                    Text('Translate', style: context.headlineSmall),
+                    Text(
+                      S.of(context).translate_label,
+                      style: context.headlineSmall,
+                    ),
                     const Spacer(),
                     SizedBox(
                       width: ResponsiveHelper.responsiveValue(context, 42),

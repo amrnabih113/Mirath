@@ -9,6 +9,7 @@ import 'package:mirath/core/utils/my_sizes.dart';
 import 'package:mirath/core/utils/my_validators.dart';
 import 'package:mirath/features/common/widgets/my_back_icon.dart';
 import 'package:mirath/features/paper_annotations/presentation/widgets/annotation_equation_preview.dart';
+import 'package:mirath/generated/l10n.dart';
 
 class NoteDialog extends StatefulWidget {
   final String selectedText;
@@ -90,9 +91,9 @@ class _NoteDialogState extends State<NoteDialog> {
                                 : () async {
                                     await widget.onDelete!.call();
                                   },
-                            child: const Text(
-                              'Delete Note',
-                              style: TextStyle(color: Colors.red),
+                            child: Text(
+                              S.of(context).delete_note_button,
+                              style: const TextStyle(color: Colors.red),
                             ),
                           ),
                       ],
@@ -117,10 +118,10 @@ class _NoteDialogState extends State<NoteDialog> {
                         expands: true,
                         autofocus: true,
                         style: context.bodyMedium,
-                        decoration: const InputDecoration(
+                        decoration: InputDecoration(
                           contentPadding: EdgeInsets.zero,
                           filled: false,
-                          hintText: 'Write your note...',
+                          hintText: S.of(context).note_hint,
                           border: InputBorder.none,
                           isDense: true,
                           errorBorder: InputBorder.none,
@@ -130,7 +131,7 @@ class _NoteDialogState extends State<NoteDialog> {
                         ),
                         validator: (note) => MyValidator.validateEmptyText(
                           context,
-                          'Note',
+                          S.of(context).note_label,
                           note,
                         ),
                       ),
@@ -159,7 +160,7 @@ class _NoteDialogState extends State<NoteDialog> {
                           ),
                         ),
                         child: Text(
-                          'Save',
+                          S.of(context).save_button,
                           style: TextStyle(
                             fontSize: MySizes.titleLarge(context),
                           ),

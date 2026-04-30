@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../../core/utils/my_sizes.dart';
+import '../../../../generated/l10n.dart';
 import '../../../../injection/injection_container.dart';
 import '../cubit/reading_list_cubit.dart';
 import '../cubit/reading_list_state.dart';
@@ -28,7 +29,7 @@ class ReadingListsTab extends StatelessWidget {
 
           if (state is ReadingListsLoaded) {
             if (state.readingLists.isEmpty) {
-              return const Center(child: Text('No reading lists yet'));
+              return Center(child: Text(S.of(context).no_reading_lists_yet));
             }
 
             return ListView.separated(

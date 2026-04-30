@@ -4,6 +4,7 @@ import 'package:mirath/core/utils/my_colors.dart';
 import 'package:mirath/core/utils/my_sizes.dart';
 import 'package:mirath/features/profile/presentation/widgets/user_data.dart';
 import 'package:mirath/features/profile/presentation/widgets/user_tabs.dart';
+import 'package:mirath/generated/l10n.dart';
 
 class OtherUsersProfile extends StatelessWidget {
   const OtherUsersProfile({super.key});
@@ -36,7 +37,7 @@ class OtherUsersProfile extends StatelessWidget {
                         return [
                           SliverToBoxAdapter(
                             child: UserData(
-                              label: 'Follow',
+                              label: S.of(context).follow,
                               color: MyColors.primaryShade900,
                               labelColor: MyColors.primaryShade50,
                             ),
@@ -48,9 +49,9 @@ class OtherUsersProfile extends StatelessWidget {
                                 indicatorColor: MyColors.primaryShade900,
                                 labelColor: Colors.black,
                                 unselectedLabelColor: Colors.grey,
-                                tabs: const [
-                                  Tab(text: 'Reading Lists'),
-                                  Tab(text: 'Discussions'),
+                                tabs: [
+                                  Tab(text: S.of(context).reading_lists),
+                                  Tab(text: S.of(context).discussions),
                                 ],
                               ),
                             ),

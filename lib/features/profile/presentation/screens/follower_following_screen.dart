@@ -3,6 +3,7 @@ import 'package:mirath/core/utils/my_colors.dart';
 import 'package:mirath/core/utils/my_sizes.dart';
 import 'package:mirath/features/common/widgets/my_back_icon.dart';
 import 'package:mirath/features/profile/presentation/widgets/follower_following_card.dart';
+import 'package:mirath/generated/l10n.dart';
 
 class FollowerFollowingScreen extends StatelessWidget {
   const FollowerFollowingScreen({super.key});
@@ -14,7 +15,7 @@ class FollowerFollowingScreen extends StatelessWidget {
       child: Scaffold(
         appBar: AppBar(
           leading: MyBackIcon(),
-          title: Text('username'),
+          title: Text(S.of(context).username),
           centerTitle: true,
         ),
         body: Center(
@@ -28,9 +29,9 @@ class FollowerFollowingScreen extends StatelessWidget {
                       indicatorColor: MyColors.primaryShade900,
                       labelColor: Colors.black,
                       unselectedLabelColor: Colors.grey,
-                      tabs: const [
-                        Tab(text: 'Followers'),
-                        Tab(text: 'Following'),
+                      tabs: [
+                        Tab(text: S.of(context).followers),
+                        Tab(text: S.of(context).following),
                       ],
                     ),
                     Expanded(

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:mirath/core/utils/my_colors.dart';
+import 'package:mirath/generated/l10n.dart';
 import '../../../../core/utils/my_sizes.dart';
 import '../cubit/community_cubit.dart';
 import '../cubit/community_state.dart';
@@ -83,7 +84,7 @@ class _DiscussionTabState extends State<DiscussionTab> {
                       context.push('/add-discussion');
                     },
                     icon: const Icon(Icons.add_comment),
-                    label: const Text('Start a Discussion'),
+                    label: Text(S.of(context).start_discussion_button),
                     style: ElevatedButton.styleFrom(
                       backgroundColor: MyColors.primaryColor,
                       foregroundColor: Colors.white,
@@ -151,7 +152,7 @@ class _DiscussionTabState extends State<DiscussionTab> {
           return Center(child: Text(state.message));
         }
 
-        return const Center(child: Text('Start browsing discussions'));
+        return Center(child: Text(S.of(context).empty_discussions_message));
       },
     );
   }

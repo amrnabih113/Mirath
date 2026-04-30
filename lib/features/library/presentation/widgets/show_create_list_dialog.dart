@@ -4,6 +4,7 @@ import 'package:hugeicons/hugeicons.dart';
 import 'package:mirath/core/utils/my_colors.dart';
 import 'package:mirath/core/utils/my_extenstions.dart';
 import 'package:mirath/core/utils/my_sizes.dart';
+import 'package:mirath/generated/l10n.dart';
 
 class CreateListDialog extends StatefulWidget {
   const CreateListDialog({super.key});
@@ -34,7 +35,7 @@ class _CreateListDialogState extends State<CreateListDialog> {
         title: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            const Text('Create list'),
+            Text(S.of(context).create_list),
             IconButton(
               onPressed: () => context.pop(),
               icon: HugeIcon(icon: HugeIcons.strokeRoundedMultiplicationSign),
@@ -47,7 +48,9 @@ class _CreateListDialogState extends State<CreateListDialog> {
             children: [
               TextField(
                 controller: _titleController,
-                decoration: buildInputDecoration(labelText: 'List Title'),
+                decoration: buildInputDecoration(
+                  labelText: S.of(context).list_title,
+                ),
                 onChanged: (value) {
                   setState(() {
                     isTitleNotEmpty = value.trim().isNotEmpty;
@@ -63,7 +66,7 @@ class _CreateListDialogState extends State<CreateListDialog> {
                     maxLength: maxLength,
                     onChanged: (_) => setState(() {}),
                     decoration: buildInputDecoration(
-                      labelText: 'Description (optional)',
+                      labelText: S.of(context).description_optional,
                     ).copyWith(counterText: ""),
                   ),
                   Positioned(
@@ -86,7 +89,7 @@ class _CreateListDialogState extends State<CreateListDialog> {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Text(
-                    'Public list',
+                    S.of(context).public_list,
                     style: context.bodyLarge.copyWith(color: MyColors.black),
                   ),
                   Transform.scale(
@@ -126,7 +129,7 @@ class _CreateListDialogState extends State<CreateListDialog> {
 
                   foregroundColor: MyColors.primaryShade50,
                 ),
-                child: const Text('Create'),
+                child: Text(S.of(context).create),
               ),
             ],
           ),

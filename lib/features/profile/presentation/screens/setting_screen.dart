@@ -4,6 +4,7 @@ import 'package:mirath/core/utils/my_extenstions.dart';
 import 'package:mirath/core/utils/my_sizes.dart';
 import 'package:mirath/features/common/widgets/my_back_icon.dart';
 import 'package:mirath/features/profile/presentation/widgets/setting_tiles.dart';
+import 'package:mirath/generated/l10n.dart';
 
 class SettingScreen extends StatelessWidget {
   const SettingScreen({super.key});
@@ -13,7 +14,7 @@ class SettingScreen extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         leading: MyBackIcon(),
-        title: Text('Settings'),
+        title: Text(S.of(context).settings),
         centerTitle: true,
       ),
       body: Center(
@@ -30,7 +31,7 @@ class SettingScreen extends StatelessWidget {
                       left: MySizes.spaceMd(context),
                     ),
                     child: Text(
-                      'Account',
+                      S.of(context).account,
                       style: context.bodyLarge.copyWith(
                         fontSize: 16,
                         fontWeight: FontWeight.w500,
@@ -39,22 +40,22 @@ class SettingScreen extends StatelessWidget {
                   ),
                   SettingTiles(
                     icon: HugeIcons.strokeRoundedUser03,
-                    text: 'Account preferences',
+                    text: S.of(context).account_preferences,
                     onTap: () {},
                   ),
                   SettingTiles(
                     icon: HugeIcons.strokeRoundedSecurityCheck,
-                    text: 'Sign in & security',
+                    text: S.of(context).sign_in_and_security,
                     onTap: () {},
                   ),
                   SettingTiles(
                     icon: HugeIcons.strokeRoundedNotification01,
-                    text: 'Notifications',
+                    text: S.of(context).notifications,
                     onTap: () {},
                   ),
                   SettingTiles(
                     icon: HugeIcons.strokeRoundedSquareLock02,
-                    text: 'Data privacy',
+                    text: S.of(context).data_privacy,
                     onTap: () {},
                   ),
                   Padding(
@@ -62,7 +63,7 @@ class SettingScreen extends StatelessWidget {
                       left: MySizes.spaceMd(context),
                     ),
                     child: Text(
-                      'Support & about',
+                      S.of(context).support_and_about,
                       style: context.bodyLarge.copyWith(
                         fontSize: 16,
                         fontWeight: FontWeight.w500,
@@ -71,12 +72,12 @@ class SettingScreen extends StatelessWidget {
                   ),
                   SettingTiles(
                     icon: HugeIcons.strokeRoundedHelpCircle,
-                    text: 'Help & support',
+                    text: S.of(context).help_and_support,
                     onTap: () {},
                   ),
                   SettingTiles(
                     icon: HugeIcons.strokeRoundedInformationCircle,
-                    text: 'Terms & policies',
+                    text: S.of(context).terms_and_policies,
                     onTap: () {},
                   ),
                 ],

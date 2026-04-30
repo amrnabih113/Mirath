@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:mirath/core/helpers/responsive_helper.dart';
 import 'package:mirath/core/utils/my_extenstions.dart';
 import 'package:mirath/core/utils/my_sizes.dart';
+import 'package:mirath/generated/l10n.dart';
 
 class FontSizeSheet extends StatefulWidget {
   final double currentScale;
@@ -63,7 +64,10 @@ class _FontSizeSheetState extends State<FontSizeSheet> {
             ),
           ),
           SizedBox(height: MySizes.spaceMd(context)),
-          Text('Font Size', style: Theme.of(context).textTheme.titleLarge),
+          Text(
+            S.of(context).font_size_title,
+            style: Theme.of(context).textTheme.titleLarge,
+          ),
           SizedBox(height: MySizes.spaceMd(context)),
           Row(
             children: [

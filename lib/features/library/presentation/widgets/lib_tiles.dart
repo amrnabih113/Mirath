@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:hugeicons/hugeicons.dart';
 import 'package:mirath/core/utils/my_colors.dart';
 import 'package:mirath/core/utils/my_sizes.dart';
+import 'package:mirath/generated/l10n.dart';
 
 class LibTiles extends StatelessWidget {
   const LibTiles({super.key, required this.title, required this.onTap});
@@ -21,7 +22,7 @@ class LibTiles extends StatelessWidget {
         child: Row(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Text('View All'),
+            Text(S.of(context).view_all_button),
             HugeIcon(
               icon: HugeIcons.strokeRoundedArrowRight01,
               size: MySizes.iconMedium(context),

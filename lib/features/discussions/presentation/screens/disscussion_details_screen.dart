@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 import 'package:hugeicons/hugeicons.dart';
 import 'package:mirath/features/home/domain/entities/paper_entity.dart';
 import 'package:hugeicons_pro/hugeicons.dart';
+import 'package:mirath/generated/l10n.dart';
 import '../../../../core/helpers/responsive_helper.dart';
 import '../../../../core/services/user_cache_service.dart';
 import '../../../../core/utils/my_colors.dart';
@@ -76,7 +77,7 @@ class _DisscussionDetailsScreenState extends State<DisscussionDetailsScreen> {
             state.commentSubmissionError != null) {
           MyLoaders.errorSnackBar(
             context: context,
-            title: 'Error',
+            title: S.of(context).error_title,
             message: state.commentSubmissionError!,
           );
         }
@@ -106,8 +107,8 @@ class _DisscussionDetailsScreenState extends State<DisscussionDetailsScreen> {
             );
           }
 
-          return const Scaffold(
-            body: Center(child: Text('No discussion data')),
+          return Scaffold(
+            body: Center(child: Text(S.of(context).no_discussion_data)),
           );
         },
       ),
@@ -122,8 +123,8 @@ class _DisscussionDetailsScreenState extends State<DisscussionDetailsScreen> {
       MyLogger.info('[SCREEN] ⚠️ Content is empty, showing snackbar');
       MyLoaders.warningSnackBar(
         context: context,
-        title: 'Warning',
-        message: 'Please write a comment',
+        title: S.of(context).warning_title,
+        message: S.of(context).please_write_comment,
       );
       return;
     }
@@ -278,7 +279,7 @@ class _DisscussionDetailsScreenState extends State<DisscussionDetailsScreen> {
                                 maxLines: 4,
                                 minLines: 1,
                                 decoration: InputDecoration(
-                                  hintText: 'Write a comment...',
+                                  hintText: S.of(context).comment_hint,
                                   errorText: state.commentSubmissionError,
                                 ),
                               ),

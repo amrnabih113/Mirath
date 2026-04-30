@@ -4,6 +4,7 @@ import 'package:mirath/core/helpers/responsive_helper.dart';
 import 'package:mirath/core/utils/my_colors.dart';
 import 'package:mirath/core/utils/my_extenstions.dart';
 import 'package:mirath/core/utils/my_sizes.dart';
+import 'package:mirath/generated/l10n.dart';
 
 class ReadLaterContainer extends StatelessWidget {
   const ReadLaterContainer({super.key});
@@ -39,7 +40,7 @@ class ReadLaterContainer extends StatelessWidget {
               ),
             ),
             SizedBox(height: MySizes.spaceSm(context) * 0.5),
-            Text('8 papers • Updated 2 days ago'),
+            Text(S.of(context).read_later_stats('8', '2')),
           ],
         ),
       ),

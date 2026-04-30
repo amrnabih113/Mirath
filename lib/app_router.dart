@@ -20,6 +20,7 @@ import 'package:mirath/features/profile/presentation/screens/follower_following_
 import 'package:mirath/features/profile/presentation/screens/profile_screen.dart';
 import 'package:mirath/features/profile/presentation/screens/setting_screen.dart';
 import 'package:mirath/features/reading_lists/presentation/cubit/reading_list_cubit.dart';
+import 'package:mirath/generated/l10n.dart';
 import 'features/discussions/domain/entities/discussion.dart';
 import 'features/discussions/presentation/cubit/community_cubit.dart';
 import 'features/discussions/presentation/cubit/discussion_details_cubit.dart';
@@ -415,8 +416,7 @@ final appRouter = GoRouter(
             providers: [
               BlocProvider(
                 create: (_) =>
-                    sl<ReadingListCubit>()
-                      ..getReadingListById(readingList.id),
+                    sl<ReadingListCubit>()..getReadingListById(readingList.id),
               ),
               BlocProvider(create: (_) => sl<HomeCubit>()),
             ],
@@ -454,8 +454,8 @@ final appRouter = GoRouter(
           );
           return PageTransitions.smoothTransition(
             Scaffold(
-              appBar: AppBar(title: const Text('Error')),
-              body: const Center(child: Text('Error: No paper data provided')),
+              appBar: AppBar(title: Text(S.of(context).error_label)),
+              body: Center(child: Text(S.of(context).error_no_paper_data)),
             ),
           );
         }

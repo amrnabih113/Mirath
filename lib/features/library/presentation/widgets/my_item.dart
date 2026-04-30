@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:hugeicons/hugeicons.dart';
 import 'package:mirath/core/utils/my_sizes.dart';
+import 'package:mirath/generated/l10n.dart';
 
 class MyItem extends StatelessWidget {
   const MyItem({super.key});
@@ -26,9 +27,9 @@ class MyItem extends StatelessWidget {
             children: [
               HugeIcon(icon: HugeIcons.strokeRoundedFile02),
               SizedBox(height: MySizes.spaceSm(context) * .5),
-              Text('35'),
+              Text(S.of(context).placeholder_lists_count),
               SizedBox(height: MySizes.spaceSm(context) * .5),
-              Text('Lists'),
+              Text(S.of(context).lists_label),
             ],
           ),
 
@@ -38,9 +39,9 @@ class MyItem extends StatelessWidget {
             children: [
               HugeIcon(icon: HugeIcons.strokeRoundedFileEdit),
               SizedBox(height: MySizes.spaceSm(context) * .5),
-              Text('10'),
+              Text(S.of(context).placeholder_created_count),
               SizedBox(height: MySizes.spaceSm(context) * .5),
-              Text('created'),
+              Text(S.of(context).created_label),
             ],
           ),
 
@@ -50,9 +51,9 @@ class MyItem extends StatelessWidget {
             children: [
               HugeIcon(icon: HugeIcons.strokeRoundedFileBookmark),
               SizedBox(height: MySizes.spaceSm(context) * .5),
-              Text('25'),
+              Text(S.of(context).placeholder_saved_count),
               SizedBox(height: MySizes.spaceSm(context) * .5),
-              Text('Saved'),
+              Text(S.of(context).saved_label),
             ],
           ),
           Column(
@@ -61,9 +62,9 @@ class MyItem extends StatelessWidget {
             children: [
               HugeIcon(icon: HugeIcons.strokeRoundedFolder02),
               SizedBox(height: MySizes.spaceSm(context) * .5),
-              Text('2'),
+              Text(S.of(context).placeholder_projects_count),
               SizedBox(height: MySizes.spaceSm(context) * .5),
-              Text('Projects'),
+              Text(S.of(context).projects_label),
             ],
           ),
         ],

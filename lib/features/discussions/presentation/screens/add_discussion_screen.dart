@@ -12,6 +12,7 @@ import 'package:mirath/features/discussions/domain/usecases/create_discussion_us
 import 'package:mirath/features/home/domain/entities/paper_entity.dart';
 import 'package:mirath/features/home/presentation/cubit/home_cubit.dart';
 import 'package:mirath/features/interests/presentation/cubit/interests_cubit.dart';
+import 'package:mirath/generated/l10n.dart';
 import 'package:mirath/injection/injection_container.dart';
 import '../widgets/tags_section.dart';
 import '../widgets/related_papers_section.dart';
@@ -142,7 +143,7 @@ class _AddDiscussionScreenState extends State<AddDiscussionScreen> {
                               ),
                             )
                           : Text(
-                              'Post',
+                              S.of(context).post_button,
                               style: TextStyle(
                                 color: Colors.white,
                                 fontWeight: FontWeight.w600,
@@ -167,7 +168,7 @@ class _AddDiscussionScreenState extends State<AddDiscussionScreen> {
                     fontWeight: FontWeight.w600,
                   ),
                   decoration: InputDecoration(
-                    hintText: 'Title',
+                    hintText: S.of(context).title_hint,
                     hintStyle: context.titleLarge.copyWith(
                       fontSize: ResponsiveHelper.responsiveValue(context, 20),
                       color: MyColors.textPrimary.withValues(alpha: 0.6),
@@ -197,7 +198,7 @@ class _AddDiscussionScreenState extends State<AddDiscussionScreen> {
                     ),
                     filled: false,
                     border: InputBorder.none,
-                    hintText: 'What do you want to discuss?',
+                    hintText: S.of(context).discussion_body_hint,
                     enabledBorder: InputBorder.none,
                     focusedBorder: InputBorder.none,
                     disabledBorder: InputBorder.none,
@@ -287,17 +288,17 @@ class _AddDiscussionScreenState extends State<AddDiscussionScreen> {
           setState(() => isPosting = false);
           MyLoaders.errorSnackBar(
             context: context,
-            title: 'Error',
+            title: S.of(context).error_title,
             message: failure.message.isNotEmpty
                 ? failure.message
-                : 'Failed to create discussion',
+                : S.of(context).failed_to_create_discussion,
           );
         },
         (discussion) {
           MyLoaders.successSnackBar(
             context: context,
-            title: 'Success',
-            message: 'Discussion created successfully',
+            title: S.of(context).success,
+            message: S.of(context).discussion_created_successfully,
           );
           context.pop();
         },
@@ -307,8 +308,8 @@ class _AddDiscussionScreenState extends State<AddDiscussionScreen> {
       setState(() => isPosting = false);
       MyLoaders.errorSnackBar(
         context: context,
-        title: 'Error',
-        message: 'An unexpected error occurred',
+        title: S.of(context).error_title,
+        message: S.of(context).error_unexpected,
       );
     }
   }

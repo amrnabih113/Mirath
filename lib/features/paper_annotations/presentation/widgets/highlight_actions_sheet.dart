@@ -9,6 +9,7 @@ import 'package:mirath/core/utils/my_extenstions.dart';
 import 'package:mirath/core/utils/my_sizes.dart';
 import 'package:mirath/features/paper_annotations/domain/entites/highlight_entity.dart';
 import 'package:mirath/features/paper_annotations/presentation/utils/annotation_theme_colors.dart';
+import 'package:mirath/generated/l10n.dart';
 
 class HighlightActionsSheet extends StatelessWidget {
   final Highlight highlight;
@@ -37,6 +38,25 @@ class HighlightActionsSheet extends StatelessWidget {
     if (clean.length == 6) return clean;
     if (clean.length == 8) return clean.substring(2);
     return 'FFE082';
+  }
+
+  String _localizedColorName(BuildContext context, String name) {
+    switch (name.toLowerCase()) {
+      case 'yellow':
+        return S.of(context).yellow_color;
+      case 'green':
+        return S.of(context).green_color;
+      case 'blue':
+        return S.of(context).blue_color;
+      case 'purple':
+        return S.of(context).purple_color;
+      case 'red':
+        return S.of(context).red_color;
+      case 'cyan':
+        return S.of(context).cyan_color;
+      default:
+        return name;
+    }
   }
 
   @override
@@ -75,7 +95,7 @@ class HighlightActionsSheet extends StatelessWidget {
 
           // Highlighted text
           Text(
-            'Highlighted Text',
+            S.of(context).highlighted_text_label,
             style: context.labelSmall.copyWith(
               color: themeColors.textColor.withValues(alpha: 0.7),
               fontWeight: FontWeight.w500,
@@ -105,7 +125,7 @@ class HighlightActionsSheet extends StatelessWidget {
           // Note section
           if (highlight.note != null && highlight.note!.isNotEmpty) ...[
             Text(
-              'Note',
+              S.of(context).note_label,
               style: context.labelSmall.copyWith(
                 color: themeColors.textColor.withValues(alpha: 0.7),
                 fontWeight: FontWeight.w500,
@@ -134,7 +154,7 @@ class HighlightActionsSheet extends StatelessWidget {
 
           // Color picker
           Text(
-            'Change Color',
+            S.of(context).change_color_label,
             style: context.labelSmall.copyWith(
               color: themeColors.textColor.withValues(alpha: 0.7),
               fontWeight: FontWeight.w500,
@@ -182,7 +202,7 @@ class HighlightActionsSheet extends StatelessWidget {
                       height: ResponsiveHelper.responsiveValue(context, 4),
                     ),
                     Text(
-                      colorName,
+                      _localizedColorName(context, colorName),
                       style: context.labelSmall.copyWith(
                         color: themeColors.textColor.withValues(alpha: 0.6),
                       ),
@@ -210,8 +230,8 @@ class HighlightActionsSheet extends StatelessWidget {
                   ),
                   label: Text(
                     highlight.note == null || highlight.note!.isEmpty
-                        ? 'Add Note'
-                        : 'Edit Note',
+                        ? S.of(context).add_note_button
+                        : S.of(context).edit_note_button,
                     style: TextStyle(color: themeColors.primaryColor),
                   ),
                   style: OutlinedButton.styleFrom(
@@ -234,7 +254,7 @@ class HighlightActionsSheet extends StatelessWidget {
                     );
                     ScaffoldMessenger.of(context).showSnackBar(
                       SnackBar(
-                        content: const Text('Copied to clipboard'),
+                        content: Text(S.of(context).copied_to_clipboard),
                         backgroundColor: themeColors.primaryColor,
                         duration: const Duration(seconds: 2),
                       ),
@@ -242,7 +262,7 @@ class HighlightActionsSheet extends StatelessWidget {
                   },
                   icon: Icon(Icons.copy, color: themeColors.primaryColor),
                   label: Text(
-                    'Copy',
+                    S.of(context).copy_button,
                     style: TextStyle(color: themeColors.primaryColor),
                   ),
                   style: OutlinedButton.styleFrom(
@@ -268,18 +288,18 @@ class HighlightActionsSheet extends StatelessWidget {
                   builder: (dialogContext) => AlertDialog(
                     backgroundColor: themeColors.backgroundColor,
                     title: Text(
-                      'Delete Highlight',
+                      S.of(context).delete_highlight_title,
                       style: TextStyle(color: themeColors.textColor),
                     ),
                     content: Text(
-                      'Are you sure you want to delete this highlight?',
+                      S.of(context).confirm_delete_highlight,
                       style: TextStyle(color: themeColors.textColor),
                     ),
                     actions: [
                       TextButton(
                         onPressed: () => Navigator.of(dialogContext).pop(),
                         child: Text(
-                          'Cancel',
+                          S.of(context).cancel_button,
                           style: TextStyle(color: themeColors.primaryColor),
                         ),
                       ),
@@ -291,15 +311,15 @@ class HighlightActionsSheet extends StatelessWidget {
                         style: TextButton.styleFrom(
                           foregroundColor: MyColors.error,
                         ),
-                        child: const Text('Delete'),
+                        child: Text(S.of(context).delete_button),
                       ),
                     ],
                   ),
                 );
               },
               icon: const Icon(Icons.delete, color: MyColors.error),
-              label: const Text(
-                'Delete Highlight',
+              label: Text(
+                S.of(context).delete_highlight_title,
                 style: TextStyle(color: MyColors.error),
               ),
               style: OutlinedButton.styleFrom(

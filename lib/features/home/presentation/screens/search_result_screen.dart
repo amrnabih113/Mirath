@@ -5,6 +5,7 @@ import 'package:go_router/go_router.dart';
 import '../../../../core/helpers/responsive_helper.dart';
 import '../../../../core/utils/my_colors.dart';
 import '../../../../core/utils/my_sizes.dart';
+import '../../../../generated/l10n.dart';
 import '../../../common/widgets/my_back_icon.dart';
 import '../../../common/widgets/my_search_bar.dart';
 import '../cubit/search_cubit.dart';
@@ -86,7 +87,7 @@ class _HomeSearchResultScreenState extends State<HomeSearchResultScreen> {
                     titleSpacing: 0,
                     title: MySearchBar(
                       controller: _controller,
-                      hintText: 'Search papers, authors, keywords... ',
+                      hintText: S.of(context).search_papers_authors_keywords,
                       showSuffixIcon: false,
                       onSubmitted: (value) {
                         context.read<SearchCubit>().searchPapers(value);
@@ -124,7 +125,7 @@ class _HomeSearchResultScreenState extends State<HomeSearchResultScreen> {
                     ),
                     SizedBox(height: MySizes.spaceMd(context)),
                     Text(
-                      'No results found',
+                      S.of(context).no_results_found,
                       style: TextStyle(
                         fontSize: 18,
                         fontWeight: FontWeight.w600,
@@ -133,7 +134,7 @@ class _HomeSearchResultScreenState extends State<HomeSearchResultScreen> {
                     ),
                     SizedBox(height: MySizes.spaceXs(context)),
                     Text(
-                      'Try searching with different keywords',
+                      S.of(context).try_searching_with_different_keywords,
                       style: TextStyle(
                         fontSize: 14,
                         color: MyColors.primaryShade500,
@@ -182,7 +183,7 @@ class _HomeSearchResultScreenState extends State<HomeSearchResultScreen> {
             );
           }
 
-          return const Center(child: Text('Start searching'));
+          return Center(child: Text(S.of(context).start_searching));
         },
       ),
     );

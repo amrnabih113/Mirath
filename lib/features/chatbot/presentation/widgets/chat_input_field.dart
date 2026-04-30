@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
+import 'package:mirath/generated/l10n.dart';
 
 import '../../../../core/helpers/responsive_helper.dart';
 import '../../../../core/utils/my_colors.dart';
@@ -52,7 +53,7 @@ class ChatInputField extends StatelessWidget {
               children: [
                 _AttachmentOption(
                   icon: LucideIcons.camera,
-                  label: 'Camera',
+                  label: S.of(context).attachment_camera,
                   onTap: () {
                     Navigator.pop(context);
                     onPickAttachment(AttachmentType.camera);
@@ -60,7 +61,7 @@ class ChatInputField extends StatelessWidget {
                 ),
                 _AttachmentOption(
                   icon: LucideIcons.imagePlus,
-                  label: 'Photos',
+                  label: S.of(context).attachment_photos,
                   onTap: () {
                     Navigator.pop(context);
                     onPickAttachment(AttachmentType.gallery);
@@ -68,7 +69,7 @@ class ChatInputField extends StatelessWidget {
                 ),
                 _AttachmentOption(
                   icon: LucideIcons.paperclip,
-                  label: 'Files',
+                  label: S.of(context).attachment_files,
                   onTap: () {
                     Navigator.pop(context);
                     onPickAttachment(AttachmentType.document);
@@ -98,7 +99,7 @@ class ChatInputField extends StatelessWidget {
               maxLines: null,
               textInputAction: TextInputAction.newline,
               decoration: InputDecoration(
-                hintText: 'Message Mirath AI...',
+                hintText: S.of(context).chat_message_hint,
                 hintStyle: context.bodyMedium.copyWith(
                   color: MyColors.textSecondary,
                 ),

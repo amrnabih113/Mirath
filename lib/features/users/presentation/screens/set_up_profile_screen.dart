@@ -81,12 +81,14 @@ class _SetUpProfileScreenContentState
                       builder: (BuildContext dialogContext) {
                         return AlertDialog(
                           title: Text(S.of(context).sign_out),
-                          content: Text('Are you sure you want to sign out?'),
+                          content: Text(
+                            S.of(context).are_you_sure_you_want_to_sign_out,
+                          ),
                           actions: [
                             TextButton(
                               onPressed: () =>
                                   Navigator.of(dialogContext).pop(),
-                              child: Text('Cancel'),
+                              child: Text(S.of(context).cancel),
                             ),
                             TextButton(
                               onPressed: () {
@@ -101,7 +103,7 @@ class _SetUpProfileScreenContentState
                                   },
                                 );
                               },
-                              child: Text('Sign Out'),
+                              child: Text(S.of(context).sign_out),
                             ),
                           ],
                         );
@@ -113,7 +115,7 @@ class _SetUpProfileScreenContentState
                     color: MyColors.primaryShade700,
                     size: MySizes.iconMedium(context),
                   ),
-                  tooltip: 'Sign Out',
+                  tooltip: S.of(context).sign_out,
                 ),
               ),
             ],
@@ -131,7 +133,7 @@ class _SetUpProfileScreenContentState
                         if (authState.status == AuthStatus.error) {
                           MyLoaders.errorSnackBar(
                             context: context,
-                            title: "Oh no! ",
+                            title: S.of(context).error_title,
                             message:
                                 authState.message ??
                                 S.of(context).something_went_wrong,
@@ -139,7 +141,7 @@ class _SetUpProfileScreenContentState
                         } else if (authState.status == AuthStatus.success) {
                           MyLoaders.successSnackBar(
                             context: context,
-                            title: "Success! ",
+                            title: S.of(context).success,
                             message:
                                 authState.message ??
                                 S.of(context).profile_setup_success,

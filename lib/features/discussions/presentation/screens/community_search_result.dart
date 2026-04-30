@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:mirath/generated/l10n.dart';
 import '../../../../core/helpers/responsive_helper.dart';
 import '../../../common/widgets/my_back_icon.dart';
 import '../../../common/widgets/search_with_filter.dart';
@@ -23,12 +24,14 @@ class CommunitySearchResult extends StatefulWidget {
 }
 
 class _CommunitySearchResultState extends State<CommunitySearchResult> {
-  late String _selectedCategory;
+  String _selectedCategory = '';
 
   @override
-  void initState() {
-    super.initState();
-    _selectedCategory = 'Top';
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    if (_selectedCategory.isEmpty) {
+      _selectedCategory = S.of(context).top_label;
+    }
   }
 
   void _onCategoryChanged(String category) {
@@ -69,10 +72,10 @@ class _CommunitySearchResultState extends State<CommunitySearchResult> {
                               CategoryItemsList(
                                 selectedCategory: _selectedCategory,
                                 categories: [
-                                  "Top",
-                                  "Discussions",
-                                  "Reading Lists",
-                                  "Researchers",
+                                  S.of(context).top_label,
+                                  S.of(context).discussions_label,
+                                  S.of(context).reading_lists,
+                                  S.of(context).researchers_label,
                                 ],
                                 onCategoryChanged: _onCategoryChanged,
                               ),
@@ -81,11 +84,12 @@ class _CommunitySearchResultState extends State<CommunitySearchResult> {
                           ),
                         ),
                       ),
-                      if (_selectedCategory == 'Top' ||
-                          _selectedCategory == 'Researchers') ...[
+                      if (_selectedCategory == S.of(context).top_label ||
+                          _selectedCategory ==
+                              S.of(context).researchers_label) ...[
                         SliverToBoxAdapter(
                           child: SectionTitle(
-                            title: "Researchers",
+                            title: S.of(context).researchers_label,
                             showSeeAll: true,
                           ),
                         ),
@@ -113,11 +117,12 @@ class _CommunitySearchResultState extends State<CommunitySearchResult> {
                           child: SizedBox(height: MySizes.spaceMd(context)),
                         ),
                       ],
-                      if (_selectedCategory == 'Top' ||
-                          _selectedCategory == 'Discussions') ...[
+                      if (_selectedCategory == S.of(context).top_label ||
+                          _selectedCategory ==
+                              S.of(context).discussions_label) ...[
                         SliverToBoxAdapter(
                           child: SectionTitle(
-                            title: "Discussions",
+                            title: S.of(context).discussions_label,
                             showSeeAll: true,
                           ),
                         ),
@@ -132,9 +137,11 @@ class _CommunitySearchResultState extends State<CommunitySearchResult> {
                                   .toList();
 
                               if (discussions.isEmpty) {
-                                return const SliverToBoxAdapter(
+                                return SliverToBoxAdapter(
                                   child: Center(
-                                    child: Text('No discussions found'),
+                                    child: Text(
+                                      S.of(context).no_discussions_found,
+                                    ),
                                   ),
                                 );
                               }
@@ -176,11 +183,11 @@ class _CommunitySearchResultState extends State<CommunitySearchResult> {
                           child: SizedBox(height: MySizes.spaceMd(context)),
                         ),
                       ],
-                      if (_selectedCategory == 'Top' ||
-                          _selectedCategory == 'Reading Lists') ...[
+                      if (_selectedCategory == S.of(context).top_label ||
+                          _selectedCategory == S.of(context).reading_lists) ...[
                         SliverToBoxAdapter(
                           child: SectionTitle(
-                            title: "Reading Lists",
+                            title: S.of(context).reading_lists,
                             showSeeAll: true,
                           ),
                         ),
@@ -195,8 +202,11 @@ class _CommunitySearchResultState extends State<CommunitySearchResult> {
                             // Mock reading list data for search results
                             final mockReadingList = ReadingList(
                               id: 'mock-$index',
-                              title: 'Reading List ${index + 1}',
-                              description: 'Mock description for reading list',
+                              title:
+                                  '${S.of(context).reading_list_item_title} ${index + 1}',
+                              description: S
+                                  .of(context)
+                                  .mock_reading_list_description,
                               isPublic: true,
                               ownerId: 'mock-owner',
                               createdAt: DateTime.now(),

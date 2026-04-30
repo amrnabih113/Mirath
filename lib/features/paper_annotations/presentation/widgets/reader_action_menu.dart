@@ -3,6 +3,7 @@ import 'package:hugeicons/hugeicons.dart';
 import 'package:mirath/core/helpers/responsive_helper.dart';
 import 'package:mirath/core/utils/my_colors.dart';
 import 'package:mirath/core/utils/my_sizes.dart';
+import 'package:mirath/generated/l10n.dart';
 
 class ReaderActionMenu extends StatelessWidget {
   final bool isOpen;
@@ -36,25 +37,25 @@ class ReaderActionMenu extends StatelessWidget {
         if (isOpen) ...[
           _ActionButton(
             icon: HugeIcons.strokeRoundedSearch01,
-            label: 'Search in Paper',
+            label: S.of(context).search_in_paper_button,
             onTap: onSearchTap,
           ),
           SizedBox(height: MySizes.spaceSm(context)),
           _ActionButton(
             icon: HugeIcons.strokeRoundedNote04,
-            label: 'Notes ($noteCount)',
+            label: S.of(context).notes_button_label(noteCount),
             onTap: onNotesTap,
           ),
           SizedBox(height: MySizes.spaceSm(context)),
           _ActionButton(
             icon: HugeIcons.strokeRoundedPen01,
-            label: 'Highlights ($highlightCount)',
+            label: S.of(context).highlights_button_label(highlightCount),
             onTap: onHighlightsTap,
           ),
           SizedBox(height: MySizes.spaceSm(context)),
           _ActionButton(
             icon: HugeIcons.strokeRoundedTextFont,
-            label: 'Font Size',
+            label: S.of(context).font_size_button,
             onTap: onThemesTap,
           ),
           SizedBox(height: MySizes.spaceSm(context)),
