@@ -27,7 +27,7 @@ class _PaperCardState extends State<PaperCard> {
   @override
   void initState() {
     super.initState();
-    isBookmarked = widget.paper.isSaved ?? false;
+    isBookmarked = widget.paper.isSaved;
   }
 
   @override
