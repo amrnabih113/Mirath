@@ -36,35 +36,6 @@ class ProjectsScreen extends StatelessWidget {
           ),
         ],
       ),
-      body: Center(
-        child: LayoutBuilder(
-          builder: (context, constraints) {
-            return ConstrainedBox(
-              constraints: const BoxConstraints(maxWidth: 850),
-              child: Padding(
-                padding: MySizes.paddingSm(context),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    Text('You have no projects yet'),
-                    TextButton(
-                      onPressed: () {},
-                      child: Text(
-                        'Get started',
-                        style: context.bodyLarge.copyWith(
-                          decoration: TextDecoration.underline,
-                          decorationThickness: 2,
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            );
-          },
-        ),
-      ),
     );
   }
 }
