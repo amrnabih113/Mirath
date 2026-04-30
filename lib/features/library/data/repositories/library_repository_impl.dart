@@ -18,7 +18,7 @@ class LibraryRepositoryImpl implements LibraryRepository {
   }
 
   @override
-  Future<Either<Failure, SavedPapers>> getAllSavedPapers() {
+  Future<Either<Failure, List<SavedPapers>>> getAllSavedPapers() {
     // TODO: implement getAllSavedPapers
     throw UnimplementedError();
   }
@@ -30,7 +30,7 @@ class LibraryRepositoryImpl implements LibraryRepository {
   }
 
   @override
-  Future<Either<Failure, ReadingHistory>> getReadingHistory() {
+  Future<Either<Failure, List<ReadingHistory>>> getReadingHistory() {
     // TODO: implement getReadingHistory
     throw UnimplementedError();
   }

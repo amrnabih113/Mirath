@@ -23,7 +23,7 @@ class LibraryDataFailure extends LibraryState {
 class GetReadingHistoryLoading extends LibraryState {}
 
 class GetReadingHistorySuccess extends LibraryState {
-  final ReadingHistory readingHistory;
+  final List<ReadingHistory> readingHistory;
 
   GetReadingHistorySuccess({required this.readingHistory});
 }

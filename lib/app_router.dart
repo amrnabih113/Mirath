@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 import 'package:mirath/features/discussions/presentation/screens/add_discussion_screen.dart';
 import 'package:mirath/features/home/domain/entities/paper_entity.dart';
 import 'package:mirath/features/home/presentation/cubit/search_cubit.dart';
+import 'package:mirath/features/library/presentation/cubit/library_cubit.dart';
 import 'package:mirath/features/library/presentation/screens/library_screen.dart';
 import 'package:mirath/features/library/presentation/screens/other_user_reading_list.dart';
 import 'package:mirath/features/library/presentation/screens/projects_screen.dart';
@@ -272,8 +273,17 @@ final appRouter = GoRouter(
         ),
         GoRoute(
           path: '/library',
-          pageBuilder: (context, state) =>
-              const NoTransitionPage(child: LibraryScreen()),
+          pageBuilder: (context, state) => NoTransitionPage(
+            child: MultiBlocProvider(
+              providers: [
+                BlocProvider(
+                  create: (_) => sl<LibraryCubit>()..getLibraryData(),
+                ),
+                BlocProvider(create: (_) => sl<ReadingListCubit>()),
+              ],
+              child: const LibraryScreen(),
+            ),
+          ),
         ),
         GoRoute(
           path: '/profile',
@@ -415,8 +425,7 @@ final appRouter = GoRouter(
             providers: [
               BlocProvider(
                 create: (_) =>
-                    sl<ReadingListCubit>()
-                      ..getReadingListById(readingList.id),
+                    sl<ReadingListCubit>()..getReadingListById(readingList.id),
               ),
               BlocProvider(create: (_) => sl<HomeCubit>()),
             ],
@@ -517,13 +526,31 @@ final appRouter = GoRouter(
     GoRoute(
       path: '/reading-lists',
       pageBuilder: (context, state) {
-        return PageTransitions.smoothTransition(const ReadingListScreen());
+        return PageTransitions.smoothTransition(
+          MultiBlocProvider(
+            providers: [
+              BlocProvider(
+                create: (context) =>
+                    sl<ReadingListCubit>()..getUserReadingLists(),
+              ),
+              BlocProvider(
+                create: (context) => sl<LibraryCubit>()..getAllSavedPapers(),
+              ),
+            ],
+            child: const ReadingListScreen(),
+          ),
+        );
       },
     ),
     GoRoute(
       path: '/reading-history',
       pageBuilder: (context, state) {
-        return PageTransitions.smoothTransition(const ReadingHistoryScreen());
+        return PageTransitions.smoothTransition(
+          BlocProvider(
+            create: (_) => sl<LibraryCubit>()..getReadingHistory(),
+            child: const ReadingHistoryScreen(),
+          ),
+        );
       },
     ),
     GoRoute(

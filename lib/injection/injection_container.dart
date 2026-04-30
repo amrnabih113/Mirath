@@ -1,6 +1,17 @@
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:get_it/get_it.dart';
 import 'package:dio/dio.dart';
+import 'package:mirath/features/library/data/data_sources/library_data_sources.dart';
+import 'package:mirath/features/library/data/data_sources/library_data_sources_impl.dart';
+import 'package:mirath/features/library/data/repositories/library_repository_impl.dart';
+import 'package:mirath/features/library/domain/repositories/library_repository.dart';
+import 'package:mirath/features/library/domain/usecases/clear_all_reading_history.dart';
+import 'package:mirath/features/library/domain/usecases/get_all_saved_papers.dart';
+import 'package:mirath/features/library/domain/usecases/get_library_data.dart';
+import 'package:mirath/features/library/domain/usecases/get_reading_history.dart';
+import 'package:mirath/features/library/domain/usecases/remove_paper_from_reading_history.dart';
+import 'package:mirath/features/library/domain/usecases/update_reading_history.dart';
+import 'package:mirath/features/library/presentation/cubit/library_cubit.dart';
 import 'package:mirath/features/reading_lists/domain/usecases/delete_reading_list_usecase.dart';
 import 'package:mirath/features/reading_lists/domain/usecases/save_reading_list_usecase.dart';
 import 'package:mirath/features/reading_lists/domain/usecases/unsave_reading_list_usecase.dart';
@@ -260,6 +271,42 @@ class DI {
         deleteCommentVoteUseCase: sl(),
         deleteDiscussionVoteUseCase: sl(),
         userCacheService: sl(),
+      ),
+    );
+    //================ Library ========================
+    /// Library Data Sources ///
+    sl.registerLazySingleton<LibraryDataSources>(
+      () => LibraryDataSourcesImpl(dioClient: sl()),
+    );
+
+    /// Library Repository ///
+    sl.registerLazySingleton<LibraryRepository>(
+      () => LibraryRepositoryImpl(libraryDataSources: sl()),
+    );
+
+    /// Library UseCases ///
+    sl.registerLazySingleton(() => GetLibraryData(libraryRepository: sl()));
+    sl.registerLazySingleton(() => GetReadingHistory(libraryRepository: sl()));
+    sl.registerLazySingleton(
+      () => UpdateReadingHistory(libraryRepository: sl()),
+    );
+    sl.registerLazySingleton(
+      () => ClearAllReadingHistory(libraryRepository: sl()),
+    );
+    sl.registerLazySingleton(() => GetAllSavedPapers(libraryRepository: sl()));
+    sl.registerLazySingleton(
+      () => RemovePaperFromReadingHistory(libraryRepository: sl()),
+    );
+
+    /// Library Cubit ///
+    sl.registerFactory(
+      () => LibraryCubit(
+        getLibraryDataUseCase: sl(),
+        getReadingHistoryUseCase: sl(),
+        updateReadingHistoryUseCase: sl(),
+        clearAllReadingHistoryUseCase: sl(),
+        getAllSavedPapersUseCase: sl(),
+        removePaperFromReadingHistoryUseCase: sl(),
       ),
     );
 

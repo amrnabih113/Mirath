@@ -12,14 +12,14 @@ import 'package:mirath/features/library/domain/usecases/update_reading_history.d
 part 'library_state.dart';
 
 class LibraryCubit extends Cubit<LibraryState> {
-  LibraryCubit(
-    this.getLibraryDataUseCase,
-    this.getReadingHistoryUseCase,
-    this.updateReadingHistoryUseCase,
-    this.clearAllReadingHistoryUseCase,
-    this.getAllSavedPapersUseCase,
-    this.removePaperFromReadingHistoryUseCase,
-  ) : super(LibraryInitial());
+  LibraryCubit({
+    required this.getLibraryDataUseCase,
+    required this.getReadingHistoryUseCase,
+    required this.updateReadingHistoryUseCase,
+    required this.clearAllReadingHistoryUseCase,
+    required this.getAllSavedPapersUseCase,
+    required this.removePaperFromReadingHistoryUseCase,
+  }) : super(LibraryInitial());
   final GetLibraryData getLibraryDataUseCase;
   final GetReadingHistory getReadingHistoryUseCase;
   final UpdateReadingHistory updateReadingHistoryUseCase;
@@ -91,7 +91,7 @@ class LibraryCubit extends Cubit<LibraryState> {
         emit(GetAllSavedPapersFailure(errorMessage: failure.message));
       },
       (savedPapers) {
-        emit(GetAllSavedPapersSuccess(savedPapers: [savedPapers]));
+        emit(GetAllSavedPapersSuccess(savedPapers: savedPapers));
       },
     );
   }

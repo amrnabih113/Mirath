@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:hugeicons/hugeicons.dart';
-import 'package:mirath/features/profile/presentation/widgets/profile_reading_list_card.dart';
+import 'package:mirath/features/home/presentation/widgets/paper_card.dart';
 import '../../../../core/helpers/responsive_helper.dart';
 import '../../../../core/utils/my_colors.dart';
 import '../../../../core/utils/my_extenstions.dart';
@@ -142,7 +142,7 @@ class OtherUserReadingList extends StatelessWidget {
                             padding: EdgeInsets.only(
                               bottom: MySizes.spaceMd(context),
                             ),
-                            child: ProfileReadingListCard(),
+                            child: PaperCard(onTap: () {}),
                           );
                         }, childCount: 10),
                       ),

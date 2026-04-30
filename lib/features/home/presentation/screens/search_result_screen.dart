@@ -170,7 +170,15 @@ class _HomeSearchResultScreenState extends State<HomeSearchResultScreen> {
                               ),
                             );
                           }
-                          return PaperCard(paper: results[index]);
+                          return PaperCard(
+                            paper: results[index],
+                            onTap: () {
+                              context.push(
+                                '/paper-screen',
+                                extra: results[index],
+                              );
+                            },
+                          );
                         },
                         itemCount:
                             results.length + (state.isLoadingMore ? 1 : 0),

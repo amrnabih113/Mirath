@@ -4,7 +4,7 @@ import 'package:mirath/core/utils/my_colors.dart';
 import 'package:mirath/core/utils/my_extenstions.dart';
 import 'package:mirath/core/utils/my_sizes.dart';
 import 'package:mirath/features/common/widgets/my_back_icon.dart';
-import 'package:mirath/features/profile/presentation/widgets/profile_reading_list_card.dart';
+import 'package:mirath/features/home/presentation/widgets/paper_card.dart';
 
 class ReadingLaterScreen extends StatelessWidget {
   const ReadingLaterScreen({super.key});
@@ -60,7 +60,7 @@ class ReadingLaterScreen extends StatelessWidget {
                   separatorBuilder: (context, index) =>
                       SizedBox(height: MySizes.spaceSm(context)),
                   itemBuilder: (BuildContext context, int index) {
-                    return ProfileReadingListCard();
+                    return PaperCard(onTap: () {});
                   },
                 ),
               ],
