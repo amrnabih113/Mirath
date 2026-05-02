@@ -1,11 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:go_router/go_router.dart';
 import 'package:hugeicons_pro/hugeicons.dart';
 import 'package:mirath/core/helpers/my_loaders.dart';
 import 'package:mirath/features/common/widgets/tag_chip.dart';
 import 'package:mirath/features/home/presentation/cubit/home_cubit.dart';
+import 'package:mirath/features/library/domain/entities/reading_history.dart';
+import 'package:mirath/features/library/domain/entities/saved_papers.dart';
+import 'package:mirath/features/papers/data/models/full_paper_model.dart';
 import 'package:mirath/features/papers/presentation/widgets/latex_renderer.dart';
+import 'package:mirath/features/reading_lists/domain/entities/reading_list.dart';
 import '../../domain/entities/paper_entity.dart';
 
 import '../../../../core/helpers/responsive_helper.dart';
@@ -14,9 +17,23 @@ import '../../../../core/utils/my_extenstions.dart';
 import '../../../../core/utils/my_sizes.dart';
 
 class PaperCard extends StatefulWidget {
-  const PaperCard({super.key, this.number, required this.paper});
+  const PaperCard({
+    super.key,
+    this.number,
+    this.paper,
+    this.readingHistory,
+    this.readingList,
+    required this.onTap,
+    this.savedPaper,
+    this.fullPaper,
+  });
   final int? number;
-  final PaperEntity paper;
+  final PaperEntity? paper;
+  final ReadingHistory? readingHistory;
+  final ReadingList? readingList;
+  final SavedPapers? savedPaper;
+  final FullPaperModel? fullPaper;
+  final VoidCallback onTap;
 
   @override
   State<PaperCard> createState() => _PaperCardState();
@@ -27,16 +44,14 @@ class _PaperCardState extends State<PaperCard> {
   @override
   void initState() {
     super.initState();
-    isBookmarked = widget.paper.isSaved ?? false;
+    isBookmarked = widget.paper?.isSaved ?? false;
   }
 
   @override
   Widget build(BuildContext context) {
     final isTopRanked = widget.number != null && widget.number! <= 3;
     return GestureDetector(
-      onTap: () {
-        context.push('/paper-screen', extra: widget.paper);
-      },
+      onTap: widget.onTap,
       child: Container(
         padding: EdgeInsets.all(ResponsiveHelper.responsiveValue(context, 16)),
         decoration: BoxDecoration(
@@ -106,7 +121,7 @@ class _PaperCardState extends State<PaperCard> {
               children: [
                 Text(
                   maxLines: 1,
-                  'preprint  • ${DateTime.parse(widget.paper.publishedAt).year.toString()}',
+                  'preprint  • ${DateTime.parse(widget.paper?.publishedAt ?? '').year.toString()}',
                   style: context.bodySmall.copyWith(
                     color: MyColors.primaryShade600,
                     fontWeight: FontWeight.w600,
@@ -118,7 +133,7 @@ class _PaperCardState extends State<PaperCard> {
                   onPressed: () {
                     final cubit = context.read<HomeCubit>();
                     if (isBookmarked) {
-                      cubit.unsavePaper(widget.paper.id);
+                      cubit.unsavePaper(widget.paper?.id ?? '');
                       setState(() {
                         isBookmarked = false;
                       });
@@ -127,7 +142,7 @@ class _PaperCardState extends State<PaperCard> {
                         message: 'Paper unsaved ',
                       );
                     } else {
-                      cubit.savePaper(widget.paper.id);
+                      cubit.savePaper(widget.paper?.id ?? '');
                       setState(() {
                         isBookmarked = true;
                       });
@@ -162,7 +177,7 @@ class _PaperCardState extends State<PaperCard> {
             //   ),
             // ),
             LaTeXRenderer(
-              text: widget.paper.title,
+              text: widget.paper?.title ?? '',
               height: ResponsiveHelper.responsiveValue(context, 60),
               textStyle: context.titleMedium.copyWith(
                 color: MyColors.primaryShade900,
@@ -174,7 +189,7 @@ class _PaperCardState extends State<PaperCard> {
             ),
             SizedBox(height: MySizes.spaceXs(context)),
             Text(
-              widget.paper.authors.join(', '),
+              widget.paper?.authors.join(', ') ?? '',
               maxLines: 2,
               overflow: TextOverflow.ellipsis,
               style: context.bodySmall.copyWith(
@@ -188,9 +203,9 @@ class _PaperCardState extends State<PaperCard> {
               height: ResponsiveHelper.responsiveValue(context, 28),
               child: ListView.separated(
                 scrollDirection: Axis.horizontal,
-                itemCount: widget.paper.categories.length,
+                itemCount: widget.paper?.categories.length ?? 0,
                 itemBuilder: (_, index) {
-                  return TagChip(label: widget.paper.categories[index]);
+                  return TagChip(label: widget.paper?.categories[index] ?? '');
                 },
                 separatorBuilder: (_, index) => SizedBox(
                   width: ResponsiveHelper.responsiveValue(context, 8),

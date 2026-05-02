@@ -60,4 +60,5 @@ class Paper {
       publishedAt: publishedAt ?? this.publishedAt,
     );
   }
+  
 }

@@ -55,7 +55,7 @@ class LibraryRepositoryImpl implements LibraryRepository {
   }
 
   @override
-  Future<Either<Failure, ReadingHistory>> getReadingHistory() async {
+  Future<Either<Failure, List<ReadingHistory>>> getReadingHistory() async {
     try {
       final response = await libraryDataSources.getReadingHistory();
       return Right(response);
