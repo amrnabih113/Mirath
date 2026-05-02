@@ -5,10 +5,16 @@ import 'package:mirath/core/utils/my_colors.dart';
 import 'package:mirath/core/utils/my_extenstions.dart';
 import 'package:mirath/core/utils/my_sizes.dart';
 import 'package:mirath/features/common/widgets/tag_chip.dart';
+import 'package:mirath/features/reading_lists/domain/entities/reading_list.dart';
 
 class ProfileReadingListCard extends StatelessWidget {
-  const ProfileReadingListCard({super.key, this.onTap});
+  const ProfileReadingListCard({
+    super.key,
+    this.onTap,
+    required this.readingList,
+  });
   final VoidCallback? onTap;
+  final ReadingList readingList;
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
@@ -45,7 +51,7 @@ class ProfileReadingListCard extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 Text(
-                  'Introduction to CNN',
+                  readingList.title,
                   maxLines: 2,
                   overflow: TextOverflow.ellipsis,
                   style: context.titleMedium.copyWith(
@@ -60,7 +66,7 @@ class ProfileReadingListCard extends StatelessWidget {
               ],
             ),
             Text(
-              '8 papers • Updated 2 days ago',
+              '${readingList.paperCount} papers • Updated ${readingList.updatedAt} days ago',
               maxLines: 2,
               overflow: TextOverflow.ellipsis,
               style: context.bodySmall.copyWith(
@@ -71,7 +77,7 @@ class ProfileReadingListCard extends StatelessWidget {
             ),
             Divider(color: MyColors.primaryShade800, thickness: 2),
             Text(
-              'Lorem Ipsum is simply dummy text of the printing and...',
+              readingList.description ?? 'No description provided.',
               maxLines: 2,
               overflow: TextOverflow.ellipsis,
               style: context.bodySmall.copyWith(
@@ -82,9 +88,9 @@ class ProfileReadingListCard extends StatelessWidget {
             ),
             Wrap(
               children: [
-                TagChip(label: 'Artificial Intelligence'),
+                TagChip(label: readingList.previewTags[0]),
                 SizedBox(width: MySizes.spaceXs(context) * .5),
-                TagChip(label: 'CNN'),
+                TagChip(label: readingList.previewTags[1]),
                 SizedBox(width: MySizes.spaceLg(context) * 5),
                 HugeIcon(icon: HugeIcons.strokeRoundedMoreHorizontal),
               ],

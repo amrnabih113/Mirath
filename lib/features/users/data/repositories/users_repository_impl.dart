@@ -1,5 +1,6 @@
 import 'package:dartz/dartz.dart';
 import 'package:dio/dio.dart';
+import 'package:mirath/features/users/domain/entities/follows.dart';
 
 import '../../../../core/error/failuors.dart';
 import '../../../../core/network/network_manager.dart';
@@ -135,6 +136,54 @@ class UsersRepositoryImpl implements UsersRepository {
     } catch (error) {
       MyLogger.error(
         '[UsersRepository] Unfollow user unexpected error: $error',
+      );
+      return Left(UnexpectedFailure(error.toString()));
+    }
+  }
+
+  @override
+  Future<Either<Failure, Follows>> getFollowers(String id) async {
+    try {
+      MyLogger.info('[UsersRepository] Setting up profile...');
+
+      if (await networkManager.isConnected) {
+        final response = await remoteDataSource.getUserFollowers(id);
+        MyLogger.info('[UsersRepository] Profile setup successful');
+        return Right(response);
+      } else {
+        MyLogger.error('[UsersRepository] No internet connection');
+        return const Left(NetworkFailure());
+      }
+    } on DioException catch (error) {
+      MyLogger.error('[UsersRepository] Profile setup DioException: $error');
+      return Left(mapExceptionToFailure(error));
+    } catch (error) {
+      MyLogger.error(
+        '[UsersRepository] Profile setup unexpected error: $error',
+      );
+      return Left(UnexpectedFailure(error.toString()));
+    }
+  }
+
+  @override
+  Future<Either<Failure, Follows>> getFollowing(String id) async {
+    try {
+      MyLogger.info('[UsersRepository] Setting up profile...');
+
+      if (await networkManager.isConnected) {
+        final response = await remoteDataSource.getUserFollowing(id);
+        MyLogger.info('[UsersRepository] Profile setup successful');
+        return Right(response);
+      } else {
+        MyLogger.error('[UsersRepository] No internet connection');
+        return const Left(NetworkFailure());
+      }
+    } on DioException catch (error) {
+      MyLogger.error('[UsersRepository] Profile setup DioException: $error');
+      return Left(mapExceptionToFailure(error));
+    } catch (error) {
+      MyLogger.error(
+        '[UsersRepository] Profile setup unexpected error: $error',
       );
       return Left(UnexpectedFailure(error.toString()));
     }

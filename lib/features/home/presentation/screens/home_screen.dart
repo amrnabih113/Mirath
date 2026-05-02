@@ -186,7 +186,12 @@ class _HomeScreenState extends State<HomeScreen> {
                                 );
                               }
                               final paper = papers[index];
-                              return PaperCard(paper: paper);
+                              return PaperCard(
+                                paper: paper,
+                                onTap: () {
+                                  context.push('/paper-screen', extra: paper);
+                                },
+                              );
                             },
                           );
                         }

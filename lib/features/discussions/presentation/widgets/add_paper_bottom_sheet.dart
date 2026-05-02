@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 import 'package:hugeicons/hugeicons.dart';
 import 'package:mirath/core/helpers/responsive_helper.dart';
 import 'package:mirath/core/utils/my_colors.dart';
@@ -200,7 +201,14 @@ class _AddPaperBottomSheetState extends State<AddPaperBottomSheet> {
                               },
                         child: Stack(
                           children: [
-                            AbsorbPointer(child: PaperCard(paper: paper)),
+                            AbsorbPointer(
+                              child: PaperCard(
+                                paper: paper,
+                                onTap: () {
+                                  context.push('/paper-screen', extra: paper);
+                                },
+                              ),
+                            ),
                             if (isSelected)
                               Positioned(
                                 top: ResponsiveHelper.responsiveValue(

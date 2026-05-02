@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:hugeicons/hugeicons.dart';
 import 'package:mirath/core/utils/my_sizes.dart';
-import 'package:mirath/generated/l10n.dart';
+import 'package:mirath/features/library/domain/entities/library_data.dart';
+import 'package:mirath/features/library/presentation/widgets/lib_item.dart';
 
 class MyItem extends StatelessWidget {
-  const MyItem({super.key});
+  const MyItem({super.key, required this.data});
+  final LibraryData data;
 
   @override
   Widget build(BuildContext context) {
@@ -21,51 +23,37 @@ class MyItem extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              HugeIcon(icon: HugeIcons.strokeRoundedFile02),
-              SizedBox(height: MySizes.spaceSm(context) * .5),
-              Text(S.of(context).placeholder_lists_count),
-              SizedBox(height: MySizes.spaceSm(context) * .5),
-              Text(S.of(context).lists_label),
-            ],
+          LibItem(
+            onTap: () {
+              // Handle tap event
+            },
+            icon: HugeIcons.strokeRoundedFile02,
+            title: '${data.listsCount}',
+            subtitle: 'Lists',
           ),
-
-          Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              HugeIcon(icon: HugeIcons.strokeRoundedFileEdit),
-              SizedBox(height: MySizes.spaceSm(context) * .5),
-              Text(S.of(context).placeholder_created_count),
-              SizedBox(height: MySizes.spaceSm(context) * .5),
-              Text(S.of(context).created_label),
-            ],
+          LibItem(
+            onTap: () {
+              // Handle tap event
+            },
+            icon: HugeIcons.strokeRoundedFileEdit,
+            title: '${data.createdCount}',
+            subtitle: 'created',
           ),
-
-          Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              HugeIcon(icon: HugeIcons.strokeRoundedFileBookmark),
-              SizedBox(height: MySizes.spaceSm(context) * .5),
-              Text(S.of(context).placeholder_saved_count),
-              SizedBox(height: MySizes.spaceSm(context) * .5),
-              Text(S.of(context).saved_label),
-            ],
+          LibItem(
+            onTap: () {
+              // Handle tap event
+            },
+            icon: HugeIcons.strokeRoundedFileBookmark,
+            title: '${data.savedCount}',
+            subtitle: 'Saved',
           ),
-          Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              HugeIcon(icon: HugeIcons.strokeRoundedFolder02),
-              SizedBox(height: MySizes.spaceSm(context) * .5),
-              Text(S.of(context).placeholder_projects_count),
-              SizedBox(height: MySizes.spaceSm(context) * .5),
-              Text(S.of(context).projects_label),
-            ],
+          LibItem(
+            onTap: () {
+              // Handle tap event
+            },
+            icon: HugeIcons.strokeRoundedFolder02,
+            title: '${data.projectsCount}',
+            subtitle: 'Projects',
           ),
         ],
       ),

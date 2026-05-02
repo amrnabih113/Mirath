@@ -228,7 +228,11 @@ class _ReadingListDetailsScreenState extends State<ReadingListDetailsScreen> {
                             padding: EdgeInsets.only(
                               bottom: MySizes.spaceMd(context),
                             ),
-                            child: PaperCard(number: index + 1, paper: paper),
+                            child: PaperCard(
+                              number: index + 1,
+                              paper: paper,
+                              onTap: () {},
+                            ),
                           );
                         }, childCount: _buildPapers(readingList).length),
                       ),
