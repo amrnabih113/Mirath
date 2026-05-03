@@ -8,7 +8,7 @@ class GetAllSavedPapers {
 
   GetAllSavedPapers({required this.libraryRepository});
 
-  Future<Either<Failure, SavedPapers>> call() async {
+  Future<Either<Failure, List<SavedPaper>>> call() async {
     return await libraryRepository.getAllSavedPapers();
   }
 }

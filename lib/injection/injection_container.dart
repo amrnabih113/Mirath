@@ -418,7 +418,7 @@ class DI {
     sl.registerLazySingleton(() => ClearSearchHistoryUseCase(repository: sl()));
 
     /// Home Cubit ///
-    sl.registerFactory(
+    sl.registerLazySingleton(
       () => HomeCubit(
         getRecentPapersUseCase: sl(),
         getRecommendationsUseCase: sl(),

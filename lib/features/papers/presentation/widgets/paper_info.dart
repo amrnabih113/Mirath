@@ -23,8 +23,7 @@ class _PaperInfoState extends State<PaperInfo> {
   bool _showAllAuthors = false;
 
   String get _publishedYear {
-    final parsed = DateTime.tryParse(widget.paper.publishedAt);
-    return parsed?.year.toString() ?? widget.paper.publishedAt;
+    return widget.paper.publishedAt.year.toString();
   }
 
   String get _authorsText {

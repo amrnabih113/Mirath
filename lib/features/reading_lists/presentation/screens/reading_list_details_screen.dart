@@ -1,20 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
+import 'package:mirath/core/utils/my_logger.dart';
 
 import '../../../../core/helpers/responsive_helper.dart';
 import '../../../../core/utils/my_colors.dart';
 import '../../../../core/utils/my_extenstions.dart';
 import '../../../../core/utils/my_sizes.dart';
-import '../../../../injection/injection_container.dart';
 import '../../../common/widgets/my_back_icon.dart';
 import '../../../common/widgets/profile_avatar.dart';
 import '../../../common/widgets/tag_chip.dart';
 import '../../../home/presentation/widgets/paper_card.dart';
 import '../../domain/entities/reading_list.dart';
 import '../../../home/domain/entities/paper_entity.dart';
-import '../../../users/domain/entities/user.dart';
-import '../../../users/domain/usecases/get_user_profile_header_usecase.dart';
 import '../cubit/reading_list_cubit.dart';
 import '../cubit/reading_list_state.dart';
 import '../widgets/reading_list_details_shimmer_loading.dart';
@@ -30,33 +28,17 @@ class ReadingListDetailsScreen extends StatefulWidget {
 }
 
 class _ReadingListDetailsScreenState extends State<ReadingListDetailsScreen> {
-  late ReadingListCubit _cubit;
-  User? _ownerProfile;
-
   @override
   void initState() {
     super.initState();
-    _cubit = sl<ReadingListCubit>();
-    _cubit.getReadingListById(widget.readingList.id);
-    _loadOwnerProfile();
-  }
-
-  Future<void> _loadOwnerProfile() async {
-    final result = await sl<GetUserProfileHeaderUsecase>()(
-      widget.readingList.ownerId,
+    MyLogger.debug(
+      'ReadingListDetailsScreen initialized with reading list ID: ${widget.readingList.id}',
     );
-
-    result.fold((_) {}, (user) {
-      if (!mounted) return;
-      setState(() => _ownerProfile = user);
-    });
   }
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider.value(
-      value: _cubit,
-      child: BlocBuilder<ReadingListCubit, ReadingListState>(
+    return BlocBuilder<ReadingListCubit, ReadingListState>(
         builder: (context, state) {
           return Scaffold(
             appBar: AppBar(
@@ -84,8 +66,7 @@ class _ReadingListDetailsScreenState extends State<ReadingListDetailsScreen> {
             ),
           );
         },
-      ),
-    );
+      );
   }
 
   Widget _buildContent(BuildContext context, ReadingList readingList) {
@@ -106,9 +87,7 @@ class _ReadingListDetailsScreenState extends State<ReadingListDetailsScreen> {
                         children: [
                           ProfileAvatar(
                             size: ResponsiveHelper.responsiveValue(context, 40),
-                            imageUrl:
-                                _ownerProfile?.photoUrl ??
-                                _buildOwnerAvatarUrl(readingList),
+                            imageUrl: readingList.owner?.photoUrl,
                           ),
                           SizedBox(width: MySizes.spaceSm(context)),
                           Expanded(
@@ -116,9 +95,7 @@ class _ReadingListDetailsScreenState extends State<ReadingListDetailsScreen> {
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Text(
-                                  _ownerProfile?.fullName ??
-                                      readingList.owner?.fullName ??
-                                      'Unknown',
+                                  readingList.owner?.fullName ?? 'Unknown',
                                   style: context.titleSmall.copyWith(
                                     fontWeight: FontWeight.w900,
                                   ),
@@ -191,26 +168,28 @@ class _ReadingListDetailsScreenState extends State<ReadingListDetailsScreen> {
                         width: double.infinity,
                         child: ElevatedButton(
                           onPressed: () {
-                            final currentState = _cubit.state;
+                            final cubit = context.read<ReadingListCubit>();
+                            final currentState = cubit.state;
                             final currentList =
                                 currentState is ReadingListDetailsLoaded
                                 ? currentState.readingList
                                 : widget.readingList;
 
                             if (currentList.isSaved) {
-                              _cubit.unsaveReadingList(currentList.id);
+                              cubit.unsaveReadingList(currentList.id);
                             } else {
-                              _cubit.saveReadingList(currentList.id);
+                              cubit.saveReadingList(currentList.id);
                             }
                           },
-                          child: Text(
-                            ((_cubit.state is ReadingListDetailsLoaded
-                                    ? (_cubit.state as ReadingListDetailsLoaded)
-                                          .readingList
-                                          .isSaved
-                                    : widget.readingList.isSaved)
-                                ? 'Unsave List'
-                                : 'Save Full List'),
+                          child: BlocBuilder<ReadingListCubit, ReadingListState>(
+                            builder: (context, state) {
+                              final isSaved = state is ReadingListDetailsLoaded
+                                  ? state.readingList.isSaved
+                                  : widget.readingList.isSaved;
+                              return Text(
+                                isSaved ? 'Unsave List' : 'Save Full List',
+                              );
+                            },
                           ),
                         ),
                       ),
@@ -276,14 +255,6 @@ class _ReadingListDetailsScreenState extends State<ReadingListDetailsScreen> {
   }
 }
 
-String? _buildOwnerAvatarUrl(ReadingList readingList) {
-  final username = readingList.owner?.username;
-  if (username == null || username.trim().isEmpty) {
-    return null;
-  }
-  return 'https://github.com/$username.png?size=200';
-}
-
 List<PaperEntity> _buildPapers(ReadingList readingList) {
   final papers =
       readingList.papers
@@ -293,11 +264,12 @@ List<PaperEntity> _buildPapers(ReadingList readingList) {
               id: paper.paper!.id,
               title: paper.paper!.title,
               abstract: paper.paper!.abstract,
-              publishedAt: paper.paper!.publishedAt.toIso8601String(),
+              publishedAt: paper.paper!.publishedAt,
               authors: paper.paper!.authors,
               categories: paper.paper!.categories,
-              isSaved: true,
-              preprint: paper.paper!.citation,
+              isSaved: paper.paper!.isSaved,
+              preprint: paper.paper!.preprint,
+              citation: paper.paper!.citation,
             ),
           )
           .toList() ??

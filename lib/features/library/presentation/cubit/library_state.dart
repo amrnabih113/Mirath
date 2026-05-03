@@ -23,7 +23,7 @@ class LibraryDataFailure extends LibraryState {
 class GetReadingHistoryLoading extends LibraryState {}
 
 class GetReadingHistorySuccess extends LibraryState {
-  final List<ReadingHistory> readingHistory;
+  final List<ReadingHistoryPaper> readingHistory;
 
   GetReadingHistorySuccess({required this.readingHistory});
 }
@@ -60,7 +60,7 @@ class ClearAllReadingHistoryFailure extends LibraryState {
 class GetAllSavedPapersLoading extends LibraryState {}
 
 class GetAllSavedPapersSuccess extends LibraryState {
-  final SavedPapers savedPapers;
+  final List<SavedPaper> savedPapers;
 
   GetAllSavedPapersSuccess({required this.savedPapers});
 }

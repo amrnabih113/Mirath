@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:mirath/core/utils/my_colors.dart';
 import 'package:mirath/core/utils/my_extenstions.dart';
 import 'package:mirath/core/utils/my_sizes.dart';
 import 'package:mirath/features/common/widgets/my_back_icon.dart';
@@ -70,7 +69,7 @@ class ReadingHistoryScreen extends StatelessWidget {
                                   itemCount: state.readingHistory.length,
 
                                   itemBuilder: (context, index) => PaperCard(
-                                    readingHistory: state.readingHistory[index],
+                                    paper: state.readingHistory[index].paper,
                                     onTap: () {},
                                   ),
                                   separatorBuilder: (context, index) =>

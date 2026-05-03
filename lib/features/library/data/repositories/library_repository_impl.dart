@@ -27,10 +27,10 @@ class LibraryRepositoryImpl implements LibraryRepository {
   }
 
   @override
-  Future<Either<Failure, SavedPapers>> getAllSavedPapers() async {
+  Future<Either<Failure, List<SavedPaper>>> getAllSavedPapers() async {
     try {
       final response = await libraryDataSources.getAllSavedPapers();
-      return Right(response);
+      return Right(response.data);
     } on ServerException catch (e) {
       return Left(ServerFailure(e.message!));
     } on NetworkException catch (e) {
@@ -55,10 +55,10 @@ class LibraryRepositoryImpl implements LibraryRepository {
   }
 
   @override
-  Future<Either<Failure, List<ReadingHistory>>> getReadingHistory() async {
+  Future<Either<Failure, List<ReadingHistoryPaper>>> getReadingHistory() async {
     try {
       final response = await libraryDataSources.getReadingHistory();
-      return Right(response);
+      return Right(response.data);
     } on ServerException catch (e) {
       return Left(ServerFailure(e.message!));
     } on NetworkException catch (e) {

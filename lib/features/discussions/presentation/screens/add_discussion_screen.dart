@@ -256,8 +256,8 @@ class _AddDiscussionScreenState extends State<AddDiscussionScreen> {
       context: context,
       isScrollControlled: true,
       backgroundColor: Colors.transparent,
-      builder: (context) => BlocProvider(
-        create: (_) => sl<HomeCubit>()..loadAllPapers(),
+      builder: (context) => BlocProvider.value(
+        value: context.read<HomeCubit>(),
         child: AddPaperBottomSheet(
           onPaperSelected: addPaper,
           selectedPapers: selectedPapers,

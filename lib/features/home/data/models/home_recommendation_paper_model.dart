@@ -43,10 +43,11 @@ class HomeRecommendationPaperModel {
   final String title;
   final String preprint;
   final String abstract;
-  final String publishedAt;
+  final DateTime publishedAt;
   final List<String> authors;
   final List<String> categories;
   final bool isSaved;
+  final String citation;
 
   const HomeRecommendationPaperModel({
     required this.id,
@@ -57,14 +58,21 @@ class HomeRecommendationPaperModel {
     required this.categories,
     required this.isSaved,
     required this.preprint,
+    required this.citation,
   });
 
   factory HomeRecommendationPaperModel.fromJson(Map<String, dynamic> json) {
+    final publishedAtRaw = json['publishedAt'];
+
     return HomeRecommendationPaperModel(
       id: json['id'] ?? '',
       title: json['title'] ?? '',
       abstract: json['abstract'] ?? '',
-      publishedAt: json['publishedAt'] ?? '',
+      publishedAt: publishedAtRaw is String
+          ? DateTime.tryParse(publishedAtRaw) ?? DateTime.now()
+          : publishedAtRaw is DateTime
+          ? publishedAtRaw
+          : DateTime.now(),
       authors:
           (json['authors'] as List<dynamic>?)
               ?.map((e) => e as String)
@@ -77,6 +85,7 @@ class HomeRecommendationPaperModel {
           [],
       isSaved: json['isSaved'] ?? false,
       preprint: json['preprint'] ?? '',
+      citation: json['citation'] ?? '',
     );
   }
 
@@ -97,11 +106,12 @@ class HomeRecommendationPaperModel {
     id: '',
     title: '',
     abstract: '',
-    publishedAt: '',
+    publishedAt: DateTime.now(),
     authors: [],
     categories: [],
     isSaved: false,
     preprint: '',
+    citation: '',
   );
 }
 
@@ -112,6 +122,7 @@ extension HomeRecommendationPaperModelX on HomeRecommendationPaperModel {
       title: title,
       abstract: abstract,
       publishedAt: publishedAt,
+      citation: citation,
       authors: authors,
       categories: categories,
       isSaved: isSaved,

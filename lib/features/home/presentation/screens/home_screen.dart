@@ -41,7 +41,7 @@ class _HomeScreenState extends State<HomeScreen> {
     // Check if scrolled near the bottom (within 300 pixels)
     if (position.pixels >= position.maxScrollExtent - 300) {
       final cubit = context.read<HomeCubit>();
-      cubit.loadMoreRecommendations();
+      cubit.loadMoreRecentPapers();
     }
   }
 

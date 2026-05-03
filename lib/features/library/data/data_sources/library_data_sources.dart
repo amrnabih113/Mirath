@@ -1,15 +1,15 @@
-import 'package:mirath/features/library/domain/entities/library_data.dart';
-import 'package:mirath/features/library/domain/entities/reading_history.dart';
-import 'package:mirath/features/library/domain/entities/saved_papers.dart';
+import 'package:mirath/features/library/data/models/library_data_model.dart';
+import 'package:mirath/features/library/data/models/reading_history_model.dart';
+import 'package:mirath/features/library/data/models/saved_papers_model.dart';
 
 abstract class LibraryDataSources {
   Future<void> clearAllReadingHistory();
 
-  Future<SavedPapers> getAllSavedPapers();
+  Future<SavedPapersModel> getAllSavedPapers();
 
-  Future<LibraryData> getLibraryData();
+  Future<LibraryDataModel> getLibraryData();
 
-  Future<List<ReadingHistory>> getReadingHistory();
+  Future<ReadingHistoryModel> getReadingHistory();
 
   Future<void> removePaperFromReadingHistory(String paperId);
 

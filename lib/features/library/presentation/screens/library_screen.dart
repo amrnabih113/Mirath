@@ -26,33 +26,6 @@ class LibraryScreen extends StatelessWidget {
             fontSize: 20,
           ),
         ),
-        actions: [
-          BlocListener<ReadingListCubit, ReadingListState>(
-            listener: (context, state) {
-              if (state is ReadingListOperationSuccess) {
-                ScaffoldMessenger.of(
-                  context,
-                ).showSnackBar(SnackBar(content: Text(state.message)));
-              } else if (state is ReadingListError) {
-                ScaffoldMessenger.of(
-                  context,
-                ).showSnackBar(SnackBar(content: Text(state.message)));
-              }
-            },
-            child: IconButton(
-              icon: HugeIcon(
-                icon: HugeIcons.strokeRoundedPlusSign,
-                size: MySizes.iconMedium(context),
-              ),
-              onPressed: () {
-                context.read<ReadingListCubit>().addPaperToList(
-                  readingListId: 'reading_list_id_here',
-                  paperId: 'paper_id_here',
-                );
-              },
-            ),
-          ),
-        ],
       ),
       body: Center(
         child: LayoutBuilder(
@@ -79,6 +52,13 @@ class LibraryScreen extends StatelessWidget {
                       },
                     ),
                     SizedBox(height: MySizes.spaceLg(context) * 1.25),
+                    LibTiles(
+                      title: "Read Later", //S.of(context).reading_later,
+                      onTap: () {
+                        context.push('/read-later');
+                      },
+                    ),
+                    SizedBox(height: MySizes.spaceMd(context)),
                     LibTiles(
                       title: S.of(context).projects,
                       onTap: () {

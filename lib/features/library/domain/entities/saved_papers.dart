@@ -1,18 +1,15 @@
-import 'package:mirath/features/papers/data/models/full_paper_model.dart';
+import 'package:mirath/features/home/domain/entities/paper_entity.dart';
 
-class SavedPapers {
-  final String userId, paperId;
-  final List<FullPaperModel> paper;
+class SavedPaper {
+  final String userId;
+  final String paperId;
   final DateTime createdAt;
-  final List<String> authors;
-  final int size;
+  final PaperEntity paper;
 
-  SavedPapers({
+  SavedPaper({
     required this.userId,
     required this.paperId,
-    required this.paper,
     required this.createdAt,
-    required this.authors,
-    required this.size,
+    required this.paper,
   });
 }

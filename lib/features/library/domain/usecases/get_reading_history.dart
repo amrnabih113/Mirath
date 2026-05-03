@@ -8,7 +8,7 @@ class GetReadingHistory {
 
   GetReadingHistory({required this.libraryRepository});
 
-  Future<Either<Failure, List<ReadingHistory>>> call() async {
+  Future<Either<Failure, List<ReadingHistoryPaper>>> call() async {
     return await libraryRepository.getReadingHistory();
   }
 }

@@ -48,14 +48,21 @@ class HomeRecentPaperModel extends PaperEntity {
     required super.categories,
     required super.isSaved,
     required super.preprint,
+    required super.citation,
   });
 
   factory HomeRecentPaperModel.fromJson(Map<String, dynamic> json) {
+    final publishedAtRaw = json['publishedAt'];
+
     return HomeRecentPaperModel(
       id: json['id'] ?? '',
       title: json['title'] ?? '',
       abstract: json['abstract'] ?? '',
-      publishedAt: json['publishedAt'] ?? '',
+      publishedAt: publishedAtRaw is String
+          ? DateTime.tryParse(publishedAtRaw) ?? DateTime.now()
+          : publishedAtRaw is DateTime
+          ? publishedAtRaw
+          : DateTime.now(),
       authors:
           (json['authors'] as List<dynamic>?)
               ?.map((e) => e as String)
@@ -68,6 +75,7 @@ class HomeRecentPaperModel extends PaperEntity {
           [],
       isSaved: json['isSaved'] ?? false,
       preprint: json['preprint'] ?? '',
+      citation: json['citation'] ?? '',
     );
   }
   Map<String, dynamic> toJson() {
@@ -80,6 +88,7 @@ class HomeRecentPaperModel extends PaperEntity {
       'authors': authors,
       'categories': categories,
       'isSaved': isSaved,
+      'citation': citation,
     };
   }
 
@@ -87,11 +96,12 @@ class HomeRecentPaperModel extends PaperEntity {
     id: '',
     title: '',
     abstract: '',
-    publishedAt: '',
+    publishedAt: DateTime.now(),
     authors: [],
     categories: [],
     isSaved: false,
     preprint: '',
+    citation: '',
   );
 }
 
@@ -103,6 +113,7 @@ extension HomeRecentPaperModelX on HomeRecentPaperModel {
       abstract: abstract,
       publishedAt: publishedAt,
       authors: authors,
+      citation: citation,
       categories: categories,
       isSaved: isSaved,
       preprint: preprint,

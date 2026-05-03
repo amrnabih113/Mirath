@@ -5,10 +5,11 @@ class SearchPaperModel {
   final String title;
   final String preprint;
   final String abstract;
-  final String publishedAt;
+  final DateTime publishedAt;
   final List<String> authors;
   final List<String> categories;
   final bool isSaved;
+  final String citation;
 
   const SearchPaperModel({
     required this.id,
@@ -19,6 +20,7 @@ class SearchPaperModel {
     required this.authors,
     required this.categories,
     required this.isSaved,
+    required this.citation,
   });
 
   factory SearchPaperModel.fromJson(Map<String, dynamic> json) {
@@ -26,7 +28,7 @@ class SearchPaperModel {
       id: json['id'] ?? '',
       title: json['title'] ?? '',
       abstract: json['abstract'] ?? '',
-      publishedAt: json['publishedAt'] ?? '',
+      publishedAt: json['publishedAt'] ?? DateTime.now(),
       authors:
           (json['authors'] as List<dynamic>?)
               ?.map((e) => e as String)
@@ -39,6 +41,7 @@ class SearchPaperModel {
           [],
       isSaved: json['isSaved'] ?? false,
       preprint: json['preprint'] ?? '',
+      citation: json['citation'] ?? '',
     );
   }
 
@@ -49,6 +52,7 @@ class SearchPaperModel {
       preprint: preprint,
       abstract: abstract,
       publishedAt: publishedAt,
+      citation: citation,
       authors: authors,
       categories: categories,
       isSaved: isSaved,

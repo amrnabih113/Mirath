@@ -1,18 +1,13 @@
-class ReadingHistory {
-  final int size;
-  final String paperId, id, title, abstract;
-  final DateTime viewdAt, publishedAt;
-  final List<String> authors, categories;
+import 'package:mirath/features/home/domain/entities/paper_entity.dart';
 
-  ReadingHistory({
-    required this.size,
+class ReadingHistoryPaper {
+  final String paperId;
+  final DateTime viewedAt;
+  final PaperEntity paper;
+
+  ReadingHistoryPaper({
     required this.paperId,
-    required this.id,
-    required this.title,
-    required this.authors,
-    required this.abstract,
-    required this.viewdAt,
-    required this.publishedAt,
-    required this.categories,
+    required this.viewedAt,
+    required this.paper,
   });
 }

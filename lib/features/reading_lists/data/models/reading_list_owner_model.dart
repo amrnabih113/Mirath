@@ -5,6 +5,7 @@ class ReadingListOwnerModel extends ReadingListOwner {
     required super.id,
     required super.username,
     required super.fullName,
+    super.photoUrl,
   });
 
   factory ReadingListOwnerModel.fromJson(Map<String, dynamic> json) {
@@ -12,10 +13,16 @@ class ReadingListOwnerModel extends ReadingListOwner {
       id: json['id'] ?? '',
       username: json['username'] ?? '',
       fullName: json['fullName'] ?? '',
+      photoUrl: json['photoUrl'],
     );
   }
 
   Map<String, dynamic> toJson() {
-    return {'id': id, 'username': username, 'fullName': fullName};
+    return {
+      'id': id,
+      'username': username,
+      'fullName': fullName,
+      if (photoUrl != null) 'photoUrl': photoUrl,
+    };
   }
 }

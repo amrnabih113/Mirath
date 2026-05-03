@@ -257,8 +257,8 @@ final appRouter = GoRouter(
         GoRoute(
           path: '/home',
           pageBuilder: (context, state) => NoTransitionPage(
-            child: BlocProvider(
-              create: (_) => sl<HomeCubit>(),
+            child: BlocProvider.value(
+              value: context.read<HomeCubit>(),
               child: const HomeScreen(),
             ),
           ),
@@ -381,7 +381,7 @@ final appRouter = GoRouter(
         MultiBlocProvider(
           providers: [
             BlocProvider(create: (_) => sl<SearchCubit>()),
-            BlocProvider(create: (_) => sl<HomeCubit>()),
+            BlocProvider.value(value: context.read<HomeCubit>()),
           ],
           child: const HomeSearchResultScreen(),
         ),
@@ -390,8 +390,8 @@ final appRouter = GoRouter(
     GoRoute(
       path: '/recentely-published',
       pageBuilder: (context, state) => NoTransitionPage(
-        child: BlocProvider(
-          create: (_) => sl<HomeCubit>()..getRecentPapers(),
+        child: BlocProvider.value(
+          value: context.read<HomeCubit>(),
           child: const RecentelyPublishedScreen(),
         ),
       ),
@@ -422,14 +422,9 @@ final appRouter = GoRouter(
       pageBuilder: (context, state) {
         final readingList = state.extra as dynamic;
         return PageTransitions.smoothTransition(
-          MultiBlocProvider(
-            providers: [
-              BlocProvider(
-                create: (_) =>
-                    sl<ReadingListCubit>()..getReadingListById(readingList.id),
-              ),
-              BlocProvider(create: (_) => sl<HomeCubit>()),
-            ],
+          BlocProvider(
+            create: (_) =>
+                sl<ReadingListCubit>()..getReadingListById(readingList.id),
             child: ReadingListDetailsScreen(readingList: readingList),
           ),
         );
@@ -445,7 +440,7 @@ final appRouter = GoRouter(
         }
         return PageTransitions.smoothTransition(
           BlocProvider.value(
-            value: sl<HomeCubit>(),
+            value: context.read<HomeCubit>(),
             child: PaperScreen(paper: paper),
           ),
         );

@@ -220,10 +220,11 @@ class _DisscussionDetailsScreenState extends State<DisscussionDetailsScreen> {
                                 title: discussionPaper.title,
                                 abstract: discussionPaper.abstract,
                                 authors: discussionPaper.authors,
-                                publishedAt: '',
+                                publishedAt: DateTime.now(),
                                 categories: [],
                                 isSaved: false,
                                 preprint: '',
+                                citation: '',
                               );
                               context.push('/paper-screen', extra: paperEntity);
                             },

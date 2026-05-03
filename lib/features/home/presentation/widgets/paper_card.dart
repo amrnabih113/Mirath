@@ -4,11 +4,7 @@ import 'package:hugeicons_pro/hugeicons.dart';
 import 'package:mirath/core/helpers/my_loaders.dart';
 import 'package:mirath/features/common/widgets/tag_chip.dart';
 import 'package:mirath/features/home/presentation/cubit/home_cubit.dart';
-import 'package:mirath/features/library/domain/entities/reading_history.dart';
-import 'package:mirath/features/library/domain/entities/saved_papers.dart';
-import 'package:mirath/features/papers/data/models/full_paper_model.dart';
 import 'package:mirath/features/papers/presentation/widgets/latex_renderer.dart';
-import 'package:mirath/features/reading_lists/domain/entities/reading_list.dart';
 import '../../domain/entities/paper_entity.dart';
 
 import '../../../../core/helpers/responsive_helper.dart';
@@ -21,20 +17,11 @@ class PaperCard extends StatefulWidget {
     super.key,
     this.number,
     this.paper,
-    this.readingHistory,
-    this.readingList,
     required this.onTap,
-    this.savedPaper,
-    this.fullPaper,
   });
   final int? number;
   final PaperEntity? paper;
-  final ReadingHistory? readingHistory;
-  final ReadingList? readingList;
-  final SavedPapers? savedPaper;
-  final FullPaperModel? fullPaper;
   final VoidCallback onTap;
-
   @override
   State<PaperCard> createState() => _PaperCardState();
 }
@@ -121,7 +108,7 @@ class _PaperCardState extends State<PaperCard> {
               children: [
                 Text(
                   maxLines: 1,
-                  'preprint  • ${DateTime.parse(widget.paper?.publishedAt ?? '').year.toString()}',
+                  'preprint  • ${widget.paper?.publishedAt.year.toString()}',
                   style: context.bodySmall.copyWith(
                     color: MyColors.primaryShade600,
                     fontWeight: FontWeight.w600,

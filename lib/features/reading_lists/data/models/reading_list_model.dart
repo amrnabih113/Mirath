@@ -19,20 +19,33 @@ class ReadingListModel extends ReadingList {
   });
 
   factory ReadingListModel.fromJson(Map<String, dynamic> json) {
+    // Handle both regular reading lists and saved reading lists responses
+    final id = json['id'] ?? json['readingListId'] ?? '';
+    final ownerId = json['ownerId'] ?? json['userId'] ?? '';
+    final timestamp =
+        json['createdAt'] ??
+        json['updatedAt'] ??
+        json['savedAt'] ??
+        DateTime.now().toIso8601String();
+
     return ReadingListModel(
-      id: json['id'] ?? '',
-      title: json['title'] ?? '',
+      id: id,
+      title: json['title'] ?? 'Reading List',
       description: json['description'],
       isPublic: json['isPublic'] ?? true,
-      ownerId: json['ownerId'] ?? '',
-      createdAt: json['createdAt'] != null
-          ? DateTime.parse(json['createdAt'])
-          : DateTime.now(),
+      ownerId: ownerId,
+      createdAt: timestamp is DateTime
+          ? timestamp
+          : (timestamp is String ? DateTime.parse(timestamp) : DateTime.now()),
       updatedAt: json['updatedAt'] != null
-          ? DateTime.parse(json['updatedAt'])
-          : DateTime.now(),
+          ? (json['updatedAt'] is DateTime
+                ? json['updatedAt']
+                : DateTime.parse(json['updatedAt']))
+          : (timestamp is DateTime
+                ? timestamp
+                : DateTime.parse(timestamp as String)),
       paperCount: json['paperCount'] ?? json['_count']?['papers'] ?? 0,
-      isSaved: json['isSaved'] ?? false,
+      isSaved: json['isSaved'] ?? true,
       previewTags:
           (json['previewTags'] as List<dynamic>?)
               ?.map((e) => e.toString())

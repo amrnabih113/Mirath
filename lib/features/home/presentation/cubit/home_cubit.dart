@@ -123,8 +123,9 @@ class HomeCubit extends Cubit<HomeState> {
 
   Future<void> loadMoreRecommendations({int limit = 5}) async {
     final currentState = state;
-    if (currentState is! HomePapersLoaded && currentState is! HomePapersUpdated)
+    if (currentState is! HomePapersLoaded && currentState is! HomePapersUpdated) {
       return;
+    }
 
     late bool hasReachedMax;
     late bool isLoading;

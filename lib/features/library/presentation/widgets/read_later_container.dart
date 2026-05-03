@@ -28,10 +28,10 @@ class ReadLaterContainer extends StatelessWidget {
             final savedPapers = state.savedPapers;
             final formattedDate = DateFormat(
               'dd',
-            ).format(savedPapers.createdAt);
+            ).format(savedPapers.first.createdAt);
 
             return Container(
-              height: 100,
+              height: ResponsiveHelper.responsiveValue(context, 100),
               width: MySizes.screenWidth(context),
               padding: EdgeInsets.all(
                 ResponsiveHelper.responsiveValue(context, 16),
@@ -58,7 +58,7 @@ class ReadLaterContainer extends StatelessWidget {
                   ),
                   SizedBox(height: MySizes.spaceSm(context) * 0.5),
                   Text(
-                    '${savedPapers.size} papers • Updated $formattedDate days ago',
+                    '${savedPapers.length} papers • Updated $formattedDate days ago',
                   ),
                 ],
               ),

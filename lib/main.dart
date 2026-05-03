@@ -8,6 +8,7 @@ import 'core/network/network_manager.dart';
 import 'core/themes/my_theme.dart';
 import 'core/utils/my_logger.dart';
 import 'features/auth/presentation/cubit/auth_cubit.dart';
+import 'features/home/presentation/cubit/home_cubit.dart';
 import 'generated/l10n.dart';
 import 'injection/injection_container.dart';
 
@@ -21,8 +22,11 @@ void main() async {
       enabled: !const bool.fromEnvironment(
         'dart.vm.product',
       ), // Disable in release mode
-      builder: (context) => BlocProvider(
-        create: (context) => sl<AuthCubit>()..checkAuthStatus(),
+      builder: (context) => MultiBlocProvider(
+        providers: [
+          BlocProvider(create: (context) => sl<AuthCubit>()..checkAuthStatus()),
+          BlocProvider(create: (context) => sl<HomeCubit>()),
+        ],
         child: const MirathApp(),
       ),
     ),
@@ -35,7 +39,6 @@ class MirathApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp.router(
-      title: S.of(context).app_title,
       debugShowCheckedModeBanner: false,
       themeMode: ThemeMode.light,
       locale: const Locale('en'),

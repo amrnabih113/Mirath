@@ -7,9 +7,9 @@ import 'package:mirath/features/library/domain/entities/saved_papers.dart';
 abstract class LibraryRepository {
   Future<Either<Failure, LibraryData>> getLibraryData();
 
-  Future<Either<Failure, List<ReadingHistory>>> getReadingHistory();
+  Future<Either<Failure, List<ReadingHistoryPaper>>> getReadingHistory();
 
-  Future<Either<Failure, SavedPapers>> getAllSavedPapers();
+  Future<Either<Failure, List<SavedPaper>>> getAllSavedPapers();
 
   Future<Either<Failure, void>> updateReadingHistory(String paperId);
 

@@ -4,9 +4,6 @@ import 'package:mirath/features/library/data/data_sources/library_data_sources.d
 import 'package:mirath/features/library/data/models/library_data_model.dart';
 import 'package:mirath/features/library/data/models/reading_history_model.dart';
 import 'package:mirath/features/library/data/models/saved_papers_model.dart';
-import 'package:mirath/features/library/domain/entities/library_data.dart';
-import 'package:mirath/features/library/domain/entities/reading_history.dart';
-import 'package:mirath/features/library/domain/entities/saved_papers.dart';
 
 class LibraryDataSourcesImpl implements LibraryDataSources {
   final DioClient dioClient;
@@ -14,20 +11,19 @@ class LibraryDataSourcesImpl implements LibraryDataSources {
   LibraryDataSourcesImpl({required this.dioClient});
 
   @override
-  Future<LibraryData> getLibraryData() async {
+  Future<LibraryDataModel> getLibraryData() async {
     final response = await dioClient.get(MyConstants.getLibraryStats);
     return LibraryDataModel.fromJson(response.data['data']);
   }
 
   @override
-  Future<List<ReadingHistory>> getReadingHistory() async {
+  Future<ReadingHistoryModel> getReadingHistory() async {
     final response = await dioClient.get(MyConstants.getReadingHistory);
-    final List data = response.data['data'] ?? [];
-    return data.map((item) => ReadingHistoryModel.fromJson(item)).toList();
+    return ReadingHistoryModel.fromJson(response.data);
   }
 
   @override
-  Future<SavedPapers> getAllSavedPapers() async {
+  Future<SavedPapersModel> getAllSavedPapers() async {
     final response = await dioClient.get(MyConstants.getAllSavedPapers);
     return SavedPapersModel.fromJson(response.data);
   }

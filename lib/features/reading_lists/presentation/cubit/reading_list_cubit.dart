@@ -43,7 +43,7 @@ class ReadingListCubit extends Cubit<ReadingListState> {
         emit(const ReadingListError(message: 'Failed to fetch reading lists'));
       },
       (readingLists) {
-        emit(ReadingListsLoaded(readingLists: readingLists));
+        emit(ReadingListsLoaded(readingLists  : readingLists));
       },
     );
   }
