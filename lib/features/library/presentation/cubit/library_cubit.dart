@@ -41,15 +41,59 @@ class LibraryCubit extends Cubit<LibraryState> {
   }
 
   // 2- Get Reading History Function
-  Future<void> getReadingHistory() async {
-    emit(GetReadingHistoryLoading());
-    var result = await getReadingHistoryUseCase.call();
+  Future<void> getReadingHistory({
+    int page = 1,
+    int limit = 20,
+    bool loadMore = false,
+  }) async {
+    final currentState = state;
+
+    if (loadMore && currentState is GetReadingHistorySuccess) {
+      if (!currentState.hasMore || currentState.isLoadingMore) {
+        return;
+      }
+      emit(
+        GetReadingHistorySuccess(
+          readingHistory: currentState.readingHistory,
+          currentPage: currentState.currentPage,
+          hasMore: currentState.hasMore,
+          isLoadingMore: true,
+        ),
+      );
+    } else {
+      emit(GetReadingHistoryLoading());
+    }
+
+    var result = await getReadingHistoryUseCase.call(page: page, limit: limit);
     result.fold(
       (failure) {
+        if (loadMore && currentState is GetReadingHistorySuccess) {
+          emit(
+            GetReadingHistorySuccess(
+              readingHistory: currentState.readingHistory,
+              currentPage: currentState.currentPage,
+              hasMore: currentState.hasMore,
+              isLoadingMore: false,
+            ),
+          );
+          return;
+        }
         emit(GetReadingHistoryFailure(errorMessage: failure.message));
       },
       (readHis) {
-        emit(GetReadingHistorySuccess(readingHistory: readHis));
+        final mergedList =
+            loadMore && currentState is GetReadingHistorySuccess
+            ? [...currentState.readingHistory, ...readHis]
+            : readHis;
+
+        emit(
+          GetReadingHistorySuccess(
+            readingHistory: mergedList,
+            currentPage: page,
+            hasMore: readHis.length == limit,
+            isLoadingMore: false,
+          ),
+        );
       },
     );
   }

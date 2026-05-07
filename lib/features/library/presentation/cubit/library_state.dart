@@ -24,8 +24,16 @@ class GetReadingHistoryLoading extends LibraryState {}
 
 class GetReadingHistorySuccess extends LibraryState {
   final List<ReadingHistoryPaper> readingHistory;
+  final int currentPage;
+  final bool hasMore;
+  final bool isLoadingMore;
 
-  GetReadingHistorySuccess({required this.readingHistory});
+  GetReadingHistorySuccess({
+    required this.readingHistory,
+    required this.currentPage,
+    required this.hasMore,
+    this.isLoadingMore = false,
+  });
 }
 
 class GetReadingHistoryFailure extends LibraryState {

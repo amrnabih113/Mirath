@@ -39,34 +39,34 @@ class _ReadingListDetailsScreenState extends State<ReadingListDetailsScreen> {
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<ReadingListCubit, ReadingListState>(
-        builder: (context, state) {
-          return Scaffold(
-            appBar: AppBar(
-              toolbarHeight: ResponsiveHelper.responsiveValue(context, 50),
-              leadingWidth: ResponsiveHelper.responsiveValue(context, 50),
-              leading: const MyBackIcon(),
-              titleSpacing: 0,
-            ),
-            body: Builder(
-              builder: (context) {
-                if (state is ReadingListLoading) {
-                  return const ReadingListDetailsShimmerLoading();
-                }
+      builder: (context, state) {
+        return Scaffold(
+          appBar: AppBar(
+            toolbarHeight: ResponsiveHelper.responsiveValue(context, 50),
+            leadingWidth: ResponsiveHelper.responsiveValue(context, 50),
+            leading: const MyBackIcon(),
+            titleSpacing: 0,
+          ),
+          body: Builder(
+            builder: (context) {
+              if (state is ReadingListLoading) {
+                return const ReadingListDetailsShimmerLoading();
+              }
 
-                if (state is ReadingListError) {
-                  return Center(child: Text(state.message));
-                }
+              if (state is ReadingListError) {
+                return Center(child: Text(state.message));
+              }
 
-                if (state is ReadingListDetailsLoaded) {
-                  return _buildContent(context, state.readingList);
-                }
+              if (state is ReadingListDetailsLoaded) {
+                return _buildContent(context, state.readingList);
+              }
 
-                return const SizedBox();
-              },
-            ),
-          );
-        },
-      );
+              return const SizedBox();
+            },
+          ),
+        );
+      },
+    );
   }
 
   Widget _buildContent(BuildContext context, ReadingList readingList) {
@@ -181,16 +181,18 @@ class _ReadingListDetailsScreenState extends State<ReadingListDetailsScreen> {
                               cubit.saveReadingList(currentList.id);
                             }
                           },
-                          child: BlocBuilder<ReadingListCubit, ReadingListState>(
-                            builder: (context, state) {
-                              final isSaved = state is ReadingListDetailsLoaded
-                                  ? state.readingList.isSaved
-                                  : widget.readingList.isSaved;
-                              return Text(
-                                isSaved ? 'Unsave List' : 'Save Full List',
-                              );
-                            },
-                          ),
+                          child:
+                              BlocBuilder<ReadingListCubit, ReadingListState>(
+                                builder: (context, state) {
+                                  final isSaved =
+                                      state is ReadingListDetailsLoaded
+                                      ? state.readingList.isSaved
+                                      : widget.readingList.isSaved;
+                                  return Text(
+                                    isSaved ? 'Unsave List' : 'Save Full List',
+                                  );
+                                },
+                              ),
                         ),
                       ),
                     ),

@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
-import 'package:hugeicons/hugeicons.dart';
 import 'package:mirath/generated/l10n.dart';
 import 'package:mirath/core/utils/my_extenstions.dart';
 import 'package:mirath/core/utils/my_sizes.dart';
@@ -9,8 +8,6 @@ import 'package:mirath/features/library/presentation/cubit/library_cubit.dart';
 import 'package:mirath/features/library/presentation/widgets/lib_tiles.dart';
 import 'package:mirath/features/library/presentation/widgets/my_item.dart';
 import 'package:mirath/features/library/presentation/widgets/my_item_shimmer.dart';
-import 'package:mirath/features/reading_lists/presentation/cubit/reading_list_cubit.dart';
-import 'package:mirath/features/reading_lists/presentation/cubit/reading_list_state.dart';
 
 class LibraryScreen extends StatelessWidget {
   const LibraryScreen({super.key});

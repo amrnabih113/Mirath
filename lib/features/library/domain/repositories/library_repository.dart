@@ -7,7 +7,10 @@ import 'package:mirath/features/library/domain/entities/saved_papers.dart';
 abstract class LibraryRepository {
   Future<Either<Failure, LibraryData>> getLibraryData();
 
-  Future<Either<Failure, List<ReadingHistoryPaper>>> getReadingHistory();
+  Future<Either<Failure, List<ReadingHistoryPaper>>> getReadingHistory({
+    int page = 1,
+    int limit = 20,
+  });
 
   Future<Either<Failure, List<SavedPaper>>> getAllSavedPapers();
 

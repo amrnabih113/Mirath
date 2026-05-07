@@ -55,9 +55,15 @@ class LibraryRepositoryImpl implements LibraryRepository {
   }
 
   @override
-  Future<Either<Failure, List<ReadingHistoryPaper>>> getReadingHistory() async {
+  Future<Either<Failure, List<ReadingHistoryPaper>>> getReadingHistory({
+    int page = 1,
+    int limit = 20,
+  }) async {
     try {
-      final response = await libraryDataSources.getReadingHistory();
+      final response = await libraryDataSources.getReadingHistory(
+        page: page,
+        limit: limit,
+      );
       return Right(response.data);
     } on ServerException catch (e) {
       return Left(ServerFailure(e.message!));

@@ -17,8 +17,14 @@ class LibraryDataSourcesImpl implements LibraryDataSources {
   }
 
   @override
-  Future<ReadingHistoryModel> getReadingHistory() async {
-    final response = await dioClient.get(MyConstants.getReadingHistory);
+  Future<ReadingHistoryModel> getReadingHistory({
+    int page = 1,
+    int limit = 20,
+  }) async {
+    final response = await dioClient.get(
+      MyConstants.getReadingHistory,
+      queryParameters: {'page': page, 'limit': limit},
+    );
     return ReadingHistoryModel.fromJson(response.data);
   }
 
@@ -35,7 +41,6 @@ class LibraryDataSourcesImpl implements LibraryDataSources {
         '{paperId}',
         paperId,
       ),
-      data: paperId,
     );
     return response.data['message'];
   }
@@ -44,7 +49,6 @@ class LibraryDataSourcesImpl implements LibraryDataSources {
   Future<void> updateReadingHistory(String paperId) async {
     final response = await dioClient.post(
       MyConstants.updateReadingHistory.replaceAll('{paperId}', paperId),
-      data: paperId,
     );
     return response.data['message'];
   }

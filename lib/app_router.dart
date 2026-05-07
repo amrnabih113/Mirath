@@ -439,8 +439,11 @@ final appRouter = GoRouter(
           return PageTransitions.smoothTransition(const SizedBox.shrink());
         }
         return PageTransitions.smoothTransition(
-          BlocProvider.value(
-            value: context.read<HomeCubit>(),
+          MultiBlocProvider(
+            providers: [
+              BlocProvider.value(value: context.read<HomeCubit>()),
+              BlocProvider(create: (_) => sl<LibraryCubit>()),
+            ],
             child: PaperScreen(paper: paper),
           ),
         );

@@ -8,8 +8,44 @@ import 'package:mirath/features/home/presentation/widgets/paper_card.dart';
 import 'package:mirath/features/library/presentation/cubit/library_cubit.dart';
 import 'package:mirath/features/library/presentation/widgets/delete_button.dart';
 
-class ReadingHistoryScreen extends StatelessWidget {
+class ReadingHistoryScreen extends StatefulWidget {
   const ReadingHistoryScreen({super.key});
+
+  @override
+  State<ReadingHistoryScreen> createState() => _ReadingHistoryScreenState();
+}
+
+class _ReadingHistoryScreenState extends State<ReadingHistoryScreen> {
+  static const int _pageSize = 20;
+  late final ScrollController _scrollController;
+
+  @override
+  void initState() {
+    super.initState();
+    _scrollController = ScrollController()..addListener(_onScroll);
+  }
+
+  @override
+  void dispose() {
+    _scrollController.removeListener(_onScroll);
+    _scrollController.dispose();
+    super.dispose();
+  }
+
+  void _onScroll() {
+    if (!_scrollController.hasClients) return;
+    final threshold = _scrollController.position.maxScrollExtent - 200;
+    if (_scrollController.position.pixels < threshold) return;
+
+    final currentState = context.read<LibraryCubit>().state;
+    if (currentState is GetReadingHistorySuccess && currentState.hasMore) {
+      context.read<LibraryCubit>().getReadingHistory(
+        page: currentState.currentPage + 1,
+        limit: _pageSize,
+        loadMore: true,
+      );
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -33,61 +69,70 @@ class ReadingHistoryScreen extends StatelessWidget {
               constraints: const BoxConstraints(maxWidth: 850),
               child: Padding(
                 padding: MySizes.paddingSm(context),
-                child: SingleChildScrollView(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      BlocBuilder<LibraryCubit, LibraryState>(
-                        builder: (context, state) {
-                          if (state is GetReadingHistoryLoading) {
-                            return const PaperListShimmer();
-                          } else if (state is GetReadingHistorySuccess) {
-                            if (state.readingHistory.isEmpty) {
-                              return Column(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                crossAxisAlignment: CrossAxisAlignment.center,
-                                children: [
-                                  Text('You haven’t read any research papers'),
-                                  TextButton(
-                                    onPressed: () {},
-                                    child: Text(
-                                      'Explore',
-                                      style: context.bodyLarge.copyWith(
-                                        decoration: TextDecoration.underline,
-                                        decorationThickness: 2,
-                                      ),
-                                    ),
-                                  ),
-                                ],
-                              );
-                            } else {
-                              return Expanded(
-                                child: ListView.separated(
-                                  padding: const EdgeInsets.all(8),
+                child: BlocBuilder<LibraryCubit, LibraryState>(
+                  builder: (context, state) {
+                    if (state is GetReadingHistoryLoading) {
+                      return const PaperListShimmer();
+                    }
 
-                                  itemCount: state.readingHistory.length,
+                    if (state is GetReadingHistoryFailure) {
+                      return Center(
+                        child: Text(
+                          state.errorMessage,
+                          style: context.bodyMedium,
+                          textAlign: TextAlign.center,
+                        ),
+                      );
+                    }
 
-                                  itemBuilder: (context, index) => PaperCard(
-                                    paper: state.readingHistory[index].paper,
-                                    onTap: () {},
-                                  ),
-                                  separatorBuilder: (context, index) =>
-                                      SizedBox(
-                                        height: MySizes.spaceXs(context) * 0.5,
-                                      ),
+                    if (state is GetReadingHistorySuccess) {
+                      if (state.readingHistory.isEmpty) {
+                        return Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            Text('You haven’t read any research papers'),
+                            TextButton(
+                              onPressed: () {},
+                              child: Text(
+                                'Explore',
+                                style: context.bodyLarge.copyWith(
+                                  decoration: TextDecoration.underline,
+                                  decorationThickness: 2,
                                 ),
-                              );
-                            }
-                          } else if (state is GetReadingHistoryFailure) {
-                            return Text(state.errorMessage);
-                          } else {
-                            return const SizedBox.shrink();
+                              ),
+                            ),
+                          ],
+                        );
+                      }
+
+                      return ListView.separated(
+                        controller: _scrollController,
+                        padding: const EdgeInsets.all(8),
+                        itemCount: state.readingHistory.length +
+                            (state.isLoadingMore ? 1 : 0),
+                        itemBuilder: (context, index) {
+                          if (index >= state.readingHistory.length) {
+                            return const Padding(
+                              padding: EdgeInsets.symmetric(vertical: 16),
+                              child: Center(
+                                child: CircularProgressIndicator(),
+                              ),
+                            );
                           }
+
+                          return PaperCard(
+                            paper: state.readingHistory[index].paper,
+                            onTap: () {},
+                          );
                         },
-                      ),
-                    ],
-                  ),
+                        separatorBuilder: (context, index) =>
+                            SizedBox(height: MySizes.spaceXs(context) * 0.5),
+                      );
+                    }
+
+                    return const SizedBox.shrink();
+                  },
                 ),
               ),
             );

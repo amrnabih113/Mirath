@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:mirath/core/utils/my_colors.dart';
@@ -6,6 +7,7 @@ import 'package:mirath/core/utils/my_extenstions.dart';
 import 'package:mirath/core/utils/my_sizes.dart';
 import 'package:mirath/features/common/widgets/tag_chip.dart';
 import 'package:mirath/features/home/domain/entities/paper_entity.dart';
+import 'package:mirath/features/library/presentation/cubit/library_cubit.dart';
 import 'package:mirath/features/papers/presentation/widgets/latex_renderer.dart';
 import 'package:mirath/features/papers/presentation/widgets/my_text_icon.dart';
 
@@ -139,6 +141,10 @@ class _PaperInfoState extends State<PaperInfo> {
             Expanded(
               child: MyTextButton(
                 onPressed : (){
+                  // Fire and forget: reading history updates in background.
+                  context.read<LibraryCubit>().updataReadingHistory(
+                    widget.paper.id,
+                  );
                   context.push("/paper-reading", extra: widget.paper);
                 },
                 title: 'Read',
