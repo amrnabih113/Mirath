@@ -5,9 +5,12 @@ import 'package:mirath/core/helpers/responsive_helper.dart';
 import 'package:mirath/core/utils/my_colors.dart';
 import 'package:mirath/core/utils/my_extenstions.dart';
 import 'package:mirath/core/utils/my_sizes.dart';
+import 'package:mirath/features/users/domain/entities/follows.dart';
 
 class FollowerFollowingCard extends StatelessWidget {
-  const FollowerFollowingCard({super.key});
+  const FollowerFollowingCard({super.key, required this.user});
+
+  final Follows user;
 
   @override
   Widget build(BuildContext context) {
@@ -40,7 +43,12 @@ class FollowerFollowingCard extends StatelessWidget {
         children: [
           CircleAvatar(
             radius: MySizes.borderRadiusLg(context),
-            child: SvgPicture.asset('assets/images/Profile picture (1).svg'),
+            backgroundImage: user.photoUrl.isNotEmpty
+                ? NetworkImage(user.photoUrl)
+                : null,
+            child: user.photoUrl.isEmpty
+                ? SvgPicture.asset('assets/images/Profile picture (1).svg')
+                : null,
           ),
 
           SizedBox(width: MySizes.spaceSm(context)),
@@ -51,7 +59,7 @@ class FollowerFollowingCard extends StatelessWidget {
               mainAxisSize: MainAxisSize.min,
               children: [
                 Text(
-                  'Jane Doe',
+                  user.fullname,
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
                   style: context.bodySmall.copyWith(
@@ -61,7 +69,7 @@ class FollowerFollowingCard extends StatelessWidget {
                   ),
                 ),
                 Text(
-                  'Lorem Ipsum is simply dummy text of the printing and typesetting industry.',
+                  user.bio.isNotEmpty ? user.bio : '@${user.username}',
                   maxLines: 2,
                   overflow: TextOverflow.ellipsis,
                   style: context.bodySmall.copyWith(
@@ -71,7 +79,7 @@ class FollowerFollowingCard extends StatelessWidget {
                   ),
                 ),
                 Text(
-                  'Egypt',
+                  user.role,
                   style: context.bodySmall.copyWith(
                     color: MyColors.primaryShade900,
                     fontWeight: FontWeight.w400,
@@ -84,7 +92,11 @@ class FollowerFollowingCard extends StatelessWidget {
 
           SizedBox(width: MySizes.spaceSm(context)),
 
-          HugeIcon(icon: HugeIcons.strokeRoundedUserCheck01),
+          HugeIcon(
+            icon: user.isFollowing
+                ? HugeIcons.strokeRoundedUserCheck01
+                : HugeIcons.strokeRoundedUserAdd01,
+          ),
         ],
       ),
     );

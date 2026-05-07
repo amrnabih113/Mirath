@@ -37,12 +37,14 @@ class CommunityRemoteDataSourceImpl implements CommunityRemoteDataSource {
     int limit = 10,
     String sort = 'new',
     String? topicId,
+    String? authorId,
   }) async {
     final queryParams = {
       'page': page.toString(),
       'limit': limit.toString(),
       'sort': sort,
       if (topicId != null) 'topicId': topicId,
+      if (authorId != null) 'authorId': authorId,
     };
 
     final response = await _dioClient.get(

@@ -1,10 +1,12 @@
 import 'package:dio/dio.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:mirath/features/users/data/models/follows_model.dart';
 
 import '../../../../core/network/dio_client.dart';
 import '../../../../core/utils/my_constants.dart';
 import '../../../../core/utils/my_logger.dart';
 import '../../domain/entities/profile_setup_data.dart';
+import '../../domain/entities/update_profile_data.dart';
 import '../models/follow_response_model.dart';
 import '../models/get_user_response_model.dart';
 import '../models/profile_header_response_model.dart';
@@ -152,18 +154,78 @@ class UsersRemoteDataSourceImpl implements UsersRemoteDataSource {
   }
 
   @override
-  Future<FollowsModel> getUserFollowers(String id) async {
+  Future<List<FollowsModel>> getUserFollowers(
+    String id, {
+    int page = 1,
+    int limit = 20,
+  }) async {
     final response = await dioClient.get(
       MyConstants.getFollowers.replaceAll('{id}', id),
+      queryParameters: {'page': page, 'limit': limit},
     );
-    return FollowsModel.fromJson(response.data);
+    return FollowsModel.listFromResponse(response.data as Map<String, dynamic>);
   }
 
   @override
-  Future<FollowsModel> getUserFollowing(String id) async {
+  Future<List<FollowsModel>> getUserFollowing(
+    String id, {
+    int page = 1,
+    int limit = 20,
+  }) async {
     final response = await dioClient.get(
       MyConstants.getFollowing.replaceAll('{id}', id),
+      queryParameters: {'page': page, 'limit': limit},
     );
-    return FollowsModel.fromJson(response.data);
+    return FollowsModel.listFromResponse(response.data as Map<String, dynamic>);
+  }
+
+  @override
+  Future<ProfileSetupResponseModel> updateProfile(
+    UpdateProfileData updateProfileData,
+  ) async {
+    try {
+      MyLogger.info('[UsersRemoteDataSource] Updating profile...');
+
+      final formData = FormData.fromMap({
+        if (updateProfileData.fullName != null)
+          'fullName': updateProfileData.fullName,
+        if (updateProfileData.bio != null) 'bio': updateProfileData.bio,
+        if (updateProfileData.country != null)
+          'country': updateProfileData.country,
+        if (updateProfileData.levelOfEducation != null)
+          'levelOfEducation': updateProfileData.levelOfEducation,
+        if (updateProfileData.university != null)
+          'university': updateProfileData.university,
+        if (updateProfileData.keepEmailPrivate != null)
+          'keepEmailPrivate': updateProfileData.keepEmailPrivate,
+      });
+
+      if (updateProfileData.interests != null) {
+        for (var interest in updateProfileData.interests as List<String>) {
+          formData.fields.add(MapEntry('interests', interest));
+        }
+      }
+
+      if (updateProfileData.profilePhoto != null) {
+        final file = updateProfileData.profilePhoto as XFile;
+        formData.files.add(
+          MapEntry(
+            'profilePhoto',
+            await MultipartFile.fromFile(file.path, filename: file.name),
+          ),
+        );
+      }
+
+      final response = await dioClient.patch(
+        MyConstants.updateProfile,
+        data: formData,
+      );
+
+      MyLogger.info('[UsersRemoteDataSource] Profile update successful');
+      return ProfileSetupResponseModel.fromJson(response.data);
+    } catch (e) {
+      MyLogger.error('[UsersRemoteDataSource] Update profile failed: $e');
+      rethrow;
+    }
   }
 }

@@ -62,6 +62,7 @@ class _UserInformationHeaderState extends State<UserInformationHeader> {
                     ),
                   ),
                   SizedBox(width: MySizes.spaceXs(context)),
+                  
                   FollowButton(
                     userId: widget.discussion.author.id,
                     isFollowed: _isFollowing,

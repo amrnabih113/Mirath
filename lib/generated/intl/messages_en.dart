@@ -99,9 +99,7 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "bio": MessageLookupByLibrary.simpleMessage("Bio"),
     "bio_field_label": MessageLookupByLibrary.simpleMessage("Bio"),
-    "bio_hint": MessageLookupByLibrary.simpleMessage(
-      "Lorem ipsum dolor sit amet,",
-    ),
+    "bio_hint": MessageLookupByLibrary.simpleMessage("Add a bio (optional)"),
     "blue_color": MessageLookupByLibrary.simpleMessage("Blue"),
     "cancel": MessageLookupByLibrary.simpleMessage("Cancel"),
     "cancel_button": MessageLookupByLibrary.simpleMessage("Cancel"),
@@ -130,7 +128,9 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "copy_button": MessageLookupByLibrary.simpleMessage("Copy"),
     "country": MessageLookupByLibrary.simpleMessage("Country"),
-    "country_hint": MessageLookupByLibrary.simpleMessage("Egypt"),
+    "country_hint": MessageLookupByLibrary.simpleMessage(
+      "Where are you based?",
+    ),
     "country_label": MessageLookupByLibrary.simpleMessage("Country"),
     "create": MessageLookupByLibrary.simpleMessage("Create"),
     "create_account": MessageLookupByLibrary.simpleMessage("Create Account"),
@@ -176,7 +176,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "edit_profile": MessageLookupByLibrary.simpleMessage("Edit profile"),
     "education_level": MessageLookupByLibrary.simpleMessage("Education Level"),
     "education_level_label": MessageLookupByLibrary.simpleMessage(
-      "Level of education",
+      "Level of Education",
     ),
     "email": MessageLookupByLibrary.simpleMessage("Email"),
     "email_address": MessageLookupByLibrary.simpleMessage("Email Address"),
@@ -360,7 +360,7 @@ class MessageLookup extends MessageLookupByLibrary {
       "Mock Researcher",
     ),
     "name": MessageLookupByLibrary.simpleMessage("Name"),
-    "name_field_label": MessageLookupByLibrary.simpleMessage("Name"),
+    "name_field_label": MessageLookupByLibrary.simpleMessage("Full Name"),
     "nav_community_label": MessageLookupByLibrary.simpleMessage("Community"),
     "nav_home_label": MessageLookupByLibrary.simpleMessage("Home"),
     "nav_library_label": MessageLookupByLibrary.simpleMessage("Library"),
@@ -443,7 +443,10 @@ class MessageLookup extends MessageLookupByLibrary {
     "please_write_comment": MessageLookupByLibrary.simpleMessage(
       "Please write a comment",
     ),
-    "position_label": MessageLookupByLibrary.simpleMessage("Current position"),
+    "position_hint": MessageLookupByLibrary.simpleMessage(
+      "e.g. Senior Researcher, PhD Student",
+    ),
+    "position_label": MessageLookupByLibrary.simpleMessage("Current Position"),
     "post_button": MessageLookupByLibrary.simpleMessage("Post"),
     "previous_button": MessageLookupByLibrary.simpleMessage("Previous"),
     "profile": MessageLookupByLibrary.simpleMessage("Profile"),
@@ -540,12 +543,14 @@ class MessageLookup extends MessageLookupByLibrary {
         ),
     "undergraduate": MessageLookupByLibrary.simpleMessage("Undergraduate"),
     "university": MessageLookupByLibrary.simpleMessage("University"),
-    "university_hint": MessageLookupByLibrary.simpleMessage("uni"),
+    "university_hint": MessageLookupByLibrary.simpleMessage(
+      "Enter your university name",
+    ),
     "university_label": MessageLookupByLibrary.simpleMessage("University"),
     "university_name": MessageLookupByLibrary.simpleMessage("University Name"),
     "upload_picture": MessageLookupByLibrary.simpleMessage("Upload Picture"),
     "username": MessageLookupByLibrary.simpleMessage("Username"),
-    "username_label": MessageLookupByLibrary.simpleMessage("Username"),
+    "username_label": MessageLookupByLibrary.simpleMessage("Edit Profile"),
     "verified": MessageLookupByLibrary.simpleMessage("Verified!"),
     "view_all_button": MessageLookupByLibrary.simpleMessage("View All"),
     "view_discussions": MessageLookupByLibrary.simpleMessage(

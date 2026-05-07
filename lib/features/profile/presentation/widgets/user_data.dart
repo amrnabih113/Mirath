@@ -1,24 +1,38 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:go_router/go_router.dart';
 import 'package:hugeicons/hugeicons.dart';
 import 'package:mirath/core/utils/my_colors.dart';
+import 'package:mirath/core/utils/my_enums.dart';
 import 'package:mirath/core/utils/my_extenstions.dart';
 import 'package:mirath/core/utils/my_sizes.dart';
 import 'package:mirath/features/common/widgets/custum_text_button.dart';
 import 'package:mirath/features/common/widgets/info_row.dart';
 import 'package:mirath/features/common/widgets/tag_chip.dart';
+import 'package:mirath/features/users/domain/entities/user.dart';
 
 class UserData extends StatelessWidget {
   const UserData({
     super.key,
-    required this.label,
+    required this.user,
+    required this.actionLabel,
     required this.color,
     required this.labelColor,
+    required this.onActionTap,
+    required this.onFollowersTap,
   });
-  final String label;
+  final User user;
+  final String actionLabel;
   final Color color;
   final Color labelColor;
+  final VoidCallback onActionTap;
+  final VoidCallback onFollowersTap;
+
+  ImageProvider? _avatarImage() {
+    if (user.photoUrl == null || user.photoUrl!.isEmpty) {
+      return null;
+    }
+    return NetworkImage(user.photoUrl!);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -33,21 +47,37 @@ class UserData extends StatelessWidget {
               CircleAvatar(
                 radius: MySizes.borderRadiusLg(context) * 2,
                 backgroundColor: MyColors.primaryShade50,
-                child: SvgPicture.asset(
-                  'assets/images/Profile picture (1).svg',
-                ),
+                backgroundImage: _avatarImage(),
+                child: _avatarImage() == null
+                    ? SvgPicture.asset('assets/images/Profile picture (1).svg')
+                    : null,
               ),
               SizedBox(width: MySizes.spaceSm(context)),
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text('John Doe', style: context.titleSmall),
+                    Row(
+                      children: [
+                        Text(user.fullName, style: context.titleSmall),
+                        if (!user.isEmailVisible)
+                          Padding(
+                            padding: EdgeInsets.only(
+                              left: MySizes.spaceXs(context) * .5,
+                            ),
+                            child: HugeIcon(
+                              icon: HugeIcons.strokeRoundedSquareLock02,
+                              size: MySizes.iconSmall(context),
+                              color: MyColors.primaryShade500,
+                            ),
+                          ),
+                      ],
+                    ),
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          '@username',
+                          '@${user.username}',
                           style: context.bodySmall.copyWith(
                             color: Colors.black,
                             fontSize: 12,
@@ -55,10 +85,9 @@ class UserData extends StatelessWidget {
                         ),
                         SizedBox(height: MySizes.spaceXs(context) * .5),
                         GestureDetector(
-                          onTap: () =>
-                              context.push('/follower_following_screen'),
+                          onTap: onFollowersTap,
                           child: Text(
-                            ' 123 Followers • 456 Following',
+                            ' ${user.followersCount} Followers • ${user.followingCount} Following',
                             style: context.bodySmall.copyWith(
                               color: Colors.black,
                               fontSize: 10,
@@ -72,10 +101,8 @@ class UserData extends StatelessWidget {
               ),
               SizedBox(width: MySizes.spaceXl(context)),
               CustumTextButton(
-                onTap: () {
-                  context.push('/edit_profile_screen');
-                },
-                label: label,
+                onTap: onActionTap,
+                label: actionLabel,
                 color: color,
                 labelColor: labelColor,
               ),
@@ -83,7 +110,7 @@ class UserData extends StatelessWidget {
           ),
           SizedBox(height: MySizes.spaceSm(context)),
           Text(
-            'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque ante dui, lobortis sed orci vitae, molestie convallis justo. Fusce...more',
+            user.bio?.isNotEmpty == true ? user.bio! : 'No bio provided.',
             style: context.bodySmall.copyWith(
               color: Colors.black,
               fontSize: 12,
@@ -92,32 +119,35 @@ class UserData extends StatelessWidget {
           SizedBox(height: MySizes.spaceXs(context)),
           InfoRow(
             icon: HugeIcons.strokeRoundedMortarboard01,
-            text: 'Undergraduate student at Mansoura University',
+            text: user.levelOfEducation == EducationLevel.highSchool.serverValue
+                ? 'High School Student'
+                : user.levelOfEducation ==
+                      EducationLevel.underGraduate.serverValue
+                ? 'Bachelor\'s Degree at ${user.university}'
+                : user.levelOfEducation == EducationLevel.graduated.serverValue
+                ? 'Graduated From ${user.university}'
+                : 'Not specified',
           ),
           SizedBox(height: MySizes.spaceXs(context) * 0.5),
-          InfoRow(
-            icon: HugeIcons.strokeRoundedBriefcase06,
-            text: 'Junior Researcher',
-          ),
+          if (user.country != null && user.country!.isNotEmpty)
+            InfoRow(
+              icon: HugeIcons.strokeRoundedPinLocation02,
+              text: user.country!,
+            ),
           SizedBox(height: MySizes.spaceXs(context) * 0.5),
-          InfoRow(icon: HugeIcons.strokeRoundedPinLocation02, text: 'Egypt'),
-          SizedBox(height: MySizes.spaceXs(context) * 0.5),
-          InfoRow(
-            icon: HugeIcons.strokeRoundedMail01,
-            text: 'johndoe@gmail.com',
-          ),
+          InfoRow(icon: HugeIcons.strokeRoundedMail01, text: user.email),
           SizedBox(height: MySizes.spaceXs(context)),
           SizedBox(
             height: MySizes.spaceXl(context),
             child: ListView.separated(
               scrollDirection: Axis.horizontal,
               itemBuilder: (BuildContext context, int index) {
-                return TagChip(label: 'Physics');
+                return TagChip(label: user.interests[index].name);
               },
               separatorBuilder: (BuildContext context, int index) {
                 return SizedBox(width: MySizes.spaceXs(context) * .5);
               },
-              itemCount: 10,
+              itemCount: user.interests.isEmpty ? 0 : user.interests.length,
             ),
           ),
         ],

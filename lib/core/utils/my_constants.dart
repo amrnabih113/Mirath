@@ -59,6 +59,8 @@ class MyConstants {
   static const String getMe = "api/v1/users/me";
   // get
   static const String getUserProfileHeader = "api/v1/users/{id}/profile";
+  // patch
+  static const String updateProfile = "api/v1/users/profile";
   // post
   static const String followUser = "api/v1/users/{id}/follow";
   // delete

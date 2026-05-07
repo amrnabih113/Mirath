@@ -1409,14 +1409,24 @@ class S {
     );
   }
 
-  /// `Username`
+  /// `Edit Profile`
   String get username_label {
-    return Intl.message('Username', name: 'username_label', desc: '', args: []);
+    return Intl.message(
+      'Edit Profile',
+      name: 'username_label',
+      desc: '',
+      args: [],
+    );
   }
 
-  /// `Name`
+  /// `Full Name`
   String get name_field_label {
-    return Intl.message('Name', name: 'name_field_label', desc: '', args: []);
+    return Intl.message(
+      'Full Name',
+      name: 'name_field_label',
+      desc: '',
+      args: [],
+    );
   }
 
   /// `Bio`
@@ -1424,10 +1434,10 @@ class S {
     return Intl.message('Bio', name: 'bio_field_label', desc: '', args: []);
   }
 
-  /// `Level of education`
+  /// `Level of Education`
   String get education_level_label {
     return Intl.message(
-      'Level of education',
+      'Level of Education',
       name: 'education_level_label',
       desc: '',
       args: [],
@@ -1444,16 +1454,31 @@ class S {
     );
   }
 
-  /// `uni`
+  /// `Enter your university name`
   String get university_hint {
-    return Intl.message('uni', name: 'university_hint', desc: '', args: []);
+    return Intl.message(
+      'Enter your university name',
+      name: 'university_hint',
+      desc: '',
+      args: [],
+    );
   }
 
-  /// `Current position`
+  /// `Current Position`
   String get position_label {
     return Intl.message(
-      'Current position',
+      'Current Position',
       name: 'position_label',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `e.g. Senior Researcher, PhD Student`
+  String get position_hint {
+    return Intl.message(
+      'e.g. Senior Researcher, PhD Student',
+      name: 'position_hint',
       desc: '',
       args: [],
     );
@@ -1464,9 +1489,14 @@ class S {
     return Intl.message('Country', name: 'country_label', desc: '', args: []);
   }
 
-  /// `Egypt`
+  /// `Where are you based?`
   String get country_hint {
-    return Intl.message('Egypt', name: 'country_hint', desc: '', args: []);
+    return Intl.message(
+      'Where are you based?',
+      name: 'country_hint',
+      desc: '',
+      args: [],
+    );
   }
 
   /// `Edit`
@@ -2114,10 +2144,10 @@ class S {
     );
   }
 
-  /// `Lorem ipsum dolor sit amet,`
+  /// `Add a bio (optional)`
   String get bio_hint {
     return Intl.message(
-      'Lorem ipsum dolor sit amet,',
+      'Add a bio (optional)',
       name: 'bio_hint',
       desc: '',
       args: [],

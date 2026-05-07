@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hugeicons/hugeicons.dart';
 import 'package:mirath/core/utils/my_colors.dart';
 import 'package:mirath/core/utils/my_sizes.dart';
+import 'package:mirath/features/profile/presentation/cubit/profile_cubit.dart';
 import 'package:mirath/features/profile/presentation/widgets/user_data.dart';
 import 'package:mirath/features/profile/presentation/widgets/user_tabs.dart';
+import 'package:mirath/features/users/domain/entities/user.dart';
 import 'package:mirath/generated/l10n.dart';
 
 class ProfileScreen extends StatelessWidget {
@@ -38,43 +41,79 @@ class ProfileScreen extends StatelessWidget {
             ),
           ],
         ),
-        body: Center(
-          child: LayoutBuilder(
-            builder: (context, constraints) {
-              return ConstrainedBox(
-                constraints: const BoxConstraints(maxWidth: 850),
-                child: NestedScrollView(
-                  headerSliverBuilder:
-                      (BuildContext context, bool innerBoxIsScrolled) {
-                        return [
-                          SliverToBoxAdapter(
-                            child: UserData(
-                              label: S.of(context).edit_profile,
-                              color: MyColors.primaryShade50,
-                              labelColor: MyColors.primaryShade900,
-                            ),
-                          ),
-                          SliverPersistentHeader(
-                            pinned: true,
-                            delegate: _TabBarDelegate(
-                              TabBar(
-                                indicatorColor: MyColors.primaryShade900,
-                                labelColor: Colors.black,
-                                unselectedLabelColor: Colors.grey,
-                                tabs: [
-                                  Tab(text: S.of(context).reading_lists),
-                                  Tab(text: S.of(context).discussions),
-                                ],
+        body: BlocBuilder<ProfileCubit, ProfileState>(
+          builder: (context, state) {
+            if (state is ProfileLoading || state is ProfileInitial) {
+              return const Center(child: CircularProgressIndicator());
+            }
+
+            if (state is ProfileFailure) {
+              return Center(child: Text(state.message));
+            }
+
+            User user;
+
+            if (state is ProfileLoadSuccess) {
+              user = state.user;
+            } else if (state is ProfileUpdateSuccess) {
+              user = state.user;
+            } else {
+              return const SizedBox();
+            }
+
+            return Center(
+              child: LayoutBuilder(
+                builder: (context, constraints) {
+                  return ConstrainedBox(
+                    constraints: const BoxConstraints(maxWidth: 850),
+                    child: NestedScrollView(
+                      headerSliverBuilder:
+                          (BuildContext context, bool innerBoxIsScrolled) {
+                            return [
+                              SliverToBoxAdapter(
+                                child: UserData(
+                                  user: user,
+                                  actionLabel: S.of(context).edit_profile,
+                                  color: MyColors.primaryShade50,
+                                  labelColor: MyColors.primaryShade900,
+                                  onActionTap: () {
+                                    context.push('/edit_profile_screen');
+                                  },
+                                  onFollowersTap: () {
+                                    context.push(
+                                      '/follower_following_screen',
+                                      extra: {
+                                        'userId': user.id,
+                                        'username': user.username,
+                                      },
+                                    );
+                                  },
+                                ),
                               ),
-                            ),
-                          ),
-                        ];
-                      },
-                  body: UserTabs(),
-                ),
-              );
-            },
-          ),
+
+                              SliverPersistentHeader(
+                                pinned: true,
+                                delegate: _TabBarDelegate(
+                                  TabBar(
+                                    indicatorColor: MyColors.primaryShade900,
+                                    labelColor: Colors.black,
+                                    unselectedLabelColor: Colors.grey,
+                                    tabs: [
+                                      Tab(text: S.of(context).reading_lists),
+                                      Tab(text: S.of(context).discussions),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                            ];
+                          },
+                      body: UserTabs(userId: user.id),
+                    ),
+                  );
+                },
+              ),
+            );
+          },
         ),
       ),
     );

@@ -58,6 +58,8 @@ import 'package:mirath/features/reading_lists/presentation/cubit/reading_list_cu
 import 'package:mirath/features/reading_lists/data/data_sources/reading_list_remote_data_source.dart';
 import 'package:mirath/features/reading_lists/data/data_sources/reading_list_remote_data_source_impl.dart';
 import 'package:mirath/features/reading_lists/data/repositories/reading_list_repository_impl.dart';
+import 'package:mirath/features/users/domain/usecases/update_profile_usecase.dart';
+import 'package:mirath/features/profile/presentation/cubit/profile_cubit.dart';
 import 'package:mirath/features/reading_lists/domain/repositories/reading_list_repository.dart';
 import 'package:mirath/features/reading_lists/domain/usecases/add_paper_to_list_usecase.dart';
 import 'package:mirath/features/reading_lists/domain/usecases/create_reading_list_usecase.dart';
@@ -119,10 +121,13 @@ import '../features/users/data/data_sources/users_remote_data_source_impl.dart';
 import '../features/users/data/repositories/users_repository_impl.dart';
 import '../features/users/domain/repositories/users_repository.dart';
 import '../features/users/domain/usecases/follow_user_usecase.dart';
+import '../features/users/domain/usecases/get_followers_usecase.dart';
+import '../features/users/domain/usecases/get_following_usecase.dart';
 import '../features/users/domain/usecases/get_current_user_usecase.dart';
 import '../features/users/domain/usecases/get_user_profile_header_usecase.dart';
 import '../features/users/domain/usecases/setup_profile_usecase.dart';
 import '../features/users/domain/usecases/unfollow_user_usecase.dart';
+import '../features/users/presentation/cubit/profile_header_cubit.dart';
 import '../features/users/presentation/cubit/set_up_profile_cubit.dart';
 
 final sl = GetIt.instance;
@@ -355,18 +360,37 @@ class DI {
 
     /// Users Repository ///
     sl.registerLazySingleton<UsersRepository>(
-      () => UsersRepositoryImpl(remoteDataSource: sl(), networkManager: sl()),
+      () => UsersRepositoryImpl(
+        remoteDataSource: sl(),
+        networkManager: sl(),
+        userCacheService: sl(),
+        localStorageService: sl(),
+      ),
     );
 
     /// Users UseCases ///
     sl.registerLazySingleton(() => SetupProfileUsecase(sl()));
     sl.registerLazySingleton(() => GetCurrentUserUsecase(sl()));
+    sl.registerLazySingleton(() => UpdateProfileUsecase(sl()));
     sl.registerLazySingleton(() => GetUserProfileHeaderUsecase(sl()));
     sl.registerLazySingleton(() => FollowUserUsecase(sl()));
     sl.registerLazySingleton(() => UnfollowUserUsecase(sl()));
+    sl.registerLazySingleton(() => GetFollowersUsecase(usersRepository: sl()));
+    sl.registerLazySingleton(() => GetFollowingUsecase(usersRepository: sl()));
 
     /// Users Cubits ///
     sl.registerFactory(() => SetUpProfileCubit(imagePickerService: sl()));
+    sl.registerLazySingleton(
+      () =>
+          ProfileCubit(getCurrentUserUsecase: sl(), updateProfileUsecase: sl()),
+    );
+    sl.registerFactory(
+      () => ProfileHeaderCubit(
+        getUserProfileHeaderUsecase: sl(),
+        followUserUsecase: sl(),
+        unfollowUserUsecase: sl(),
+      ),
+    );
 
     //================ Interests ========================
 
