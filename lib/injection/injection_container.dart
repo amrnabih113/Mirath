@@ -447,6 +447,7 @@ class DI {
         getRecentPapersUseCase: sl(),
         getRecommendationsUseCase: sl(),
         getCurrentUserUsecase: sl(),
+        getAllInterestsUsecase: sl(),
         savePaperUseCase: sl(),
         unsavePaperUseCase: sl(),
       ),

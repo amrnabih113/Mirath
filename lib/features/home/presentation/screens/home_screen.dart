@@ -91,10 +91,39 @@ class _HomeScreenState extends State<HomeScreen> {
                 SizedBox(height: MySizes.spaceLg(context)),
                 SectionTitle(
                   title: S.of(context).recently_published,
-                  onTap: () => context.push("/recentely-published"),
+                  onTap: () {
+                    final cubit = context.read<HomeCubit>();
+                    final state = cubit.state;
+                    if (state is HomePapersLoaded) {
+                      context.push(
+                        "/recentely-published",
+                        extra: state.selectedCategory,
+                      );
+                    } else {
+                      context.push("/recentely-published");
+                    }
+                  },
                 ),
                 SizedBox(height: MySizes.spaceMd(context)),
-                const CategoryItemsList(),
+                BlocBuilder<HomeCubit, HomeState>(
+                  builder: (context, state) {
+                    if (state is HomePapersLoaded) {
+                      return CategoryItemsList(
+                        interests: state.interests,
+                        selectedInterest: state.selectedCategory,
+                        maxItems: 10,
+
+                        onInterestChanged: (interestName) {
+                          context.push(
+                            "/recentely-published",
+                            extra: interestName,
+                          );
+                        },
+                      );
+                    }
+                    return const CategoryItemsList();
+                  },
+                ),
                 SizedBox(height: MySizes.spaceLg(context) * 1.5),
                 SectionTitle(
                   title: S.of(context).you_might_also_like,

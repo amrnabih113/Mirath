@@ -19,8 +19,7 @@ class HomeRepositoryImpl implements HomeRepository {
 
   @override
   Future<Either<Failure, List<PaperEntity>>> getRecentPapers({
-    String? category,
-    int page = 1,
+    String? category,    int page = 1,
     int limit = 10,
   }) async {
     if (!await networkManager.isConnected) {
