@@ -26,7 +26,6 @@ class ProfileScreen extends StatelessWidget {
           actions: [
             IconButton(
               icon: HugeIcon(
-             
                 icon: HugeIcons.strokeRoundedLogout02,
                 size: MySizes.iconMedium(context),
                 color: Colors.black,

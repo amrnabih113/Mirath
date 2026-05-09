@@ -11,7 +11,7 @@ import 'package:mirath/core/utils/my_logger.dart';
 class SharingService {
   // Universal link base - works with proper deep link configuration
   // For now using standard format that can be intercepted by the app
-  static const String webBaseUrl = 'https://mirath.app';
+  static const String webBaseUrl = 'https://mirath-dev.web.app';
 
   /// Share a paper with a shareable link
   static Future<void> sharePaper(PaperEntity paper) async {

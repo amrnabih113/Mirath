@@ -29,7 +29,7 @@
                 <action android:name="android.intent.action.VIEW" />
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
-                <data android:scheme="https" android:host="www.mirath.app" />
+                <data android:scheme="https" android:host="mirath-dev.web.app" />
             </intent-filter>
         </activity>
         <!-- UCrop Activity for image cropping -->

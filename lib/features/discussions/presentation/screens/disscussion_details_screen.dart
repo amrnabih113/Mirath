@@ -159,7 +159,7 @@ class _DisscussionDetailsScreenState extends State<DisscussionDetailsScreen> {
             padding: EdgeInsets.only(right: MySizes.spaceSm(context)),
             child: IconButton(
               onPressed: () {
-                    _showDiscussionMenu(context, discussion);
+                _showDiscussionMenu(context, discussion);
               },
               icon: HugeIcon(
                 icon: HugeIcons.strokeRoundedMoreHorizontal,
@@ -329,9 +329,7 @@ class _DisscussionDetailsScreenState extends State<DisscussionDetailsScreen> {
           mainAxisSize: MainAxisSize.min,
           children: [
             ListTile(
-              leading: const HugeIcon(
-                icon: HugeIcons.strokeRoundedShare08,
-              ),
+              leading: const HugeIcon(icon: HugeIcons.strokeRoundedShare08),
               title: const Text('Share Discussion'),
               onTap: () {
                 Navigator.pop(context);
