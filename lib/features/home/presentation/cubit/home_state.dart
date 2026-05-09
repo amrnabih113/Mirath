@@ -1,6 +1,7 @@
 import 'package:equatable/equatable.dart';
 import '../../domain/entities/paper_entity.dart';
-import '../../../users/domain/entities/user.dart';
+import '../../../users/domain/entities/user.dart' hide Interest;
+import '../../../interests/domain/entities/interest.dart';
 
 abstract class HomeState extends Equatable {
   const HomeState();
@@ -85,6 +86,8 @@ class HomeRecommendationsLoaded extends HomeState {
 class HomePapersLoaded extends HomeState {
   final List<PaperEntity> recentPapers;
   final List<PaperEntity> recommendations;
+  final List<Interest> interests;
+  final String? selectedCategory;
   final bool isLoadingMoreRecent;
   final bool isLoadingMoreRecommendations;
   final bool hasReachedMaxRecent;
@@ -93,7 +96,8 @@ class HomePapersLoaded extends HomeState {
   const HomePapersLoaded({
     required this.recentPapers,
     required this.recommendations,
-   
+    this.interests = const [],
+    this.selectedCategory,
     this.isLoadingMoreRecent = false,
     this.isLoadingMoreRecommendations = false,
     this.hasReachedMaxRecent = false,
@@ -103,6 +107,8 @@ class HomePapersLoaded extends HomeState {
   HomePapersLoaded copyWith({
     List<PaperEntity>? recentPapers,
     List<PaperEntity>? recommendations,
+    List<Interest>? interests,
+    String? selectedCategory,
     User? currentUser,
     bool? isLoadingMoreRecent,
     bool? isLoadingMoreRecommendations,
@@ -112,6 +118,8 @@ class HomePapersLoaded extends HomeState {
     return HomePapersLoaded(
       recentPapers: recentPapers ?? this.recentPapers,
       recommendations: recommendations ?? this.recommendations,
+      interests: interests ?? this.interests,
+      selectedCategory: selectedCategory ?? this.selectedCategory,
       isLoadingMoreRecent: isLoadingMoreRecent ?? this.isLoadingMoreRecent,
       isLoadingMoreRecommendations:
           isLoadingMoreRecommendations ?? this.isLoadingMoreRecommendations,
@@ -125,6 +133,8 @@ class HomePapersLoaded extends HomeState {
   List<Object?> get props => [
     recentPapers,
     recommendations,
+    interests,
+    selectedCategory,
     isLoadingMoreRecent,
     isLoadingMoreRecommendations,
     hasReachedMaxRecent,
@@ -144,6 +154,8 @@ class HomeError extends HomeState {
 class HomePapersUpdated extends HomeState {
   final List<PaperEntity> recentPapers;
   final List<PaperEntity> recommendations;
+  final List<Interest> interests;
+  final String? selectedCategory;
   final bool isLoadingMoreRecent;
   final bool isLoadingMoreRecommendations;
   final bool hasReachedMaxRecent;
@@ -152,25 +164,30 @@ class HomePapersUpdated extends HomeState {
   const HomePapersUpdated({
     required this.recentPapers,
     required this.recommendations,
-   
+    this.interests = const [],
+    this.selectedCategory,
     this.isLoadingMoreRecent = false,
     this.isLoadingMoreRecommendations = false,
     this.hasReachedMaxRecent = false,
     this.hasReachedMaxRecommendations = false,
   });
 
-  HomePapersLoaded copyWith({
+  HomePapersUpdated copyWith({
     List<PaperEntity>? recentPapers,
     List<PaperEntity>? recommendations,
+    List<Interest>? interests,
+    String? selectedCategory,
     User? currentUser,
     bool? isLoadingMoreRecent,
     bool? isLoadingMoreRecommendations,
     bool? hasReachedMaxRecent,
     bool? hasReachedMaxRecommendations,
   }) {
-    return HomePapersLoaded(
+    return HomePapersUpdated(
       recentPapers: recentPapers ?? this.recentPapers,
       recommendations: recommendations ?? this.recommendations,
+      interests: interests ?? this.interests,
+      selectedCategory: selectedCategory ?? this.selectedCategory,
       isLoadingMoreRecent: isLoadingMoreRecent ?? this.isLoadingMoreRecent,
       isLoadingMoreRecommendations:
           isLoadingMoreRecommendations ?? this.isLoadingMoreRecommendations,
@@ -184,6 +201,8 @@ class HomePapersUpdated extends HomeState {
   List<Object?> get props => [
     recentPapers,
     recommendations,
+    interests,
+    selectedCategory,
     isLoadingMoreRecent,
     isLoadingMoreRecommendations,
     hasReachedMaxRecent,

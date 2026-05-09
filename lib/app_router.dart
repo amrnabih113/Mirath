@@ -393,7 +393,9 @@ final appRouter = GoRouter(
       pageBuilder: (context, state) => NoTransitionPage(
         child: BlocProvider.value(
           value: context.read<HomeCubit>(),
-          child: const RecentelyPublishedScreen(),
+          child: RecentelyPublishedScreen(
+            selectedCategory: state.extra as String?,
+          ),
         ),
       ),
     ),

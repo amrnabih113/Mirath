@@ -12,6 +12,7 @@ import '../../../common/widgets/section_title.dart';
 import '../widgets/category_items_list.dart';
 import '../widgets/home_search_bar.dart';
 import '../widgets/home_shimmer_loading.dart';
+import '../widgets/interests_shimmer_loading.dart';
 import '../widgets/paper_card.dart';
 import '../widgets/welcome_header.dart';
 
@@ -92,10 +93,39 @@ class _HomeScreenState extends State<HomeScreen> {
                 SizedBox(height: MySizes.spaceLg(context)),
                 SectionTitle(
                   title: S.of(context).recently_published,
-                  onTap: () => context.push(RouteNames.recentlyPublished),
+                  onTap: () {
+                    final cubit = context.read<HomeCubit>();
+                    final state = cubit.state;
+                    if (state is HomePapersLoaded) {
+                      context.push(
+                        RouteNames.recentlyPublished,
+                        extra: state.selectedCategory,
+                      );
+                    } else {
+                      context.push(RouteNames.recentlyPublished);
+                    }
+                  },
                 ),
                 SizedBox(height: MySizes.spaceMd(context)),
-                const CategoryItemsList(),
+                BlocBuilder<HomeCubit, HomeState>(
+                  builder: (context, state) {
+                    if (state is HomePapersLoaded) {
+                      return CategoryItemsList(
+                        interests: state.interests,
+                        selectedInterest: state.selectedCategory,
+                        maxItems: 10,
+
+                        onInterestChanged: (interestName) {
+                          context.push(
+                            "/recentely-published",
+                            extra: interestName,
+                          );
+                        },
+                      );
+                    }
+                    return const InterestsShimmerLoading();
+                  },
+                ),
                 SizedBox(height: MySizes.spaceLg(context) * 1.5),
                 SectionTitle(
                   title: S.of(context).you_might_also_like,

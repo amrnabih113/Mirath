@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:hugeicons/hugeicons.dart';
 import 'package:intl/intl.dart';
 import 'package:mirath/core/utils/my_logger.dart';
+import 'package:mirath/core/services/sharing_service.dart';
 
 import '../../../../core/helpers/responsive_helper.dart';
 import '../../../../core/utils/my_colors.dart';
@@ -52,6 +54,24 @@ class _ReadingListDetailsScreenState extends State<ReadingListDetailsScreen> {
             leadingWidth: ResponsiveHelper.responsiveValue(context, 50),
             leading: const MyBackIcon(),
             titleSpacing: 0,
+            actions: [
+              if (state is ReadingListDetailsLoaded)
+                Padding(
+                  padding: EdgeInsets.only(right: MySizes.spaceSm(context)),
+                  child: IconButton(
+                    onPressed: () {
+                      //   _showReadingListMenu(context, state.readingList);
+                    },
+                    icon: HugeIcon(
+                      icon: HugeIcons.strokeRoundedMoreHorizontal,
+                      size: MySizes.iconMedium(context),
+                      strokeWidth: ResponsiveHelper.responsiveValue(context, 2),
+                    ),
+                    padding: EdgeInsets.zero,
+                    constraints: const BoxConstraints(),
+                  ),
+                ),
+            ],
           ),
           body: Builder(
             builder: (context) {

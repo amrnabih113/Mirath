@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'package:hugeicons/hugeicons.dart';
 import 'package:mirath/core/constants/route_names.dart';
 
 import '../../../../core/helpers/responsive_helper.dart';
+import '../../../../core/utils/my_colors.dart';
 import '../../../../core/utils/my_extenstions.dart';
 import '../../../../core/utils/my_sizes.dart';
 import '../../../../generated/l10n.dart';
@@ -12,12 +14,14 @@ import '../../domain/entities/paper_entity.dart';
 import '../cubit/home_cubit.dart';
 import '../cubit/home_state.dart';
 import '../widgets/category_items_list.dart';
-import '../widgets/home_search_bar.dart';
 import '../widgets/home_shimmer_loading.dart';
+import '../widgets/interests_shimmer_loading.dart';
 import '../widgets/paper_card.dart';
 
 class RecentelyPublishedScreen extends StatefulWidget {
-  const RecentelyPublishedScreen({super.key});
+  final String? selectedCategory;
+
+  const RecentelyPublishedScreen({super.key, this.selectedCategory});
 
   @override
   State<RecentelyPublishedScreen> createState() =>
@@ -26,17 +30,28 @@ class RecentelyPublishedScreen extends StatefulWidget {
 
 class _RecentelyPublishedScreenState extends State<RecentelyPublishedScreen> {
   final scrollController = ScrollController();
+  final searchController = TextEditingController();
+  String searchQuery = '';
 
   @override
   void initState() {
     super.initState();
     scrollController.addListener(_onScroll);
+    searchController.addListener(_onSearchChanged);
 
-    // Load recent papers if not already loaded
+    // Load recent papers with selected category (interest name) if provided
     final cubit = context.read<HomeCubit>();
     if (cubit.state is! HomeRecentPapersLoaded &&
-        cubit.state is! HomePapersLoaded) {
-      cubit.getRecentPapers();
+        cubit.state is! HomePapersLoaded &&
+        cubit.state is! HomePapersUpdated) {
+      if (widget.selectedCategory != null) {
+        cubit.getRecentPapers(category: widget.selectedCategory);
+      } else {
+        cubit.getRecentPapers();
+      }
+    } else if (widget.selectedCategory != null) {
+      // If papers already loaded, filter by category
+      cubit.filterPapersByInterest(widget.selectedCategory!);
     }
   }
 
@@ -45,13 +60,32 @@ class _RecentelyPublishedScreenState extends State<RecentelyPublishedScreen> {
     // Check if scrolled near the bottom (within 300 pixels)
     if (position.pixels >= position.maxScrollExtent - 300) {
       final cubit = context.read<HomeCubit>();
-      cubit.loadMoreRecentPapers();
+      cubit.loadMoreRecentPapers(category: widget.selectedCategory);
+    }
+  }
+
+  void _onSearchChanged() {
+    setState(() {
+      searchQuery = searchController.text.toLowerCase();
+    });
+  }
+
+  @override
+  void didUpdateWidget(RecentelyPublishedScreen oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    // If the selectedCategory changed, update the filter
+    if (oldWidget.selectedCategory != widget.selectedCategory &&
+        widget.selectedCategory != null) {
+      context.read<HomeCubit>().filterPapersByInterest(
+        widget.selectedCategory!,
+      );
     }
   }
 
   @override
   void dispose() {
     scrollController.dispose();
+    searchController.dispose();
     super.dispose();
   }
 
@@ -91,9 +125,128 @@ class _RecentelyPublishedScreenState extends State<RecentelyPublishedScreen> {
                 padding: MySizes.paddingMd(context),
                 child: Column(
                   children: [
-                    const HomeSearchBar(),
+                    // Custom search bar for filtering interests
+                    Container(
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(
+                          MySizes.borderRadiusMd(context),
+                        ),
+                        boxShadow: [
+                          BoxShadow(
+                            color: MyColors.primaryShade900.withValues(
+                              alpha: 0.1,
+                            ),
+                            blurRadius: 12,
+                            offset: const Offset(0, 4),
+                            spreadRadius: 0,
+                          ),
+                        ],
+                      ),
+                      child: TextField(
+                        controller: searchController,
+                        cursorColor: MyColors.primaryShade500,
+                        decoration: InputDecoration(
+                          contentPadding: EdgeInsets.symmetric(
+                            vertical: MySizes.spaceSm(context),
+                            horizontal: MySizes.spaceMd(context),
+                          ),
+                          prefixIcon: Padding(
+                            padding: EdgeInsets.only(
+                              left: MySizes.spaceSm(context),
+                              right: MySizes.spaceXs(context),
+                            ),
+                            child: HugeIcon(
+                              icon: HugeIcons.strokeRoundedSearch01,
+                            ),
+                          ),
+                          suffixIcon: searchQuery.isNotEmpty
+                              ? IconButton(
+                                  onPressed: () {
+                                    searchController.clear();
+                                    setState(() {
+                                      searchQuery = '';
+                                    });
+                                  },
+                                  icon: const Icon(Icons.close),
+                                )
+                              : null,
+                          hintText: 'Search interests...',
+                          hintStyle: context.bodySmall,
+                          enabledBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(
+                              MySizes.borderRadiusMd(context),
+                            ),
+                            borderSide: BorderSide(
+                              color: MyColors.primaryShade50,
+                              width: 1,
+                            ),
+                          ),
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(
+                              MySizes.borderRadiusMd(context),
+                            ),
+                            borderSide: BorderSide(
+                              color: MyColors.primaryShade50,
+                              width: 1,
+                            ),
+                          ),
+                          focusedBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(
+                              MySizes.borderRadiusMd(context),
+                            ),
+                            borderSide: BorderSide(
+                              color: MyColors.primaryShade500,
+                              width: 1,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
                     SizedBox(height: MySizes.spaceSm(context)),
-                    const CategoryItemsList(selectedCategory: 'Science'),
+                    BlocBuilder<HomeCubit, HomeState>(
+                      builder: (context, state) {
+                        if (state is HomePapersLoaded) {
+                          // Filter interests based on search query
+                          final filteredInterests = state.interests
+                              .where(
+                                (interest) => interest.name
+                                    .toLowerCase()
+                                    .contains(searchQuery),
+                              )
+                              .toList();
+
+                          return CategoryItemsList(
+                            interests: filteredInterests,
+                            selectedInterest: state.selectedCategory,
+                            onInterestChanged: (interestName) {
+                              context.read<HomeCubit>().filterPapersByInterest(
+                                interestName,
+                              );
+                            },
+                          );
+                        } else if (state is HomePapersUpdated) {
+                          // Filter interests based on search query
+                          final filteredInterests = state.interests
+                              .where(
+                                (interest) => interest.name
+                                    .toLowerCase()
+                                    .contains(searchQuery),
+                              )
+                              .toList();
+
+                          return CategoryItemsList(
+                            interests: filteredInterests,
+                            selectedInterest: state.selectedCategory,
+                            onInterestChanged: (interestName) {
+                              context.read<HomeCubit>().filterPapersByInterest(
+                                interestName,
+                              );
+                            },
+                          );
+                        }
+                        return const InterestsShimmerLoading();
+                      },
+                    ),
                     SizedBox(height: MySizes.spaceSm(context)),
                     Expanded(
                       child: BlocBuilder<HomeCubit, HomeState>(

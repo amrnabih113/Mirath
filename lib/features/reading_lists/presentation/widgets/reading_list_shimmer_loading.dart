@@ -59,19 +59,23 @@ class _ReadingListCardShimmer extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Container(
-                  width: 120,
-                  height: 14,
+                  width: ResponsiveHelper.responsiveValue(context, 120),
+                  height: ResponsiveHelper.responsiveValue(context, 14),
                   decoration: BoxDecoration(
                     color: MyColors.white,
-                    borderRadius: BorderRadius.circular(4),
+                    borderRadius: BorderRadius.circular(
+                      ResponsiveHelper.responsiveValue(context, 4),
+                    ),
                   ),
                 ),
                 Container(
-                  width: 28,
-                  height: 28,
+                  width: ResponsiveHelper.responsiveValue(context, 28),
+                  height: ResponsiveHelper.responsiveValue(context, 28),
                   decoration: BoxDecoration(
                     color: MyColors.white,
-                    borderRadius: BorderRadius.circular(8),
+                    borderRadius: BorderRadius.circular(
+                      ResponsiveHelper.responsiveValue(context, 8),
+                    ),
                   ),
                 ),
               ],
@@ -79,19 +83,23 @@ class _ReadingListCardShimmer extends StatelessWidget {
             SizedBox(height: MySizes.spaceXs(context) * 0.5),
             Container(
               width: double.infinity,
-              height: 20,
+              height: ResponsiveHelper.responsiveValue(context, 20),
               decoration: BoxDecoration(
                 color: MyColors.white,
-                borderRadius: BorderRadius.circular(4),
+                borderRadius: BorderRadius.circular(
+                  ResponsiveHelper.responsiveValue(context, 4),
+                ),
               ),
             ),
             SizedBox(height: MySizes.spaceSm(context) * 0.75),
             Container(
-              width: 180,
-              height: 12,
+              width: ResponsiveHelper.responsiveValue(context, 180),
+              height: ResponsiveHelper.responsiveValue(context, 12),
               decoration: BoxDecoration(
                 color: MyColors.white,
-                borderRadius: BorderRadius.circular(4),
+                borderRadius: BorderRadius.circular(
+                  ResponsiveHelper.responsiveValue(context, 4),
+                ),
               ),
             ),
             SizedBox(height: MySizes.spaceSm(context)),
@@ -102,39 +110,47 @@ class _ReadingListCardShimmer extends StatelessWidget {
             ),
             Container(
               width: double.infinity,
-              height: 14,
+              height: ResponsiveHelper.responsiveValue(context, 14),
               decoration: BoxDecoration(
                 color: MyColors.white,
-                borderRadius: BorderRadius.circular(4),
+                borderRadius: BorderRadius.circular(
+                  ResponsiveHelper.responsiveValue(context, 4),
+                ),
               ),
             ),
             SizedBox(height: MySizes.spaceSm(context)),
             Row(
               children: [
                 Container(
-                  width: 80,
+                  width: ResponsiveHelper.responsiveValue(context, 80),
                   height: ResponsiveHelper.responsiveValue(context, 24),
                   decoration: BoxDecoration(
                     color: MyColors.white,
-                    borderRadius: BorderRadius.circular(12),
+                    borderRadius: BorderRadius.circular(
+                      ResponsiveHelper.responsiveValue(context, 12),
+                    ),
                   ),
                 ),
                 SizedBox(width: MySizes.spaceXs(context)),
                 Container(
-                  width: 60,
+                  width: ResponsiveHelper.responsiveValue(context, 60),
                   height: ResponsiveHelper.responsiveValue(context, 24),
                   decoration: BoxDecoration(
                     color: MyColors.white,
-                    borderRadius: BorderRadius.circular(12),
+                    borderRadius: BorderRadius.circular(
+                      ResponsiveHelper.responsiveValue(context, 12),
+                    ),
                   ),
                 ),
                 const Spacer(),
                 Container(
-                  width: 28,
-                  height: 28,
+                  width: ResponsiveHelper.responsiveValue(context, 28),
+                  height: ResponsiveHelper.responsiveValue(context, 28),
                   decoration: BoxDecoration(
                     color: MyColors.white,
-                    borderRadius: BorderRadius.circular(8),
+                    borderRadius: BorderRadius.circular(
+                      ResponsiveHelper.responsiveValue(context, 8),
+                    ),
                   ),
                 ),
               ],

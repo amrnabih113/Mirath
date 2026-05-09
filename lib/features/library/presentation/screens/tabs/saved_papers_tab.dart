@@ -47,7 +47,15 @@ class SavedPapersTab extends StatelessWidget {
             }
 
             return ListView.separated(
-              padding: const EdgeInsets.all(8),
+              padding: EdgeInsets.only(
+                left: MySizes.spaceMd(context),
+                right: MySizes.spaceMd(context),
+                top: MySizes.spaceSm(context),
+                bottom:
+                    kBottomNavigationBarHeight +
+                    MySizes.spaceMd(context) +
+                    MediaQuery.of(context).padding.bottom,
+              ),
               physics: const AlwaysScrollableScrollPhysics(),
               itemCount: savedListsList.length,
               itemBuilder: (context, index) {
@@ -64,7 +72,7 @@ class SavedPapersTab extends StatelessWidget {
                 );
               },
               separatorBuilder: (context, index) =>
-                  SizedBox(height: MySizes.spaceXs(context) * 0.5),
+                  SizedBox(height: MySizes.spaceMd(context)),
             );
           }
 
