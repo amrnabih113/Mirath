@@ -99,7 +99,7 @@ class _PaperDiscussionsScreenState extends State<PaperDiscussionsScreen> {
                             ElevatedButton(
                               onPressed: () {
                                 context.push(
-                                  RouteNames.addDiscussionRoute(widget.paper.id),
+                                  RouteNames.addDiscussion,
                                   extra: widget.paper,
                                 );
                               },
@@ -124,7 +124,9 @@ class _PaperDiscussionsScreenState extends State<PaperDiscussionsScreen> {
                             discussion: discussion,
                             onTap: () {
                               context.push(
-                                RouteNames.discussionDetailsRoute(discussion.id),
+                                RouteNames.discussionDetailsRoute(
+                                  discussion.id,
+                                ),
                                 extra: discussion,
                               );
                             },

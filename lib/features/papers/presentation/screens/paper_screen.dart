@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hugeicons/hugeicons.dart';
+import 'package:mirath/core/constants/route_names.dart';
 import 'package:mirath/core/helpers/responsive_helper.dart';
 import 'package:mirath/core/utils/my_sizes.dart';
 import 'package:mirath/features/common/widgets/my_back_icon.dart';
@@ -120,7 +121,7 @@ class _PaperScreenState extends State<PaperScreen> {
   }
 
   void _onStartDiscussion() {
-    context.push(RouteNames.addDiscussionRoute(_currentPaper.id), extra: _currentPaper);
+    context.push(RouteNames.addDiscussion, extra: _currentPaper);
   }
 
   void _onViewDiscussions() {
