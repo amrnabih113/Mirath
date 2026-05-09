@@ -403,6 +403,7 @@ final appRouter = GoRouter(
       pageBuilder: (context, state) {
         final discussion = state.extra as Discussion?;
         return PageTransitions.smoothTransition(
+          key: state.pageKey,
           MultiBlocProvider(
             providers: [
               BlocProvider(create: (_) => sl<DiscussionDetailsCubit>()),
@@ -521,6 +522,7 @@ final appRouter = GoRouter(
         }
 
         return PageTransitions.smoothTransition(
+          key: state.pageKey,
           FollowerFollowingScreen(
             userId: userId,
             username: username,
@@ -543,6 +545,7 @@ final appRouter = GoRouter(
         }
 
         return PageTransitions.smoothTransition(
+          key: state.pageKey,
           BlocProvider(
             create: (_) => sl<ProfileHeaderCubit>()..getProfileHeader(userId),
             child: OtherUsersProfile(userId: userId),

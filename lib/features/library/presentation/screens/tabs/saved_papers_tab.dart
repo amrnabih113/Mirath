@@ -19,10 +19,7 @@ class SavedPapersTab extends StatelessWidget {
       child: BlocBuilder<ReadingListCubit, ReadingListState>(
         builder: (context, state) {
           if (state is ReadingListLoading) {
-            return SingleChildScrollView(
-              physics: const AlwaysScrollableScrollPhysics(),
-              child: ReadingListShimmerLoading(),
-            );
+            return const ReadingListShimmerLoading();
           }
 
           if (state is ReadingListsLoaded) {
