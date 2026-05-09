@@ -1,8 +1,7 @@
-import 'package:mirath/features/users/domain/entities/follows.dart';
+import '../../domain/entities/follows.dart';
 
 class FollowsModel extends Follows {
   FollowsModel({
-    required super.message,
     required super.id,
     required super.username,
     required super.fullname,
@@ -16,16 +15,27 @@ class FollowsModel extends Follows {
 
   factory FollowsModel.fromJson(Map<String, dynamic> json) {
     return FollowsModel(
-      message: json['message'],
-      id: json['data'][0]['id'],
-      username: json['data'][0]['username'],
-      fullname: json['data'][0]['fullname'],
-      photoUrl: json['data'][0]['photoUrl'],
-      bio: json['data'][0]['bio'],
-      role: json['data'][0]['role'],
-      status: json['data'][0]['status'],
-      isPremium: json['data'][0]['isPremium'],
-      isFollowing: json['data'][0]['isFollowing'],
+      id: (json['id'] ?? '').toString(),
+      username: (json['username'] ?? '').toString(),
+      fullname: (json['fullName'] ?? json['fullname'] ?? '').toString(),
+      photoUrl: (json['photoUrl'] ?? '').toString(),
+      bio: (json['bio'] ?? '').toString(),
+      role: (json['role'] ?? '').toString(),
+      status: (json['status'] ?? '').toString(),
+      isPremium: json['isPremium'] == true,
+      isFollowing: json['isFollowing'] == true,
     );
+  }
+
+  static List<FollowsModel> listFromResponse(Map<String, dynamic> json) {
+    final data = json['data'];
+    if (data is! List) {
+      return const [];
+    }
+
+    return data
+        .whereType<Map>()
+        .map((item) => FollowsModel.fromJson(Map<String, dynamic>.from(item)))
+        .toList();
   }
 }

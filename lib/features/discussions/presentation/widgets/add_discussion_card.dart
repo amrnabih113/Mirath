@@ -1,17 +1,41 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:mirath/core/services/local_storage_service.dart';
 import 'package:mirath/core/services/user_cache_service.dart';
 import 'package:mirath/core/utils/my_colors.dart';
+import 'package:mirath/core/utils/my_constants.dart';
 import 'package:mirath/core/utils/my_sizes.dart';
+import 'package:mirath/features/users/domain/entities/user.dart';
 import 'package:mirath/injection/injection_container.dart';
 import '../../../common/widgets/profile_avatar.dart';
 
 class AddDiscussionCard extends StatelessWidget {
   const AddDiscussionCard({super.key});
 
+  User? _getStoredUser() {
+    final userJson = sl<LocalStorageService>().getData(MyConstants.userDataKey);
+    if (userJson == null || userJson.isEmpty) {
+      return null;
+    }
+
+    try {
+      final decoded = jsonDecode(userJson);
+      if (decoded is Map<String, dynamic>) {
+        return User.fromJson(decoded);
+      }
+    } catch (_) {
+      return null;
+    }
+
+    return null;
+  }
+
   @override
   Widget build(BuildContext context) {
     final cachedUser = sl<UserCacheService>().getCachedUser();
+    final storedUser = _getStoredUser();
 
     return InkWell(
       onTap: () {
@@ -27,7 +51,10 @@ class AddDiscussionCard extends StatelessWidget {
         ),
         child: Row(
           children: [
-            ProfileAvatar(imageUrl: cachedUser?.photoURL, size: 45),
+            ProfileAvatar(
+              imageUrl: cachedUser?.photoURL ?? storedUser?.photoUrl,
+              size: 45,
+            ),
             SizedBox(width: MySizes.spaceSm(context)),
             Expanded(
               child: Column(

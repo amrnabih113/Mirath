@@ -11,6 +11,7 @@ import '../../../../core/services/secure_storage_service.dart';
 import '../../../../core/usecases/no_params.dart';
 import '../../../../core/utils/my_logger.dart';
 import '../../../users/domain/entities/profile_setup_data.dart';
+import '../../../users/domain/usecases/get_current_user_usecase.dart';
 import '../../../users/domain/usecases/setup_profile_usecase.dart';
 import '../../domain/entities/signin_data.dart';
 import '../../domain/entities/signup_data.dart';
@@ -44,6 +45,7 @@ class AuthCubit extends Cubit<AuthState> {
   final ResetPasswordUseCase resetPasswordUseCase;
   final IsVerifiedUseCase isVerifiedUseCase;
   final SetupProfileUsecase setUpProfileUseCase;
+  final GetCurrentUserUsecase getCurrentUserUsecase;
   final CheckSetupUseCase checkSetupUseCase;
   final LocalStorageService localStorage;
   final SecureStorageService secureStorage;
@@ -62,6 +64,7 @@ class AuthCubit extends Cubit<AuthState> {
     required this.resetPasswordUseCase,
     required this.isVerifiedUseCase,
     required this.setUpProfileUseCase,
+    required this.getCurrentUserUsecase,
     required this.checkSetupUseCase,
     required this.localStorage,
     required this.secureStorage,
@@ -80,6 +83,7 @@ class AuthCubit extends Cubit<AuthState> {
         state.copyWith(status: AuthStatus.error, message: failure.message),
       ),
       (_) async {
+        await _persistCurrentUser();
         // Check if user is verified after sign in
         final verifiedResult = await isVerifiedUseCase(const NoParams());
         verifiedResult.fold(
@@ -368,9 +372,22 @@ class AuthCubit extends Cubit<AuthState> {
     );
   }
 
+  Future<void> _persistCurrentUser() async {
+    final result = await getCurrentUserUsecase(const NoParams());
+    await result.fold(
+      (failure) async {
+        MyLogger.warning('[AuthCubit] Failed to load current user: ${failure.message}');
+      },
+      (user) async {
+        await localStorage.setData(MyConstants.userDataKey, jsonEncode(user.toJson()));
+      },
+    );
+  }
+
   // ===================== HELPER: CHECK VERIFICATION =====================
   /// Helper method to check verification status and emit appropriate state.
   Future<void> _checkVerificationAndEmit() async {
+    await _persistCurrentUser();
     final verifiedResult = await isVerifiedUseCase(const NoParams());
     verifiedResult.fold(
       _handleFailure,

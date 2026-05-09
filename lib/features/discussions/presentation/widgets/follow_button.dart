@@ -16,6 +16,7 @@ class FollowButton extends StatelessWidget {
     super.key,
     required this.userId,
     required this.isFollowed,
+    
     required this.isLoading,
     required this.onFollowTap,
     required this.onUnfollowTap,

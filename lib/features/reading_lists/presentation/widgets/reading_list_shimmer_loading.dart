@@ -12,7 +12,7 @@ class ReadingListShimmerLoading extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
+    return ListView.separated(
       padding: EdgeInsets.only(
         top: MySizes.spaceMd(context),
         bottom:
@@ -20,17 +20,14 @@ class ReadingListShimmerLoading extends StatelessWidget {
             MySizes.spaceMd(context) +
             MediaQuery.of(context).padding.bottom,
       ),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: List.generate(itemCount, (index) {
-          return Padding(
-            padding: EdgeInsets.only(
-              bottom: index == itemCount - 1 ? 0 : MySizes.spaceMd(context),
-            ),
-            child: const _ReadingListCardShimmer(),
-          );
-        }),
-      ),
+      physics: const AlwaysScrollableScrollPhysics(),
+      itemCount: itemCount,
+      itemBuilder: (context, index) {
+        return const _ReadingListCardShimmer();
+      },
+      separatorBuilder: (context, index) {
+        return SizedBox(height: MySizes.spaceMd(context));
+      },
     );
   }
 }

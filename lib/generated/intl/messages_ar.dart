@@ -22,23 +22,21 @@ class MessageLookup extends MessageLookupByLibrary {
 
   static String m0(action) => "${action} سيكون متاحاً قريباً.";
 
-  static String m1(language) => "تم اكتشافها كـ ${language}";
+  static String m1(size) => "${size}%";
 
-  static String m2(size) => "${size}%";
+  static String m2(highlightCount) => "التمييزات (${highlightCount})";
 
-  static String m3(highlightCount) => "التمييزات (${highlightCount})";
+  static String m3(noteCount) => "الملاحظات (${noteCount})";
 
-  static String m4(noteCount) => "الملاحظات (${noteCount})";
+  static String m4(days) => "تم تحديث الأوراق البحثية منذ ${days} يوم";
 
-  static String m5(days) => "تم تحديث الأوراق البحثية منذ ${days} يوم";
-
-  static String m6(papers, days) =>
+  static String m5(papers, days) =>
       "${papers} أوراق بحثية • تم التحديث منذ ${days} يوم";
 
-  static String m7(count) =>
+  static String m6(count) =>
       "الوسوم تساعد النقاش الخاص بك في الوصول إلى المزيد من الأشخاص (${count}/5)";
 
-  static String m8(discussionsCount) => "عرض المناقشات (${discussionsCount})";
+  static String m7(discussionsCount) => "عرض المناقشات (${discussionsCount})";
 
   final messages = _notInlinedMessages(_notInlinedMessages);
   static Map<String, Function> _notInlinedMessages(_) => <String, Function>{
@@ -105,10 +103,8 @@ class MessageLookup extends MessageLookupByLibrary {
       "كن أول من يبدأ نقاشاً حول هذه الورقة",
     ),
     "bio": MessageLookupByLibrary.simpleMessage("نبذة"),
-    "bio_field_label": MessageLookupByLibrary.simpleMessage("نبذة"),
-    "bio_hint": MessageLookupByLibrary.simpleMessage(
-      "لوريم إيبسوم دولور سيت أميت،",
-    ),
+    "bio_field_label": MessageLookupByLibrary.simpleMessage("نبذة عنك"),
+    "bio_hint": MessageLookupByLibrary.simpleMessage("أضف نبذة (اختياري)"),
     "blue_color": MessageLookupByLibrary.simpleMessage("أزرق"),
     "cancel": MessageLookupByLibrary.simpleMessage("إلغاء"),
     "cancel_button": MessageLookupByLibrary.simpleMessage("إلغاء"),
@@ -133,7 +129,7 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "copy_button": MessageLookupByLibrary.simpleMessage("نسخ"),
     "country": MessageLookupByLibrary.simpleMessage("البلد"),
-    "country_hint": MessageLookupByLibrary.simpleMessage("مصر"),
+    "country_hint": MessageLookupByLibrary.simpleMessage("أين تقع؟"),
     "country_label": MessageLookupByLibrary.simpleMessage("البلد"),
     "create": MessageLookupByLibrary.simpleMessage("إنشاء"),
     "create_account": MessageLookupByLibrary.simpleMessage("إنشاء حساب"),
@@ -158,7 +154,9 @@ class MessageLookup extends MessageLookupByLibrary {
     "description_optional": MessageLookupByLibrary.simpleMessage(
       "الوصف (اختياري)",
     ),
-    "detected_language_label": m1,
+    "detected_language_label": MessageLookupByLibrary.simpleMessage(
+      "تم اكتشافها كـ",
+    ),
     "discussion_body_hint": MessageLookupByLibrary.simpleMessage(
       "ماذا تريد أن تناقش؟",
     ),
@@ -315,7 +313,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "followers": MessageLookupByLibrary.simpleMessage("المتابعون"),
     "following": MessageLookupByLibrary.simpleMessage("متابع"),
     "font_size_button": MessageLookupByLibrary.simpleMessage("حجم الخط"),
-    "font_size_percentage": m2,
+    "font_size_percentage": m1,
     "font_size_title": MessageLookupByLibrary.simpleMessage("حجم الخط"),
     "forget_password": MessageLookupByLibrary.simpleMessage("نسيت كلمة المرور"),
     "forgot_password": MessageLookupByLibrary.simpleMessage(
@@ -334,7 +332,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "highlighted_text_label": MessageLookupByLibrary.simpleMessage(
       "النص المميز",
     ),
-    "highlights_button_label": m3,
+    "highlights_button_label": m2,
     "i_agree_to": MessageLookupByLibrary.simpleMessage("أوافق على "),
     "info_title": MessageLookupByLibrary.simpleMessage("معلومة"),
     "interests": MessageLookupByLibrary.simpleMessage("الاهتمامات"),
@@ -361,7 +359,7 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "mock_researcher_name": MessageLookupByLibrary.simpleMessage("باحث تجريبي"),
     "name": MessageLookupByLibrary.simpleMessage("الاسم"),
-    "name_field_label": MessageLookupByLibrary.simpleMessage("الاسم"),
+    "name_field_label": MessageLookupByLibrary.simpleMessage("الاسم الكامل"),
     "nav_community_label": MessageLookupByLibrary.simpleMessage("المجتمع"),
     "nav_home_label": MessageLookupByLibrary.simpleMessage("الرئيسية"),
     "nav_library_label": MessageLookupByLibrary.simpleMessage("المكتبة"),
@@ -390,7 +388,7 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "note_hint": MessageLookupByLibrary.simpleMessage("اكتب ملاحظتك..."),
     "note_label": MessageLookupByLibrary.simpleMessage("ملاحظة"),
-    "notes_button_label": m4,
+    "notes_button_label": m3,
     "notifications": MessageLookupByLibrary.simpleMessage("الإشعارات"),
     "onboarding_description_1": MessageLookupByLibrary.simpleMessage(
       "يمكنك البحث بالكلمات المفتاحية أو المؤلفين أو العناوين أو حتى لصق نص للعثور على الورقة البحثية التي تحتاجها.",
@@ -425,7 +423,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "paper_unsaved_message": MessageLookupByLibrary.simpleMessage(
       "تم إلغاء حفظ الورقة بنجاح",
     ),
-    "papers_updated_days_ago": m5,
+    "papers_updated_days_ago": m4,
     "password": MessageLookupByLibrary.simpleMessage("كلمة المرور"),
     "password_reset_code_sent": MessageLookupByLibrary.simpleMessage(
       "تم إرسال رمز إعادة تعيين كلمة المرور إلى بريدك الإلكتروني.",
@@ -448,6 +446,9 @@ class MessageLookup extends MessageLookupByLibrary {
     "please_write_comment": MessageLookupByLibrary.simpleMessage(
       "يرجى كتابة تعليق",
     ),
+    "position_hint": MessageLookupByLibrary.simpleMessage(
+      "مثال: باحث أول، طالب دكتوراه",
+    ),
     "position_label": MessageLookupByLibrary.simpleMessage("المنصب الحالي"),
     "post_button": MessageLookupByLibrary.simpleMessage("نشر"),
     "previous_button": MessageLookupByLibrary.simpleMessage("السابق"),
@@ -461,7 +462,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "public_list_label": MessageLookupByLibrary.simpleMessage("قائمة عامة"),
     "purple_color": MessageLookupByLibrary.simpleMessage("بنفسجي"),
     "read_later": MessageLookupByLibrary.simpleMessage("اقرأ لاحقاً"),
-    "read_later_stats": m6,
+    "read_later_stats": m5,
     "reading_history": MessageLookupByLibrary.simpleMessage("سجل القراءة"),
     "reading_list_item_title": MessageLookupByLibrary.simpleMessage(
       "قائمة قراءة",
@@ -517,7 +518,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "support_and_about": MessageLookupByLibrary.simpleMessage(
       "الدعم والمعلومات",
     ),
-    "tags_help_message": m7,
+    "tags_help_message": m6,
     "terms_agreement_required": MessageLookupByLibrary.simpleMessage(
       "يجب الموافقة على الشروط والأحكام للتسجيل.",
     ),
@@ -537,16 +538,18 @@ class MessageLookup extends MessageLookupByLibrary {
         ),
     "undergraduate": MessageLookupByLibrary.simpleMessage("البكالوريوس"),
     "university": MessageLookupByLibrary.simpleMessage("الجامعة"),
-    "university_hint": MessageLookupByLibrary.simpleMessage("جامعة"),
+    "university_hint": MessageLookupByLibrary.simpleMessage("أدخل اسم جامعتك"),
     "university_label": MessageLookupByLibrary.simpleMessage("الجامعة"),
     "university_name": MessageLookupByLibrary.simpleMessage("اسم الجامعة"),
     "upload_picture": MessageLookupByLibrary.simpleMessage("رفع صورة"),
     "username": MessageLookupByLibrary.simpleMessage("اسم المستخدم"),
-    "username_label": MessageLookupByLibrary.simpleMessage("اسم المستخدم"),
+    "username_label": MessageLookupByLibrary.simpleMessage(
+      "تعديل الملف الشخصي",
+    ),
     "verified": MessageLookupByLibrary.simpleMessage("تم التحقق!"),
     "view_all_button": MessageLookupByLibrary.simpleMessage("عرض الكل"),
     "view_discussions": MessageLookupByLibrary.simpleMessage("عرض المناقشات"),
-    "view_discussions_count": m8,
+    "view_discussions_count": m7,
     "warning_title": MessageLookupByLibrary.simpleMessage("تنبيه"),
     "welcome_back": MessageLookupByLibrary.simpleMessage(
       "مرحباً بعودتك إلى ميراث!",

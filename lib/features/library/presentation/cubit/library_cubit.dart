@@ -81,8 +81,7 @@ class LibraryCubit extends Cubit<LibraryState> {
         emit(GetReadingHistoryFailure(errorMessage: failure.message));
       },
       (readHis) {
-        final mergedList =
-            loadMore && currentState is GetReadingHistorySuccess
+        final mergedList = loadMore && currentState is GetReadingHistorySuccess
             ? [...currentState.readingHistory, ...readHis]
             : readHis;
 

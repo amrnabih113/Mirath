@@ -31,13 +31,18 @@ class _WelcomeHeaderState extends State<WelcomeHeader> {
   initState() {
     super.initState();
     userData = sl<UserCacheService>().getCachedUser();
-    // Load current user data here if needed
     final data = sl<LocalStorageService>().getData(MyConstants.userDataKey);
     if (data != null) {
-      final json = jsonDecode(data);
-      setState(() {
-        currentUser = User.fromJson(json);
-      });
+      try {
+        final json = jsonDecode(data);
+        if (json is Map<String, dynamic>) {
+          setState(() {
+            currentUser = User.fromJson(json);
+          });
+        }
+      } catch (_) {
+        currentUser = null;
+      }
     }
   }
 

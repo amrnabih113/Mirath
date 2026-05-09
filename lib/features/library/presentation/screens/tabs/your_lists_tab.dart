@@ -19,11 +19,7 @@ class YourListsTab extends StatelessWidget {
       child: BlocBuilder<ReadingListCubit, ReadingListState>(
         builder: (context, state) {
           if (state is ReadingListLoading) {
-            return ListView(
-              padding: EdgeInsets.zero,
-              physics: const AlwaysScrollableScrollPhysics(),
-              children: [const ReadingListShimmerLoading()],
-            );
+            return const ReadingListShimmerLoading();
           }
 
           if (state is ReadingListsLoaded) {

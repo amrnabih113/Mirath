@@ -1,8 +1,15 @@
 class Follows {
-  final String message, id, username, fullname, photoUrl, bio, role, status;
-  final bool isPremium, isFollowing;
+  final String id;
+  final String username;
+  final String fullname;
+  final String photoUrl;
+  final String bio;
+  final String role;
+  final String status;
+  final bool isPremium;
+  final bool isFollowing;
+
   Follows({
-    required this.message,
     required this.id,
     required this.username,
     required this.fullname,

@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'package:mirath/features/chatbot/presentation/cubit/chatbot_cubit.dart';
+import 'package:mirath/features/chatbot/presentation/screens/chatbot_screen.dart';
 import 'package:mirath/features/discussions/presentation/screens/add_discussion_screen.dart';
 import 'package:mirath/features/home/domain/entities/paper_entity.dart';
 import 'package:mirath/features/home/presentation/cubit/search_cubit.dart';
@@ -18,9 +20,12 @@ import 'package:mirath/features/papers/presentation/screens/paper_screen.dart';
 import 'package:mirath/features/profile/presentation/screens/edit_intersts_screen.dart';
 import 'package:mirath/features/profile/presentation/screens/edit_profile_screen.dart';
 import 'package:mirath/features/profile/presentation/screens/follower_following_screen.dart';
+import 'package:mirath/features/profile/presentation/screens/other_users_profile.dart';
 import 'package:mirath/features/profile/presentation/screens/profile_screen.dart';
+import 'package:mirath/features/profile/presentation/cubit/profile_cubit.dart';
 import 'package:mirath/features/profile/presentation/screens/setting_screen.dart';
 import 'package:mirath/features/reading_lists/presentation/cubit/reading_list_cubit.dart';
+import 'package:mirath/features/users/presentation/cubit/profile_header_cubit.dart';
 import 'package:mirath/generated/l10n.dart';
 import 'features/discussions/domain/entities/discussion.dart';
 import 'features/discussions/presentation/cubit/community_cubit.dart';
@@ -289,19 +294,10 @@ final appRouter = GoRouter(
         GoRoute(
           path: '/profile',
           pageBuilder: (context, state) => NoTransitionPage(
-            child: const ProfileScreen(),
-            // Scaffold(
-            //   body: Center(
-            //     child: ElevatedButton(
-            //       onPressed: () {
-            //         Future.delayed(const Duration(milliseconds: 100), () {
-            //           context.read<AuthCubit>().signOut();
-            //         });
-            //       },
-            //       child: Text('Sign Out'),
-            //     ),
-            //   ),
-            // ),
+            child: BlocProvider.value(
+              value: sl<ProfileCubit>()..loadCurrentUser(),
+              child: const ProfileScreen(),
+            ),
           ),
         ),
       ],
@@ -407,6 +403,7 @@ final appRouter = GoRouter(
       pageBuilder: (context, state) {
         final discussion = state.extra as Discussion?;
         return PageTransitions.smoothTransition(
+          key: state.pageKey,
           MultiBlocProvider(
             providers: [
               BlocProvider(create: (_) => sl<DiscussionDetailsCubit>()),
@@ -499,14 +496,60 @@ final appRouter = GoRouter(
     GoRoute(
       path: '/edit_profile_screen',
       pageBuilder: (context, state) {
-        return PageTransitions.smoothTransition(const EditProfileScreen());
+        return PageTransitions.smoothTransition(
+          BlocProvider.value(
+            value: sl<ProfileCubit>(),
+            child: const EditProfileScreen(),
+          ),
+        );
       },
     ),
     GoRoute(
       path: '/follower_following_screen',
       pageBuilder: (context, state) {
+        final payload = state.extra as Map<String, dynamic>?;
+        final userId = (payload?['userId'] ?? '').toString();
+        final username = payload?['username']?.toString();
+        final tabIndex = (payload?['tab'] as int?) ?? 0;
+
+        if (userId.isEmpty) {
+          return PageTransitions.smoothTransition(
+            Scaffold(
+              appBar: AppBar(title: Text(S.of(context).error_label)),
+              body: const Center(child: Text('Error: No user data provided')),
+            ),
+          );
+        }
+
         return PageTransitions.smoothTransition(
-          const FollowerFollowingScreen(),
+          key: state.pageKey,
+          FollowerFollowingScreen(
+            userId: userId,
+            username: username,
+            initialTabIndex: tabIndex,
+          ),
+        );
+      },
+    ),
+    GoRoute(
+      path: '/other-users-profile/:userId',
+      pageBuilder: (context, state) {
+        final userId = state.pathParameters['userId'] ?? '';
+        if (userId.isEmpty) {
+          return PageTransitions.smoothTransition(
+            Scaffold(
+              appBar: AppBar(title: Text(S.of(context).error_label)),
+              body: const Center(child: Text('Error: No user data provided')),
+            ),
+          );
+        }
+
+        return PageTransitions.smoothTransition(
+          key: state.pageKey,
+          BlocProvider(
+            create: (_) => sl<ProfileHeaderCubit>()..getProfileHeader(userId),
+            child: OtherUsersProfile(userId: userId),
+          ),
         );
       },
     ),
@@ -517,9 +560,23 @@ final appRouter = GoRouter(
       },
     ),
     GoRoute(
+      path: '/chatbot',
+      pageBuilder: (context, state) {
+        return PageTransitions.smoothTransition(
+          BlocProvider.value(value: sl<ChatbotCubit>(), child: ChatbotScreen()),
+        );
+      },
+    ),
+    GoRoute(
       path: '/edit_intersts_screen',
       pageBuilder: (context, state) {
-        return PageTransitions.smoothTransition(const EditInterstsScreen());
+        final initialSelected = state.extra as List<String>? ?? [];
+        return PageTransitions.smoothTransition(
+          BlocProvider.value(
+            value: sl<InterestsCubit>(),
+            child: EditInterstsScreen(initialSelected: initialSelected),
+          ),
+        );
       },
     ),
     GoRoute(

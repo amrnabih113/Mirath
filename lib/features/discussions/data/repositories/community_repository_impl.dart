@@ -44,6 +44,7 @@ class CommunityRepositoryImpl implements CommunityRepository {
         limit: params.limit,
         sort: params.sort,
         topicId: params.topicId,
+        authorId: params.authorId,
       );
       return Right(response.data);
     } catch (e) {

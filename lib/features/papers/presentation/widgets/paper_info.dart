@@ -140,7 +140,7 @@ class _PaperInfoState extends State<PaperInfo> {
           children: [
             Expanded(
               child: MyTextButton(
-                onPressed : (){
+                onPressed: () {
                   // Fire and forget: reading history updates in background.
                   context.read<LibraryCubit>().updataReadingHistory(
                     widget.paper.id,

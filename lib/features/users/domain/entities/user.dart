@@ -22,6 +22,7 @@ class User extends Equatable {
   final int followersCount;
   final int followingCount;
   final bool? isFollowed;
+  final bool isMe;
 
   const User({
     required this.id,
@@ -45,6 +46,7 @@ class User extends Equatable {
     required this.followersCount,
     required this.followingCount,
     this.isFollowed,
+    this.isMe = false,
   });
 
   User copyWith({
@@ -69,6 +71,7 @@ class User extends Equatable {
     int? followersCount,
     int? followingCount,
     bool? isFollowed,
+    bool? isMe,
   }) {
     return User(
       id: id ?? this.id,
@@ -92,6 +95,7 @@ class User extends Equatable {
       followersCount: followersCount ?? this.followersCount,
       followingCount: followingCount ?? this.followingCount,
       isFollowed: isFollowed ?? this.isFollowed,
+      isMe: isMe ?? this.isMe,
     );
   }
 
@@ -118,6 +122,7 @@ class User extends Equatable {
     followersCount,
     followingCount,
     isFollowed,
+    isMe,
   ];
   factory User.fromJson(Map<String, dynamic> json) {
     return User(
@@ -147,7 +152,8 @@ class User extends Equatable {
           .toList(),
       followersCount: json['followersCount'],
       followingCount: json['followingCount'],
-      isFollowed: json['isFollowed'],
+      isFollowed: json['isFollowing'],
+      isMe: json['isMe'] ?? false,
     );
   }
   Map<String, dynamic> toJson() {
@@ -176,6 +182,8 @@ class User extends Equatable {
           .toList(),
       'followersCount': followersCount,
       'followingCount': followingCount,
+      'isFollowing': isFollowed,
+      'isMe': isMe,
     };
   }
 }

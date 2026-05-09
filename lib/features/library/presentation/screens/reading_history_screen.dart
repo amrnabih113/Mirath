@@ -109,15 +109,14 @@ class _ReadingHistoryScreenState extends State<ReadingHistoryScreen> {
                       return ListView.separated(
                         controller: _scrollController,
                         padding: const EdgeInsets.all(8),
-                        itemCount: state.readingHistory.length +
+                        itemCount:
+                            state.readingHistory.length +
                             (state.isLoadingMore ? 1 : 0),
                         itemBuilder: (context, index) {
                           if (index >= state.readingHistory.length) {
                             return const Padding(
                               padding: EdgeInsets.symmetric(vertical: 16),
-                              child: Center(
-                                child: CircularProgressIndicator(),
-                              ),
+                              child: Center(child: CircularProgressIndicator()),
                             );
                           }
 

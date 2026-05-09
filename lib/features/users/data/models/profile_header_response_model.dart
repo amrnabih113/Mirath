@@ -11,8 +11,10 @@ class ProfileHeaderResponseModel {
 
   factory ProfileHeaderResponseModel.fromJson(Map<String, dynamic> json) {
     // Handle nested data structure from API response
-    // The user profile data is directly in the 'data' field
-    final userData = json['data'] as Map<String, dynamic>?;
+    // The API response is: { message, data: { profile: {...} } }
+    final dataWrapper = json['data'] as Map<String, dynamic>?;
+    final userData =
+        dataWrapper?['profile'] as Map<String, dynamic>? ?? dataWrapper;
 
     return ProfileHeaderResponseModel(
       message: json['message'] ?? '',

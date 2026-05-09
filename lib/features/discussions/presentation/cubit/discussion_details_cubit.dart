@@ -133,6 +133,7 @@ class DiscussionDetailsCubit extends Cubit<DiscussionDetailsState> {
       bio: null,
       role: 'user',
       isPremium: false,
+      isFollowing: false,
     );
     MyLogger.debug(
       '[CUBIT] 👤 Using cached user: ${cachedUser?.fullName} (${cachedUser?.photoURL})',

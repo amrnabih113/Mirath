@@ -18,6 +18,7 @@ abstract class CommunityRemoteDataSource {
     int limit = 10,
     String sort = 'new',
     String? topicId,
+    String? authorId,
   });
 
   /// Get a specific discussion by ID

@@ -22,23 +22,21 @@ class MessageLookup extends MessageLookupByLibrary {
 
   static String m0(action) => "${action} will be available soon.";
 
-  static String m1(language) => "Detected as ${language}";
+  static String m1(size) => "${size}%";
 
-  static String m2(size) => "${size}%";
+  static String m2(highlightCount) => "Highlights (${highlightCount})";
 
-  static String m3(highlightCount) => "Highlights (${highlightCount})";
+  static String m3(noteCount) => "Notes (${noteCount})";
 
-  static String m4(noteCount) => "Notes (${noteCount})";
+  static String m4(days) => "Papers updated ${days} days ago";
 
-  static String m5(days) => "Papers updated ${days} days ago";
-
-  static String m6(papers, days) =>
+  static String m5(papers, days) =>
       "${papers} papers • Updated ${days} days ago";
 
-  static String m7(count) =>
+  static String m6(count) =>
       "Tags help your discussion reach more people (${count}/5)";
 
-  static String m8(discussionsCount) =>
+  static String m7(discussionsCount) =>
       "View Discussions (${discussionsCount})";
 
   final messages = _notInlinedMessages(_notInlinedMessages);
@@ -99,9 +97,7 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "bio": MessageLookupByLibrary.simpleMessage("Bio"),
     "bio_field_label": MessageLookupByLibrary.simpleMessage("Bio"),
-    "bio_hint": MessageLookupByLibrary.simpleMessage(
-      "Lorem ipsum dolor sit amet,",
-    ),
+    "bio_hint": MessageLookupByLibrary.simpleMessage("Add a bio (optional)"),
     "blue_color": MessageLookupByLibrary.simpleMessage("Blue"),
     "cancel": MessageLookupByLibrary.simpleMessage("Cancel"),
     "cancel_button": MessageLookupByLibrary.simpleMessage("Cancel"),
@@ -130,7 +126,9 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "copy_button": MessageLookupByLibrary.simpleMessage("Copy"),
     "country": MessageLookupByLibrary.simpleMessage("Country"),
-    "country_hint": MessageLookupByLibrary.simpleMessage("Egypt"),
+    "country_hint": MessageLookupByLibrary.simpleMessage(
+      "Where are you based?",
+    ),
     "country_label": MessageLookupByLibrary.simpleMessage("Country"),
     "create": MessageLookupByLibrary.simpleMessage("Create"),
     "create_account": MessageLookupByLibrary.simpleMessage("Create Account"),
@@ -157,7 +155,9 @@ class MessageLookup extends MessageLookupByLibrary {
     "description_optional": MessageLookupByLibrary.simpleMessage(
       "Description (optional)",
     ),
-    "detected_language_label": m1,
+    "detected_language_label": MessageLookupByLibrary.simpleMessage(
+      "Detected as",
+    ),
     "discussion_body_hint": MessageLookupByLibrary.simpleMessage(
       "What do you want to discuss?",
     ),
@@ -176,7 +176,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "edit_profile": MessageLookupByLibrary.simpleMessage("Edit profile"),
     "education_level": MessageLookupByLibrary.simpleMessage("Education Level"),
     "education_level_label": MessageLookupByLibrary.simpleMessage(
-      "Level of education",
+      "Level of Education",
     ),
     "email": MessageLookupByLibrary.simpleMessage("Email"),
     "email_address": MessageLookupByLibrary.simpleMessage("Email Address"),
@@ -314,7 +314,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "followers": MessageLookupByLibrary.simpleMessage("Followers"),
     "following": MessageLookupByLibrary.simpleMessage("Following"),
     "font_size_button": MessageLookupByLibrary.simpleMessage("Font Size"),
-    "font_size_percentage": m2,
+    "font_size_percentage": m1,
     "font_size_title": MessageLookupByLibrary.simpleMessage("Font Size"),
     "forget_password": MessageLookupByLibrary.simpleMessage("Forget Password"),
     "forgot_password": MessageLookupByLibrary.simpleMessage("Forgot Password?"),
@@ -331,7 +331,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "highlighted_text_label": MessageLookupByLibrary.simpleMessage(
       "Highlighted Text",
     ),
-    "highlights_button_label": m3,
+    "highlights_button_label": m2,
     "i_agree_to": MessageLookupByLibrary.simpleMessage("I agree to the "),
     "info_title": MessageLookupByLibrary.simpleMessage("Info"),
     "interests": MessageLookupByLibrary.simpleMessage("Interests"),
@@ -360,7 +360,7 @@ class MessageLookup extends MessageLookupByLibrary {
       "Mock Researcher",
     ),
     "name": MessageLookupByLibrary.simpleMessage("Name"),
-    "name_field_label": MessageLookupByLibrary.simpleMessage("Name"),
+    "name_field_label": MessageLookupByLibrary.simpleMessage("Full Name"),
     "nav_community_label": MessageLookupByLibrary.simpleMessage("Community"),
     "nav_home_label": MessageLookupByLibrary.simpleMessage("Home"),
     "nav_library_label": MessageLookupByLibrary.simpleMessage("Library"),
@@ -387,7 +387,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "no_tags_found": MessageLookupByLibrary.simpleMessage("No tags found"),
     "note_hint": MessageLookupByLibrary.simpleMessage("Write your note..."),
     "note_label": MessageLookupByLibrary.simpleMessage("Note"),
-    "notes_button_label": m4,
+    "notes_button_label": m3,
     "notifications": MessageLookupByLibrary.simpleMessage("Notifications"),
     "onboarding_description_1": MessageLookupByLibrary.simpleMessage(
       "You can search by keywords, authors, titles, or even paste a block of text to find the exact paper you need.",
@@ -420,7 +420,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "paper_unsaved_message": MessageLookupByLibrary.simpleMessage(
       "Paper unsaved successfully",
     ),
-    "papers_updated_days_ago": m5,
+    "papers_updated_days_ago": m4,
     "password": MessageLookupByLibrary.simpleMessage("Password"),
     "password_reset_code_sent": MessageLookupByLibrary.simpleMessage(
       "Password reset code sent to your email.",
@@ -443,7 +443,10 @@ class MessageLookup extends MessageLookupByLibrary {
     "please_write_comment": MessageLookupByLibrary.simpleMessage(
       "Please write a comment",
     ),
-    "position_label": MessageLookupByLibrary.simpleMessage("Current position"),
+    "position_hint": MessageLookupByLibrary.simpleMessage(
+      "e.g. Senior Researcher, PhD Student",
+    ),
+    "position_label": MessageLookupByLibrary.simpleMessage("Current Position"),
     "post_button": MessageLookupByLibrary.simpleMessage("Post"),
     "previous_button": MessageLookupByLibrary.simpleMessage("Previous"),
     "profile": MessageLookupByLibrary.simpleMessage("Profile"),
@@ -456,7 +459,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "public_list_label": MessageLookupByLibrary.simpleMessage("Public list"),
     "purple_color": MessageLookupByLibrary.simpleMessage("Purple"),
     "read_later": MessageLookupByLibrary.simpleMessage("Read Later"),
-    "read_later_stats": m6,
+    "read_later_stats": m5,
     "reading_history": MessageLookupByLibrary.simpleMessage("Reading History"),
     "reading_list_item_title": MessageLookupByLibrary.simpleMessage(
       "Reading List",
@@ -520,7 +523,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "support_and_about": MessageLookupByLibrary.simpleMessage(
       "Support & about",
     ),
-    "tags_help_message": m7,
+    "tags_help_message": m6,
     "terms_agreement_required": MessageLookupByLibrary.simpleMessage(
       "You must agree to the Terms and Conditions to sign up.",
     ),
@@ -540,18 +543,20 @@ class MessageLookup extends MessageLookupByLibrary {
         ),
     "undergraduate": MessageLookupByLibrary.simpleMessage("Undergraduate"),
     "university": MessageLookupByLibrary.simpleMessage("University"),
-    "university_hint": MessageLookupByLibrary.simpleMessage("uni"),
+    "university_hint": MessageLookupByLibrary.simpleMessage(
+      "Enter your university name",
+    ),
     "university_label": MessageLookupByLibrary.simpleMessage("University"),
     "university_name": MessageLookupByLibrary.simpleMessage("University Name"),
     "upload_picture": MessageLookupByLibrary.simpleMessage("Upload Picture"),
     "username": MessageLookupByLibrary.simpleMessage("Username"),
-    "username_label": MessageLookupByLibrary.simpleMessage("Username"),
+    "username_label": MessageLookupByLibrary.simpleMessage("Edit Profile"),
     "verified": MessageLookupByLibrary.simpleMessage("Verified!"),
     "view_all_button": MessageLookupByLibrary.simpleMessage("View All"),
     "view_discussions": MessageLookupByLibrary.simpleMessage(
       "View Discussions",
     ),
-    "view_discussions_count": m8,
+    "view_discussions_count": m7,
     "warning_title": MessageLookupByLibrary.simpleMessage("Warning"),
     "welcome_back": MessageLookupByLibrary.simpleMessage(
       "Welcome back to Mirath!",

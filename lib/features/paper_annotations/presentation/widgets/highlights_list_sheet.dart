@@ -59,7 +59,7 @@ class HighlightsListSheet extends StatelessWidget {
                       vertical: MySizes.spaceSm(context),
                     ),
                     itemCount: highlights.length,
-                    separatorBuilder: (_, __) => Padding(
+                    separatorBuilder: (_, _) => Padding(
                       padding: EdgeInsets.symmetric(
                         vertical: MySizes.spaceMd(context),
                       ),
