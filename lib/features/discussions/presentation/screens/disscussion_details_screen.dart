@@ -227,7 +227,10 @@ class _DisscussionDetailsScreenState extends State<DisscussionDetailsScreen> {
                                 preprint: '',
                                 citation: '',
                               );
-                              context.push(RouteNames.paperDetailsRoute(paperEntity.id), extra: paperEntity);
+                              context.push(
+                                RouteNames.paperDetailsRoute(paperEntity.id),
+                                extra: paperEntity,
+                              );
                             },
                           ),
                         ),

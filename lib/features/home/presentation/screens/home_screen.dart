@@ -190,7 +190,10 @@ class _HomeScreenState extends State<HomeScreen> {
                               return PaperCard(
                                 paper: paper,
                                 onTap: () {
-                                  context.push(RouteNames.paperDetailsRoute(paper.id), extra: paper);
+                                  context.push(
+                                    RouteNames.paperDetailsRoute(paper.id),
+                                    extra: paper,
+                                  );
                                 },
                               );
                             },

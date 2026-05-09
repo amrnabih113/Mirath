@@ -139,7 +139,9 @@ class _DiscussionTabState extends State<DiscussionTab> {
                 discussion: discussions[discussionIndex],
                 onTap: () {
                   context.push(
-                    RouteNames.discussionDetailsRoute(discussions[discussionIndex].id),
+                    RouteNames.discussionDetailsRoute(
+                      discussions[discussionIndex].id,
+                    ),
                     extra: discussions[discussionIndex],
                   );
                 },

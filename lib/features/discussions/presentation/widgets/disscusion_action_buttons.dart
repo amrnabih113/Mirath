@@ -71,8 +71,10 @@ class DisscusionActionButtons extends StatelessWidget {
             ),
             SizedBox(width: MySizes.spaceSm(context)),
             InteractionButton(
-              onTap: () =>
-                  context.push(RouteNames.discussionDetailsRoute(discussion.id), extra: discussion),
+              onTap: () => context.push(
+                RouteNames.discussionDetailsRoute(discussion.id),
+                extra: discussion,
+              ),
               icon: HugeIcons.strokeRoundedComment01,
               count: discussion.commentCount,
             ),

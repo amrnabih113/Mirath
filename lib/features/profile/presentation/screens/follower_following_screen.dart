@@ -118,7 +118,9 @@ class _FollowerFollowingScreenState extends State<FollowerFollowingScreen> {
                                       user: users[index],
                                       onUserTap: () {
                                         context.push(
-                                          RouteNames.userProfileRoute(users[index].id),
+                                          RouteNames.userProfileRoute(
+                                            users[index].id,
+                                          ),
                                         );
                                       },
                                       onFollowToggle: (_) {
@@ -155,7 +157,9 @@ class _FollowerFollowingScreenState extends State<FollowerFollowingScreen> {
                                       user: users[index],
                                       onUserTap: () {
                                         context.push(
-                                          RouteNames.userProfileRoute(users[index].id),
+                                          RouteNames.userProfileRoute(
+                                            users[index].id,
+                                          ),
                                         );
                                       },
                                       onFollowToggle: (_) {

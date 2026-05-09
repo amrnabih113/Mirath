@@ -56,7 +56,10 @@ class SavedPapersTab extends StatelessWidget {
                 return ReadingListCard(
                   readingList: item,
                   onTap: () {
-                    context.push(RouteNames.readingListDetailsRoute(item.id), extra: item);
+                    context.push(
+                      RouteNames.readingListDetailsRoute(item.id),
+                      extra: item,
+                    );
                   },
                 );
               },

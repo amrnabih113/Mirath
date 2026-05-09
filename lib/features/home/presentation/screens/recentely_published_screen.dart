@@ -170,7 +170,10 @@ class _RecentelyPublishedScreenState extends State<RecentelyPublishedScreen> {
                               return PaperCard(
                                 paper: paper,
                                 onTap: () {
-                                  context.push(RouteNames.paperDetailsRoute(paper.id), extra: paper);
+                                  context.push(
+                                    RouteNames.paperDetailsRoute(paper.id),
+                                    extra: paper,
+                                  );
                                 },
                               );
                             },

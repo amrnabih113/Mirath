@@ -206,7 +206,10 @@ class _AddPaperBottomSheetState extends State<AddPaperBottomSheet> {
                               child: PaperCard(
                                 paper: paper,
                                 onTap: () {
-                                  context.push(RouteNames.paperDetailsRoute(paper.id), extra: paper);
+                                  context.push(
+                                    RouteNames.paperDetailsRoute(paper.id),
+                                    extra: paper,
+                                  );
                                 },
                               ),
                             ),

@@ -35,19 +35,23 @@ class RouteNames {
   // ===================== PAPERS & READING =====================
   /// Paper details screen - requires paperId in path: /papers/:paperId
   static const String paperDetails = '/papers/:paperId';
+
   /// Paper reading/annotation screen - requires paperId: /papers/:paperId/read
   static const String paperReading = '/papers/:paperId/read';
+
   /// Paper discussions - requires paperId: /papers/:paperId/discussions
   static const String paperDiscussions = '/papers/:paperId/discussions';
 
   // ===================== DISCUSSIONS =====================
   static const String community_base = '/community';
+
   /// Discussion details screen - requires discussionId in path: /discussions/:discussionId
   static const String discussionDetails = '/discussions/:discussionId';
   static const String addDiscussion = '/add-discussion';
 
   // ===================== READING LISTS =====================
   static const String readingLists = '/reading-lists';
+
   /// Reading list details - requires readingListId in path: /reading-lists/:readingListId
   static const String readingListDetails = '/reading-lists/:readingListId';
   static const String readingHistory = '/reading-history';
@@ -56,6 +60,7 @@ class RouteNames {
   // ===================== USER PROFILES =====================
   /// Other user profile - requires userId in path: /users/:userId
   static const String userProfile = '/users/:userId';
+
   /// Follower/Following screen - requires userId: /users/:userId/followers?tab=0&1
   static const String followerFollowing = '/users/:userId/followers';
 

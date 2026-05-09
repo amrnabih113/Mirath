@@ -81,18 +81,20 @@ class OtherUsersProfile extends StatelessWidget {
                                   },
                                   onFollowersTap: () {
                                     context.push(
-                                      RouteNames.followerFollowingRoute(userId, tab: 0),
-                                      extra: {
-                                        'username': user.username,
-                                      },
+                                      RouteNames.followerFollowingRoute(
+                                        userId,
+                                        tab: 0,
+                                      ),
+                                      extra: {'username': user.username},
                                     );
                                   },
                                   onFollowingTap: () {
                                     context.push(
-                                      RouteNames.followerFollowingRoute(userId, tab: 1),
-                                      extra: {
-                                        'username': user.username,
-                                      },
+                                      RouteNames.followerFollowingRoute(
+                                        userId,
+                                        tab: 1,
+                                      ),
+                                      extra: {'username': user.username},
                                     );
                                   },
                                 ),

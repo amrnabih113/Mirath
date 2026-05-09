@@ -85,18 +85,20 @@ class ProfileScreen extends StatelessWidget {
                                   },
                                   onFollowersTap: () {
                                     context.push(
-                                      RouteNames.followerFollowingRoute(user.id, tab: 0),
-                                      extra: {
-                                        'username': user.username,
-                                      },
+                                      RouteNames.followerFollowingRoute(
+                                        user.id,
+                                        tab: 0,
+                                      ),
+                                      extra: {'username': user.username},
                                     );
                                   },
                                   onFollowingTap: () {
                                     context.push(
-                                      RouteNames.followerFollowingRoute(user.id, tab: 1),
-                                      extra: {
-                                        'username': user.username,
-                                      },
+                                      RouteNames.followerFollowingRoute(
+                                        user.id,
+                                        tab: 1,
+                                      ),
+                                      extra: {'username': user.username},
                                     );
                                   },
                                 ),

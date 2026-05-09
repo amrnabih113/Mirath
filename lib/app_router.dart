@@ -109,7 +109,7 @@ final appRouter = GoRouter(
     const publicPaths = [
       RouteNames.splash,
       RouteNames.onboarding,
-      ...authPaths
+      ...authPaths,
     ];
 
     // If auth is still initializing, stay on splash or current page
@@ -443,9 +443,7 @@ final appRouter = GoRouter(
       pageBuilder: (context, state) {
         final paperId = state.pathParameters['paperId'] ?? '';
         final paper = state.extra as PaperEntity?;
-        MyLogger.info(
-          '[Router] Paper Reading - Paper: ${paper?.id ?? "NULL"}',
-        );
+        MyLogger.info('[Router] Paper Reading - Paper: ${paper?.id ?? "NULL"}');
         if (paper == null) {
           MyLogger.error(
             '[Router] Paper Reading - Paper is NULL! Cannot load screen.',
@@ -494,7 +492,9 @@ final appRouter = GoRouter(
           return PageTransitions.smoothTransition(
             Scaffold(
               appBar: AppBar(title: Text(S.of(context).error_label)),
-              body: const Center(child: Text('Error: No discussion ID provided')),
+              body: const Center(
+                child: Text('Error: No discussion ID provided'),
+              ),
             ),
           );
         }
@@ -550,7 +550,9 @@ final appRouter = GoRouter(
           return PageTransitions.smoothTransition(
             Scaffold(
               appBar: AppBar(title: Text(S.of(context).error_label)),
-              body: const Center(child: Text('Error: No reading list ID provided')),
+              body: const Center(
+                child: Text('Error: No reading list ID provided'),
+              ),
             ),
           );
         }
@@ -558,7 +560,7 @@ final appRouter = GoRouter(
         return PageTransitions.smoothTransition(
           BlocProvider(
             create: (_) =>
-                sl<ReadingListCubit>()..getReadingListById(readingList.id),
+                sl<ReadingListCubit>()..getReadingListById(readingListId),
             child: ReadingListDetailsScreen(readingList: readingList),
           ),
         );
@@ -687,10 +689,7 @@ final appRouter = GoRouter(
       path: RouteNames.chatbot,
       pageBuilder: (context, state) {
         return PageTransitions.smoothTransition(
-          BlocProvider.value(
-            value: sl<ChatbotCubit>(),
-            child: ChatbotScreen(),
-          ),
+          BlocProvider.value(value: sl<ChatbotCubit>(), child: ChatbotScreen()),
         );
       },
     ),

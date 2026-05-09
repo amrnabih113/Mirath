@@ -96,7 +96,10 @@ class _DiscussionCardState extends State<DiscussionCard> {
                         isSaved: false,
                         preprint: '',
                       );
-                      context.push(RouteNames.paperDetailsRoute(paperEntity.id), extra: paperEntity);
+                      context.push(
+                        RouteNames.paperDetailsRoute(paperEntity.id),
+                        extra: paperEntity,
+                      );
                     },
                   ),
                 if (widget.discussion.papers.isNotEmpty)
