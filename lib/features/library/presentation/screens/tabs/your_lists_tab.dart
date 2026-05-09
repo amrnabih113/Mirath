@@ -26,10 +26,18 @@ class YourListsTab extends StatelessWidget {
             if (state.readingLists.isEmpty) {
               return ListView(
                 physics: const AlwaysScrollableScrollPhysics(),
-                padding: EdgeInsets.zero,
+                padding: EdgeInsets.only(
+                  left: MySizes.spaceMd(context),
+                  right: MySizes.spaceMd(context),
+                  top: MySizes.spaceSm(context),
+                  bottom:
+                      kBottomNavigationBarHeight +
+                      MySizes.spaceMd(context) +
+                      MediaQuery.of(context).padding.bottom,
+                ),
                 children: [
                   const ReadLaterContainer(),
-                  SizedBox(height: MySizes.spaceSm(context)),
+                  SizedBox(height: MySizes.spaceMd(context)),
                   Center(
                     child: Padding(
                       padding: EdgeInsets.symmetric(
@@ -43,37 +51,46 @@ class YourListsTab extends StatelessWidget {
             }
 
             return ListView.separated(
-              padding: EdgeInsets.zero,
+              padding: EdgeInsets.only(
+                left: MySizes.spaceMd(context),
+                right: MySizes.spaceMd(context),
+                top: MySizes.spaceSm(context),
+                bottom:
+                    kBottomNavigationBarHeight +
+                    MySizes.spaceMd(context) +
+                    MediaQuery.of(context).padding.bottom,
+              ),
               physics: const AlwaysScrollableScrollPhysics(),
               itemCount: state.readingLists.length,
               itemBuilder: (context, index) {
                 final item = state.readingLists[index];
-                return Padding(
-                  padding: EdgeInsets.only(bottom: MySizes.spaceXs(context)),
-                  child: ReadingListCard(
-                    readingList: item,
-                    onTap: () {
-                      context.push('/reading-list-details', extra: item);
-                    },
-                  ),
+                return ReadingListCard(
+                  readingList: item,
+                  onTap: () {
+                    context.push('/reading-list-details', extra: item);
+                  },
                 );
               },
-              separatorBuilder: (context, index) {
-                if (index == 0) {
-                  return SizedBox(height: MySizes.spaceSm(context));
-                }
-                return SizedBox(height: MySizes.spaceXs(context));
-              },
+              separatorBuilder: (context, index) =>
+                  SizedBox(height: MySizes.spaceMd(context)),
             );
           }
 
           if (state is ReadingListError) {
             return ListView(
-              padding: EdgeInsets.zero,
+              padding: EdgeInsets.only(
+                left: MySizes.spaceMd(context),
+                right: MySizes.spaceMd(context),
+                top: MySizes.spaceSm(context),
+                bottom:
+                    kBottomNavigationBarHeight +
+                    MySizes.spaceMd(context) +
+                    MediaQuery.of(context).padding.bottom,
+              ),
               physics: const AlwaysScrollableScrollPhysics(),
               children: [
                 const ReadLaterContainer(),
-                SizedBox(height: MySizes.spaceSm(context)),
+                SizedBox(height: MySizes.spaceMd(context)),
                 Center(child: Text(state.message)),
               ],
             );

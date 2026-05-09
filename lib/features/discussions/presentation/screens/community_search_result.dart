@@ -12,7 +12,6 @@ import '../cubit/community_state.dart';
 import '../widgets/discussion_card.dart';
 import '../../../reading_lists/presentation/widgets/reading_list_card.dart';
 import '../widgets/researcher_card.dart';
-import '../../../home/presentation/widgets/category_items_list.dart';
 
 import '../../../../core/utils/my_sizes.dart';
 
@@ -69,16 +68,16 @@ class _CommunitySearchResultState extends State<CommunitySearchResult> {
                           onCategoryChanged: _onCategoryChanged,
                           child: Column(
                             children: [
-                              CategoryItemsList(
-                                selectedCategory: _selectedCategory,
-                                categories: [
-                                  S.of(context).top_label,
-                                  S.of(context).discussions_label,
-                                  S.of(context).reading_lists,
-                                  S.of(context).researchers_label,
-                                ],
-                                onCategoryChanged: _onCategoryChanged,
-                              ),
+                              // CategoryItemsList(
+                              //   selectedCategory: _selectedCategory,
+                              //   categories: [
+                              //     S.of(context).top_label,
+                              //     S.of(context).discussions_label,
+                              //     S.of(context).reading_lists,
+                              //     S.of(context).researchers_label,
+                              //   ],
+                              //   onCategoryChanged: _onCategoryChanged,
+                              // ),
                               SizedBox(height: MySizes.spaceLg(context)),
                             ],
                           ),

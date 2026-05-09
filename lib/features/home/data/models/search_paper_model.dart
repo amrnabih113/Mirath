@@ -24,11 +24,26 @@ class SearchPaperModel {
   });
 
   factory SearchPaperModel.fromJson(Map<String, dynamic> json) {
+    // Parse publishedAt safely - it comes as ISO 8601 string from API
+    DateTime parsedDate = DateTime.now();
+    try {
+      if (json['publishedAt'] != null) {
+        final dateStr = json['publishedAt'];
+        if (dateStr is String) {
+          parsedDate = DateTime.parse(dateStr);
+        } else if (dateStr is DateTime) {
+          parsedDate = dateStr;
+        }
+      }
+    } catch (e) {
+      print('Error parsing publishedAt: $e');
+    }
+
     return SearchPaperModel(
       id: json['id'] ?? '',
       title: json['title'] ?? '',
       abstract: json['abstract'] ?? '',
-      publishedAt: json['publishedAt'] ?? DateTime.now(),
+      publishedAt: parsedDate,
       authors:
           (json['authors'] as List<dynamic>?)
               ?.map((e) => e as String)

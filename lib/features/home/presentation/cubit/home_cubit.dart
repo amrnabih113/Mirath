@@ -1,7 +1,9 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../core/usecases/no_params.dart';
-import '../../../users/domain/entities/user.dart';
+import '../../../interests/domain/entities/interest.dart';
+import '../../../interests/domain/usecases/get_all_interests_usecase.dart';
+import '../../../users/domain/entities/user.dart' hide Interest;
 import '../../../users/domain/usecases/get_current_user_usecase.dart';
 import '../../domain/entities/paper_entity.dart';
 import '../../domain/usecases/get_recent_papers_usecase.dart';
@@ -14,6 +16,7 @@ class HomeCubit extends Cubit<HomeState> {
   final GetRecentPapersUseCase getRecentPapersUseCase;
   final GetRecommendationsUseCase getRecommendationsUseCase;
   final GetCurrentUserUsecase getCurrentUserUsecase;
+  final GetAllInterestsUsecase getAllInterestsUsecase;
   final SavePaperUseCase savePaperUseCase;
   final UnsavePaperUseCase unsavePaperUseCase;
 
@@ -21,6 +24,7 @@ class HomeCubit extends Cubit<HomeState> {
     required this.getRecentPapersUseCase,
     required this.getRecommendationsUseCase,
     required this.getCurrentUserUsecase,
+    required this.getAllInterestsUsecase,
     required this.savePaperUseCase,
     required this.unsavePaperUseCase,
   }) : super(const HomeInitial());
@@ -28,6 +32,7 @@ class HomeCubit extends Cubit<HomeState> {
   // Track current page for pagination
   int _recommendationPage = 1;
   int _recentPapersPage = 1;
+  String? _selectedCategory;
 
   Future<User?> loadCurrentUser() async {
     final result = await getCurrentUserUsecase(NoParams());
@@ -44,9 +49,15 @@ class HomeCubit extends Cubit<HomeState> {
 
     // Reset page number for recent papers
     _recentPapersPage = 1;
-
+    // Treat empty string as null (for "All" filter)
+    final categoryToUse = category?.isEmpty == true ? null : category;
+    if (categoryToUse != null) {
+      _selectedCategory = categoryToUse;
+    } else {
+      _selectedCategory = null;
+    }
     final result = await getRecentPapersUseCase(
-      GetRecentPapersParams(category: category, page: page, limit: limit),
+      GetRecentPapersParams(category: categoryToUse, page: page, limit: limit),
     );
 
     result.fold(
@@ -82,14 +93,20 @@ class HomeCubit extends Cubit<HomeState> {
   }) async {
     emit(const HomeLoading());
 
-    // Reset pagination
     _recommendationPage = 1;
     _recentPapersPage = 1;
+    if (category != null) {
+      _selectedCategory = category;
+    }
+    // Load interests
+    final interestsResult = await getAllInterestsUsecase(NoParams());
 
+    // Load recent papers
     final recentResult = await getRecentPapersUseCase(
       GetRecentPapersParams(category: category, page: 1, limit: recentLimit),
     );
 
+    // Load recommendations
     final recommendationResult = await getRecommendationsUseCase(
       GetRecommendationsParams(
         page: _recommendationPage,
@@ -107,13 +124,32 @@ class HomeCubit extends Cubit<HomeState> {
             emit(const HomeError(message: 'Failed to fetch recommendations'));
           },
           (recommendations) {
-            emit(
-              HomePapersLoaded(
-                recentPapers: recentPapers,
-                recommendations: recommendations,
-                hasReachedMaxRecommendations:
-                    recommendations.length < recommendationLimit,
-              ),
+            interestsResult.fold(
+              (failure) {
+                // Continue without interests if fetch fails
+                emit(
+                  HomePapersLoaded(
+                    recentPapers: recentPapers,
+                    recommendations: recommendations,
+                    interests: [],
+                    selectedCategory: _selectedCategory,
+                    hasReachedMaxRecommendations:
+                        recommendations.length < recommendationLimit,
+                  ),
+                );
+              },
+              (interests) {
+                emit(
+                  HomePapersLoaded(
+                    recentPapers: recentPapers,
+                    recommendations: recommendations,
+                    interests: interests,
+                    selectedCategory: _selectedCategory,
+                    hasReachedMaxRecommendations:
+                        recommendations.length < recommendationLimit,
+                  ),
+                );
+              },
             );
           },
         );
@@ -121,9 +157,67 @@ class HomeCubit extends Cubit<HomeState> {
     );
   }
 
+  Future<void> filterPapersByInterest(String interestName) async {
+    final currentState = state;
+
+    // Get current interests and papers
+    late List<Interest> interests;
+
+    if (currentState is HomePapersLoaded) {
+      interests = currentState.interests;
+    } else if (currentState is HomePapersUpdated) {
+      interests = currentState.interests;
+    } else {
+      return;
+    }
+
+    // Update selected category (empty string for "All" means no filter)
+    _selectedCategory = interestName.isEmpty ? null : interestName;
+    _recentPapersPage = 1;
+
+    emit(const HomeLoading());
+
+    final result = await getRecentPapersUseCase(
+      GetRecentPapersParams(
+        category: interestName.isEmpty ? null : interestName,
+        page: 1,
+        limit: 10,
+      ),
+    );
+
+    result.fold(
+      (failure) {
+        emit(
+          HomePapersLoaded(
+            recentPapers: [],
+            recommendations: currentState is HomePapersLoaded
+                ? currentState.recommendations
+                : (currentState as HomePapersUpdated).recommendations,
+            interests: interests,
+            selectedCategory: _selectedCategory,
+          ),
+        );
+      },
+      (newPapers) {
+        if (isClosed) return;
+        emit(
+          HomePapersLoaded(
+            recentPapers: newPapers,
+            recommendations: currentState is HomePapersLoaded
+                ? currentState.recommendations
+                : (currentState as HomePapersUpdated).recommendations,
+            interests: interests,
+            selectedCategory: _selectedCategory,
+          ),
+        );
+      },
+    );
+  }
+
   Future<void> loadMoreRecommendations({int limit = 5}) async {
     final currentState = state;
-    if (currentState is! HomePapersLoaded && currentState is! HomePapersUpdated) {
+    if (currentState is! HomePapersLoaded &&
+        currentState is! HomePapersUpdated) {
       return;
     }
 
@@ -141,6 +235,8 @@ class HomeCubit extends Cubit<HomeState> {
       baseState = HomePapersLoaded(
         recentPapers: currentState.recentPapers,
         recommendations: currentState.recommendations,
+        interests: currentState.interests,
+        selectedCategory: currentState.selectedCategory,
         isLoadingMoreRecent: currentState.isLoadingMoreRecent,
         isLoadingMoreRecommendations: currentState.isLoadingMoreRecommendations,
         hasReachedMaxRecent: currentState.hasReachedMaxRecent,
@@ -219,9 +315,12 @@ class HomeCubit extends Cubit<HomeState> {
 
     _recentPapersPage++;
 
+    // Treat empty string as null (for "All" filter)
+    final categoryToUse = category?.isEmpty == true ? null : category;
+
     final result = await getRecentPapersUseCase(
       GetRecentPapersParams(
-        category: category,
+        category: categoryToUse,
         page: _recentPapersPage,
         limit: limit,
       ),
@@ -321,6 +420,7 @@ class HomeCubit extends Cubit<HomeState> {
         HomePapersUpdated(
           recentPapers: updatedRecentPapers,
           recommendations: updatedRecommendations,
+          interests: currentState.interests,
           isLoadingMoreRecent: currentState.isLoadingMoreRecent,
           isLoadingMoreRecommendations:
               currentState.isLoadingMoreRecommendations,

@@ -53,6 +53,7 @@ class _UserInformationHeaderState extends State<UserInformationHeader> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Expanded(
+          flex: 2,
           child: InkWell(
             onTap: () => _openAuthorProfile(context),
             child: Row(
@@ -69,6 +70,7 @@ class _UserInformationHeaderState extends State<UserInformationHeader> {
                 ),
                 SizedBox(width: MySizes.spaceSm(context)),
                 Expanded(
+                  flex: 1,
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
@@ -85,7 +87,7 @@ class _UserInformationHeaderState extends State<UserInformationHeader> {
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
                       ),
-                      SizedBox(height: MySizes.spaceXs(context) * 0.5),
+                      //  SizedBox(height: MySizes.spaceXs(context) * 0.5),
                       Text(
                         widget.discussion.author.bio ??
                             '@${widget.discussion.author.username}',
@@ -102,36 +104,38 @@ class _UserInformationHeaderState extends State<UserInformationHeader> {
         ),
         if (!widget.discussion.author.isMe) ...[
           SizedBox(width: MySizes.spaceXs(context)),
-          Padding(
-            padding: EdgeInsets.only(top: MySizes.spaceXs(context) * 0.25),
-            child: FollowButton(
-              userId: widget.discussion.author.id,
-              isFollowed: _isFollowing,
-              isLoading: _isLoadingFollow,
-              onFollowTap: () async {
-                setState(() => _isLoadingFollow = true);
-                await context.read<CommunityCubit>().followUser(
-                  widget.discussion.author.id,
-                );
-                if (mounted) {
-                  setState(() {
-                    _isFollowing = true;
-                    _isLoadingFollow = false;
-                  });
-                }
-              },
-              onUnfollowTap: () async {
-                setState(() => _isLoadingFollow = true);
-                await context.read<CommunityCubit>().unfollowUser(
-                  widget.discussion.author.id,
-                );
-                if (mounted) {
-                  setState(() {
-                    _isFollowing = false;
-                    _isLoadingFollow = false;
-                  });
-                }
-              },
+          Expanded(
+            child: Padding(
+              padding: EdgeInsets.only(top: MySizes.spaceXs(context)),
+              child: FollowButton(
+                userId: widget.discussion.author.id,
+                isFollowed: _isFollowing,
+                isLoading: _isLoadingFollow,
+                onFollowTap: () async {
+                  setState(() => _isLoadingFollow = true);
+                  await context.read<CommunityCubit>().followUser(
+                    widget.discussion.author.id,
+                  );
+                  if (mounted) {
+                    setState(() {
+                      _isFollowing = true;
+                      _isLoadingFollow = false;
+                    });
+                  }
+                },
+                onUnfollowTap: () async {
+                  setState(() => _isLoadingFollow = true);
+                  await context.read<CommunityCubit>().unfollowUser(
+                    widget.discussion.author.id,
+                  );
+                  if (mounted) {
+                    setState(() {
+                      _isFollowing = false;
+                      _isLoadingFollow = false;
+                    });
+                  }
+                },
+              ),
             ),
           ),
         ],
