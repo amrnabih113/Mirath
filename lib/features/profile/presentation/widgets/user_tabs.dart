@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'package:mirath/core/constants/route_names.dart';
 import 'package:mirath/features/discussions/domain/entities/discussion.dart';
 import 'package:mirath/features/discussions/domain/entities/get_discussions_params.dart';
 import 'package:mirath/features/discussions/domain/usecases/get_all_discussions_usecase.dart';
@@ -57,7 +58,9 @@ class UserTabs extends StatelessWidget {
                   readingList: readingLists[index],
                   onTap: () {
                     context.push(
-                      '/reading-list-details',
+                      RouteNames.readingListDetailsRoute(
+                        readingLists[index].id,
+                      ),
                       extra: readingLists[index],
                     );
                   },

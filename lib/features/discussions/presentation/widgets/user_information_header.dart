@@ -8,6 +8,7 @@ import '../../../../core/helpers/responsive_helper.dart';
 import '../../../../core/services/user_cache_service.dart';
 import '../../../../core/utils/my_extenstions.dart';
 import '../../../../core/utils/my_sizes.dart';
+import '../../../../core/constants/route_names.dart';
 import '../../../common/widgets/profile_avatar.dart';
 import '../../domain/entities/discussion.dart';
 import '../cubit/community_cubit.dart';
@@ -40,11 +41,11 @@ class _UserInformationHeaderState extends State<UserInformationHeader> {
   void _openAuthorProfile(BuildContext context) {
     final currentUser = sl<UserCacheService>().getCachedUser();
     if (currentUser?.id == widget.discussion.author.id) {
-      context.push('/profile');
+      context.push(RouteNames.profile);
       return;
     }
 
-    context.push('/other-users-profile/${widget.discussion.author.id}');
+    context.push(RouteNames.userProfileRoute(widget.discussion.author.id));
   }
 
   @override

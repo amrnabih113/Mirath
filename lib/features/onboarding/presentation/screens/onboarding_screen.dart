@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'package:mirath/core/constants/route_names.dart';
 
 import '../../../../core/helpers/responsive_helper.dart';
 import '../../../../core/services/local_storage_service.dart';
@@ -45,7 +46,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
           if (state is OnboardingCompleted) {
             // Mark onboarding as seen in local storage
             sl<LocalStorageService>().setOnboardingSeen(true);
-            context.go('/signin');
+            context.go(RouteNames.signin);
           } else if (state is OnboardingPageChanged) {
             _pageController.animateToPage(
               state.currentPage,

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'package:mirath/core/constants/route_names.dart';
 
 import '../../../../core/helpers/my_loaders.dart';
 import '../../../../core/utils/my_sizes.dart';
@@ -35,7 +36,7 @@ class VerifyAccountScreen extends StatelessWidget {
             title: S.of(context).verified,
             message: state.message ?? S.of(context).account_verified_success,
           );
-          context.pushReplacement('/home');
+          context.pushReplacement(RouteNames.home);
         } else if (state.status == AuthStatus.error) {
           MyLoaders.errorSnackBar(
             context: context,

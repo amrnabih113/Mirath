@@ -1,0 +1,12 @@
+[
+  {
+    "relation": ["delegate_permission/common.handle_all_urls"],
+    "target": {
+      "namespace": "android_app",
+      "package_name": "com.mirath.app",
+      "sha256_cert_fingerprints": [
+        "86:12:10:FE:2B:FC:CD:94:6E:1B:17:2B:6A:4D:3E:7C:CA:7F:C4:E8:51:CF:4D:52:2E:CC:11:42:82:78:70:2D"
+      ]
+    }
+  }
+]

@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:mirath/core/utils/my_colors.dart';
 import 'package:mirath/generated/l10n.dart';
+import 'package:mirath/core/constants/route_names.dart';
 import '../../../../core/utils/my_sizes.dart';
 import '../cubit/community_cubit.dart';
 import '../cubit/community_state.dart';
@@ -81,7 +82,7 @@ class _DiscussionTabState extends State<DiscussionTab> {
                   SizedBox(height: MySizes.spaceLg(context)),
                   ElevatedButton.icon(
                     onPressed: () {
-                      context.push('/add-discussion');
+                      context.push(RouteNames.addDiscussion);
                     },
                     icon: const Icon(Icons.add_comment),
                     label: Text(S.of(context).start_discussion_button),
@@ -138,7 +139,9 @@ class _DiscussionTabState extends State<DiscussionTab> {
                 discussion: discussions[discussionIndex],
                 onTap: () {
                   context.push(
-                    '/discussion-details',
+                    RouteNames.discussionDetailsRoute(
+                      discussions[discussionIndex].id,
+                    ),
                     extra: discussions[discussionIndex],
                   );
                 },

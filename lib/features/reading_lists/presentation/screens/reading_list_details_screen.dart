@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:hugeicons/hugeicons.dart';
 import 'package:intl/intl.dart';
 import 'package:mirath/core/utils/my_logger.dart';
+import 'package:mirath/core/services/sharing_service.dart';
 
 import '../../../../core/helpers/responsive_helper.dart';
 import '../../../../core/utils/my_colors.dart';
@@ -18,9 +20,9 @@ import '../cubit/reading_list_state.dart';
 import '../widgets/reading_list_details_shimmer_loading.dart';
 
 class ReadingListDetailsScreen extends StatefulWidget {
-  final ReadingList readingList;
+  final ReadingList? readingList;
 
-  const ReadingListDetailsScreen({super.key, required this.readingList});
+  const ReadingListDetailsScreen({super.key, this.readingList});
 
   @override
   State<ReadingListDetailsScreen> createState() =>
@@ -31,9 +33,15 @@ class _ReadingListDetailsScreenState extends State<ReadingListDetailsScreen> {
   @override
   void initState() {
     super.initState();
-    MyLogger.debug(
-      'ReadingListDetailsScreen initialized with reading list ID: ${widget.readingList.id}',
-    );
+    if (widget.readingList != null) {
+      MyLogger.debug(
+        'ReadingListDetailsScreen initialized with reading list ID: ${widget.readingList!.id}',
+      );
+    } else {
+      MyLogger.debug(
+        'ReadingListDetailsScreen initialized without reading list object',
+      );
+    }
   }
 
   @override
@@ -46,6 +54,24 @@ class _ReadingListDetailsScreenState extends State<ReadingListDetailsScreen> {
             leadingWidth: ResponsiveHelper.responsiveValue(context, 50),
             leading: const MyBackIcon(),
             titleSpacing: 0,
+            actions: [
+              if (state is ReadingListDetailsLoaded)
+                Padding(
+                  padding: EdgeInsets.only(right: MySizes.spaceSm(context)),
+                  child: IconButton(
+                    onPressed: () {
+                      //   _showReadingListMenu(context, state.readingList);
+                    },
+                    icon: HugeIcon(
+                      icon: HugeIcons.strokeRoundedMoreHorizontal,
+                      size: MySizes.iconMedium(context),
+                      strokeWidth: ResponsiveHelper.responsiveValue(context, 2),
+                    ),
+                    padding: EdgeInsets.zero,
+                    constraints: const BoxConstraints(),
+                  ),
+                ),
+            ],
           ),
           body: Builder(
             builder: (context) {
@@ -175,6 +201,8 @@ class _ReadingListDetailsScreenState extends State<ReadingListDetailsScreen> {
                                 ? currentState.readingList
                                 : widget.readingList;
 
+                            if (currentList == null) return;
+
                             if (currentList.isSaved) {
                               cubit.unsaveReadingList(currentList.id);
                             } else {
@@ -187,7 +215,7 @@ class _ReadingListDetailsScreenState extends State<ReadingListDetailsScreen> {
                                   final isSaved =
                                       state is ReadingListDetailsLoaded
                                       ? state.readingList.isSaved
-                                      : widget.readingList.isSaved;
+                                      : widget.readingList?.isSaved ?? false;
                                   return Text(
                                     isSaved ? 'Unsave List' : 'Save Full List',
                                   );

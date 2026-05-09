@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:iconsax/iconsax.dart';
+import 'package:mirath/core/constants/route_names.dart';
 
 import '../../../../core/utils/my_colors.dart';
 import '../../../../core/utils/my_extenstions.dart';
@@ -87,7 +88,7 @@ class _SigninFormState extends State<SigninForm> {
             children: [
               GestureDetector(
                 onTap: () {
-                  context.push('/forget-password');
+                  context.push(RouteNames.forgetPassword);
                 },
                 child: Text(
                   S.of(context).forgot_password,
@@ -132,7 +133,7 @@ class _SigninFormState extends State<SigninForm> {
           SizedBox(height: MySizes.spaceLg(context)),
           GestureDetector(
             onTap: () {
-              context.push('/signup');
+              context.push(RouteNames.signup);
             },
             child: Text.rich(
               TextSpan(

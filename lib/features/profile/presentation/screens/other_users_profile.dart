@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hugeicons/hugeicons.dart';
+import 'package:mirath/core/constants/route_names.dart';
+import 'package:mirath/core/services/sharing_service.dart';
 import 'package:mirath/core/utils/my_colors.dart';
 import 'package:mirath/core/utils/my_sizes.dart';
 import 'package:mirath/features/profile/presentation/widgets/user_data.dart';
@@ -22,13 +24,21 @@ class OtherUsersProfile extends StatelessWidget {
       child: Scaffold(
         appBar: AppBar(
           actions: [
-            IconButton(
-              icon: HugeIcon(
-                icon: HugeIcons.strokeRoundedMoreHorizontal,
-                size: MySizes.iconMedium(context),
-                color: Colors.black,
-              ),
-              onPressed: () {},
+            BlocBuilder<ProfileHeaderCubit, ProfileHeaderState>(
+              builder: (context, state) {
+                return IconButton(
+                  icon: HugeIcon(
+                    icon: HugeIcons.strokeRoundedMoreHorizontal,
+                    size: MySizes.iconMedium(context),
+                    color: Colors.black,
+                  ),
+                  onPressed: () {
+                    if (state is ProfileHeaderLoaded) {
+                      _showUserProfileMenu(context, state.user);
+                    }
+                  },
+                );
+              },
             ),
           ],
         ),
@@ -80,22 +90,20 @@ class OtherUsersProfile extends StatelessWidget {
                                   },
                                   onFollowersTap: () {
                                     context.push(
-                                      '/follower_following_screen',
-                                      extra: {
-                                        'userId': user.id,
-                                        'username': user.username,
-                                        'tab': 0,
-                                      },
+                                      RouteNames.followerFollowingRoute(
+                                        userId,
+                                        tab: 0,
+                                      ),
+                                      extra: {'username': user.username},
                                     );
                                   },
                                   onFollowingTap: () {
                                     context.push(
-                                      '/follower_following_screen',
-                                      extra: {
-                                        'userId': user.id,
-                                        'username': user.username,
-                                        'tab': 1,
-                                      },
+                                      RouteNames.followerFollowingRoute(
+                                        userId,
+                                        tab: 1,
+                                      ),
+                                      extra: {'username': user.username},
                                     );
                                   },
                                 ),
@@ -123,6 +131,28 @@ class OtherUsersProfile extends StatelessWidget {
               );
             },
           ),
+        ),
+      ),
+    );
+  }
+
+  void _showUserProfileMenu(BuildContext context, dynamic user) {
+    showModalBottomSheet(
+      context: context,
+      builder: (context) => Container(
+        padding: const EdgeInsets.symmetric(vertical: 16),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            ListTile(
+              leading: const HugeIcon(icon: HugeIcons.strokeRoundedShare08),
+              title: const Text('Share Profile'),
+              onTap: () {
+                Navigator.pop(context);
+                SharingService.shareProfile(user);
+              },
+            ),
+          ],
         ),
       ),
     );

@@ -15,6 +15,7 @@ import 'package:mirath/core/utils/my_enums.dart';
 import 'package:mirath/core/utils/my_extenstions.dart';
 import 'package:mirath/core/utils/my_logger.dart';
 import 'package:mirath/core/utils/my_sizes.dart';
+import 'package:mirath/core/constants/route_names.dart';
 
 import 'package:mirath/features/common/widgets/my_back_icon.dart';
 import 'package:mirath/features/common/widgets/tag_chip.dart';
@@ -575,7 +576,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
             TextButton(
               onPressed: () async {
                 final result = await context.push<List<String>>(
-                  '/edit_intersts_screen',
+                  RouteNames.editInterests,
                   extra: _selectedInterests.isNotEmpty
                       ? _selectedInterests
                       : (user?.interests.map((e) => e.name).toList() ?? []),

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:mirath/core/constants/route_names.dart';
 import 'package:mirath/core/utils/my_colors.dart';
 import 'package:mirath/core/utils/my_extenstions.dart';
 import 'package:mirath/core/utils/my_sizes.dart';
@@ -145,7 +146,10 @@ class _PaperInfoState extends State<PaperInfo> {
                   context.read<LibraryCubit>().updataReadingHistory(
                     widget.paper.id,
                   );
-                  context.push("/paper-reading", extra: widget.paper);
+                  context.push(
+                    RouteNames.paperReadingRoute(widget.paper.id),
+                    extra: widget.paper,
+                  );
                 },
                 title: 'Read',
                 titleColor: MyColors.primaryShade900,

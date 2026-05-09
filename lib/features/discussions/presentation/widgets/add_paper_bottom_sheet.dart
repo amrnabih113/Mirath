@@ -7,6 +7,7 @@ import 'package:mirath/core/utils/my_colors.dart';
 import 'package:mirath/core/utils/my_extenstions.dart';
 import 'package:mirath/core/utils/my_sizes.dart';
 import 'package:mirath/features/common/widgets/my_search_bar.dart';
+import 'package:mirath/core/constants/route_names.dart';
 import 'package:mirath/features/home/domain/entities/paper_entity.dart';
 import 'package:mirath/features/home/presentation/cubit/home_cubit.dart';
 import 'package:mirath/features/home/presentation/cubit/home_state.dart';
@@ -205,7 +206,10 @@ class _AddPaperBottomSheetState extends State<AddPaperBottomSheet> {
                               child: PaperCard(
                                 paper: paper,
                                 onTap: () {
-                                  context.push('/paper-screen', extra: paper);
+                                  context.push(
+                                    RouteNames.paperDetailsRoute(paper.id),
+                                    extra: paper,
+                                  );
                                 },
                               ),
                             ),

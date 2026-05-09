@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hugeicons/hugeicons.dart';
+import 'package:mirath/core/constants/route_names.dart';
+import 'package:mirath/core/services/sharing_service.dart';
 import 'package:mirath/features/home/domain/entities/paper_entity.dart';
 import 'package:hugeicons_pro/hugeicons.dart';
 import 'package:mirath/generated/l10n.dart';
@@ -156,7 +158,9 @@ class _DisscussionDetailsScreenState extends State<DisscussionDetailsScreen> {
           Padding(
             padding: EdgeInsets.only(right: MySizes.spaceSm(context)),
             child: IconButton(
-              onPressed: () {},
+              onPressed: () {
+                    _showDiscussionMenu(context, discussion);
+              },
               icon: HugeIcon(
                 icon: HugeIcons.strokeRoundedMoreHorizontal,
                 size: MySizes.iconMedium(context),
@@ -226,7 +230,10 @@ class _DisscussionDetailsScreenState extends State<DisscussionDetailsScreen> {
                                 preprint: '',
                                 citation: '',
                               );
-                              context.push('/paper-screen', extra: paperEntity);
+                              context.push(
+                                RouteNames.paperDetailsRoute(paperEntity.id),
+                                extra: paperEntity,
+                              );
                             },
                           ),
                         ),
@@ -309,6 +316,30 @@ class _DisscussionDetailsScreenState extends State<DisscussionDetailsScreen> {
             ),
           );
         },
+      ),
+    );
+  }
+
+  void _showDiscussionMenu(BuildContext context, Discussion discussion) {
+    showModalBottomSheet(
+      context: context,
+      builder: (context) => Container(
+        padding: const EdgeInsets.symmetric(vertical: 16),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            ListTile(
+              leading: const HugeIcon(
+                icon: HugeIcons.strokeRoundedShare08,
+              ),
+              title: const Text('Share Discussion'),
+              onTap: () {
+                Navigator.pop(context);
+                SharingService.shareDiscussion(discussion);
+              },
+            ),
+          ],
+        ),
       ),
     );
   }

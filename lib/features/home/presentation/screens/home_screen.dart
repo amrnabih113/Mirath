@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'package:mirath/core/constants/route_names.dart';
 import 'package:mirath/features/home/domain/entities/paper_entity.dart';
 import '../cubit/home_cubit.dart';
 import '../cubit/home_state.dart';
@@ -97,11 +98,11 @@ class _HomeScreenState extends State<HomeScreen> {
                     final state = cubit.state;
                     if (state is HomePapersLoaded) {
                       context.push(
-                        "/recentely-published",
+                        RouteNames.recentlyPublished,
                         extra: state.selectedCategory,
                       );
                     } else {
-                      context.push("/recentely-published");
+                      context.push(RouteNames.recentlyPublished);
                     }
                   },
                 ),
@@ -219,7 +220,10 @@ class _HomeScreenState extends State<HomeScreen> {
                               return PaperCard(
                                 paper: paper,
                                 onTap: () {
-                                  context.push('/paper-screen', extra: paper);
+                                  context.push(
+                                    RouteNames.paperDetailsRoute(paper.id),
+                                    extra: paper,
+                                  );
                                 },
                               );
                             },
