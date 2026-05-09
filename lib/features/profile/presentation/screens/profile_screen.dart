@@ -2,9 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hugeicons/hugeicons.dart';
+import 'package:mirath/core/constants/route_names.dart';
+import 'package:mirath/core/services/sharing_service.dart';
 import 'package:mirath/core/utils/my_colors.dart';
 import 'package:mirath/core/utils/my_sizes.dart';
-import 'package:mirath/core/constants/route_names.dart';
 import 'package:mirath/features/auth/presentation/cubit/auth_cubit.dart';
 import 'package:mirath/features/profile/presentation/cubit/profile_cubit.dart';
 import 'package:mirath/features/profile/presentation/widgets/user_data.dart';
@@ -23,6 +24,21 @@ class ProfileScreen extends StatelessWidget {
         appBar: AppBar(
           title: Text(S.of(context).profile),
           actions: [
+            IconButton(
+              icon: HugeIcon(
+                icon: HugeIcons.strokeRoundedShare08,
+                size: MySizes.iconMedium(context),
+                color: Colors.black,
+              ),
+              onPressed: () {
+                final state = context.read<ProfileCubit>().state;
+                if (state is ProfileLoadSuccess) {
+                  SharingService.shareProfile(state.user);
+                } else if (state is ProfileUpdateSuccess) {
+                  SharingService.shareProfile(state.user);
+                }
+              },
+            ),
             IconButton(
               icon: HugeIcon(
                 icon: HugeIcons.strokeRoundedLogout02,
