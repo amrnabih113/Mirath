@@ -14,11 +14,28 @@ import '../../../common/widgets/profile_avatar.dart';
 class AddDiscussionCard extends StatelessWidget {
   const AddDiscussionCard({super.key});
 
+  User? _getStoredUser() {
+    final userJson = sl<LocalStorageService>().getData(MyConstants.userDataKey);
+    if (userJson == null || userJson.isEmpty) {
+      return null;
+    }
+
+    try {
+      final decoded = jsonDecode(userJson);
+      if (decoded is Map<String, dynamic>) {
+        return User.fromJson(decoded);
+      }
+    } catch (_) {
+      return null;
+    }
+
+    return null;
+  }
+
   @override
   Widget build(BuildContext context) {
     final cachedUser = sl<UserCacheService>().getCachedUser();
-    final userJson = sl<LocalStorageService>().getData(MyConstants.userDataKey);
-    final User user = User.fromJson(jsonDecode(userJson!));
+    final storedUser = _getStoredUser();
 
     return InkWell(
       onTap: () {
@@ -35,7 +52,7 @@ class AddDiscussionCard extends StatelessWidget {
         child: Row(
           children: [
             ProfileAvatar(
-              imageUrl: cachedUser?.photoURL ?? user.photoUrl,
+              imageUrl: cachedUser?.photoURL ?? storedUser?.photoUrl,
               size: 45,
             ),
             SizedBox(width: MySizes.spaceSm(context)),

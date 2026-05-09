@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 import 'package:hugeicons/hugeicons.dart';
 import 'package:mirath/core/utils/my_colors.dart';
 import 'package:mirath/core/utils/my_sizes.dart';
+import 'package:mirath/features/auth/presentation/cubit/auth_cubit.dart';
 import 'package:mirath/features/profile/presentation/cubit/profile_cubit.dart';
 import 'package:mirath/features/profile/presentation/widgets/user_data.dart';
 import 'package:mirath/features/profile/presentation/widgets/user_tabs.dart';
@@ -23,11 +24,13 @@ class ProfileScreen extends StatelessWidget {
           actions: [
             IconButton(
               icon: HugeIcon(
-                icon: HugeIcons.strokeRoundedLinkForward,
+                icon: HugeIcons.strokeRoundedLogout02,
                 size: MySizes.iconMedium(context),
                 color: Colors.black,
               ),
-              onPressed: () {},
+              onPressed: () {
+                _showLogoutDialog(context);
+              },
             ),
             IconButton(
               icon: HugeIcon(
@@ -126,6 +129,29 @@ class ProfileScreen extends StatelessWidget {
             );
           },
         ),
+      ),
+    );
+  }
+
+  void _showLogoutDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (dialogContext) => AlertDialog(
+        title: Text(S.of(context).sign_out),
+        content: Text(S.of(context).are_you_sure_you_want_to_sign_out),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(dialogContext),
+            child: Text(S.of(context).cancel),
+          ),
+          TextButton(
+            onPressed: () {
+              Navigator.pop(dialogContext);
+              context.read<AuthCubit>().signOut();
+            },
+            child: Text(S.of(context).sign_out),
+          ),
+        ],
       ),
     );
   }

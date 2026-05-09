@@ -226,6 +226,7 @@ class DI {
         resetPasswordUseCase: sl(),
         isVerifiedUseCase: sl(),
         setUpProfileUseCase: sl(),
+        getCurrentUserUsecase: sl(),
         checkSetupUseCase: sl(),
         localStorage: sl(),
         secureStorage: sl(),
