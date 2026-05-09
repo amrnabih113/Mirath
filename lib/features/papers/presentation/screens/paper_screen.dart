@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 import 'package:hugeicons/hugeicons.dart';
 import 'package:mirath/core/constants/route_names.dart';
 import 'package:mirath/core/helpers/responsive_helper.dart';
+import 'package:mirath/core/services/sharing_service.dart';
 import 'package:mirath/core/utils/my_sizes.dart';
 import 'package:mirath/features/common/widgets/my_back_icon.dart';
 import 'package:mirath/features/home/domain/entities/paper_entity.dart';
@@ -46,7 +47,7 @@ class _PaperScreenState extends State<PaperScreen> {
                 constraints: const BoxConstraints(maxWidth: 850),
                 child: AppBar(
                   leading: MyBackIcon(
-                    onTap: (){
+                    onTap: () {
                       context.go(RouteNames.home);
                     },
                   ),
@@ -57,7 +58,7 @@ class _PaperScreenState extends State<PaperScreen> {
                         size: MySizes.iconLarge(context),
                         color: Colors.black,
                       ),
-                      onPressed: () {},
+                      onPressed: () => _showPaperMenu(context),
                     ),
                   ],
                 ),
@@ -120,11 +121,36 @@ class _PaperScreenState extends State<PaperScreen> {
     );
   }
 
+  void _showPaperMenu(BuildContext context) {
+    showModalBottomSheet(
+      context: context,
+      builder: (context) => Container(
+        padding: const EdgeInsets.symmetric(vertical: 16),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            ListTile(
+              leading: const HugeIcon(icon: HugeIcons.strokeRoundedShare08),
+              title: const Text('Share Paper'),
+              onTap: () {
+                Navigator.pop(context);
+                SharingService.sharePaper(_currentPaper);
+              },
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
   void _onStartDiscussion() {
     context.push(RouteNames.addDiscussion, extra: _currentPaper);
   }
 
   void _onViewDiscussions() {
-    context.push(RouteNames.paperDiscussionsRoute(_currentPaper.id), extra: _currentPaper);
+    context.push(
+      RouteNames.paperDiscussionsRoute(_currentPaper.id),
+      extra: _currentPaper,
+    );
   }
 }

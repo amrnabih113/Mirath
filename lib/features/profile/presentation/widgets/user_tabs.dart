@@ -58,7 +58,9 @@ class UserTabs extends StatelessWidget {
                   readingList: readingLists[index],
                   onTap: () {
                     context.push(
-                      RouteNames.readingListDetailsRoute(readingLists[index].id),
+                      RouteNames.readingListDetailsRoute(
+                        readingLists[index].id,
+                      ),
                       extra: readingLists[index],
                     );
                   },

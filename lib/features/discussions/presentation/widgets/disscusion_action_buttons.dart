@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hugeicons/hugeicons.dart';
 import 'package:mirath/core/constants/route_names.dart';
+import 'package:mirath/core/services/sharing_service.dart';
 
 import '../../../../core/utils/my_colors.dart';
 import '../../../../core/utils/my_extenstions.dart';
@@ -81,9 +82,7 @@ class DisscusionActionButtons extends StatelessWidget {
             SizedBox(width: MySizes.spaceSm(context)),
             IconButton(
               onPressed: () {
-                // Share discussion link
-                // final discussionLink =
-                //     '${MyConstants.baseUrl}/discussions/${discussion.id}';
+                SharingService.shareDiscussion(discussion);
               },
               icon: HugeIcon(
                 icon: HugeIcons.strokeRoundedShare08,

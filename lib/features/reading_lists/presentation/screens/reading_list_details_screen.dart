@@ -36,7 +36,9 @@ class _ReadingListDetailsScreenState extends State<ReadingListDetailsScreen> {
         'ReadingListDetailsScreen initialized with reading list ID: ${widget.readingList!.id}',
       );
     } else {
-      MyLogger.debug('ReadingListDetailsScreen initialized without reading list object');
+      MyLogger.debug(
+        'ReadingListDetailsScreen initialized without reading list object',
+      );
     }
   }
 
