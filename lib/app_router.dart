@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'package:mirath/features/chatbot/presentation/cubit/chatbot_cubit.dart';
+import 'package:mirath/features/chatbot/presentation/screens/chatbot_screen.dart';
 import 'package:mirath/features/discussions/presentation/screens/add_discussion_screen.dart';
 import 'package:mirath/features/home/domain/entities/paper_entity.dart';
 import 'package:mirath/features/home/presentation/cubit/search_cubit.dart';
@@ -507,6 +509,7 @@ final appRouter = GoRouter(
         final payload = state.extra as Map<String, dynamic>?;
         final userId = (payload?['userId'] ?? '').toString();
         final username = payload?['username']?.toString();
+        final tabIndex = (payload?['tab'] as int?) ?? 0;
 
         if (userId.isEmpty) {
           return PageTransitions.smoothTransition(
@@ -518,14 +521,18 @@ final appRouter = GoRouter(
         }
 
         return PageTransitions.smoothTransition(
-          FollowerFollowingScreen(userId: userId, username: username),
+          FollowerFollowingScreen(
+            userId: userId,
+            username: username,
+            initialTabIndex: tabIndex,
+          ),
         );
       },
     ),
     GoRoute(
-      path: '/other-users-profile',
+      path: '/other-users-profile/:userId',
       pageBuilder: (context, state) {
-        final userId = (state.extra ?? '').toString();
+        final userId = state.pathParameters['userId'] ?? '';
         if (userId.isEmpty) {
           return PageTransitions.smoothTransition(
             Scaffold(
@@ -550,15 +557,21 @@ final appRouter = GoRouter(
       },
     ),
     GoRoute(
+      path: '/chatbot',
+      pageBuilder: (context, state) {
+        return PageTransitions.smoothTransition(
+          BlocProvider.value(value: sl<ChatbotCubit>(), child: ChatbotScreen()),
+        );
+      },
+    ),
+    GoRoute(
       path: '/edit_intersts_screen',
       pageBuilder: (context, state) {
-        final initialSelected = state.extra as List<String>? ?? []; 
+        final initialSelected = state.extra as List<String>? ?? [];
         return PageTransitions.smoothTransition(
           BlocProvider.value(
             value: sl<InterestsCubit>(),
-            child:  EditInterstsScreen(
-              initialSelected: initialSelected,
-            ),
+            child: EditInterstsScreen(initialSelected: initialSelected),
           ),
         );
       },

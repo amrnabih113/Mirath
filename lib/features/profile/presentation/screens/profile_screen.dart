@@ -85,6 +85,17 @@ class ProfileScreen extends StatelessWidget {
                                       extra: {
                                         'userId': user.id,
                                         'username': user.username,
+                                        'tab': 0,
+                                      },
+                                    );
+                                  },
+                                  onFollowingTap: () {
+                                    context.push(
+                                      '/follower_following_screen',
+                                      extra: {
+                                        'userId': user.id,
+                                        'username': user.username,
+                                        'tab': 1,
                                       },
                                     );
                                   },

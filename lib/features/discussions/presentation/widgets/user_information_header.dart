@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 import 'package:hugeicons/hugeicons.dart';
+import 'package:mirath/injection/injection_container.dart';
 
 import '../../../../core/helpers/responsive_helper.dart';
+import '../../../../core/services/user_cache_service.dart';
 import '../../../../core/utils/my_extenstions.dart';
 import '../../../../core/utils/my_sizes.dart';
 import '../../../common/widgets/profile_avatar.dart';
@@ -25,95 +28,125 @@ class UserInformationHeader extends StatefulWidget {
 }
 
 class _UserInformationHeaderState extends State<UserInformationHeader> {
-  bool _isFollowing = false;
+  late bool _isFollowing;
   bool _isLoadingFollow = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _isFollowing = widget.discussion.author.isFollowing;
+  }
+
+  void _openAuthorProfile(BuildContext context) {
+    final currentUser = sl<UserCacheService>().getCachedUser();
+    if (currentUser?.id == widget.discussion.author.id) {
+      context.push('/profile');
+      return;
+    }
+
+    context.push('/other-users-profile/${widget.discussion.author.id}');
+  }
 
   @override
   Widget build(BuildContext context) {
     return Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        ProfileAvatar(
-          imageUrl: widget.discussion.author.photoUrl,
-          size: ResponsiveHelper.responsiveValue(
-            context,
-            ResponsiveHelper.deviceTypeFromContext(context) != DeviceType.phone
-                ? 25
-                : 40,
-          ),
-        ),
-        SizedBox(width: MySizes.spaceSm(context)),
         Expanded(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Row(
-                children: [
-                  ConstrainedBox(
-                    constraints: BoxConstraints(
-                      maxWidth: ResponsiveHelper.responsiveValue(context, 120),
-                    ),
-                    child: Text(
-                      widget.discussion.author.fullName,
-                      style: context.titleSmall.copyWith(
-                        fontWeight: FontWeight.w900,
+          child: InkWell(
+            onTap: () => _openAuthorProfile(context),
+            child: Row(
+              children: [
+                ProfileAvatar(
+                  imageUrl: widget.discussion.author.photoUrl,
+                  size: ResponsiveHelper.responsiveValue(
+                    context,
+                    ResponsiveHelper.deviceTypeFromContext(context) !=
+                            DeviceType.phone
+                        ? 25
+                        : 40,
+                  ),
+                ),
+                SizedBox(width: MySizes.spaceSm(context)),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        widget.discussion.author.fullName,
+                        style: context.titleSmall.copyWith(
+                          fontWeight: FontWeight.w900,
+                          overflow: TextOverflow.ellipsis,
+                          fontSize: ResponsiveHelper.responsiveValue(
+                            context,
+                            14,
+                          ),
+                        ),
+                        maxLines: 1,
                         overflow: TextOverflow.ellipsis,
-                        fontSize: ResponsiveHelper.responsiveValue(context, 14),
                       ),
-                    ),
+                      SizedBox(height: MySizes.spaceXs(context) * 0.5),
+                      Text(
+                        widget.discussion.author.bio ??
+                            '@${widget.discussion.author.username}',
+                        style: context.bodySmall.copyWith(),
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    ],
                   ),
-                  SizedBox(width: MySizes.spaceXs(context)),
-                  
-                  FollowButton(
-                    userId: widget.discussion.author.id,
-                    isFollowed: _isFollowing,
-                    isLoading: _isLoadingFollow,
-                    onFollowTap: () async {
-                      setState(() => _isLoadingFollow = true);
-                      await context.read<CommunityCubit>().followUser(
-                        widget.discussion.author.id,
-                      );
-                      if (mounted) {
-                        setState(() {
-                          _isFollowing = true;
-                          _isLoadingFollow = false;
-                        });
-                      }
-                    },
-                    onUnfollowTap: () async {
-                      setState(() => _isLoadingFollow = true);
-                      await context.read<CommunityCubit>().unfollowUser(
-                        widget.discussion.author.id,
-                      );
-                      if (mounted) {
-                        setState(() {
-                          _isFollowing = false;
-                          _isLoadingFollow = false;
-                        });
-                      }
-                    },
-                  ),
-                ],
-              ),
-              SizedBox(height: MySizes.spaceXs(context) * 0.5),
-              Text(
-                widget.discussion.author.bio ??
-                    '@${widget.discussion.author.username}',
-                style: context.bodySmall.copyWith(),
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
-              ),
-            ],
+                ),
+              ],
+            ),
           ),
         ),
-        if (widget.showMoreButton)
-          IconButton(
-            onPressed: () {},
-            icon: HugeIcon(
-              icon: HugeIcons.strokeRoundedMoreHorizontal,
-              size: MySizes.iconMedium(context),
+        if (!widget.discussion.author.isMe) ...[
+          SizedBox(width: MySizes.spaceXs(context)),
+          Padding(
+            padding: EdgeInsets.only(top: MySizes.spaceXs(context) * 0.25),
+            child: FollowButton(
+              userId: widget.discussion.author.id,
+              isFollowed: _isFollowing,
+              isLoading: _isLoadingFollow,
+              onFollowTap: () async {
+                setState(() => _isLoadingFollow = true);
+                await context.read<CommunityCubit>().followUser(
+                  widget.discussion.author.id,
+                );
+                if (mounted) {
+                  setState(() {
+                    _isFollowing = true;
+                    _isLoadingFollow = false;
+                  });
+                }
+              },
+              onUnfollowTap: () async {
+                setState(() => _isLoadingFollow = true);
+                await context.read<CommunityCubit>().unfollowUser(
+                  widget.discussion.author.id,
+                );
+                if (mounted) {
+                  setState(() {
+                    _isFollowing = false;
+                    _isLoadingFollow = false;
+                  });
+                }
+              },
             ),
-            padding: EdgeInsets.zero,
-            constraints: const BoxConstraints(),
+          ),
+        ],
+        if (widget.showMoreButton)
+          Padding(
+            padding: EdgeInsets.only(left: MySizes.spaceXs(context)),
+            child: IconButton(
+              onPressed: () {},
+              icon: HugeIcon(
+                icon: HugeIcons.strokeRoundedMoreHorizontal,
+                size: MySizes.iconMedium(context),
+              ),
+              padding: EdgeInsets.zero,
+              constraints: const BoxConstraints(),
+            ),
           ),
       ],
     );

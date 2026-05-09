@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:mirath/features/users/domain/entities/follows.dart';
+import 'package:mirath/features/users/domain/usecases/follow_user_usecase.dart';
 import 'package:mirath/features/users/domain/usecases/get_followers_usecase.dart';
 import 'package:mirath/features/users/domain/usecases/get_following_usecase.dart';
+import 'package:mirath/features/users/domain/usecases/unfollow_user_usecase.dart';
 import 'package:mirath/injection/injection_container.dart';
 import 'package:mirath/core/utils/my_colors.dart';
 import 'package:mirath/core/utils/my_sizes.dart';
@@ -14,10 +17,12 @@ class FollowerFollowingScreen extends StatefulWidget {
     super.key,
     required this.userId,
     this.username,
+    this.initialTabIndex = 0,
   });
 
   final String userId;
   final String? username;
+  final int initialTabIndex;
 
   @override
   State<FollowerFollowingScreen> createState() =>
@@ -45,6 +50,14 @@ class _FollowerFollowingScreenState extends State<FollowerFollowingScreen> {
     return result.fold((_) => <Follows>[], (users) => users);
   }
 
+  Future<void> _toggleFollow(Follows user) async {
+    if (user.isFollowing) {
+      await sl<UnfollowUserUsecase>()(user.id);
+    } else {
+      await sl<FollowUserUsecase>()(user.id);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final headerTitle = (widget.username?.isNotEmpty ?? false)
@@ -53,6 +66,7 @@ class _FollowerFollowingScreenState extends State<FollowerFollowingScreen> {
 
     return DefaultTabController(
       length: 2,
+      initialIndex: widget.initialTabIndex.clamp(0, 1),
       child: Scaffold(
         appBar: AppBar(
           leading: MyBackIcon(),
@@ -99,7 +113,17 @@ class _FollowerFollowingScreenState extends State<FollowerFollowingScreen> {
                                 padding: const EdgeInsets.all(8),
                                 itemCount: users.length,
                                 itemBuilder: (context, index) =>
-                                    FollowerFollowingCard(user: users[index]),
+                                    FollowerFollowingCard(
+                                      user: users[index],
+                                      onUserTap: () {
+                                        context.push(
+                                          '/other-users-profile/${users[index].id}',
+                                        );
+                                      },
+                                      onFollowToggle: (_) {
+                                        return _toggleFollow(users[index]);
+                                      },
+                                    ),
                                 separatorBuilder: (context, index) =>
                                     SizedBox(height: MySizes.spaceXs(context)),
                               );
@@ -126,7 +150,17 @@ class _FollowerFollowingScreenState extends State<FollowerFollowingScreen> {
                                 padding: const EdgeInsets.all(8),
                                 itemCount: users.length,
                                 itemBuilder: (context, index) =>
-                                    FollowerFollowingCard(user: users[index]),
+                                    FollowerFollowingCard(
+                                      user: users[index],
+                                      onUserTap: () {
+                                        context.push(
+                                          '/other-users-profile/${users[index].id}',
+                                        );
+                                      },
+                                      onFollowToggle: (_) {
+                                        return _toggleFollow(users[index]);
+                                      },
+                                    ),
                                 separatorBuilder: (context, index) => SizedBox(
                                   height: MySizes.spaceXs(context) * 0.5,
                                 ),

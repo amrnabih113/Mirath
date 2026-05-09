@@ -1,4 +1,5 @@
 import '../../domain/entities/discussion_author.dart';
+import 'package:mirath/core/utils/my_logger.dart';
 
 class DiscussionAuthorModel extends DiscussionAuthor {
   const DiscussionAuthorModel({
@@ -9,9 +10,18 @@ class DiscussionAuthorModel extends DiscussionAuthor {
     super.bio,
     required super.role,
     required super.isPremium,
+    required super.isFollowing,
+    super.isMe,
   });
 
   factory DiscussionAuthorModel.fromJson(Map<String, dynamic> json) {
+    final isFollowing = json['isFollowing'] ?? json['isFollowed'] ?? false;
+    MyLogger.debug(
+      "DiscussionAuthorModel.fromJson - username: ${json['username']}, "
+      "json['isFollowing']: ${json['isFollowing']}, "
+      "json['isFollowed']: ${json['isFollowed']}, "
+      "parsed isFollowing: $isFollowing",
+    );
     return DiscussionAuthorModel(
       id: json['id'] ?? '',
       username: json['username'] ?? '',
@@ -20,6 +30,8 @@ class DiscussionAuthorModel extends DiscussionAuthor {
       bio: json['bio'],
       role: json['role'] ?? 'USER',
       isPremium: json['isPremium'] ?? false,
+      isFollowing: isFollowing,
+      isMe: json['isMe'] ?? false,
     );
   }
 
@@ -32,6 +44,8 @@ class DiscussionAuthorModel extends DiscussionAuthor {
       'bio': bio,
       'role': role,
       'isPremium': isPremium,
+      'isFollowing': isFollowing,
+      'isMe': isMe,
     };
   }
 }

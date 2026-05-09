@@ -19,6 +19,7 @@ class UserData extends StatelessWidget {
     required this.labelColor,
     required this.onActionTap,
     required this.onFollowersTap,
+    required this.onFollowingTap,
   });
   final User user;
   final String actionLabel;
@@ -26,6 +27,7 @@ class UserData extends StatelessWidget {
   final Color labelColor;
   final VoidCallback onActionTap;
   final VoidCallback onFollowersTap;
+  final VoidCallback onFollowingTap;
 
   ImageProvider? _avatarImage() {
     if (user.photoUrl == null || user.photoUrl!.isEmpty) {
@@ -38,7 +40,11 @@ class UserData extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       padding: MySizes.paddingMd(context),
-      decoration: BoxDecoration(border: Border(bottom: BorderSide(width: 1))),
+      decoration: BoxDecoration(
+        border: Border(
+          bottom: BorderSide(width: 1, color: Colors.grey.shade200),
+        ),
+      ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -60,17 +66,6 @@ class UserData extends StatelessWidget {
                     Row(
                       children: [
                         Text(user.fullName, style: context.titleSmall),
-                        if (!user.isEmailVisible)
-                          Padding(
-                            padding: EdgeInsets.only(
-                              left: MySizes.spaceXs(context) * .5,
-                            ),
-                            child: HugeIcon(
-                              icon: HugeIcons.strokeRoundedSquareLock02,
-                              size: MySizes.iconSmall(context),
-                              color: MyColors.primaryShade500,
-                            ),
-                          ),
                       ],
                     ),
                     Column(
@@ -79,20 +74,78 @@ class UserData extends StatelessWidget {
                         Text(
                           '@${user.username}',
                           style: context.bodySmall.copyWith(
-                            color: Colors.black,
-                            fontSize: 12,
+                            color: Colors.grey.shade600,
+                            fontSize: 11,
+                            fontWeight: FontWeight.w500,
                           ),
                         ),
                         SizedBox(height: MySizes.spaceXs(context) * .5),
-                        GestureDetector(
-                          onTap: onFollowersTap,
-                          child: Text(
-                            ' ${user.followersCount} Followers • ${user.followingCount} Following',
-                            style: context.bodySmall.copyWith(
-                              color: Colors.black,
-                              fontSize: 10,
+                        Wrap(
+                          spacing: MySizes.spaceXs(context) * .5,
+                          runSpacing: MySizes.spaceXs(context) * .25,
+                          children: [
+                            GestureDetector(
+                              onTap: onFollowersTap,
+                              child: Row(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  Text(
+                                    '${user.followersCount}',
+                                    style: context.bodySmall.copyWith(
+                                      color: MyColors.primaryShade500,
+                                      fontSize: 11,
+                                      fontWeight: FontWeight.w700,
+                                    ),
+                                  ),
+                                  SizedBox(
+                                    width: MySizes.spaceXs(context) * .25,
+                                  ),
+                                  Text(
+                                    'Followers',
+                                    style: context.bodySmall.copyWith(
+                                      color: Colors.black,
+                                      fontSize: 11,
+                                      fontWeight: FontWeight.w400,
+                                    ),
+                                  ),
+                                ],
+                              ),
                             ),
-                          ),
+                            Text(
+                              '•',
+                              style: context.bodySmall.copyWith(
+                                fontSize: 10,
+                                color: Colors.grey.shade400,
+                              ),
+                            ),
+                            GestureDetector(
+                              onTap: onFollowingTap,
+                              child: Row(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  Text(
+                                    '${user.followingCount}',
+                                    style: context.bodySmall.copyWith(
+                                      color: MyColors.primaryShade500,
+                                      fontSize: 11,
+                                      fontWeight: FontWeight.w700,
+                                    ),
+                                  ),
+                                  SizedBox(
+                                    width: MySizes.spaceXs(context) * .25,
+                                  ),
+                                  Text(
+                                    'Following',
+                                    style: context.bodySmall.copyWith(
+                                      color: Colors.black,
+                                      fontSize: 11,
+                                      fontWeight: FontWeight.w400,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ],
                         ),
                       ],
                     ),
@@ -112,8 +165,11 @@ class UserData extends StatelessWidget {
           Text(
             user.bio?.isNotEmpty == true ? user.bio! : 'No bio provided.',
             style: context.bodySmall.copyWith(
-              color: Colors.black,
-              fontSize: 12,
+              color: user.bio?.isNotEmpty == true
+                  ? Colors.black
+                  : Colors.grey.shade500,
+              fontSize: 13,
+              height: 1.4,
             ),
           ),
           SizedBox(height: MySizes.spaceXs(context)),

@@ -1774,13 +1774,13 @@ class S {
     );
   }
 
-  /// `Detected as {language}`
-  String detected_language_label(Object language) {
+  /// `Detected as`
+  String get detected_language_label {
     return Intl.message(
-      'Detected as $language',
+      'Detected as',
       name: 'detected_language_label',
       desc: '',
-      args: [language],
+      args: [],
     );
   }
 

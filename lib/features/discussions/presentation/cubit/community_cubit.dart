@@ -220,6 +220,9 @@ class CommunityCubit extends Cubit<CommunityState> {
   }
 
   Future<void> followUser(String userId) async {
+    final currentState = state;
+    if (currentState is! CommunityDiscussionsLoaded) return;
+
     final result = await followUserUsecase(userId);
 
     result.fold(
@@ -228,11 +231,26 @@ class CommunityCubit extends Cubit<CommunityState> {
       },
       (success) {
         MyLogger.debug('Successfully followed user: $userId');
+
+        // Update all discussions from this author with isFollowing = true
+        final updatedDiscussions = currentState.discussions.map((discussion) {
+          if (discussion.author.id == userId) {
+            return discussion.copyWith(
+              author: discussion.author.copyWith(isFollowing: true),
+            );
+          }
+          return discussion;
+        }).toList();
+
+        emit(currentState.copyWith(discussions: updatedDiscussions));
       },
     );
   }
 
   Future<void> unfollowUser(String userId) async {
+    final currentState = state;
+    if (currentState is! CommunityDiscussionsLoaded) return;
+
     final result = await unfollowUserUsecase(userId);
 
     result.fold(
@@ -241,6 +259,18 @@ class CommunityCubit extends Cubit<CommunityState> {
       },
       (success) {
         MyLogger.debug('Successfully unfollowed user: $userId');
+
+        // Update all discussions from this author with isFollowing = false
+        final updatedDiscussions = currentState.discussions.map((discussion) {
+          if (discussion.author.id == userId) {
+            return discussion.copyWith(
+              author: discussion.author.copyWith(isFollowing: false),
+            );
+          }
+          return discussion;
+        }).toList();
+
+        emit(currentState.copyWith(discussions: updatedDiscussions));
       },
     );
   }

@@ -198,7 +198,7 @@
     "translate_label": "Translate",
     "copied_to_clipboard": "Copied to clipboard",
     "choose_language_title": "Choose a language",
-    "detected_language_label": "Detected as {language}",
+    "detected_language_label": "Detected as",
     "delete_highlight_title": "Delete Highlight",
     "confirm_delete_highlight": "Are you sure you want to delete this highlight?",
     "delete_button": "Delete",

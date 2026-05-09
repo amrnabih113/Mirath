@@ -198,7 +198,7 @@
     "translate_label": "ترجم",
     "copied_to_clipboard": "تم النسخ إلى الحافظة",
     "choose_language_title": "اختر لغة",
-    "detected_language_label": "تم اكتشافها كـ {language}",
+    "detected_language_label": "تم اكتشافها كـ",
     "delete_highlight_title": "حذف التمييز",
     "confirm_delete_highlight": "هل أنت متأكد أنك تريد حذف هذا التمييز؟",
     "delete_button": "حذف",

@@ -25,6 +25,7 @@ class UserModel extends User {
     required super.followersCount,
     required super.followingCount,
     super.isFollowed,
+    super.isMe,
   });
 
   factory UserModel.fromJson(Map<String, dynamic> json) {
@@ -63,7 +64,8 @@ class UserModel extends User {
           [],
       followersCount: json['followersCount'] ?? 0,
       followingCount: json['followingCount'] ?? 0,
-      isFollowed: json['isFollowed'],
+      isFollowed: json['isFollowing'] ?? json['isFollowed'],
+      isMe: json['isMe'] ?? false,
     );
   }
 
@@ -95,6 +97,7 @@ class UserModel extends User {
       'followersCount': followersCount,
       'followingCount': followingCount,
       'isFollowed': isFollowed,
+      'isMe': isMe,
     };
   }
 
@@ -116,6 +119,7 @@ class UserModel extends User {
     fieldsOfStudy: const [],
     followersCount: 0,
     followingCount: 0,
+    isMe: false,
     isFollowed: false,
   );
 }
