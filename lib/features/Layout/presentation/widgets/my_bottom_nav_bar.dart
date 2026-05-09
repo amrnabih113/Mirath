@@ -7,6 +7,7 @@ import 'package:mirath/generated/l10n.dart';
 import '../../../../core/helpers/responsive_helper.dart';
 import '../../../../core/utils/my_colors.dart';
 import '../../../../core/utils/my_sizes.dart';
+import '../../../../core/constants/route_names.dart';
 import '../cubit/layout_cubit.dart';
 import 'nav_item.dart';
 
@@ -80,7 +81,7 @@ class MyBottomNavBar extends StatelessWidget {
                             currentIndex: state.currentIndex,
                             onTap: () {
                               context.read<LayoutCubit>().changeTab(0);
-                              context.go('/home');
+                              context.go(RouteNames.home);
                             },
                           ),
 
@@ -91,7 +92,7 @@ class MyBottomNavBar extends StatelessWidget {
                             currentIndex: state.currentIndex,
                             onTap: () {
                               context.read<LayoutCubit>().changeTab(1);
-                              context.go('/community');
+                              context.go(RouteNames.community);
                             },
                           ),
                           SizedBox(
@@ -107,7 +108,7 @@ class MyBottomNavBar extends StatelessWidget {
                             currentIndex: state.currentIndex,
                             onTap: () {
                               context.read<LayoutCubit>().changeTab(2);
-                              context.go('/library');
+                              context.go(RouteNames.library);
                             },
                           ),
                           NavItem(
@@ -117,7 +118,7 @@ class MyBottomNavBar extends StatelessWidget {
                             currentIndex: state.currentIndex,
                             onTap: () {
                               context.read<LayoutCubit>().changeTab(3);
-                              context.go('/profile');
+                              context.go(RouteNames.profile);
                             },
                           ),
                         ],
@@ -141,7 +142,7 @@ class MyBottomNavBar extends StatelessWidget {
                           height: ResponsiveHelper.responsiveValue(context, 56),
                           child: FloatingActionButton(
                             onPressed: () {
-                              context.push('/chatbot');
+                              context.push(RouteNames.chatbot);
                             },
                             backgroundColor: MyColors.primaryShade800,
                             foregroundColor: MyColors.light,

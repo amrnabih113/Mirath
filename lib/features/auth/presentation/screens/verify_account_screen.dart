@@ -35,7 +35,7 @@ class VerifyAccountScreen extends StatelessWidget {
             title: S.of(context).verified,
             message: state.message ?? S.of(context).account_verified_success,
           );
-          context.pushReplacement('/home');
+          context.pushReplacement(RouteNames.home);
         } else if (state.status == AuthStatus.error) {
           MyLoaders.errorSnackBar(
             context: context,

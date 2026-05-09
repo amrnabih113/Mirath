@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'package:mirath/core/constants/route_names.dart';
 import 'package:mirath/features/home/domain/entities/paper_entity.dart';
 import '../cubit/home_cubit.dart';
 import '../cubit/home_state.dart';
@@ -91,7 +92,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 SizedBox(height: MySizes.spaceLg(context)),
                 SectionTitle(
                   title: S.of(context).recently_published,
-                  onTap: () => context.push("/recentely-published"),
+                  onTap: () => context.push(RouteNames.recentlyPublished),
                 ),
                 SizedBox(height: MySizes.spaceMd(context)),
                 const CategoryItemsList(),
@@ -189,7 +190,7 @@ class _HomeScreenState extends State<HomeScreen> {
                               return PaperCard(
                                 paper: paper,
                                 onTap: () {
-                                  context.push('/paper-screen', extra: paper);
+                                  context.push(RouteNames.paperDetailsRoute(paper.id), extra: paper);
                                 },
                               );
                             },

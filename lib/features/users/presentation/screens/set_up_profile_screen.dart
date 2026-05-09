@@ -12,6 +12,7 @@ import '../../../../core/utils/my_colors.dart';
 import '../../../../core/utils/my_enums.dart';
 import '../../../../core/utils/my_extenstions.dart';
 import '../../../../core/utils/my_sizes.dart';
+import '../../../../core/constants/route_names.dart';
 import '../../../../generated/l10n.dart';
 import '../../../../injection/injection_container.dart';
 import '../../../auth/presentation/cubit/auth_cubit.dart';
@@ -147,7 +148,7 @@ class _SetUpProfileScreenContentState
                                 S.of(context).profile_setup_success,
                           );
                           _localStorageService.setProfileSetup(true);
-                          context.go('/home');
+                          context.go(RouteNames.home);
                         }
                       },
                       child: ConstrainedBox(
@@ -448,7 +449,7 @@ class _SetUpProfileScreenContentState
                                         'Navigating to interests selection with profile data: $userProfile',
                                       );
                                       context.push(
-                                        '/interests',
+                                        RouteNames.interests,
                                         extra: userProfile,
                                       );
                                     },

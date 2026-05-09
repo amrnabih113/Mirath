@@ -5,6 +5,7 @@ import 'package:mirath/core/helpers/responsive_helper.dart';
 import 'package:mirath/core/utils/my_colors.dart';
 import 'package:mirath/core/utils/my_extenstions.dart';
 import 'package:mirath/core/utils/my_sizes.dart';
+import 'package:mirath/core/constants/route_names.dart';
 import 'package:mirath/features/common/widgets/my_back_icon.dart';
 import 'package:mirath/features/discussions/presentation/cubit/community_cubit.dart';
 import 'package:mirath/features/discussions/presentation/cubit/community_state.dart';
@@ -98,7 +99,7 @@ class _PaperDiscussionsScreenState extends State<PaperDiscussionsScreen> {
                             ElevatedButton(
                               onPressed: () {
                                 context.push(
-                                  '/add-discussion',
+                                  RouteNames.addDiscussionRoute(widget.paper.id),
                                   extra: widget.paper,
                                 );
                               },
@@ -123,7 +124,7 @@ class _PaperDiscussionsScreenState extends State<PaperDiscussionsScreen> {
                             discussion: discussion,
                             onTap: () {
                               context.push(
-                                '/discussion-details',
+                                RouteNames.discussionDetailsRoute(discussion.id),
                                 extra: discussion,
                               );
                             },

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'package:mirath/core/constants/route_names.dart';
 import 'package:mirath/core/utils/my_sizes.dart';
 import 'package:mirath/features/library/presentation/widgets/read_later_container.dart';
 import 'package:mirath/features/reading_lists/presentation/cubit/reading_list_cubit.dart';
@@ -53,7 +54,7 @@ class YourListsTab extends StatelessWidget {
                   child: ReadingListCard(
                     readingList: item,
                     onTap: () {
-                      context.push('/reading-list-details', extra: item);
+                      context.push(RouteNames.readingListDetailsRoute(item.id), extra: item);
                     },
                   ),
                 );

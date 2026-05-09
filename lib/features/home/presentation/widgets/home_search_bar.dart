@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hugeicons/hugeicons.dart';
+import 'package:mirath/core/constants/route_names.dart';
 
 import '../../../../core/utils/my_colors.dart';
 import '../../../../core/utils/my_extenstions.dart';
@@ -29,7 +30,7 @@ class HomeSearchBar extends StatelessWidget {
 
         readOnly: true,
         onTap: () {
-          context.push('/search');
+          context.push(RouteNames.search);
         },
 
         decoration: InputDecoration(

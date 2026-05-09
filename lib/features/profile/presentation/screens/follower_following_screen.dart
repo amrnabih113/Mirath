@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:mirath/core/constants/route_names.dart';
 import 'package:mirath/features/users/domain/entities/follows.dart';
 import 'package:mirath/features/users/domain/usecases/follow_user_usecase.dart';
 import 'package:mirath/features/users/domain/usecases/get_followers_usecase.dart';
@@ -117,7 +118,7 @@ class _FollowerFollowingScreenState extends State<FollowerFollowingScreen> {
                                       user: users[index],
                                       onUserTap: () {
                                         context.push(
-                                          '/other-users-profile/${users[index].id}',
+                                          RouteNames.userProfileRoute(users[index].id),
                                         );
                                       },
                                       onFollowToggle: (_) {
@@ -154,7 +155,7 @@ class _FollowerFollowingScreenState extends State<FollowerFollowingScreen> {
                                       user: users[index],
                                       onUserTap: () {
                                         context.push(
-                                          '/other-users-profile/${users[index].id}',
+                                          RouteNames.userProfileRoute(users[index].id),
                                         );
                                       },
                                       onFollowToggle: (_) {

@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 import 'package:hugeicons/hugeicons.dart';
 import 'package:mirath/core/utils/my_colors.dart';
 import 'package:mirath/core/utils/my_sizes.dart';
+import 'package:mirath/core/constants/route_names.dart';
 import 'package:mirath/features/profile/presentation/widgets/user_data.dart';
 import 'package:mirath/features/profile/presentation/widgets/user_tabs.dart';
 import 'package:mirath/features/users/presentation/cubit/profile_header_cubit.dart';
@@ -80,21 +81,17 @@ class OtherUsersProfile extends StatelessWidget {
                                   },
                                   onFollowersTap: () {
                                     context.push(
-                                      '/follower_following_screen',
+                                      RouteNames.followerFollowingRoute(userId, tab: 0),
                                       extra: {
-                                        'userId': user.id,
                                         'username': user.username,
-                                        'tab': 0,
                                       },
                                     );
                                   },
                                   onFollowingTap: () {
                                     context.push(
-                                      '/follower_following_screen',
+                                      RouteNames.followerFollowingRoute(userId, tab: 1),
                                       extra: {
-                                        'userId': user.id,
                                         'username': user.username,
-                                        'tab': 1,
                                       },
                                     );
                                   },

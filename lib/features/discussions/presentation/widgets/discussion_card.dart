@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:mirath/core/constants/route_names.dart';
 
 import '../../../../core/helpers/responsive_helper.dart';
 import '../../../home/domain/entities/paper_entity.dart';
@@ -95,7 +96,7 @@ class _DiscussionCardState extends State<DiscussionCard> {
                         isSaved: false,
                         preprint: '',
                       );
-                      context.push('/paper-screen', extra: paperEntity);
+                      context.push(RouteNames.paperDetailsRoute(paperEntity.id), extra: paperEntity);
                     },
                   ),
                 if (widget.discussion.papers.isNotEmpty)

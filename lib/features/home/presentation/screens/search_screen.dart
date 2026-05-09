@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'package:mirath/core/constants/route_names.dart';
 
 import '../../../../core/helpers/responsive_helper.dart';
 import '../../../../core/utils/my_sizes.dart';
@@ -51,7 +52,7 @@ class _SearchScreenState extends State<SearchScreen> {
   void _onSubmitSearch(String query) {
     final trimmed = query.trim();
     if (trimmed.isEmpty) return;
-    context.pushReplacement('/home-search-results', extra: trimmed);
+    context.pushReplacement(RouteNames.homeSearchResults, extra: trimmed);
   }
 
   @override

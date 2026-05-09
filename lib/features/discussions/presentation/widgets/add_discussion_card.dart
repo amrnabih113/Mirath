@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:mirath/core/constants/route_names.dart';
 import 'package:mirath/core/services/local_storage_service.dart';
 import 'package:mirath/core/services/user_cache_service.dart';
 import 'package:mirath/core/utils/my_colors.dart';
@@ -39,7 +40,7 @@ class AddDiscussionCard extends StatelessWidget {
 
     return InkWell(
       onTap: () {
-        context.push('/add-discussion');
+        context.push(RouteNames.addDiscussion);
       },
       borderRadius: BorderRadius.circular(MySizes.borderRadiusLg(context)),
       child: Container(

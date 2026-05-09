@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 import 'package:hugeicons/hugeicons.dart';
 import 'package:mirath/core/utils/my_colors.dart';
 import 'package:mirath/core/utils/my_sizes.dart';
+import 'package:mirath/core/constants/route_names.dart';
 import 'package:mirath/features/auth/presentation/cubit/auth_cubit.dart';
 import 'package:mirath/features/profile/presentation/cubit/profile_cubit.dart';
 import 'package:mirath/features/profile/presentation/widgets/user_data.dart';
@@ -39,7 +40,7 @@ class ProfileScreen extends StatelessWidget {
                 color: Colors.black,
               ),
               onPressed: () {
-                context.push('/setting_screen');
+                context.push(RouteNames.settingsScreen);
               },
             ),
           ],
@@ -80,25 +81,21 @@ class ProfileScreen extends StatelessWidget {
                                   color: MyColors.primaryShade50,
                                   labelColor: MyColors.primaryShade900,
                                   onActionTap: () {
-                                    context.push('/edit_profile_screen');
+                                    context.push(RouteNames.editProfile);
                                   },
                                   onFollowersTap: () {
                                     context.push(
-                                      '/follower_following_screen',
+                                      RouteNames.followerFollowingRoute(user.id, tab: 0),
                                       extra: {
-                                        'userId': user.id,
                                         'username': user.username,
-                                        'tab': 0,
                                       },
                                     );
                                   },
                                   onFollowingTap: () {
                                     context.push(
-                                      '/follower_following_screen',
+                                      RouteNames.followerFollowingRoute(user.id, tab: 1),
                                       extra: {
-                                        'userId': user.id,
                                         'username': user.username,
-                                        'tab': 1,
                                       },
                                     );
                                   },

@@ -16,7 +16,7 @@ class ReadLaterContainer extends StatelessWidget {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
-        context.push('/read-later');
+        context.push(RouteNames.readLater);
       },
       child: BlocBuilder<LibraryCubit, LibraryState>(
         builder: (context, state) {

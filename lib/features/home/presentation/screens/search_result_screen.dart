@@ -5,6 +5,7 @@ import 'package:go_router/go_router.dart';
 import '../../../../core/helpers/responsive_helper.dart';
 import '../../../../core/utils/my_colors.dart';
 import '../../../../core/utils/my_sizes.dart';
+import '../../../../core/constants/route_names.dart';
 import '../../../../generated/l10n.dart';
 import '../../../common/widgets/my_back_icon.dart';
 import '../../../common/widgets/my_search_bar.dart';
@@ -175,7 +176,7 @@ class _HomeSearchResultScreenState extends State<HomeSearchResultScreen> {
                             paper: results[index],
                             onTap: () {
                               context.push(
-                                '/paper-screen',
+                                RouteNames.paperDetailsRoute(results[index].id),
                                 extra: results[index],
                               );
                             },

@@ -27,6 +27,7 @@ import 'package:mirath/features/profile/presentation/screens/setting_screen.dart
 import 'package:mirath/features/reading_lists/presentation/cubit/reading_list_cubit.dart';
 import 'package:mirath/features/users/presentation/cubit/profile_header_cubit.dart';
 import 'package:mirath/generated/l10n.dart';
+import 'core/constants/route_names.dart';
 import 'features/discussions/domain/entities/discussion.dart';
 import 'features/discussions/presentation/cubit/community_cubit.dart';
 import 'features/discussions/presentation/cubit/discussion_details_cubit.dart';
@@ -74,7 +75,7 @@ class _AuthStateNotifier extends ChangeNotifier {
 }
 
 final appRouter = GoRouter(
-  initialLocation: '/splash',
+  initialLocation: RouteNames.splash,
   refreshListenable: _AuthStateNotifier(sl<AuthCubit>()),
 
   redirect: (context, state) async {
@@ -97,49 +98,53 @@ final appRouter = GoRouter(
     }
 
     const authPaths = [
-      '/signin',
-      '/signup',
-      '/verify-account',
-      '/forget-password',
-      '/verify-reset-otp',
-      '/reset-password',
+      RouteNames.signin,
+      RouteNames.signup,
+      RouteNames.verifyAccount,
+      RouteNames.forgetPassword,
+      RouteNames.verifyResetOtp,
+      RouteNames.resetPassword,
     ];
 
-    const publicPaths = ['/splash', '/onboarding', ...authPaths];
+    const publicPaths = [
+      RouteNames.splash,
+      RouteNames.onboarding,
+      ...authPaths
+    ];
 
     // If auth is still initializing, stay on splash or current page
     if (authStatus == AuthStatus.initial) {
-      if (currentLocation != '/splash') {
-        MyLogger.info('[Router] Auth not ready → redirecting to /splash');
-        return '/splash';
+      if (currentLocation != RouteNames.splash) {
+        MyLogger.info('[Router] Auth not ready → redirecting to splash');
+        return RouteNames.splash;
       }
       MyLogger.debug('[Router] Auth initializing - staying on splash');
       return null;
     }
 
     // On splash - auth is ready, redirect based on status
-    if (currentLocation == '/splash') {
+    if (currentLocation == RouteNames.splash) {
       if (authStatus == AuthStatus.unauthenticated) {
         if (!hasSeenOnboarding) {
-          MyLogger.info('[Router] Splash → /onboarding (first time user)');
-          return '/onboarding';
+          MyLogger.info('[Router] Splash → onboarding (first time user)');
+          return RouteNames.onboarding;
         }
-        MyLogger.info('[Router] Splash → /signin (unauthenticated)');
-        return '/signin';
+        MyLogger.info('[Router] Splash → signin (unauthenticated)');
+        return RouteNames.signin;
       }
 
       if (authStatus == AuthStatus.unverified) {
-        MyLogger.info('[Router] Splash → /verify-account');
-        return '/verify-account';
+        MyLogger.info('[Router] Splash → verify-account');
+        return RouteNames.verifyAccount;
       }
 
       if (authStatus == AuthStatus.authenticated) {
         if (!hasSetupProfile) {
-          MyLogger.info('[Router] Splash → /set-up-profile');
-          return '/set-up-profile';
+          MyLogger.info('[Router] Splash → setup-profile');
+          return RouteNames.setupProfile;
         }
-        MyLogger.info('[Router] Splash → /home');
-        return '/home';
+        MyLogger.info('[Router] Splash → home');
+        return RouteNames.home;
       }
 
       MyLogger.debug('[Router] On splash - no redirect needed');
@@ -148,39 +153,39 @@ final appRouter = GoRouter(
 
     // Unauthenticated flow
     if (authStatus == AuthStatus.unauthenticated) {
-      if (!hasSeenOnboarding && currentLocation != '/onboarding') {
-        MyLogger.info('[Router] Redirecting to /onboarding');
-        return '/onboarding';
+      if (!hasSeenOnboarding && currentLocation != RouteNames.onboarding) {
+        MyLogger.info('[Router] Redirecting to onboarding');
+        return RouteNames.onboarding;
       }
       if (!authPaths.contains(currentLocation)) {
-        MyLogger.info('[Router] Redirecting to /signin');
-        return '/signin';
+        MyLogger.info('[Router] Redirecting to signin');
+        return RouteNames.signin;
       }
       return null;
     }
 
     // Email unverified
     if (authStatus == AuthStatus.unverified &&
-        currentLocation != '/verify-account') {
-      MyLogger.info('[Router] Redirecting to /verify-account');
-      return '/verify-account';
+        currentLocation != RouteNames.verifyAccount) {
+      MyLogger.info('[Router] Redirecting to verify-account');
+      return RouteNames.verifyAccount;
     }
 
     // Authenticated user handling
     if (authStatus == AuthStatus.authenticated) {
       if (!hasSetupProfile &&
-          (currentLocation != '/set-up-profile' &&
-              currentLocation != '/interests')) {
-        MyLogger.info('[Router] Redirecting to /set-up-profile');
-        return '/set-up-profile';
+          (currentLocation != RouteNames.setupProfile &&
+              currentLocation != RouteNames.interests)) {
+        MyLogger.info('[Router] Redirecting to setup-profile');
+        return RouteNames.setupProfile;
       }
 
       // Block navigation to public/auth pages
       if (publicPaths.contains(currentLocation)) {
         MyLogger.info(
-          '[Router] Redirecting to /home (block public page access)',
+          '[Router] Redirecting to home (block public page access)',
         );
-        return '/home';
+        return RouteNames.home;
       }
 
       return null;
@@ -191,9 +196,9 @@ final appRouter = GoRouter(
       // Block navigation to public/auth pages
       if (publicPaths.contains(currentLocation)) {
         MyLogger.info(
-          '[Router] Redirecting to /home (block public page access)',
+          '[Router] Redirecting to home (block public page access)',
         );
-        return '/home';
+        return RouteNames.home;
       }
 
       // For any other page during success, allow it temporarily
@@ -204,13 +209,13 @@ final appRouter = GoRouter(
     // Handle authentication errors - allow staying on current auth pages
     if (authStatus == AuthStatus.error) {
       if (authPaths.contains(currentLocation) ||
-          currentLocation == '/set-up-profile' ||
-          currentLocation == '/interests') {
+          currentLocation == RouteNames.setupProfile ||
+          currentLocation == RouteNames.interests) {
         return null; // Stay on current page
       }
       // For other pages, redirect to signin
-      MyLogger.info('[Router] Auth error - redirecting to /signin');
-      return '/signin';
+      MyLogger.info('[Router] Auth error - redirecting to signin');
+      return RouteNames.signin;
     }
 
     return null;
@@ -219,14 +224,14 @@ final appRouter = GoRouter(
   routes: [
     // ===================== SPLASH SCREEN =====================
     GoRoute(
-      path: '/splash',
+      path: RouteNames.splash,
       pageBuilder: (context, state) =>
           PageTransitions.smoothTransition(const SplashScreen()),
     ),
 
     // ===================== ONBOARDING =====================
     GoRoute(
-      path: '/onboarding',
+      path: RouteNames.onboarding,
       pageBuilder: (context, state) {
         final pages = OnboardingRepository.getData(context);
         // page transition is an animation for transition between pages
@@ -241,7 +246,7 @@ final appRouter = GoRouter(
     ),
 
     // ===================== ROOT & HOME =====================
-    GoRoute(path: '/', redirect: (context, state) => '/splash'),
+    GoRoute(path: '/', redirect: (context, state) => RouteNames.splash),
 
     // ===================== LAYOUT SHELL For NavBar =====================
     ShellRoute(
@@ -260,7 +265,7 @@ final appRouter = GoRouter(
       },
       routes: [
         GoRoute(
-          path: '/home',
+          path: RouteNames.home,
           pageBuilder: (context, state) => NoTransitionPage(
             child: BlocProvider.value(
               value: context.read<HomeCubit>(),
@@ -269,7 +274,7 @@ final appRouter = GoRouter(
           ),
         ),
         GoRoute(
-          path: '/community',
+          path: RouteNames.community,
           pageBuilder: (context, state) => NoTransitionPage(
             child: BlocProvider.value(
               value: sl<CommunityCubit>()..getDiscussions(),
@@ -278,7 +283,7 @@ final appRouter = GoRouter(
           ),
         ),
         GoRoute(
-          path: '/library',
+          path: RouteNames.library,
           pageBuilder: (context, state) => NoTransitionPage(
             child: MultiBlocProvider(
               providers: [
@@ -292,7 +297,7 @@ final appRouter = GoRouter(
           ),
         ),
         GoRoute(
-          path: '/profile',
+          path: RouteNames.profile,
           pageBuilder: (context, state) => NoTransitionPage(
             child: BlocProvider.value(
               value: sl<ProfileCubit>()..loadCurrentUser(),
@@ -305,49 +310,49 @@ final appRouter = GoRouter(
 
     // ===================== AUTH ROUTES =====================
     GoRoute(
-      path: '/signin',
+      path: RouteNames.signin,
       pageBuilder: (context, state) =>
           PageTransitions.smoothTransition(const SigninScreen()),
     ),
 
     GoRoute(
-      path: '/signup',
+      path: RouteNames.signup,
       pageBuilder: (context, state) =>
           PageTransitions.smoothTransition(const SignupScreen()),
     ),
 
     GoRoute(
-      path: '/verify-account',
+      path: RouteNames.verifyAccount,
       pageBuilder: (context, state) =>
           PageTransitions.smoothTransition(VerifyAccountScreen()),
     ),
 
     GoRoute(
-      path: '/forget-password',
+      path: RouteNames.forgetPassword,
       pageBuilder: (context, state) =>
           PageTransitions.smoothTransition(const ForgetPasswordScreen()),
     ),
 
     GoRoute(
-      path: '/verify-reset-otp',
+      path: RouteNames.verifyResetOtp,
       pageBuilder: (context, state) =>
           PageTransitions.smoothTransition(OtpScreen()),
     ),
 
     GoRoute(
-      path: '/reset-password',
+      path: RouteNames.resetPassword,
       pageBuilder: (context, state) =>
           PageTransitions.smoothTransition(const ResetPasswordScreen()),
     ),
 
     GoRoute(
-      path: '/set-up-profile',
+      path: RouteNames.setupProfile,
       pageBuilder: (context, state) {
         return PageTransitions.smoothTransition(SetUpProfileScreen());
       },
     ),
     GoRoute(
-      path: '/interests',
+      path: RouteNames.interests,
       pageBuilder: (context, state) {
         final userProfile = state.extra as ProfileSetupData?;
         return PageTransitions.smoothTransition(
@@ -361,7 +366,7 @@ final appRouter = GoRouter(
       },
     ),
     GoRoute(
-      path: '/search',
+      path: RouteNames.search,
       pageBuilder: (context, state) {
         return PageTransitions.smoothTransition(
           BlocProvider(
@@ -372,7 +377,7 @@ final appRouter = GoRouter(
       },
     ),
     GoRoute(
-      path: '/home-search-results',
+      path: RouteNames.homeSearchResults,
       pageBuilder: (context, state) => PageTransitions.smoothTransition(
         MultiBlocProvider(
           providers: [
@@ -384,7 +389,7 @@ final appRouter = GoRouter(
       ),
     ),
     GoRoute(
-      path: '/recentely-published',
+      path: RouteNames.recentlyPublished,
       pageBuilder: (context, state) => NoTransitionPage(
         child: BlocProvider.value(
           value: context.read<HomeCubit>(),
@@ -393,47 +398,32 @@ final appRouter = GoRouter(
       ),
     ),
     GoRoute(
-      path: '/community-search-results',
+      path: RouteNames.communitySearchResults,
       pageBuilder: (context, state) =>
           PageTransitions.smoothTransition(const CommunitySearchResult()),
     ),
 
+    /// Paper Details - requires paperId in path
     GoRoute(
-      path: '/discussion-details',
+      path: RouteNames.paperDetails,
       pageBuilder: (context, state) {
-        final discussion = state.extra as Discussion?;
-        return PageTransitions.smoothTransition(
-          key: state.pageKey,
-          MultiBlocProvider(
-            providers: [
-              BlocProvider(create: (_) => sl<DiscussionDetailsCubit>()),
-              BlocProvider(create: (_) => sl<CommunityCubit>()),
-            ],
-            child: DisscussionDetailsScreen(discussion: discussion),
-          ),
-        );
-      },
-    ),
-    GoRoute(
-      path: '/reading-list-details',
-      pageBuilder: (context, state) {
-        final readingList = state.extra as dynamic;
-        return PageTransitions.smoothTransition(
-          BlocProvider(
-            create: (_) =>
-                sl<ReadingListCubit>()..getReadingListById(readingList.id),
-            child: ReadingListDetailsScreen(readingList: readingList),
-          ),
-        );
-      },
-    ),
-
-    GoRoute(
-      path: '/paper-screen',
-      pageBuilder: (context, state) {
+        final paperId = state.pathParameters['paperId'] ?? '';
+        if (paperId.isEmpty) {
+          return PageTransitions.smoothTransition(
+            Scaffold(
+              appBar: AppBar(title: Text(S.of(context).error_label)),
+              body: const Center(child: Text('Error: No paper data provided')),
+            ),
+          );
+        }
         final paper = state.extra as PaperEntity?;
         if (paper == null) {
-          return PageTransitions.smoothTransition(const SizedBox.shrink());
+          return PageTransitions.smoothTransition(
+            Scaffold(
+              appBar: AppBar(title: Text(S.of(context).error_label)),
+              body: const Center(child: Text('Error: No paper data provided')),
+            ),
+          );
         }
         return PageTransitions.smoothTransition(
           MultiBlocProvider(
@@ -446,16 +436,19 @@ final appRouter = GoRouter(
         );
       },
     ),
+
+    /// Paper Reading - requires paperId in path
     GoRoute(
-      path: '/paper-reading',
+      path: RouteNames.paperReading,
       pageBuilder: (context, state) {
+        final paperId = state.pathParameters['paperId'] ?? '';
         final paper = state.extra as PaperEntity?;
         MyLogger.info(
-          '[Router] /paper-reading - Paper: ${paper?.id ?? "NULL"}',
+          '[Router] Paper Reading - Paper: ${paper?.id ?? "NULL"}',
         );
         if (paper == null) {
           MyLogger.error(
-            '[Router] /paper-reading - Paper is NULL! Cannot load screen.',
+            '[Router] Paper Reading - Paper is NULL! Cannot load screen.',
           );
           return PageTransitions.smoothTransition(
             Scaffold(
@@ -472,9 +465,12 @@ final appRouter = GoRouter(
         );
       },
     ),
+
+    /// Paper Discussions - requires paperId in path
     GoRoute(
-      path: '/paper-discussions',
+      path: RouteNames.paperDiscussions,
       pageBuilder: (context, state) {
+        final paperId = state.pathParameters['paperId'] ?? '';
         final paper = state.extra as PaperEntity?;
         if (paper == null) {
           return PageTransitions.smoothTransition(const SizedBox.shrink());
@@ -487,100 +483,45 @@ final appRouter = GoRouter(
         );
       },
     ),
+
+    // ===================== DISCUSSION ROUTES =====================
+    /// Discussion Details - requires discussionId in path
     GoRoute(
-      path: '/add-discussion',
+      path: RouteNames.discussionDetails,
+      pageBuilder: (context, state) {
+        final discussionId = state.pathParameters['discussionId'] ?? '';
+        if (discussionId.isEmpty) {
+          return PageTransitions.smoothTransition(
+            Scaffold(
+              appBar: AppBar(title: Text(S.of(context).error_label)),
+              body: const Center(child: Text('Error: No discussion ID provided')),
+            ),
+          );
+        }
+        final discussion = state.extra as Discussion?;
+        return PageTransitions.smoothTransition(
+          key: state.pageKey,
+          MultiBlocProvider(
+            providers: [
+              BlocProvider(create: (_) => sl<DiscussionDetailsCubit>()),
+              BlocProvider(create: (_) => sl<CommunityCubit>()),
+            ],
+            child: DisscussionDetailsScreen(discussion: discussion),
+          ),
+        );
+      },
+    ),
+
+    GoRoute(
+      path: RouteNames.addDiscussion,
       pageBuilder: (context, state) {
         return PageTransitions.smoothTransition(const AddDiscussionScreen());
       },
     ),
-    GoRoute(
-      path: '/edit_profile_screen',
-      pageBuilder: (context, state) {
-        return PageTransitions.smoothTransition(
-          BlocProvider.value(
-            value: sl<ProfileCubit>(),
-            child: const EditProfileScreen(),
-          ),
-        );
-      },
-    ),
-    GoRoute(
-      path: '/follower_following_screen',
-      pageBuilder: (context, state) {
-        final payload = state.extra as Map<String, dynamic>?;
-        final userId = (payload?['userId'] ?? '').toString();
-        final username = payload?['username']?.toString();
-        final tabIndex = (payload?['tab'] as int?) ?? 0;
 
-        if (userId.isEmpty) {
-          return PageTransitions.smoothTransition(
-            Scaffold(
-              appBar: AppBar(title: Text(S.of(context).error_label)),
-              body: const Center(child: Text('Error: No user data provided')),
-            ),
-          );
-        }
-
-        return PageTransitions.smoothTransition(
-          key: state.pageKey,
-          FollowerFollowingScreen(
-            userId: userId,
-            username: username,
-            initialTabIndex: tabIndex,
-          ),
-        );
-      },
-    ),
+    // ===================== READING LIST ROUTES =====================
     GoRoute(
-      path: '/other-users-profile/:userId',
-      pageBuilder: (context, state) {
-        final userId = state.pathParameters['userId'] ?? '';
-        if (userId.isEmpty) {
-          return PageTransitions.smoothTransition(
-            Scaffold(
-              appBar: AppBar(title: Text(S.of(context).error_label)),
-              body: const Center(child: Text('Error: No user data provided')),
-            ),
-          );
-        }
-
-        return PageTransitions.smoothTransition(
-          key: state.pageKey,
-          BlocProvider(
-            create: (_) => sl<ProfileHeaderCubit>()..getProfileHeader(userId),
-            child: OtherUsersProfile(userId: userId),
-          ),
-        );
-      },
-    ),
-    GoRoute(
-      path: '/setting_screen',
-      pageBuilder: (context, state) {
-        return PageTransitions.smoothTransition(const SettingScreen());
-      },
-    ),
-    GoRoute(
-      path: '/chatbot',
-      pageBuilder: (context, state) {
-        return PageTransitions.smoothTransition(
-          BlocProvider.value(value: sl<ChatbotCubit>(), child: ChatbotScreen()),
-        );
-      },
-    ),
-    GoRoute(
-      path: '/edit_intersts_screen',
-      pageBuilder: (context, state) {
-        final initialSelected = state.extra as List<String>? ?? [];
-        return PageTransitions.smoothTransition(
-          BlocProvider.value(
-            value: sl<InterestsCubit>(),
-            child: EditInterstsScreen(initialSelected: initialSelected),
-          ),
-        );
-      },
-    ),
-    GoRoute(
-      path: '/reading-lists',
+      path: RouteNames.readingLists,
       pageBuilder: (context, state) {
         return PageTransitions.smoothTransition(
           MultiBlocProvider(
@@ -599,8 +540,33 @@ final appRouter = GoRouter(
         );
       },
     ),
+
+    /// Reading List Details - requires readingListId in path
     GoRoute(
-      path: '/reading-history',
+      path: RouteNames.readingListDetails,
+      pageBuilder: (context, state) {
+        final readingListId = state.pathParameters['readingListId'] ?? '';
+        if (readingListId.isEmpty) {
+          return PageTransitions.smoothTransition(
+            Scaffold(
+              appBar: AppBar(title: Text(S.of(context).error_label)),
+              body: const Center(child: Text('Error: No reading list ID provided')),
+            ),
+          );
+        }
+        final readingList = state.extra as dynamic;
+        return PageTransitions.smoothTransition(
+          BlocProvider(
+            create: (_) =>
+                sl<ReadingListCubit>()..getReadingListById(readingList.id),
+            child: ReadingListDetailsScreen(readingList: readingList),
+          ),
+        );
+      },
+    ),
+
+    GoRoute(
+      path: RouteNames.readingHistory,
       pageBuilder: (context, state) {
         return PageTransitions.smoothTransition(
           BlocProvider(
@@ -610,26 +576,120 @@ final appRouter = GoRouter(
         );
       },
     ),
+
     GoRoute(
-      path: '/projects',
-      pageBuilder: (context, state) {
-        return PageTransitions.smoothTransition(const ProjectsScreen());
-      },
-    ),
-    GoRoute(
-      path: '/other-user-reading-list',
-      pageBuilder: (context, state) {
-        return PageTransitions.smoothTransition(const OtherUserReadingList());
-      },
-    ),
-    GoRoute(
-      path: '/read-later',
+      path: RouteNames.readLater,
       pageBuilder: (context, state) {
         return PageTransitions.smoothTransition(
           BlocProvider(
             create: (context) => sl<LibraryCubit>()..getAllSavedPapers(),
-
             child: const ReadingLaterScreen(),
+          ),
+        );
+      },
+    ),
+
+    // ===================== USER PROFILE ROUTES =====================
+    /// User Profile - requires userId in path
+    GoRoute(
+      path: RouteNames.userProfile,
+      pageBuilder: (context, state) {
+        final userId = state.pathParameters['userId'] ?? '';
+        if (userId.isEmpty) {
+          return PageTransitions.smoothTransition(const SizedBox.shrink());
+        }
+        return PageTransitions.smoothTransition(
+          key: state.pageKey,
+          BlocProvider(
+            create: (_) => sl<ProfileHeaderCubit>()..getProfileHeader(userId),
+            child: OtherUsersProfile(userId: userId),
+          ),
+        );
+      },
+    ),
+
+    /// Follower/Following - requires userId in path
+    GoRoute(
+      path: RouteNames.followerFollowing,
+      pageBuilder: (context, state) {
+        final userId = state.pathParameters['userId'] ?? '';
+        final tabStr = state.uri.queryParameters['tab'] ?? '0';
+        final tabIndex = int.tryParse(tabStr) ?? 0;
+
+        if (userId.isEmpty) {
+          return PageTransitions.smoothTransition(
+            Scaffold(
+              appBar: AppBar(title: Text(S.of(context).error_label)),
+              body: const Center(child: Text('Error: No user data provided')),
+            ),
+          );
+        }
+
+        return PageTransitions.smoothTransition(
+          key: state.pageKey,
+          FollowerFollowingScreen(
+            userId: userId,
+            username: state.uri.queryParameters['username'],
+            initialTabIndex: tabIndex,
+          ),
+        );
+      },
+    ),
+
+    GoRoute(
+      path: RouteNames.editProfile,
+      pageBuilder: (context, state) {
+        return PageTransitions.smoothTransition(
+          BlocProvider.value(
+            value: sl<ProfileCubit>(),
+            child: const EditProfileScreen(),
+          ),
+        );
+      },
+    ),
+
+    GoRoute(
+      path: RouteNames.editInterests,
+      pageBuilder: (context, state) {
+        final initialSelected = state.extra as List<String>? ?? [];
+        return PageTransitions.smoothTransition(
+          BlocProvider.value(
+            value: sl<InterestsCubit>(),
+            child: EditInterstsScreen(initialSelected: initialSelected),
+          ),
+        );
+      },
+    ),
+
+    GoRoute(
+      path: RouteNames.settingsScreen,
+      pageBuilder: (context, state) {
+        return PageTransitions.smoothTransition(const SettingScreen());
+      },
+    ),
+
+    // ===================== OTHER ROUTES =====================
+    GoRoute(
+      path: RouteNames.projects,
+      pageBuilder: (context, state) {
+        return PageTransitions.smoothTransition(const ProjectsScreen());
+      },
+    ),
+
+    GoRoute(
+      path: RouteNames.otherUserReadingList,
+      pageBuilder: (context, state) {
+        return PageTransitions.smoothTransition(const OtherUserReadingList());
+      },
+    ),
+
+    GoRoute(
+      path: RouteNames.chatbot,
+      pageBuilder: (context, state) {
+        return PageTransitions.smoothTransition(
+          BlocProvider.value(
+            value: sl<ChatbotCubit>(),
+            child: ChatbotScreen(),
           ),
         );
       },

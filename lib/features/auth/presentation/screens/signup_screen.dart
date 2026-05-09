@@ -24,7 +24,7 @@ class SignupScreen extends StatelessWidget {
       body: BlocListener<AuthCubit, AuthState>(
         listener: (context, state) {
           if (state.status == AuthStatus.authenticated) {
-            context.pushReplacement('/home');
+            context.pushReplacement(RouteNames.home);
           } else if (state.status == AuthStatus.unverified) {
             MyLoaders.successSnackBar(
               context: context,

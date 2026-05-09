@@ -46,7 +46,7 @@ class _PaperScreenState extends State<PaperScreen> {
                 child: AppBar(
                   leading: MyBackIcon(
                     onTap: (){
-                      context.go('/home');
+                      context.go(RouteNames.home);
                     },
                   ),
                   actions: [
@@ -120,10 +120,10 @@ class _PaperScreenState extends State<PaperScreen> {
   }
 
   void _onStartDiscussion() {
-    context.push('/add-discussion', extra: _currentPaper);
+    context.push(RouteNames.addDiscussionRoute(_currentPaper.id), extra: _currentPaper);
   }
 
   void _onViewDiscussions() {
-    context.push('/paper-discussions', extra: _currentPaper);
+    context.push(RouteNames.paperDiscussionsRoute(_currentPaper.id), extra: _currentPaper);
   }
 }

@@ -145,7 +145,7 @@ class _PaperInfoState extends State<PaperInfo> {
                   context.read<LibraryCubit>().updataReadingHistory(
                     widget.paper.id,
                   );
-                  context.push("/paper-reading", extra: widget.paper);
+                  context.push(RouteNames.paperReadingRoute(widget.paper.id), extra: widget.paper);
                 },
                 title: 'Read',
                 titleColor: MyColors.primaryShade900,

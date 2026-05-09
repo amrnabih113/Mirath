@@ -87,7 +87,7 @@ class _SigninFormState extends State<SigninForm> {
             children: [
               GestureDetector(
                 onTap: () {
-                  context.push('/forget-password');
+                  context.push(RouteNames.forgetPassword);
                 },
                 child: Text(
                   S.of(context).forgot_password,
@@ -132,7 +132,7 @@ class _SigninFormState extends State<SigninForm> {
           SizedBox(height: MySizes.spaceLg(context)),
           GestureDetector(
             onTap: () {
-              context.push('/signup');
+              context.push(RouteNames.signup);
             },
             child: Text.rich(
               TextSpan(

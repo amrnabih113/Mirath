@@ -3,6 +3,7 @@ import 'package:go_router/go_router.dart';
 import 'package:hugeicons/hugeicons.dart';
 
 import '../../../core/utils/my_sizes.dart';
+import '../../../core/constants/route_names.dart';
 import 'my_search_bar.dart';
 
 class SearchWithFilter extends StatelessWidget {
@@ -22,12 +23,12 @@ class SearchWithFilter extends StatelessWidget {
             controller: searchController,
             hintText: 'Search',
             onTap: () => context.push(
-              '/search',
+              RouteNames.search,
               extra: {
                 'items': ["Item 5", "Item 2", "Item 3"],
                 'hintText': 'Search',
                 'onItemTap': () =>
-                    context.pushReplacement('/community-search-results'),
+                    context.pushReplacement(RouteNames.communitySearchResults),
               },
             ),
             readOnly: true,

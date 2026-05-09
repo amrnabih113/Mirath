@@ -45,7 +45,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
           if (state is OnboardingCompleted) {
             // Mark onboarding as seen in local storage
             sl<LocalStorageService>().setOnboardingSeen(true);
-            context.go('/signin');
+            context.go(RouteNames.signin);
           } else if (state is OnboardingPageChanged) {
             _pageController.animateToPage(
               state.currentPage,
