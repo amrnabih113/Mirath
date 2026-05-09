@@ -26,21 +26,7 @@ class ProfileScreen extends StatelessWidget {
           actions: [
             IconButton(
               icon: HugeIcon(
-                icon: HugeIcons.strokeRoundedShare08,
-                size: MySizes.iconMedium(context),
-                color: Colors.black,
-              ),
-              onPressed: () {
-                final state = context.read<ProfileCubit>().state;
-                if (state is ProfileLoadSuccess) {
-                  SharingService.shareProfile(state.user);
-                } else if (state is ProfileUpdateSuccess) {
-                  SharingService.shareProfile(state.user);
-                }
-              },
-            ),
-            IconButton(
-              icon: HugeIcon(
+             
                 icon: HugeIcons.strokeRoundedLogout02,
                 size: MySizes.iconMedium(context),
                 color: Colors.black,
