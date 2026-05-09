@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'package:mirath/core/constants/route_names.dart';
 
 import '../../../../core/utils/my_sizes.dart';
 import '../../../../generated/l10n.dart';
@@ -48,7 +49,7 @@ class ReadingListsTab extends StatelessWidget {
                   readingList: readingList,
                   onTap: () => readingList.isPublic
                       ? context.push(
-                          '/reading-list-details',
+                          RouteNames.readingListDetailsRoute(readingList.id),
                           extra: readingList,
                         )
                       : null,
