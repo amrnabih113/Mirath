@@ -14,6 +14,7 @@ import '../cubit/home_cubit.dart';
 import '../cubit/home_state.dart';
 import '../widgets/category_items_list.dart';
 import '../widgets/home_shimmer_loading.dart';
+import '../widgets/interests_shimmer_loading.dart';
 import '../widgets/paper_card.dart';
 
 class RecentelyPublishedScreen extends StatefulWidget {
@@ -58,9 +59,7 @@ class _RecentelyPublishedScreenState extends State<RecentelyPublishedScreen> {
     // Check if scrolled near the bottom (within 300 pixels)
     if (position.pixels >= position.maxScrollExtent - 300) {
       final cubit = context.read<HomeCubit>();
-      cubit.loadMoreRecentPapers(
-        category: widget.selectedCategory,
-      );
+      cubit.loadMoreRecentPapers(category: widget.selectedCategory);
     }
   }
 
@@ -76,7 +75,9 @@ class _RecentelyPublishedScreenState extends State<RecentelyPublishedScreen> {
     // If the selectedCategory changed, update the filter
     if (oldWidget.selectedCategory != widget.selectedCategory &&
         widget.selectedCategory != null) {
-      context.read<HomeCubit>().filterPapersByInterest(widget.selectedCategory!);
+      context.read<HomeCubit>().filterPapersByInterest(
+        widget.selectedCategory!,
+      );
     }
   }
 
@@ -126,10 +127,14 @@ class _RecentelyPublishedScreenState extends State<RecentelyPublishedScreen> {
                     // Custom search bar for filtering interests
                     Container(
                       decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(MySizes.borderRadiusMd(context)),
+                        borderRadius: BorderRadius.circular(
+                          MySizes.borderRadiusMd(context),
+                        ),
                         boxShadow: [
                           BoxShadow(
-                            color: MyColors.primaryShade900.withValues(alpha: 0.1),
+                            color: MyColors.primaryShade900.withValues(
+                              alpha: 0.1,
+                            ),
                             blurRadius: 12,
                             offset: const Offset(0, 4),
                             spreadRadius: 0,
@@ -149,7 +154,9 @@ class _RecentelyPublishedScreenState extends State<RecentelyPublishedScreen> {
                               left: MySizes.spaceSm(context),
                               right: MySizes.spaceXs(context),
                             ),
-                            child: HugeIcon(icon: HugeIcons.strokeRoundedSearch01),
+                            child: HugeIcon(
+                              icon: HugeIcons.strokeRoundedSearch01,
+                            ),
                           ),
                           suffixIcon: searchQuery.isNotEmpty
                               ? IconButton(
@@ -168,19 +175,28 @@ class _RecentelyPublishedScreenState extends State<RecentelyPublishedScreen> {
                             borderRadius: BorderRadius.circular(
                               MySizes.borderRadiusMd(context),
                             ),
-                            borderSide: BorderSide(color: MyColors.primaryShade50, width: 1),
+                            borderSide: BorderSide(
+                              color: MyColors.primaryShade50,
+                              width: 1,
+                            ),
                           ),
                           border: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(
                               MySizes.borderRadiusMd(context),
                             ),
-                            borderSide: BorderSide(color: MyColors.primaryShade50, width: 1),
+                            borderSide: BorderSide(
+                              color: MyColors.primaryShade50,
+                              width: 1,
+                            ),
                           ),
                           focusedBorder: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(
                               MySizes.borderRadiusMd(context),
                             ),
-                            borderSide: BorderSide(color: MyColors.primaryShade500, width: 1),
+                            borderSide: BorderSide(
+                              color: MyColors.primaryShade500,
+                              width: 1,
+                            ),
                           ),
                         ),
                       ),
@@ -191,41 +207,43 @@ class _RecentelyPublishedScreenState extends State<RecentelyPublishedScreen> {
                         if (state is HomePapersLoaded) {
                           // Filter interests based on search query
                           final filteredInterests = state.interests
-                              .where((interest) =>
-                                  interest.name
-                                      .toLowerCase()
-                                      .contains(searchQuery))
+                              .where(
+                                (interest) => interest.name
+                                    .toLowerCase()
+                                    .contains(searchQuery),
+                              )
                               .toList();
 
                           return CategoryItemsList(
                             interests: filteredInterests,
                             selectedInterest: state.selectedCategory,
                             onInterestChanged: (interestName) {
-                              context
-                                  .read<HomeCubit>()
-                                  .filterPapersByInterest(interestName);
+                              context.read<HomeCubit>().filterPapersByInterest(
+                                interestName,
+                              );
                             },
                           );
                         } else if (state is HomePapersUpdated) {
                           // Filter interests based on search query
                           final filteredInterests = state.interests
-                              .where((interest) =>
-                                  interest.name
-                                      .toLowerCase()
-                                      .contains(searchQuery))
+                              .where(
+                                (interest) => interest.name
+                                    .toLowerCase()
+                                    .contains(searchQuery),
+                              )
                               .toList();
 
                           return CategoryItemsList(
                             interests: filteredInterests,
                             selectedInterest: state.selectedCategory,
                             onInterestChanged: (interestName) {
-                              context
-                                  .read<HomeCubit>()
-                                  .filterPapersByInterest(interestName);
+                              context.read<HomeCubit>().filterPapersByInterest(
+                                interestName,
+                              );
                             },
                           );
                         }
-                        return const CategoryItemsList();
+                        return const InterestsShimmerLoading();
                       },
                     ),
                     SizedBox(height: MySizes.spaceSm(context)),

@@ -11,6 +11,7 @@ import '../../../common/widgets/section_title.dart';
 import '../widgets/category_items_list.dart';
 import '../widgets/home_search_bar.dart';
 import '../widgets/home_shimmer_loading.dart';
+import '../widgets/interests_shimmer_loading.dart';
 import '../widgets/paper_card.dart';
 import '../widgets/welcome_header.dart';
 
@@ -121,7 +122,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         },
                       );
                     }
-                    return const CategoryItemsList();
+                    return const InterestsShimmerLoading();
                   },
                 ),
                 SizedBox(height: MySizes.spaceLg(context) * 1.5),

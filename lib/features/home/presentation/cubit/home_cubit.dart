@@ -57,11 +57,7 @@ class HomeCubit extends Cubit<HomeState> {
       _selectedCategory = null;
     }
     final result = await getRecentPapersUseCase(
-      GetRecentPapersParams(
-        category: categoryToUse,
-        page: page,
-        limit: limit,
-      ),
+      GetRecentPapersParams(category: categoryToUse, page: page, limit: limit),
     );
 
     result.fold(
@@ -107,11 +103,7 @@ class HomeCubit extends Cubit<HomeState> {
 
     // Load recent papers
     final recentResult = await getRecentPapersUseCase(
-      GetRecentPapersParams(
-        category: category,
-        page: 1,
-        limit: recentLimit,
-      ),
+      GetRecentPapersParams(category: category, page: 1, limit: recentLimit),
     );
 
     // Load recommendations
@@ -224,7 +216,8 @@ class HomeCubit extends Cubit<HomeState> {
 
   Future<void> loadMoreRecommendations({int limit = 5}) async {
     final currentState = state;
-    if (currentState is! HomePapersLoaded && currentState is! HomePapersUpdated) {
+    if (currentState is! HomePapersLoaded &&
+        currentState is! HomePapersUpdated) {
       return;
     }
 
@@ -284,10 +277,7 @@ class HomeCubit extends Cubit<HomeState> {
     );
   }
 
-  Future<void> loadMoreRecentPapers({
-    String? category,
-    int limit = 10,
-  }) async {
+  Future<void> loadMoreRecentPapers({String? category, int limit = 10}) async {
     final currentState = state;
 
     // Handle multiple state types
