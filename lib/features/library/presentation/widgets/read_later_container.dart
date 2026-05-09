@@ -76,7 +76,7 @@ Widget readLaterHeaderShimmer(BuildContext context) {
     baseColor: Colors.grey.shade300,
     highlightColor: Colors.grey.shade100,
     child: Container(
-      height: 100,
+      height: ResponsiveHelper.responsiveValue(context, 100),
       width: MySizes.screenWidth(context),
       padding: EdgeInsets.all(ResponsiveHelper.responsiveValue(context, 16)),
       decoration: BoxDecoration(
@@ -91,11 +91,13 @@ Widget readLaterHeaderShimmer(BuildContext context) {
         children: [
           // title shimmer
           Container(
-            height: 18,
-            width: 120,
+            height: ResponsiveHelper.responsiveValue(context, 18),
+            width: ResponsiveHelper.responsiveValue(context, 120),
             decoration: BoxDecoration(
               color: Colors.white,
-              borderRadius: BorderRadius.circular(8),
+              borderRadius: BorderRadius.circular(
+                ResponsiveHelper.responsiveValue(context, 8),
+              ),
             ),
           ),
 
@@ -103,11 +105,13 @@ Widget readLaterHeaderShimmer(BuildContext context) {
 
           // subtitle shimmer
           Container(
-            height: 14,
-            width: 180,
+            height: ResponsiveHelper.responsiveValue(context, 14),
+            width: ResponsiveHelper.responsiveValue(context, 180),
             decoration: BoxDecoration(
               color: Colors.white,
-              borderRadius: BorderRadius.circular(8),
+              borderRadius: BorderRadius.circular(
+                ResponsiveHelper.responsiveValue(context, 8),
+              ),
             ),
           ),
         ],

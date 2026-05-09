@@ -102,10 +102,7 @@ class ReadingListCard extends StatelessWidget {
               children: [
                 if (readingList.description != null &&
                     readingList.description!.trim().isNotEmpty)
-                  ConstrainedBox(
-                    constraints: BoxConstraints(
-                      maxWidth: ResponsiveHelper.responsiveValue(context, 230),
-                    ),
+                  Expanded(
                     child: Text(
                       readingList.description!,
                       style: context.bodySmall,
