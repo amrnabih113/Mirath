@@ -112,6 +112,16 @@ final appRouter = GoRouter(
       ...authPaths,
     ];
 
+    final isPublicPath = publicPaths.contains(currentLocation);
+    final isProtectedPath = !isPublicPath && currentLocation != '/';
+
+    // While auth status is still resolving, keep protected routes on splash
+    // so their screens do not build and trigger unauthorized API calls.
+    if ((authStatus == AuthStatus.initial || authStatus == AuthStatus.loading) &&
+        isProtectedPath) {
+      return RouteNames.splash;
+    }
+
     // Email unverified
     if (authStatus == AuthStatus.unverified &&
         currentLocation != RouteNames.verifyAccount) {
