@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'package:mirath/core/constants/route_names.dart';
 
 import '../../../../core/helpers/my_loaders.dart';
 import '../../../../core/utils/my_sizes.dart';
@@ -12,7 +13,9 @@ import '../widgets/signin_form.dart';
 import '../widgets/signin_social_buttons.dart';
 
 class SigninScreen extends StatelessWidget {
-  const SigninScreen({super.key});
+  final String? postSignInTarget;
+
+  const SigninScreen({super.key, this.postSignInTarget});
 
   @override
   Widget build(BuildContext context) {
@@ -22,9 +25,15 @@ class SigninScreen extends StatelessWidget {
       body: BlocListener<AuthCubit, AuthState>(
         listener: (context, state) {
           if (state.status == AuthStatus.authenticated) {
-            context.pushReplacement('/home');
+            if (postSignInTarget != null && postSignInTarget!.isNotEmpty) {
+              // Replace signin with home then push target so Back returns to home
+              context.go(RouteNames.home);
+              context.push(postSignInTarget!);
+            } else {
+              context.pushReplacement(RouteNames.home);
+            }
           } else if (state.status == AuthStatus.unverified) {
-            context.pushReplacement('/verify-account');
+            context.pushReplacement(RouteNames.verifyAccount);
           } else if (state.status == AuthStatus.error) {
             MyLoaders.errorSnackBar(
               context: context,

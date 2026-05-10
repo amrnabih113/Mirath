@@ -275,8 +275,9 @@ final appRouter = GoRouter(
     // ===================== AUTH ROUTES =====================
     GoRoute(
       path: RouteNames.signin,
-      pageBuilder: (context, state) =>
-          PageTransitions.smoothTransition(const SigninScreen()),
+      pageBuilder: (context, state) => PageTransitions.smoothTransition(
+        SigninScreen(postSignInTarget: state.extra as String?),
+      ),
     ),
 
     GoRoute(
