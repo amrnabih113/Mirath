@@ -161,6 +161,7 @@ class DI {
     final dioClient = DioClient(
       dio: sl<Dio>(),
       secureStorage: sl<SecureStorageService>(),
+      onAuthFailure: () => sl<AuthCubit>().signOut(),
     );
     await dioClient.init();
     sl.registerSingleton<DioClient>(dioClient);

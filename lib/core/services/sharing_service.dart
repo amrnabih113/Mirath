@@ -82,26 +82,26 @@ class SharingService {
   }
 
   /// Generate a shareable URL for a paper
-  /// Format: https://mirath.app/papers/paperId
+  /// Format: https://mirath-dev.web.app/#/papers/paperId
   static String _generatePaperUrl(String paperId) {
-    return '$webBaseUrl/papers/$paperId';
+    return '$webBaseUrl/#/papers/$paperId';
   }
 
   /// Generate a shareable URL for a discussion
-  /// Format: https://mirath.app/discussions/discussionId
+  /// Format: https://mirath-dev.web.app/#/discussions/discussionId
   static String _generateDiscussionUrl(String discussionId) {
-    return '$webBaseUrl/discussions/$discussionId';
+    return '$webBaseUrl/#/discussions/$discussionId';
   }
 
   /// Generate a shareable URL for a user profile
-  /// Format: https://mirath.app/users/userId
+  /// Format: https://mirath-dev.web.app/#/users/userId
   static String _generateProfileUrl(String userId) {
-    return '$webBaseUrl/users/$userId';
+    return '$webBaseUrl/#/users/$userId';
   }
 
   /// Generate a shareable URL for a reading list
-  /// Format: https://mirath.app/reading-lists/readingListId
+  /// Format: https://mirath-dev.web.app/#/reading-lists/readingListId
   static String _generateReadingListUrl(String readingListId) {
-    return '$webBaseUrl/reading-lists/$readingListId';
+    return '$webBaseUrl/#/reading-lists/$readingListId';
   }
 }
