@@ -90,10 +90,10 @@ final appRouter = GoRouter(
 
     final hasSeenOnboarding = localStorage.hasSeenOnboarding();
 
-    // Check profile setup status from server for authenticated users
+    // Check profile setup status from server for authenticated users only
+    // Never check during loading to avoid 401 calls without a token
     bool hasSetupProfile = false;
-    if (authStatus == AuthStatus.authenticated ||
-        authStatus == AuthStatus.loading) {
+    if (authStatus == AuthStatus.authenticated) {
       hasSetupProfile = await authCubit.checkSetup();
     }
 
