@@ -90,13 +90,23 @@ class _MirathAppState extends State<MirathApp> {
 
     if (target == null) return;
 
-    // Push a home entry beneath the target so Back returns to home
-    // We navigate home then push the target on top. This creates the desired stack.
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       try {
-        // Push home (don't replace) so Back returns to home, then push the shared item
-        appRouter.push(RouteNames.home);
-        appRouter.push(target!);
+        final authStatus = sl<AuthCubit>().state.status;
+
+        if (authStatus == AuthStatus.authenticated) {
+          // Authenticated users land on Home first, then the shared item.
+          appRouter.go(RouteNames.home);
+          appRouter.push(target!);
+          return;
+        }
+
+        // Unauthenticated users must sign in first to avoid protected screens
+        // firing requests and showing auth-token errors.
+        appRouter.go(
+          RouteNames.signin,
+          extra: target,
+        );
       } catch (e) {
         MyLogger.error('[DeepLink] Failed to handle deep link: $e');
       }
