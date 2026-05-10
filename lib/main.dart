@@ -1,7 +1,9 @@
 import 'package:device_preview/device_preview.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:mirath/core/constants/route_names.dart';
 
 import 'app_router.dart';
 import 'core/network/network_manager.dart';
@@ -33,8 +35,73 @@ void main() async {
   );
 }
 
-class MirathApp extends StatelessWidget {
+class MirathApp extends StatefulWidget {
   const MirathApp({super.key});
+
+  @override
+  State<MirathApp> createState() => _MirathAppState();
+}
+
+class _MirathAppState extends State<MirathApp> {
+  bool _handledDeepLink = false;
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) => _handleDeepLinkIfAny());
+  }
+
+  void _handleDeepLinkIfAny() {
+    if (_handledDeepLink) return;
+    _handledDeepLink = true;
+
+    final uri = Uri.base;
+    String path = '';
+
+    // For web with hash routing, the fragment contains the route (e.g. #/papers/123)
+    if (kIsWeb && uri.fragment.isNotEmpty) {
+      path = uri.fragment;
+    } else {
+      path = uri.path;
+    }
+
+    if (path.isEmpty) return;
+
+    final segments = path.split('/').where((s) => s.isNotEmpty).toList();
+    if (segments.isEmpty) return;
+
+    String? target;
+    switch (segments[0]) {
+      case 'papers':
+        if (segments.length > 1) target = RouteNames.paperDetailsRoute(segments[1]);
+        break;
+      case 'discussions':
+        if (segments.length > 1) target = RouteNames.discussionDetailsRoute(segments[1]);
+        break;
+      case 'users':
+        if (segments.length > 1) target = RouteNames.userProfileRoute(segments[1]);
+        break;
+      case 'reading-lists':
+        if (segments.length > 1) target = RouteNames.readingListDetailsRoute(segments[1]);
+        break;
+      default:
+        target = null;
+    }
+
+    if (target == null) return;
+
+    // Push a home entry beneath the target so Back returns to home
+    // We navigate home then push the target on top. This creates the desired stack.
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      try {
+        // Push home (don't replace) so Back returns to home, then push the shared item
+        appRouter.push(RouteNames.home);
+        appRouter.push(target!);
+      } catch (e) {
+        MyLogger.error('[DeepLink] Failed to handle deep link: $e');
+      }
+    });
+  }
 
   @override
   Widget build(BuildContext context) {

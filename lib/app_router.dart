@@ -88,7 +88,7 @@ final appRouter = GoRouter(
       '[Router] Redirect check - Current: $currentLocation, AuthStatus: $authStatus',
     );
 
-    localStorage.hasSeenOnboarding();
+    final hasSeenOnboarding = localStorage.hasSeenOnboarding();
 
     // Check profile setup status from server for authenticated users
     bool hasSetupProfile = false;
@@ -163,6 +163,24 @@ final appRouter = GoRouter(
       }
       // For other pages, redirect to signin
       MyLogger.info('[Router] Auth error - redirecting to signin');
+      return RouteNames.signin;
+    }
+
+    // Unauthenticated users
+    if (authStatus == AuthStatus.unauthenticated) {
+      // If user hasn't seen onboarding, send there first
+      if (!hasSeenOnboarding && currentLocation != RouteNames.onboarding) {
+        MyLogger.info('[Router] Unauthenticated - redirecting to onboarding');
+        return RouteNames.onboarding;
+      }
+
+      // Allow staying on auth pages; otherwise go to signin
+      if (authPaths.contains(currentLocation) ||
+          currentLocation == RouteNames.onboarding) {
+        return null;
+      }
+
+      MyLogger.info('[Router] Unauthenticated - redirecting to signin');
       return RouteNames.signin;
     }
 
