@@ -9,32 +9,84 @@ import 'package:mirath/core/utils/my_sizes.dart';
 import 'package:mirath/features/common/widgets/my_back_icon.dart';
 import 'package:mirath/features/home/domain/entities/paper_entity.dart';
 import 'package:mirath/features/home/presentation/cubit/home_cubit.dart';
+import 'package:mirath/features/papers/domain/usecases/get_paper_by_id_usecase.dart';
+import 'package:mirath/generated/l10n.dart';
+import 'package:mirath/injection/injection_container.dart';
 import 'package:mirath/features/papers/presentation/widgets/abstract_section.dart';
 import 'package:mirath/features/papers/presentation/widgets/expainsion_tile_widget.dart';
 import 'package:mirath/features/papers/presentation/widgets/paper_info.dart';
 import 'package:mirath/features/reading_lists/presentation/widgets/add_to_reading_list_dialog.dart';
 
 class PaperScreen extends StatefulWidget {
-  final PaperEntity paper;
+  final PaperEntity? paper;
+  final String? paperId;
   final VoidCallback? backonTap;
 
-  const PaperScreen({super.key, required this.paper, this.backonTap});
+  const PaperScreen({super.key, this.paper, this.paperId, this.backonTap});
 
   @override
   State<PaperScreen> createState() => _PaperScreenState();
 }
 
 class _PaperScreenState extends State<PaperScreen> {
-  late PaperEntity _currentPaper;
+  PaperEntity? _currentPaper;
+  bool _isLoading = false;
+  String? _error;
 
   @override
   void initState() {
     super.initState();
     _currentPaper = widget.paper;
+    if (_currentPaper == null && widget.paperId != null) {
+      _fetchPaper(widget.paperId!);
+    }
+  }
+
+  Future<void> _fetchPaper(String id) async {
+    setState(() {
+      _isLoading = true;
+      _error = null;
+    });
+    final result = await sl<GetPaperByIdUseCase>()(id);
+    result.fold((failure) {
+      setState(() {
+        _isLoading = false;
+        _error = 'Failed to load paper';
+      });
+    }, (full) {
+      final paper = PaperEntity(
+        id: full.id,
+        title: full.title,
+        abstract: full.abstract,
+        publishedAt: full.publishedAt,
+        authors: full.authors,
+        categories: full.categories,
+        isSaved: false,
+        preprint: '',
+        citation: full.citation,
+      );
+      setState(() {
+        _currentPaper = paper;
+        _isLoading = false;
+      });
+    });
   }
 
   @override
   Widget build(BuildContext context) {
+    final currentPaper = _currentPaper;
+
+    if (_isLoading) {
+      return const Scaffold(body: Center(child: CircularProgressIndicator()));
+    }
+    if (_error != null) {
+      return Scaffold(body: Center(child: Text(_error!)));
+    }
+
+    if (currentPaper == null) {
+      return Scaffold(body: Center(child: Text(S.of(context).error_no_paper_data)));
+    }
+
     return Scaffold(
       appBar: PreferredSize(
         preferredSize: Size.fromHeight(
@@ -78,12 +130,12 @@ class _PaperScreenState extends State<PaperScreen> {
                   child: Column(
                     children: [
                       PaperInfo(
-                        paper: _currentPaper,
+                        paper: currentPaper,
                         onSavePressed: _onSavePressed,
                       ),
                       SizedBox(height: MySizes.spaceMd(context)),
                       AbstractSection(
-                        abstractText: _currentPaper.abstract,
+                        abstractText: currentPaper.abstract,
                         onStartDiscussion: _onStartDiscussion,
                         onViewDiscussions: _onViewDiscussions,
                       ),
@@ -104,11 +156,11 @@ class _PaperScreenState extends State<PaperScreen> {
     showDialog(
       context: context,
       builder: (context) => AddToReadingListDialog(
-        paperId: _currentPaper.id,
-        isSaved: _currentPaper.isSaved,
+        paperId: _currentPaper!.id,
+        isSaved: _currentPaper!.isSaved,
         onSavedStatusChanged: (isSaved) {
           setState(() {
-            _currentPaper = _currentPaper.copyWith(isSaved: isSaved);
+            _currentPaper = _currentPaper!.copyWith(isSaved: isSaved);
           });
           // Refetch papers from API to get updated data
           try {
@@ -134,7 +186,7 @@ class _PaperScreenState extends State<PaperScreen> {
               title: const Text('Share Paper'),
               onTap: () {
                 Navigator.pop(context);
-                SharingService.sharePaper(_currentPaper);
+                SharingService.sharePaper(_currentPaper!);
               },
             ),
           ],
@@ -149,7 +201,7 @@ class _PaperScreenState extends State<PaperScreen> {
 
   void _onViewDiscussions() {
     context.push(
-      RouteNames.paperDiscussionsRoute(_currentPaper.id),
+      RouteNames.paperDiscussionsRoute(_currentPaper!.id),
       extra: _currentPaper,
     );
   }

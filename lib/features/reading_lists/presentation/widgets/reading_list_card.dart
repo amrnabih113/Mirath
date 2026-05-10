@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:hugeicons/hugeicons.dart';
 
-import '../../../../core/constants/route_names.dart';
 import '../../../../core/helpers/responsive_helper.dart';
 import '../../../../core/services/sharing_service.dart';
 import '../../../../core/utils/my_colors.dart';

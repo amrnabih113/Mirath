@@ -26,10 +26,11 @@ import 'package:mirath/generated/l10n.dart';
 import 'package:mirath/injection/injection_container.dart';
 
 class PaperReadingScreen extends StatefulWidget {
-  final PaperEntity paper;
+  final PaperEntity? paper;
+  final String? paperId;
   final VoidCallback? backonTap;
 
-  const PaperReadingScreen({super.key, required this.paper, this.backonTap});
+  const PaperReadingScreen({super.key, this.paper, this.paperId, this.backonTap});
 
   @override
   State<PaperReadingScreen> createState() => _PaperReadingScreenState();
@@ -184,10 +185,25 @@ class _PaperReadingScreenState extends State<PaperReadingScreen> {
   @override
   void initState() {
     super.initState();
-    print(
-      '[PaperReadingScreen] initState - Paper: ${widget.paper.id} - ${widget.paper.title}',
-    );
-    context.read<PaperReadingCubit>().loadPaper(widget.paper);
+    if (widget.paper != null) {
+      print(
+        '[PaperReadingScreen] initState - Paper: ${widget.paper!.id} - ${widget.paper!.title}',
+      );
+      context.read<PaperReadingCubit>().loadPaper(widget.paper!);
+    } else if (widget.paperId != null) {
+      final minimal = PaperEntity(
+        id: widget.paperId!,
+        title: '',
+        abstract: '',
+        publishedAt: DateTime.now(),
+        authors: const [],
+        categories: const [],
+        isSaved: false,
+        preprint: '',
+        citation: '',
+      );
+      context.read<PaperReadingCubit>().loadPaper(minimal);
+    }
   }
 
   @override
@@ -444,7 +460,7 @@ class _PaperReadingScreenState extends State<PaperReadingScreen> {
     }
 
     await context.read<PaperReadingCubit>().loadAnnotatedHighlights(
-      widget.paper.id,
+      widget.paper!.id,
     );
 
     final selected = await showModalBottomSheet<NotesListSheetResult>(
@@ -483,7 +499,7 @@ class _PaperReadingScreenState extends State<PaperReadingScreen> {
                   onLoadMore: () {
                     blocContext
                         .read<PaperReadingCubit>()
-                        .loadMoreAnnotatedHighlights(widget.paper.id);
+                        .loadMoreAnnotatedHighlights(widget.paper!.id);
                   },
                 ),
               ),

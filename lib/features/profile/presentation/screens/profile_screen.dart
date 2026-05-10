@@ -11,8 +11,6 @@ import 'package:mirath/features/profile/presentation/cubit/profile_cubit.dart';
 import 'package:mirath/features/profile/presentation/widgets/user_data.dart';
 import 'package:mirath/features/profile/presentation/widgets/user_tabs.dart';
 import 'package:mirath/features/users/domain/entities/user.dart';
-import 'package:mirath/features/users/presentation/cubit/profile_header_cubit.dart';
-import 'package:mirath/features/users/presentation/cubit/profile_header_state.dart';
 import 'package:mirath/generated/l10n.dart';
 
 class ProfileScreen extends StatelessWidget {

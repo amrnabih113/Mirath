@@ -14,9 +14,10 @@ import 'package:mirath/features/home/domain/entities/paper_entity.dart';
 import 'package:mirath/generated/l10n.dart';
 
 class PaperDiscussionsScreen extends StatefulWidget {
-  final PaperEntity paper;
+  final PaperEntity? paper;
+  final String? paperId;
 
-  const PaperDiscussionsScreen({super.key, required this.paper});
+  const PaperDiscussionsScreen({super.key, this.paper, this.paperId});
 
   @override
   State<PaperDiscussionsScreen> createState() => _PaperDiscussionsScreenState();
@@ -73,9 +74,10 @@ class _PaperDiscussionsScreenState extends State<PaperDiscussionsScreen> {
                   }
 
                   if (state is CommunityDiscussionsLoaded) {
+                    final targetId = widget.paper?.id ?? widget.paperId;
                     final discussions = state.discussions
                         .where(
-                          (d) => d.papers.any((p) => p.id == widget.paper.id),
+                          (d) => d.papers.any((p) => p.id == targetId),
                         )
                         .toList();
 
@@ -98,10 +100,7 @@ class _PaperDiscussionsScreenState extends State<PaperDiscussionsScreen> {
                             SizedBox(height: MySizes.spaceMd(context)),
                             ElevatedButton(
                               onPressed: () {
-                                context.push(
-                                  RouteNames.addDiscussion,
-                                  extra: widget.paper,
-                                );
+                                context.push(RouteNames.addDiscussion, extra: widget.paper ?? widget.paperId);
                               },
                               child: Text(
                                 S.of(context).start_discussion_button,
@@ -123,12 +122,7 @@ class _PaperDiscussionsScreenState extends State<PaperDiscussionsScreen> {
                           return DiscussionCard(
                             discussion: discussion,
                             onTap: () {
-                              context.push(
-                                RouteNames.discussionDetailsRoute(
-                                  discussion.id,
-                                ),
-                                extra: discussion,
-                              );
+                              context.push(RouteNames.discussionDetailsRoute(discussion.id), extra: discussion);
                             },
                           );
                         },

@@ -16,8 +16,8 @@ class SharingService {
   /// Share a paper with a shareable link
   static Future<void> sharePaper(PaperEntity paper) async {
     try {
-      final title = paper.title ?? 'Untitled Paper';
-      final authors = paper.authors?.join(', ') ?? 'Unknown Author';
+      final title = paper.title;
+      final authors = paper.authors.join(', ');
       final shareUrl = _generatePaperUrl(paper.id);
       final message = '$title\n\nBy: $authors\n\nRead on Mirath:\n$shareUrl';
 
@@ -31,7 +31,7 @@ class SharingService {
   /// Share a discussion with a shareable link
   static Future<void> shareDiscussion(Discussion discussion) async {
     try {
-      final title = discussion.title ?? 'Discussion';
+      final title = discussion.title;
       final shareUrl = _generateDiscussionUrl(discussion.id);
       final message = '$title\n\nJoin the discussion on Mirath:\n$shareUrl';
 
@@ -45,7 +45,7 @@ class SharingService {
   /// Share a user profile with a shareable link
   static Future<void> shareProfile(User user) async {
     try {
-      final name = user.fullName ?? 'User Profile';
+      final name = user.fullName;
       final shareUrl = _generateProfileUrl(user.id);
       final message = 'Check out $name\'s profile on Mirath:\n$shareUrl';
 

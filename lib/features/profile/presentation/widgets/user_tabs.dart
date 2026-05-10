@@ -91,7 +91,10 @@ class UserTabs extends StatelessWidget {
                     return DiscussionCard(
                       discussion: discussion,
                       onTap: () {
-                        context.push('/discussion-details', extra: discussion);
+                        context.push(
+                          RouteNames.discussionDetailsRoute(discussion.id),
+                          extra: discussion,
+                        );
                       },
                     );
                   },

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:hugeicons_pro/hugeicons.dart';
+import 'package:intl/intl.dart';
 import 'package:mirath/core/helpers/my_loaders.dart';
 import 'package:mirath/features/common/widgets/tag_chip.dart';
 import 'package:mirath/features/home/presentation/cubit/home_cubit.dart';
@@ -17,10 +18,14 @@ class PaperCard extends StatefulWidget {
     super.key,
     this.number,
     this.paper,
+    this.isHistory = false,
+    this.lastReadAt,
     required this.onTap,
   });
   final int? number;
   final PaperEntity? paper;
+  final bool isHistory;
+  final DateTime? lastReadAt;
   final VoidCallback onTap;
   @override
   State<PaperCard> createState() => _PaperCardState();
@@ -32,6 +37,29 @@ class _PaperCardState extends State<PaperCard> {
   void initState() {
     super.initState();
     isBookmarked = widget.paper?.isSaved ?? false;
+  }
+
+  String _historyLabel(DateTime dateTime) {
+    final now = DateTime.now();
+    final difference = now.difference(dateTime);
+
+    if (difference.inDays < 1) {
+      if (difference.inHours < 1) {
+        final minutes = difference.inMinutes;
+        if (minutes < 1) {
+          return 'Just now';
+        }
+        return '${minutes}m ago';
+      }
+
+      return '${difference.inHours}h ago';
+    }
+
+    if (difference.inDays < 2) {
+      return 'Yesterday';
+    }
+
+    return DateFormat('MMM d, yyyy').format(dateTime);
   }
 
   @override
@@ -116,38 +144,47 @@ class _PaperCardState extends State<PaperCard> {
                   ),
                   overflow: TextOverflow.ellipsis,
                 ),
-                IconButton(
-                  onPressed: () {
-                    final cubit = context.read<HomeCubit>();
-                    if (isBookmarked) {
-                      cubit.unsavePaper(widget.paper?.id ?? '');
-                      setState(() {
-                        isBookmarked = false;
-                      });
-                      MyLoaders.customToast(
-                        context: context,
-                        message: 'Paper unsaved ',
-                      );
-                    } else {
-                      cubit.savePaper(widget.paper?.id ?? '');
-                      setState(() {
-                        isBookmarked = true;
-                      });
-                      MyLoaders.customToast(
-                        context: context,
-                        message: 'Paper saved ',
-                      );
-                    }
-                  },
-                  icon: Icon(
-                    isBookmarked
-                        ? HugeIconsSolid.bookmark02
-                        : HugeIconsStroke.bookmark02,
-                    color: MyColors.primaryShade700,
-                    weight: 3,
-                    size: ResponsiveHelper.responsiveValue(context, 20),
+                if (widget.isHistory)
+                  Text(
+                    _historyLabel(widget.lastReadAt ?? DateTime.now()),
+                    style: context.bodySmall.copyWith(
+                      color: MyColors.primaryShade700,
+                      fontWeight: FontWeight.w700,
+                    ),
+                  )
+                else
+                  IconButton(
+                    onPressed: () {
+                      final cubit = context.read<HomeCubit>();
+                      if (isBookmarked) {
+                        cubit.unsavePaper(widget.paper?.id ?? '');
+                        setState(() {
+                          isBookmarked = false;
+                        });
+                        MyLoaders.customToast(
+                          context: context,
+                          message: 'Paper unsaved ',
+                        );
+                      } else {
+                        cubit.savePaper(widget.paper?.id ?? '');
+                        setState(() {
+                          isBookmarked = true;
+                        });
+                        MyLoaders.customToast(
+                          context: context,
+                          message: 'Paper saved ',
+                        );
+                      }
+                    },
+                    icon: Icon(
+                      isBookmarked
+                          ? HugeIconsSolid.bookmark02
+                          : HugeIconsStroke.bookmark02,
+                      color: MyColors.primaryShade700,
+                      weight: 3,
+                      size: ResponsiveHelper.responsiveValue(context, 20),
+                    ),
                   ),
-                ),
               ],
             ),
             SizedBox(height: MySizes.spaceXs(context) * 0.5),

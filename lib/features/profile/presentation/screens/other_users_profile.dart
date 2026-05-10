@@ -12,10 +12,24 @@ import 'package:mirath/features/users/presentation/cubit/profile_header_cubit.da
 import 'package:mirath/features/users/presentation/cubit/profile_header_state.dart';
 import 'package:mirath/generated/l10n.dart';
 
-class OtherUsersProfile extends StatelessWidget {
+class OtherUsersProfile extends StatefulWidget {
   const OtherUsersProfile({super.key, required this.userId});
 
   final String userId;
+
+  @override
+  State<OtherUsersProfile> createState() => _OtherUsersProfileState();
+}
+
+class _OtherUsersProfileState extends State<OtherUsersProfile> {
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted) return;
+      context.read<ProfileHeaderCubit>().getProfileHeader(widget.userId);
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -49,11 +63,8 @@ class OtherUsersProfile extends StatelessWidget {
                 constraints: const BoxConstraints(maxWidth: 850),
                 child: BlocBuilder<ProfileHeaderCubit, ProfileHeaderState>(
                   builder: (context, state) {
-                    if (state is ProfileHeaderInitial) {
-                      return const Center(child: CircularProgressIndicator());
-                    }
-
-                    if (state is ProfileHeaderLoading) {
+                    if (state is ProfileHeaderInitial ||
+                        state is ProfileHeaderLoading) {
                       return const Center(child: CircularProgressIndicator());
                     }
 
@@ -67,63 +78,63 @@ class OtherUsersProfile extends StatelessWidget {
                     return NestedScrollView(
                       headerSliverBuilder:
                           (BuildContext context, bool innerBoxIsScrolled) {
-                            return [
-                              SliverToBoxAdapter(
-                                child: UserData(
-                                  user: user,
-                                  actionLabel: user.isFollowed == true
-                                      ? S.of(context).following
-                                      : S.of(context).follow,
-                                  color: MyColors.primaryShade900,
-                                  labelColor: MyColors.primaryShade50,
-                                  onActionTap: () {
-                                    if (loaded.isFollowLoading) return;
-                                    if (user.isFollowed == true) {
-                                      context
-                                          .read<ProfileHeaderCubit>()
-                                          .unfollowUser(user.id);
-                                    } else {
-                                      context
-                                          .read<ProfileHeaderCubit>()
-                                          .followUser(user.id);
-                                    }
-                                  },
-                                  onFollowersTap: () {
-                                    context.push(
-                                      RouteNames.followerFollowingRoute(
-                                        userId,
-                                        tab: 0,
-                                      ),
-                                      extra: {'username': user.username},
-                                    );
-                                  },
-                                  onFollowingTap: () {
-                                    context.push(
-                                      RouteNames.followerFollowingRoute(
-                                        userId,
-                                        tab: 1,
-                                      ),
-                                      extra: {'username': user.username},
-                                    );
-                                  },
-                                ),
-                              ),
-                              SliverPersistentHeader(
-                                pinned: true,
-                                delegate: _TabBarDelegate(
-                                  TabBar(
-                                    indicatorColor: MyColors.primaryShade900,
-                                    labelColor: Colors.black,
-                                    unselectedLabelColor: Colors.grey,
-                                    tabs: [
-                                      Tab(text: S.of(context).reading_lists),
-                                      Tab(text: S.of(context).discussions),
-                                    ],
+                        return [
+                          SliverToBoxAdapter(
+                            child: UserData(
+                              user: user,
+                              actionLabel: user.isFollowed == true
+                                  ? S.of(context).following
+                                  : S.of(context).follow,
+                              color: MyColors.primaryShade900,
+                              labelColor: MyColors.primaryShade50,
+                              onActionTap: () {
+                                if (loaded.isFollowLoading) return;
+                                if (user.isFollowed == true) {
+                                  context
+                                      .read<ProfileHeaderCubit>()
+                                      .unfollowUser(user.id);
+                                } else {
+                                  context
+                                      .read<ProfileHeaderCubit>()
+                                      .followUser(user.id);
+                                }
+                              },
+                              onFollowersTap: () {
+                                context.push(
+                                  RouteNames.followerFollowingRoute(
+                                    widget.userId,
+                                    tab: 0,
                                   ),
-                                ),
+                                  extra: {'username': user.username},
+                                );
+                              },
+                              onFollowingTap: () {
+                                context.push(
+                                  RouteNames.followerFollowingRoute(
+                                    widget.userId,
+                                    tab: 1,
+                                  ),
+                                  extra: {'username': user.username},
+                                );
+                              },
+                            ),
+                          ),
+                          SliverPersistentHeader(
+                            pinned: true,
+                            delegate: _TabBarDelegate(
+                              TabBar(
+                                indicatorColor: MyColors.primaryShade900,
+                                labelColor: Colors.black,
+                                unselectedLabelColor: Colors.grey,
+                                tabs: [
+                                  Tab(text: S.of(context).reading_lists),
+                                  Tab(text: S.of(context).discussions),
+                                ],
                               ),
-                            ];
-                          },
+                            ),
+                          ),
+                        ];
+                      },
                       body: UserTabs(userId: user.id),
                     );
                   },

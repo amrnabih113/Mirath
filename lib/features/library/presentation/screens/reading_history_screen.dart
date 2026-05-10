@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
+import 'package:mirath/core/constants/route_names.dart';
 import 'package:mirath/core/utils/my_extenstions.dart';
 import 'package:mirath/core/utils/my_sizes.dart';
 import 'package:mirath/features/common/widgets/my_back_icon.dart';
@@ -122,7 +124,15 @@ class _ReadingHistoryScreenState extends State<ReadingHistoryScreen> {
 
                           return PaperCard(
                             paper: state.readingHistory[index].paper,
-                            onTap: () {},
+                            isHistory: true,
+                            lastReadAt: state.readingHistory[index].viewedAt,
+                            onTap: () {
+                              final paper = state.readingHistory[index].paper;
+                              context.push(
+                                RouteNames.paperDetailsRoute(paper.id),
+                                extra: paper,
+                              );
+                            },
                           );
                         },
                         separatorBuilder: (context, index) =>

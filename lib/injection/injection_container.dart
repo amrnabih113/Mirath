@@ -12,6 +12,7 @@ import 'package:mirath/features/library/domain/usecases/get_reading_history.dart
 import 'package:mirath/features/library/domain/usecases/remove_paper_from_reading_history.dart';
 import 'package:mirath/features/library/domain/usecases/update_reading_history.dart';
 import 'package:mirath/features/library/presentation/cubit/library_cubit.dart';
+import 'package:mirath/features/Layout/presentation/cubit/layout_cubit.dart';
 import 'package:mirath/features/reading_lists/domain/usecases/delete_reading_list_usecase.dart';
 import 'package:mirath/features/reading_lists/domain/usecases/save_reading_list_usecase.dart';
 import 'package:mirath/features/reading_lists/domain/usecases/unsave_reading_list_usecase.dart';
@@ -467,6 +468,9 @@ class DI {
 
     /// Chatbot ///
     sl.registerFactory(() => ChatbotCubit());
+
+    /// Layout Cubit ///
+    sl.registerLazySingleton(() => LayoutCubit());
 
     /// papers ///
     // Data Sources
