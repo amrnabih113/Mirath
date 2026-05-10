@@ -84,8 +84,11 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
 
   @override
   Future<void> forgetPassword({required String email}) async {
-    await _dioClient.post(MyConstants.forgetPassword,
-      data: {'email': email}, options: Options(extra: {'skipAuth': true}));
+    await _dioClient.post(
+      MyConstants.forgetPassword,
+      data: {'email': email},
+      options: Options(extra: {'skipAuth': true}),
+    );
   }
 
   @override

@@ -47,9 +47,15 @@ class AuthInterceptor extends Interceptor {
 
   @override
   void onError(DioException err, ErrorInterceptorHandler handler) async {
+    // Skip auth handling for:
+    // 1. Endpoints marked skipAuth
+    // 2. Already-failed refresh attempts
+    // 3. Logout endpoint
+    // 4. checkSetup endpoint (to prevent 401 from triggering refresh loop)
     if (err.response?.statusCode != 401 ||
         err.requestOptions.extra['skipAuth'] == true ||
-        err.requestOptions.path.contains(MyConstants.logout)) {
+        err.requestOptions.path.contains(MyConstants.logout) ||
+        err.requestOptions.path.contains(MyConstants.checkSetup)) {
       return handler.next(err);
     }
 

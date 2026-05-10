@@ -94,7 +94,14 @@ final appRouter = GoRouter(
     // Never check during loading to avoid 401 calls without a token
     bool hasSetupProfile = false;
     if (authStatus == AuthStatus.authenticated) {
-      hasSetupProfile = await authCubit.checkSetup();
+      try {
+        hasSetupProfile = await authCubit.checkSetup();
+      } catch (e) {
+        MyLogger.warning(
+          '[Router] checkSetup failed: $e - Treating as not setup',
+        );
+        hasSetupProfile = false;
+      }
     }
 
     const authPaths = [
