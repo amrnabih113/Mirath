@@ -1,6 +1,10 @@
 import 'package:dartz/dartz.dart';
 import '../../../../core/error/failuors.dart';
 import '../../../../core/network/network_manager.dart';
+import '../../../discussions/domain/entities/discussion.dart';
+import '../../../reading_lists/domain/entities/reading_list.dart';
+import '../../../users/domain/entities/user.dart';
+import '../../domain/entities/global_search_results.dart';
 import '../../domain/entities/paper_entity.dart';
 import '../../domain/entities/search_history_item.dart';
 import '../../domain/repositories/home_repository.dart';
@@ -136,6 +140,101 @@ class HomeRepositoryImpl implements HomeRepository {
       return Right(response.map((model) => model.toEntity()).toList());
     } catch (e) {
       return Future.value(Left(ServerFailure()));
+    }
+  }
+
+  @override
+  Future<Either<Failure, GlobalSearchResults>> searchGlobal(
+    String query, {
+    int page = 1,
+    int limit = 10,
+  }) async {
+    if (!await networkManager.isConnected) {
+      return Left(NetworkFailure());
+    }
+
+    try {
+      final response = await remoteDataSource.searchGlobal(
+        query,
+        page: page,
+        limit: limit,
+      );
+
+      return Right(
+        GlobalSearchResults(
+          discussions: List<Discussion>.from(response.discussions),
+          readingLists: List<ReadingList>.from(response.readingLists),
+          researchers: List<User>.from(response.researchers),
+        ),
+      );
+    } catch (e) {
+      return Left(ServerFailure());
+    }
+  }
+
+  @override
+  Future<Either<Failure, List<Discussion>>> searchDiscussions(
+    String query, {
+    int page = 1,
+    int limit = 10,
+  }) async {
+    if (!await networkManager.isConnected) {
+      return Left(NetworkFailure());
+    }
+
+    try {
+      final response = await remoteDataSource.searchDiscussions(
+        query,
+        page: page,
+        limit: limit,
+      );
+      return Right(List<Discussion>.from(response));
+    } catch (e) {
+      return Left(ServerFailure());
+    }
+  }
+
+  @override
+  Future<Either<Failure, List<ReadingList>>> searchReadingLists(
+    String query, {
+    int page = 1,
+    int limit = 10,
+  }) async {
+    if (!await networkManager.isConnected) {
+      return Left(NetworkFailure());
+    }
+
+    try {
+      final response = await remoteDataSource.searchReadingLists(
+        query,
+        page: page,
+        limit: limit,
+      );
+      return Right(List<ReadingList>.from(response));
+    } catch (e) {
+      return Left(ServerFailure());
+    }
+  }
+
+  @override
+  Future<Either<Failure, List<User>>> searchResearchers(
+    String query, {
+    int page = 1,
+    int limit = 10,
+  }) async {
+    if (!await networkManager.isConnected) {
+      return Left(NetworkFailure());
+    }
+
+    try {
+      final response = await remoteDataSource.searchResearchers(
+        query,
+        page: page,
+        limit: limit,
+      );
+      return Right(List<User>.from(response));
+    } catch (e) {
+      return Left(ServerFailure());
     }
   }
 

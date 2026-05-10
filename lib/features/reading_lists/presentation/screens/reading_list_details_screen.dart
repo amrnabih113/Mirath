@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 import 'package:hugeicons/hugeicons.dart';
 import 'package:intl/intl.dart';
+import 'package:mirath/core/constants/route_names.dart';
 import 'package:mirath/core/utils/my_logger.dart';
-import 'package:mirath/core/services/sharing_service.dart';
 
 import '../../../../core/helpers/responsive_helper.dart';
 import '../../../../core/utils/my_colors.dart';
@@ -21,8 +22,13 @@ import '../widgets/reading_list_details_shimmer_loading.dart';
 
 class ReadingListDetailsScreen extends StatefulWidget {
   final ReadingList? readingList;
+  final String? readingListId;
 
-  const ReadingListDetailsScreen({super.key, this.readingList});
+  const ReadingListDetailsScreen({
+    super.key,
+    this.readingList,
+    this.readingListId,
+  });
 
   @override
   State<ReadingListDetailsScreen> createState() =>
@@ -41,6 +47,13 @@ class _ReadingListDetailsScreenState extends State<ReadingListDetailsScreen> {
       MyLogger.debug(
         'ReadingListDetailsScreen initialized without reading list object',
       );
+    }
+    if (widget.readingList == null && widget.readingListId != null) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        context.read<ReadingListCubit>().getReadingListById(
+          widget.readingListId!,
+        );
+      });
     }
   }
 
@@ -240,7 +253,12 @@ class _ReadingListDetailsScreenState extends State<ReadingListDetailsScreen> {
                             child: PaperCard(
                               number: index + 1,
                               paper: paper,
-                              onTap: () {},
+                              onTap: () {
+                                context.push(
+                                  RouteNames.paperDetailsRoute(paper.id),
+                                  extra: paper,
+                                );
+                              },
                             ),
                           );
                         }, childCount: _buildPapers(readingList).length),

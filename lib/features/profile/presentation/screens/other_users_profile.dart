@@ -12,10 +12,24 @@ import 'package:mirath/features/users/presentation/cubit/profile_header_cubit.da
 import 'package:mirath/features/users/presentation/cubit/profile_header_state.dart';
 import 'package:mirath/generated/l10n.dart';
 
-class OtherUsersProfile extends StatelessWidget {
+class OtherUsersProfile extends StatefulWidget {
   const OtherUsersProfile({super.key, required this.userId});
 
   final String userId;
+
+  @override
+  State<OtherUsersProfile> createState() => _OtherUsersProfileState();
+}
+
+class _OtherUsersProfileState extends State<OtherUsersProfile> {
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted) return;
+      context.read<ProfileHeaderCubit>().getProfileHeader(widget.userId);
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -49,11 +63,8 @@ class OtherUsersProfile extends StatelessWidget {
                 constraints: const BoxConstraints(maxWidth: 850),
                 child: BlocBuilder<ProfileHeaderCubit, ProfileHeaderState>(
                   builder: (context, state) {
-                    if (state is ProfileHeaderInitial) {
-                      return const Center(child: CircularProgressIndicator());
-                    }
-
-                    if (state is ProfileHeaderLoading) {
+                    if (state is ProfileHeaderInitial ||
+                        state is ProfileHeaderLoading) {
                       return const Center(child: CircularProgressIndicator());
                     }
 
@@ -91,7 +102,7 @@ class OtherUsersProfile extends StatelessWidget {
                                   onFollowersTap: () {
                                     context.push(
                                       RouteNames.followerFollowingRoute(
-                                        userId,
+                                        widget.userId,
                                         tab: 0,
                                       ),
                                       extra: {'username': user.username},
@@ -100,7 +111,7 @@ class OtherUsersProfile extends StatelessWidget {
                                   onFollowingTap: () {
                                     context.push(
                                       RouteNames.followerFollowingRoute(
-                                        userId,
+                                        widget.userId,
                                         tab: 1,
                                       ),
                                       extra: {'username': user.username},

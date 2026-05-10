@@ -4,7 +4,10 @@ import 'package:mirath/core/utils/my_extenstions.dart';
 import 'package:mirath/core/utils/my_sizes.dart';
 
 class DeleteButton extends StatefulWidget {
-  const DeleteButton({super.key});
+  const DeleteButton({super.key, this.onDelete, this.onDeleteAll});
+
+  final Future<void> Function()? onDelete;
+  final Future<void> Function()? onDeleteAll;
 
   @override
   State<DeleteButton> createState() => _DeleteButtonState();
@@ -25,6 +28,12 @@ class _DeleteButtonState extends State<DeleteButton> {
           setState(() {
             selectedValue = value;
           });
+
+          if (value == 'Delete') {
+            widget.onDelete?.call();
+          } else if (value == 'Delete All') {
+            widget.onDeleteAll?.call();
+          }
         },
         itemBuilder: (context) => [
           PopupMenuItem(

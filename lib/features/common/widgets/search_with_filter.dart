@@ -25,10 +25,9 @@ class SearchWithFilter extends StatelessWidget {
             onTap: () => context.push(
               RouteNames.search,
               extra: {
-                'items': ["Item 5", "Item 2", "Item 3"],
                 'hintText': 'Search',
-                'onItemTap': () =>
-                    context.pushReplacement(RouteNames.communitySearchResults),
+                'resultRoute': RouteNames.communitySearchResults,
+                'showHeading': true,
               },
             ),
             readOnly: true,

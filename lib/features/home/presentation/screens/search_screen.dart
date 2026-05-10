@@ -16,10 +16,12 @@ import '../widgets/search_screen_heading.dart';
 class SearchScreen extends StatefulWidget {
   final String hintText;
   final bool showHeading;
+  final String resultRoute;
 
   const SearchScreen({
     this.hintText = 'Search',
     this.showHeading = true,
+    this.resultRoute = RouteNames.homeSearchResults,
     super.key,
   });
 
@@ -52,7 +54,7 @@ class _SearchScreenState extends State<SearchScreen> {
   void _onSubmitSearch(String query) {
     final trimmed = query.trim();
     if (trimmed.isEmpty) return;
-    context.pushReplacement(RouteNames.homeSearchResults, extra: trimmed);
+    context.pushReplacement(widget.resultRoute, extra: trimmed);
   }
 
   @override
