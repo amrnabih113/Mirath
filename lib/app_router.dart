@@ -74,6 +74,34 @@ class _AuthStateNotifier extends ChangeNotifier {
   }
 }
 
+// Cache for checkSetup result to avoid repeated API calls
+class _SetupCheckCache {
+  bool? _cachedResult;
+  DateTime? _lastCheck;
+  static const Duration _cacheDuration = Duration(seconds: 30);
+
+  bool? getIfValid() {
+    if (_cachedResult != null && _lastCheck != null) {
+      if (DateTime.now().difference(_lastCheck!) < _cacheDuration) {
+        return _cachedResult;
+      }
+    }
+    return null;
+  }
+
+  void set(bool value) {
+    _cachedResult = value;
+    _lastCheck = DateTime.now();
+  }
+
+  void clear() {
+    _cachedResult = null;
+    _lastCheck = null;
+  }
+}
+
+final _setupCheckCache = _SetupCheckCache();
+
 final appRouter = GoRouter(
   initialLocation: RouteNames.splash,
   refreshListenable: _AuthStateNotifier(sl<AuthCubit>()),
@@ -91,17 +119,27 @@ final appRouter = GoRouter(
     final hasSeenOnboarding = localStorage.hasSeenOnboarding();
 
     // Check profile setup status from server for authenticated users only
-    // Never check during loading to avoid 401 calls without a token
+    // Use cache to avoid repeated API calls on every redirect
     bool hasSetupProfile = false;
     if (authStatus == AuthStatus.authenticated) {
-      try {
-        hasSetupProfile = await authCubit.checkSetup();
-      } catch (e) {
-        MyLogger.warning(
-          '[Router] checkSetup failed: $e - Treating as not setup',
-        );
-        hasSetupProfile = false;
+      // Try to use cached result first
+      final cached = _setupCheckCache.getIfValid();
+      if (cached != null) {
+        hasSetupProfile = cached;
+      } else {
+        try {
+          hasSetupProfile = await authCubit.checkSetup();
+          _setupCheckCache.set(hasSetupProfile);
+        } catch (e) {
+          MyLogger.warning(
+            '[Router] checkSetup failed: $e - Treating as not setup',
+          );
+          hasSetupProfile = false;
+        }
       }
+    } else {
+      // Clear cache when not authenticated
+      _setupCheckCache.clear();
     }
 
     const authPaths = [

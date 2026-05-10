@@ -13,6 +13,7 @@ class AuthInterceptor extends Interceptor {
   final OnAuthFailure? onAuthFailure;
 
   bool _isRefreshing = false;
+  bool _isHandlingAuthFailure = false;
   Completer<String?>? _refreshCompleter;
 
   static const int _maxRetries = 3;
@@ -47,6 +48,13 @@ class AuthInterceptor extends Interceptor {
 
   @override
   void onError(DioException err, ErrorInterceptorHandler handler) async {
+    // Prevent recursive auth failure handling - if we're already handling one,
+    // just pass the error through without attempting refresh
+    if (_isHandlingAuthFailure) {
+      MyLogger.warning('[AuthInterceptor] Already handling auth failure, skipping retry');
+      return handler.next(err);
+    }
+
     // Skip auth handling for:
     // 1. Endpoints marked skipAuth
     // 2. Already-failed refresh attempts
@@ -159,9 +167,21 @@ class AuthInterceptor extends Interceptor {
   }
 
   Future<void> _handleAuthFailure() async {
-    MyLogger.warning('[AuthInterceptor] Auth failure → clearing tokens');
-    await secureStorage.clearTokens();
-    await secureStorage.clearEmail();
-    onAuthFailure?.call();
+    if (_isHandlingAuthFailure) {
+      MyLogger.warning('[AuthInterceptor] Auth failure already in progress, skipping');
+      return;
+    }
+
+    _isHandlingAuthFailure = true;
+    try {
+      MyLogger.warning('[AuthInterceptor] Auth failure → clearing tokens');
+      await secureStorage.clearTokens();
+      await secureStorage.clearEmail();
+      onAuthFailure?.call();
+    } finally {
+      // Reset flag after a short delay to allow onAuthFailure callback to complete
+      await Future.delayed(const Duration(milliseconds: 500));
+      _isHandlingAuthFailure = false;
+    }
   }
 }

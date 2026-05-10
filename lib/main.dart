@@ -90,12 +90,35 @@ class _MirathAppState extends State<MirathApp> {
 
     if (target == null) return;
 
+    // Wait for auth to fully resolve before handling deep link
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       try {
-        final authStatus = sl<AuthCubit>().state.status;
+        final authCubit = sl<AuthCubit>();
+        final currentStatus = authCubit.state.status;
+
+        MyLogger.info('[DeepLink] Handling deep link. Target: $target, AuthStatus: $currentStatus');
+
+        // If auth is still resolving, wait a moment for it to complete
+        if (currentStatus == AuthStatus.initial || currentStatus == AuthStatus.loading) {
+          MyLogger.info('[DeepLink] Auth still loading, waiting for resolution...');
+          // Wait for auth status to change
+          await authCubit.stream
+              .where((state) => 
+                  state.status != AuthStatus.initial && 
+                  state.status != AuthStatus.loading)
+              .first
+              .timeout(
+                const Duration(seconds: 5),
+                onTimeout: () => authCubit.state,
+              );
+        }
+
+        final authStatus = authCubit.state.status;
+        MyLogger.info('[DeepLink] Auth resolved. Final status: $authStatus');
 
         if (authStatus == AuthStatus.authenticated) {
           // Authenticated users land on Home first, then the shared item.
+          MyLogger.info('[DeepLink] User authenticated. Navigating to home then $target');
           appRouter.go(RouteNames.home);
           appRouter.push(target!);
           return;
@@ -103,6 +126,7 @@ class _MirathAppState extends State<MirathApp> {
 
         // Unauthenticated users must sign in first to avoid protected screens
         // firing requests and showing auth-token errors.
+        MyLogger.info('[DeepLink] User not authenticated. Redirecting to signin with target: $target');
         appRouter.go(
           RouteNames.signin,
           extra: target,
