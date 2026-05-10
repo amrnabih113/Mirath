@@ -21,9 +21,9 @@ class MyConstants {
       'annotation_translation_language';
 
   // base url
-  static const String webBaseUrl = 'https://10.0.2.2:3000/';
-  static const String androidBaseUrl = 'http://192.168.1.5:3000/';
-  static String get baseUrl => kIsWeb ? webBaseUrl : androidBaseUrl;
+  //static const String webBaseUrl = 'https://10.0.2.2:3000/';
+  static const String baseUrl = 'http://192.168.1.5:3000/';
+ // static String get baseUrl => kIsWeb ? webBaseUrl : androidBaseUrl;
 
   // Endpoints
   // ***Auth endpoints***
