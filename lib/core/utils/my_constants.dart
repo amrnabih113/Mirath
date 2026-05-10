@@ -1,3 +1,5 @@
+import 'package:flutter/foundation.dart' show kIsWeb;
+
 class MyConstants {
   MyConstants._();
 
@@ -19,11 +21,9 @@ class MyConstants {
       'annotation_translation_language';
 
   // base url
-  // Use 10.0.2.2 for Android emulator (maps to host machine's localhost)
-  // Use your computer's IP (e.g., 192.168.x.x) for real devices
-  // Use 127.0.0.1 for iOS simulator or web
-  // static String baseUrl = 'http://10.0.2.2:3000/';
-  static const String baseUrl = "http://192.168.1.5:3000/";
+  static const String webBaseUrl = 'https://10.0.2.2:3000/';
+  static const String androidBaseUrl = 'http://192.168.1.5:3000/';
+  static String get baseUrl => kIsWeb ? webBaseUrl : androidBaseUrl;
 
   // Endpoints
   // ***Auth endpoints***
@@ -81,6 +81,8 @@ class MyConstants {
   static const String getRecent = "api/v1/feed/recent";
   // get
   static const String getRecommended = "api/v1/feed/recommendations";
+  // get
+  static const String getPaperCategories = "api/v1/papers/categories";
 
   // ***Discussions endpoints***
   // post

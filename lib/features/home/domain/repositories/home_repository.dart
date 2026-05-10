@@ -15,6 +15,11 @@ abstract class HomeRepository {
     int limit = 5,
   });
 
+  Future<Either<Failure, List<String>>> getPaperCategories({
+    int page = 1,
+    int limit = 20,
+  });
+
   Future<Either<Failure, void>> savePaper(String paperId);
 
   Future<Either<Failure, void>> unsavePaper(String paperId);

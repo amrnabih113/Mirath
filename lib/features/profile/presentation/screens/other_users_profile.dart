@@ -28,13 +28,13 @@ class OtherUsersProfile extends StatelessWidget {
               builder: (context, state) {
                 return IconButton(
                   icon: HugeIcon(
-                    icon: HugeIcons.strokeRoundedMoreHorizontal,
+                    icon: HugeIcons.strokeRoundedShare08,
                     size: MySizes.iconMedium(context),
                     color: Colors.black,
                   ),
                   onPressed: () {
                     if (state is ProfileHeaderLoaded) {
-                      _showUserProfileMenu(context, state.user);
+                      SharingService.shareProfile(state.user);
                     }
                   },
                 );
@@ -131,28 +131,6 @@ class OtherUsersProfile extends StatelessWidget {
               );
             },
           ),
-        ),
-      ),
-    );
-  }
-
-  void _showUserProfileMenu(BuildContext context, dynamic user) {
-    showModalBottomSheet(
-      context: context,
-      builder: (context) => Container(
-        padding: const EdgeInsets.symmetric(vertical: 16),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            ListTile(
-              leading: const HugeIcon(icon: HugeIcons.strokeRoundedShare08),
-              title: const Text('Share Profile'),
-              onTap: () {
-                Navigator.pop(context);
-                SharingService.shareProfile(user);
-              },
-            ),
-          ],
         ),
       ),
     );

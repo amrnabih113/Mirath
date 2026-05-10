@@ -52,6 +52,28 @@ class HomeRemoteDataSourceImpl implements HomeRemoteDataSource {
   }
 
   @override
+  Future<List<String>> getPaperCategories({
+    int page = 1,
+    int limit = 20,
+  }) async {
+    final response = await dioClient.get(
+      MyConstants.getPaperCategories,
+      queryParameters: {'page': page, 'limit': limit},
+    );
+
+    final data = response.data as Map<String, dynamic>;
+    final categoriesJson = data['data'] as List<dynamic>? ?? [];
+
+    return categoriesJson
+        .map((categoryJson) {
+          final category = categoryJson as Map<String, dynamic>;
+          return category['name']?.toString() ?? '';
+        })
+        .where((name) => name.isNotEmpty)
+        .toList();
+  }
+
+  @override
   Future<SavePaperResponseModel> savePaper(String paperId) async {
     final endpoint = MyConstants.savePaper.replaceAll('{id}', paperId);
     final response = await dioClient.post(endpoint);

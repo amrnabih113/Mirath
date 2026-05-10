@@ -1,27 +1,35 @@
 import 'package:flutter/material.dart';
 
 import '../../../../core/helpers/responsive_helper.dart';
-import '../../../interests/domain/entities/interest.dart';
 import 'category_item.dart';
 
 class CategoryItemsList extends StatelessWidget {
   const CategoryItemsList({
-    this.interests = const [],
+    this.categories = const [],
     this.selectedInterest,
     this.onInterestChanged,
     this.maxItems,
   });
 
-  final List<Interest> interests;
+  final List<String> categories;
   final String? selectedInterest;
   final void Function(String interestName)? onInterestChanged;
   final int? maxItems;
 
   @override
   Widget build(BuildContext context) {
+    // Move selected category to the beginning of the list (after "All")
+    final List<String> ordered = List<String>.from(categories);
+    if (selectedInterest != null &&
+        selectedInterest != '' &&
+        ordered.contains(selectedInterest)) {
+      ordered.remove(selectedInterest);
+      ordered.insert(0, selectedInterest!);
+    }
+
     final displayItems = maxItems != null
-        ? interests.take(maxItems!).toList()
-        : interests;
+        ? ordered.take(maxItems!).toList()
+        : ordered;
 
     return SizedBox(
       height: ResponsiveHelper.responsiveValue(context, 45),
@@ -41,12 +49,12 @@ class CategoryItemsList extends StatelessWidget {
             );
           }
 
-          final interest = displayItems[index - 1];
+          final categoryName = displayItems[index - 1];
           return GestureDetector(
-            onTap: () => onInterestChanged?.call(interest.name),
+            onTap: () => onInterestChanged?.call(categoryName),
             child: CategoryItem(
-              categoryName: interest.name,
-              isSelected: selectedInterest == interest.name,
+              categoryName: categoryName,
+              isSelected: selectedInterest == categoryName,
             ),
           );
         },

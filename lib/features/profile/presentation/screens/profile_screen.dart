@@ -11,6 +11,8 @@ import 'package:mirath/features/profile/presentation/cubit/profile_cubit.dart';
 import 'package:mirath/features/profile/presentation/widgets/user_data.dart';
 import 'package:mirath/features/profile/presentation/widgets/user_tabs.dart';
 import 'package:mirath/features/users/domain/entities/user.dart';
+import 'package:mirath/features/users/presentation/cubit/profile_header_cubit.dart';
+import 'package:mirath/features/users/presentation/cubit/profile_header_state.dart';
 import 'package:mirath/generated/l10n.dart';
 
 class ProfileScreen extends StatelessWidget {
@@ -32,6 +34,22 @@ class ProfileScreen extends StatelessWidget {
               ),
               onPressed: () {
                 _showLogoutDialog(context);
+              },
+            ),
+            BlocBuilder<ProfileCubit, ProfileState>(
+              builder: (context, state) {
+                return IconButton(
+                  icon: HugeIcon(
+                    icon: HugeIcons.strokeRoundedShare08,
+                    size: MySizes.iconMedium(context),
+                    color: Colors.black,
+                  ),
+                  onPressed: () {
+                    if (state is ProfileLoadSuccess) {
+                      SharingService.shareProfile(state.user);
+                    }
+                  },
+                );
               },
             ),
             IconButton(

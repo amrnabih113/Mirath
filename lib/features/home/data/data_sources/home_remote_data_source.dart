@@ -16,6 +16,8 @@ abstract class HomeRemoteDataSource {
     int limit = 5,
   });
 
+  Future<List<String>> getPaperCategories({int page = 1, int limit = 20});
+
   Future<SavePaperResponseModel> savePaper(String paperId);
 
   Future<void> unsavePaper(String paperId);

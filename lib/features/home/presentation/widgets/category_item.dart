@@ -24,6 +24,10 @@ class _CategoryItemState extends State<CategoryItem> {
   bool isPressed = false;
   @override
   Widget build(BuildContext context) {
+    // Remove trailing parenthesized counts, e.g. "Machine learning (123)" => "Machine learning"
+    final displayName = widget.categoryName
+        .replaceAll(RegExp(r"\s*\([^)]*\)\s*"), '')
+        .trim();
     return GestureDetector(
       onTap: widget.onTap,
       child: Container(
@@ -50,7 +54,7 @@ class _CategoryItemState extends State<CategoryItem> {
           child: Padding(
             padding: EdgeInsets.all(MySizes.spaceSm(context)),
             child: Text(
-              widget.categoryName,
+              displayName,
               style: context.bodySmall.copyWith(
                 color: MyColors.primaryShade900,
                 fontWeight: FontWeight.w800,

@@ -111,13 +111,13 @@ class _HomeScreenState extends State<HomeScreen> {
                   builder: (context, state) {
                     if (state is HomePapersLoaded) {
                       return CategoryItemsList(
-                        interests: state.interests,
+                        categories: state.categories,
                         selectedInterest: state.selectedCategory,
                         maxItems: 10,
 
                         onInterestChanged: (interestName) {
                           context.push(
-                            "/recentely-published",
+                            RouteNames.recentlyPublished,
                             extra: interestName,
                           );
                         },

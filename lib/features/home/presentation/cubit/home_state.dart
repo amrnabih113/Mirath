@@ -1,7 +1,6 @@
 import 'package:equatable/equatable.dart';
 import '../../domain/entities/paper_entity.dart';
-import '../../../users/domain/entities/user.dart' hide Interest;
-import '../../../interests/domain/entities/interest.dart';
+import '../../../users/domain/entities/user.dart';
 
 abstract class HomeState extends Equatable {
   const HomeState();
@@ -86,7 +85,7 @@ class HomeRecommendationsLoaded extends HomeState {
 class HomePapersLoaded extends HomeState {
   final List<PaperEntity> recentPapers;
   final List<PaperEntity> recommendations;
-  final List<Interest> interests;
+  final List<String> categories;
   final String? selectedCategory;
   final bool isLoadingMoreRecent;
   final bool isLoadingMoreRecommendations;
@@ -96,7 +95,7 @@ class HomePapersLoaded extends HomeState {
   const HomePapersLoaded({
     required this.recentPapers,
     required this.recommendations,
-    this.interests = const [],
+    this.categories = const [],
     this.selectedCategory,
     this.isLoadingMoreRecent = false,
     this.isLoadingMoreRecommendations = false,
@@ -107,7 +106,7 @@ class HomePapersLoaded extends HomeState {
   HomePapersLoaded copyWith({
     List<PaperEntity>? recentPapers,
     List<PaperEntity>? recommendations,
-    List<Interest>? interests,
+    List<String>? categories,
     String? selectedCategory,
     User? currentUser,
     bool? isLoadingMoreRecent,
@@ -118,7 +117,7 @@ class HomePapersLoaded extends HomeState {
     return HomePapersLoaded(
       recentPapers: recentPapers ?? this.recentPapers,
       recommendations: recommendations ?? this.recommendations,
-      interests: interests ?? this.interests,
+      categories: categories ?? this.categories,
       selectedCategory: selectedCategory ?? this.selectedCategory,
       isLoadingMoreRecent: isLoadingMoreRecent ?? this.isLoadingMoreRecent,
       isLoadingMoreRecommendations:
@@ -133,7 +132,7 @@ class HomePapersLoaded extends HomeState {
   List<Object?> get props => [
     recentPapers,
     recommendations,
-    interests,
+    categories,
     selectedCategory,
     isLoadingMoreRecent,
     isLoadingMoreRecommendations,
@@ -154,7 +153,7 @@ class HomeError extends HomeState {
 class HomePapersUpdated extends HomeState {
   final List<PaperEntity> recentPapers;
   final List<PaperEntity> recommendations;
-  final List<Interest> interests;
+  final List<String> categories;
   final String? selectedCategory;
   final bool isLoadingMoreRecent;
   final bool isLoadingMoreRecommendations;
@@ -164,7 +163,7 @@ class HomePapersUpdated extends HomeState {
   const HomePapersUpdated({
     required this.recentPapers,
     required this.recommendations,
-    this.interests = const [],
+    this.categories = const [],
     this.selectedCategory,
     this.isLoadingMoreRecent = false,
     this.isLoadingMoreRecommendations = false,
@@ -175,7 +174,7 @@ class HomePapersUpdated extends HomeState {
   HomePapersUpdated copyWith({
     List<PaperEntity>? recentPapers,
     List<PaperEntity>? recommendations,
-    List<Interest>? interests,
+    List<String>? categories,
     String? selectedCategory,
     User? currentUser,
     bool? isLoadingMoreRecent,
@@ -186,7 +185,7 @@ class HomePapersUpdated extends HomeState {
     return HomePapersUpdated(
       recentPapers: recentPapers ?? this.recentPapers,
       recommendations: recommendations ?? this.recommendations,
-      interests: interests ?? this.interests,
+      categories: categories ?? this.categories,
       selectedCategory: selectedCategory ?? this.selectedCategory,
       isLoadingMoreRecent: isLoadingMoreRecent ?? this.isLoadingMoreRecent,
       isLoadingMoreRecommendations:
@@ -201,7 +200,7 @@ class HomePapersUpdated extends HomeState {
   List<Object?> get props => [
     recentPapers,
     recommendations,
-    interests,
+    categories,
     selectedCategory,
     isLoadingMoreRecent,
     isLoadingMoreRecommendations,

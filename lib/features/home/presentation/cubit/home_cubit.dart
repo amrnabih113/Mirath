@@ -1,11 +1,10 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../core/usecases/no_params.dart';
-import '../../../interests/domain/entities/interest.dart';
-import '../../../interests/domain/usecases/get_all_interests_usecase.dart';
 import '../../../users/domain/entities/user.dart' hide Interest;
 import '../../../users/domain/usecases/get_current_user_usecase.dart';
 import '../../domain/entities/paper_entity.dart';
+import '../../domain/usecases/get_paper_categories_usecase.dart';
 import '../../domain/usecases/get_recent_papers_usecase.dart';
 import '../../domain/usecases/get_recommendations_usecase.dart';
 import '../../domain/usecases/save_paper_usecase.dart';
@@ -16,7 +15,7 @@ class HomeCubit extends Cubit<HomeState> {
   final GetRecentPapersUseCase getRecentPapersUseCase;
   final GetRecommendationsUseCase getRecommendationsUseCase;
   final GetCurrentUserUsecase getCurrentUserUsecase;
-  final GetAllInterestsUsecase getAllInterestsUsecase;
+  final GetPaperCategoriesUseCase getPaperCategoriesUseCase;
   final SavePaperUseCase savePaperUseCase;
   final UnsavePaperUseCase unsavePaperUseCase;
 
@@ -24,7 +23,7 @@ class HomeCubit extends Cubit<HomeState> {
     required this.getRecentPapersUseCase,
     required this.getRecommendationsUseCase,
     required this.getCurrentUserUsecase,
-    required this.getAllInterestsUsecase,
+    required this.getPaperCategoriesUseCase,
     required this.savePaperUseCase,
     required this.unsavePaperUseCase,
   }) : super(const HomeInitial());
@@ -98,8 +97,10 @@ class HomeCubit extends Cubit<HomeState> {
     if (category != null) {
       _selectedCategory = category;
     }
-    // Load interests
-    final interestsResult = await getAllInterestsUsecase(NoParams());
+    // Load paper categories
+    final categoriesResult = await getPaperCategoriesUseCase(
+      GetPaperCategoriesParams(page: 1, limit: 20),
+    );
 
     // Load recent papers
     final recentResult = await getRecentPapersUseCase(
@@ -124,26 +125,26 @@ class HomeCubit extends Cubit<HomeState> {
             emit(const HomeError(message: 'Failed to fetch recommendations'));
           },
           (recommendations) {
-            interestsResult.fold(
+            categoriesResult.fold(
               (failure) {
-                // Continue without interests if fetch fails
+                // Continue without categories if fetch fails
                 emit(
                   HomePapersLoaded(
                     recentPapers: recentPapers,
                     recommendations: recommendations,
-                    interests: [],
+                    categories: [],
                     selectedCategory: _selectedCategory,
                     hasReachedMaxRecommendations:
                         recommendations.length < recommendationLimit,
                   ),
                 );
               },
-              (interests) {
+              (categories) {
                 emit(
                   HomePapersLoaded(
                     recentPapers: recentPapers,
                     recommendations: recommendations,
-                    interests: interests,
+                    categories: categories,
                     selectedCategory: _selectedCategory,
                     hasReachedMaxRecommendations:
                         recommendations.length < recommendationLimit,
@@ -160,13 +161,13 @@ class HomeCubit extends Cubit<HomeState> {
   Future<void> filterPapersByInterest(String interestName) async {
     final currentState = state;
 
-    // Get current interests and papers
-    late List<Interest> interests;
+    // Get current categories and papers
+    late List<String> categories;
 
     if (currentState is HomePapersLoaded) {
-      interests = currentState.interests;
+      categories = currentState.categories;
     } else if (currentState is HomePapersUpdated) {
-      interests = currentState.interests;
+      categories = currentState.categories;
     } else {
       return;
     }
@@ -193,7 +194,7 @@ class HomeCubit extends Cubit<HomeState> {
             recommendations: currentState is HomePapersLoaded
                 ? currentState.recommendations
                 : (currentState as HomePapersUpdated).recommendations,
-            interests: interests,
+            categories: categories,
             selectedCategory: _selectedCategory,
           ),
         );
@@ -206,7 +207,7 @@ class HomeCubit extends Cubit<HomeState> {
             recommendations: currentState is HomePapersLoaded
                 ? currentState.recommendations
                 : (currentState as HomePapersUpdated).recommendations,
-            interests: interests,
+            categories: categories,
             selectedCategory: _selectedCategory,
           ),
         );
@@ -235,7 +236,7 @@ class HomeCubit extends Cubit<HomeState> {
       baseState = HomePapersLoaded(
         recentPapers: currentState.recentPapers,
         recommendations: currentState.recommendations,
-        interests: currentState.interests,
+        categories: currentState.categories,
         selectedCategory: currentState.selectedCategory,
         isLoadingMoreRecent: currentState.isLoadingMoreRecent,
         isLoadingMoreRecommendations: currentState.isLoadingMoreRecommendations,
@@ -420,7 +421,7 @@ class HomeCubit extends Cubit<HomeState> {
         HomePapersUpdated(
           recentPapers: updatedRecentPapers,
           recommendations: updatedRecommendations,
-          interests: currentState.interests,
+          categories: currentState.categories,
           isLoadingMoreRecent: currentState.isLoadingMoreRecent,
           isLoadingMoreRecommendations:
               currentState.isLoadingMoreRecommendations,

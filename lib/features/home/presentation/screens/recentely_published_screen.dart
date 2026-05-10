@@ -39,7 +39,7 @@ class _RecentelyPublishedScreenState extends State<RecentelyPublishedScreen> {
     scrollController.addListener(_onScroll);
     searchController.addListener(_onSearchChanged);
 
-    // Load recent papers with selected category (interest name) if provided
+    // Load recent papers with selected category if provided
     final cubit = context.read<HomeCubit>();
     if (cubit.state is! HomeRecentPapersLoaded &&
         cubit.state is! HomePapersLoaded &&
@@ -125,7 +125,7 @@ class _RecentelyPublishedScreenState extends State<RecentelyPublishedScreen> {
                 padding: MySizes.paddingMd(context),
                 child: Column(
                   children: [
-                    // Custom search bar for filtering interests
+                    // Custom search bar for filtering categories
                     Container(
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(
@@ -170,7 +170,7 @@ class _RecentelyPublishedScreenState extends State<RecentelyPublishedScreen> {
                                   icon: const Icon(Icons.close),
                                 )
                               : null,
-                          hintText: 'Search interests...',
+                          hintText: 'Search categories...',
                           hintStyle: context.bodySmall,
                           enabledBorder: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(
@@ -206,17 +206,17 @@ class _RecentelyPublishedScreenState extends State<RecentelyPublishedScreen> {
                     BlocBuilder<HomeCubit, HomeState>(
                       builder: (context, state) {
                         if (state is HomePapersLoaded) {
-                          // Filter interests based on search query
-                          final filteredInterests = state.interests
+                          // Filter categories based on search query
+                          final filteredCategories = state.categories
                               .where(
-                                (interest) => interest.name
-                                    .toLowerCase()
-                                    .contains(searchQuery),
+                                (category) => category.toLowerCase().contains(
+                                  searchQuery,
+                                ),
                               )
                               .toList();
 
                           return CategoryItemsList(
-                            interests: filteredInterests,
+                            categories: filteredCategories,
                             selectedInterest: state.selectedCategory,
                             onInterestChanged: (interestName) {
                               context.read<HomeCubit>().filterPapersByInterest(
@@ -225,17 +225,17 @@ class _RecentelyPublishedScreenState extends State<RecentelyPublishedScreen> {
                             },
                           );
                         } else if (state is HomePapersUpdated) {
-                          // Filter interests based on search query
-                          final filteredInterests = state.interests
+                          // Filter categories based on search query
+                          final filteredCategories = state.categories
                               .where(
-                                (interest) => interest.name
-                                    .toLowerCase()
-                                    .contains(searchQuery),
+                                (category) => category.toLowerCase().contains(
+                                  searchQuery,
+                                ),
                               )
                               .toList();
 
                           return CategoryItemsList(
-                            interests: filteredInterests,
+                            categories: filteredCategories,
                             selectedInterest: state.selectedCategory,
                             onInterestChanged: (interestName) {
                               context.read<HomeCubit>().filterPapersByInterest(

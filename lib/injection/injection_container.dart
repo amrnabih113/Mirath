@@ -35,6 +35,7 @@ import 'package:mirath/features/discussions/domain/usecases/vote_on_comment_usec
 import 'package:mirath/features/discussions/domain/usecases/vote_on_discussion_usecase.dart';
 import 'package:mirath/features/discussions/presentation/cubit/community_cubit.dart';
 import 'package:mirath/features/discussions/presentation/cubit/discussion_details_cubit.dart';
+import '../features/home/domain/usecases/get_paper_categories_usecase.dart';
 import 'package:mirath/features/paper_annotations/data/data_sources/annotation_local_data_source.dart';
 import 'package:mirath/features/paper_annotations/data/data_sources/annotation_local_data_source_impl.dart';
 import 'package:mirath/features/paper_annotations/data/data_sources/annotation_remote_data_source.dart';
@@ -433,6 +434,7 @@ class DI {
     /// Home UseCases ///
     sl.registerLazySingleton(() => GetRecentPapersUseCase(repository: sl()));
     sl.registerLazySingleton(() => GetRecommendationsUseCase(repository: sl()));
+    sl.registerLazySingleton(() => GetPaperCategoriesUseCase(repository: sl()));
     sl.registerLazySingleton(() => SavePaperUseCase(repository: sl()));
     sl.registerLazySingleton(() => UnsavePaperUseCase(repository: sl()));
     sl.registerLazySingleton(() => SearchPapersUseCase(repository: sl()));
@@ -448,7 +450,7 @@ class DI {
         getRecentPapersUseCase: sl(),
         getRecommendationsUseCase: sl(),
         getCurrentUserUsecase: sl(),
-        getAllInterestsUsecase: sl(),
+        getPaperCategoriesUseCase: sl(),
         savePaperUseCase: sl(),
         unsavePaperUseCase: sl(),
       ),

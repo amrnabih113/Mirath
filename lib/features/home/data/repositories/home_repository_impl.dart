@@ -70,6 +70,27 @@ class HomeRepositoryImpl implements HomeRepository {
   }
 
   @override
+  Future<Either<Failure, List<String>>> getPaperCategories({
+    int page = 1,
+    int limit = 20,
+  }) async {
+    if (!await networkManager.isConnected) {
+      return Left(NetworkFailure());
+    }
+
+    try {
+      final categories = await remoteDataSource.getPaperCategories(
+        page: page,
+        limit: limit,
+      );
+
+      return Right(categories);
+    } catch (e) {
+      return Left(ServerFailure());
+    }
+  }
+
+  @override
   Future<Either<Failure, void>> savePaper(String paperId) async {
     if (!await networkManager.isConnected) {
       return Left(NetworkFailure());
