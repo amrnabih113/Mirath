@@ -1,4 +1,5 @@
 import '../../../../core/network/dio_client.dart';
+import 'package:dio/dio.dart';
 import '../../../../core/utils/my_constants.dart';
 import '../models/auth_response_model.dart';
 import '../models/check_setup_response_model.dart';
@@ -38,6 +39,7 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
     final response = await _dioClient.post(
       MyConstants.login,
       data: {'emailOrUsername': emailOrUsername, 'password': password},
+      options: Options(extra: {'skipAuth': true}),
     );
     return AuthResponseModel.fromJson(response.data as Map<String, dynamic>);
   }
@@ -55,6 +57,7 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
     final response = await _dioClient.post(
       MyConstants.verifyEmail,
       data: {'email': email, 'otp': otp},
+      options: Options(extra: {'skipAuth': true}),
     );
 
     return AuthResponseModel.fromJson(response.data as Map<String, dynamic>);
@@ -65,6 +68,7 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
     await _dioClient.post(
       MyConstants.resendVerification,
       data: {'email': email},
+      options: Options(extra: {'skipAuth': true}),
     );
   }
 
@@ -73,13 +77,15 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
     final response = await _dioClient.post(
       MyConstants.google,
       data: {'idToken': idToken},
+      options: Options(extra: {'skipAuth': true}),
     );
     return AuthResponseModel.fromJson(response.data as Map<String, dynamic>);
   }
 
   @override
   Future<void> forgetPassword({required String email}) async {
-    await _dioClient.post(MyConstants.forgetPassword, data: {'email': email});
+    await _dioClient.post(MyConstants.forgetPassword,
+      data: {'email': email}, options: Options(extra: {'skipAuth': true}));
   }
 
   @override
@@ -90,6 +96,7 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
     final response = await _dioClient.post(
       MyConstants.verifyResetPasswordOTP,
       data: {'email': email, 'otp': otp},
+      options: Options(extra: {'skipAuth': true}),
     );
     // Extract reset token from response
     final data = response.data as Map<String, dynamic>;
@@ -108,6 +115,7 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
         'password': password,
         'confirmPassword': password,
       },
+      options: Options(extra: {'skipAuth': true}),
     );
   }
 
@@ -116,6 +124,7 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
     final response = await _dioClient.post(
       MyConstants.isVerified,
       data: {'email': email},
+      options: Options(extra: {'skipAuth': true}),
     );
     return IsVerifiedResponseModel.fromJson(
       response.data as Map<String, dynamic>,
