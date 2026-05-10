@@ -21,9 +21,18 @@ class MyConstants {
       'annotation_translation_language';
 
   // base url
-  //static const String webBaseUrl = 'https://10.0.2.2:3000/';
-  static const String baseUrl = 'http://192.168.1.5:3000/';
- // static String get baseUrl => kIsWeb ? webBaseUrl : androidBaseUrl;
+  // Override with --dart-define=API_BASE_URL=https://your-api.example.com/
+    static String get baseUrl {
+        const definedBaseUrl = String.fromEnvironment('API_BASE_URL', defaultValue: '');
+        return definedBaseUrl.isNotEmpty
+                ? definedBaseUrl
+                : 'http://192.168.1.5:3000/';
+    }
+
+  // When building the web app, use an HTTPS backend URL if the site is served
+  // over HTTPS. Browsers block HTTPS pages from calling HTTP APIs.
+  static bool get isWebSecureMismatch =>
+      kIsWeb && baseUrl.startsWith('http://');
 
   // Endpoints
   // ***Auth endpoints***
