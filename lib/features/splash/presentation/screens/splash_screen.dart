@@ -7,6 +7,8 @@ import '../../../../core/utils/my_colors.dart';
 import '../../../../core/utils/my_extenstions.dart';
 import '../../../../core/utils/my_logger.dart';
 import '../../../auth/presentation/cubit/auth_cubit.dart';
+import 'package:go_router/go_router.dart';
+import 'package:mirath/core/constants/route_names.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
@@ -62,48 +64,60 @@ class _SplashScreenState extends State<SplashScreen>
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: MyColors.light,
-      body: Center(
-        child: AnimatedBuilder(
-          animation: _controller,
-          builder: (context, child) {
-            return FadeTransition(
-              opacity: _fadeAnimation,
-              child: ScaleTransition(
-                scale: _scaleAnimation,
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    // App Logo/Icon
-                    Container(
-                      width: 200,
-                      height: 200,
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(20),
+    return BlocListener<AuthCubit, AuthState>(
+      listener: (context, state) {
+        if (!mounted) return;
+        if (state.status == AuthStatus.authenticated) {
+          context.go(RouteNames.home);
+        } else if (state.status == AuthStatus.unverified) {
+          context.go(RouteNames.verifyAccount);
+        } else if (state.status == AuthStatus.unauthenticated) {
+          context.go(RouteNames.signin);
+        }
+      },
+      child: Scaffold(
+        backgroundColor: MyColors.light,
+        body: Center(
+          child: AnimatedBuilder(
+            animation: _controller,
+            builder: (context, child) {
+              return FadeTransition(
+                opacity: _fadeAnimation,
+                child: ScaleTransition(
+                  scale: _scaleAnimation,
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      // App Logo/Icon
+                      Container(
+                        width: 200,
+                        height: 200,
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(20),
+                        ),
+                        child: ClipRRect(
+                          borderRadius: BorderRadius.circular(20),
+                          child: Image.asset('assets/images/splash_logo.png'),
+                        ),
                       ),
-                      child: ClipRRect(
-                        borderRadius: BorderRadius.circular(20),
-                        child: Image.asset('assets/images/splash_logo.png'),
+                      // App
+                      // Tagline
+                      Text(
+                        'Mirath',
+                        style: context.titleLarge.copyWith(
+                          fontWeight: FontWeight.bold,
+                          fontSize: ResponsiveHelper.responsiveValue(context, 40),
+                          color: Color(0xff5C3110),
+                          fontFamily: GoogleFonts.anticDidone().fontFamily,
+                          letterSpacing: 1.2,
+                        ),
                       ),
-                    ),
-                    // App
-                    // Tagline
-                    Text(
-                      'Mirath',
-                      style: context.titleLarge.copyWith(
-                        fontWeight: FontWeight.bold,
-                        fontSize: ResponsiveHelper.responsiveValue(context, 40),
-                        color: Color(0xff5C3110),
-                        fontFamily: GoogleFonts.anticDidone().fontFamily,
-                        letterSpacing: 1.2,
-                      ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
-              ),
-            );
-          },
+              );
+            },
+          ),
         ),
       ),
     );
