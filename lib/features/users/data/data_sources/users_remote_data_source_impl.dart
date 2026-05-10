@@ -146,7 +146,20 @@ class UsersRemoteDataSourceImpl implements UsersRemoteDataSource {
       final response = await dioClient.delete(endpoint);
 
       MyLogger.info('[UsersRemoteDataSource] Unfollow user successful');
-      return FollowResponseModel.fromJson(response.data);
+
+      final data = response.data;
+
+      if (data is Map<String, dynamic>) {
+        return FollowResponseModel.fromJson(data);
+      }
+
+      if (data == null || (data is String && data.trim().isEmpty)) {
+        return const FollowResponseModel(message: '');
+      }
+
+      // Some APIs return a simple string/number or 204 No Content for delete
+      // operations. Convert to a message-bearing model gracefully.
+      return FollowResponseModel(message: data.toString());
     } catch (e) {
       MyLogger.error('[UsersRemoteDataSource] Unfollow user failed: $e');
       rethrow;

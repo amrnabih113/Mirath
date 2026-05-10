@@ -5,10 +5,12 @@ import 'category_item.dart';
 
 class CategoryItemsList extends StatelessWidget {
   const CategoryItemsList({
+    super.key,
     this.categories = const [],
     this.selectedInterest,
     this.onInterestChanged,
     this.maxItems,
+    this.showAllTab = true, // ✅ NEW
   });
 
   final List<String> categories;
@@ -16,12 +18,15 @@ class CategoryItemsList extends StatelessWidget {
   final void Function(String interestName)? onInterestChanged;
   final int? maxItems;
 
+  /// ✅ NEW FLAG
+  final bool showAllTab;
+
   @override
   Widget build(BuildContext context) {
-    // Move selected category to the beginning of the list (after "All")
     final List<String> ordered = List<String>.from(categories);
+
     if (selectedInterest != null &&
-        selectedInterest != '' &&
+        selectedInterest!.isNotEmpty &&
         ordered.contains(selectedInterest)) {
       ordered.remove(selectedInterest);
       ordered.insert(0, selectedInterest!);
@@ -31,30 +36,38 @@ class CategoryItemsList extends StatelessWidget {
         ? ordered.take(maxItems!).toList()
         : ordered;
 
+    final itemCount =
+        displayItems.length + (showAllTab ? 1 : 0);
+
     return SizedBox(
       height: ResponsiveHelper.responsiveValue(context, 45),
       child: ListView.builder(
         scrollDirection: Axis.horizontal,
         physics: const BouncingScrollPhysics(),
-        itemCount: displayItems.length + 1, // +1 for "All" option
+        itemCount: itemCount,
         itemBuilder: (context, index) {
-          // First item is "All"
-          if (index == 0) {
+          /// ✅ ALL TAB (OPTIONAL)
+          if (showAllTab && index == 0) {
             return GestureDetector(
               onTap: () => onInterestChanged?.call(''),
               child: CategoryItem(
                 categoryName: 'All',
-                isSelected: selectedInterest == null || selectedInterest == '',
+                isSelected: selectedInterest == null ||
+                    selectedInterest == '',
               ),
             );
           }
 
-          final categoryName = displayItems[index - 1];
+          final categoryName = displayItems[
+              showAllTab ? index - 1 : index];
+
           return GestureDetector(
-            onTap: () => onInterestChanged?.call(categoryName),
+            onTap: () =>
+                onInterestChanged?.call(categoryName),
             child: CategoryItem(
               categoryName: categoryName,
-              isSelected: selectedInterest == categoryName,
+              isSelected:
+                  selectedInterest == categoryName,
             ),
           );
         },

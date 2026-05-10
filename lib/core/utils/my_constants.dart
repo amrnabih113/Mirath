@@ -156,6 +156,10 @@ class MyConstants {
 
   // ***search endpoints***
   static const String searchPapers = "api/v1/papers/search";
+  static const String searchGlobal = "api/v1/search/global";
+  static const String searchDiscussions = "api/v1/search/discussions";
+  static const String searchReadingLists = "api/v1/search/reading-lists";
+  static const String searchResearchers = "api/v1/search/researchers";
   static const String searchHistory = "api/v1/search/history";
   static const String deleteSearchHistoryById = "api/v1/search/history/{id}";
 

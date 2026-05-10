@@ -1,237 +1,143 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 import 'package:mirath/generated/l10n.dart';
+
+import '../../../../core/constants/route_names.dart';
 import '../../../../core/helpers/responsive_helper.dart';
+import '../../../../core/utils/my_sizes.dart';
 import '../../../common/widgets/my_back_icon.dart';
-import '../../../common/widgets/search_with_filter.dart';
+import '../../../common/widgets/my_search_bar.dart';
 import '../../../common/widgets/section_title.dart';
+import '../../../discussions/domain/entities/discussion.dart';
+import '../../../home/presentation/widgets/category_items_list.dart';
 import '../../../reading_lists/domain/entities/reading_list.dart';
-import '../../../reading_lists/domain/entities/reading_list_owner.dart';
-import '../cubit/community_cubit.dart';
-import '../cubit/community_state.dart';
-import '../widgets/discussion_card.dart';
 import '../../../reading_lists/presentation/widgets/reading_list_card.dart';
+import '../../../users/domain/entities/user.dart';
+import '../cubit/global_search_cubit.dart';
+import '../cubit/global_search_state.dart';
+import '../widgets/discussion_card.dart';
 import '../widgets/researcher_card.dart';
 
-import '../../../../core/utils/my_sizes.dart';
-
 class CommunitySearchResult extends StatefulWidget {
-  const CommunitySearchResult({super.key});
+  const CommunitySearchResult({super.key, this.initialQuery, this.initialScope});
+
+  final String? initialQuery;
+  final GlobalSearchScope? initialScope;
 
   @override
   State<CommunitySearchResult> createState() => _CommunitySearchResultState();
 }
 
 class _CommunitySearchResultState extends State<CommunitySearchResult> {
-  String _selectedCategory = '';
+  late final TextEditingController _searchController;
+
+  GlobalSearchScope _selectedScope = GlobalSearchScope.top;
+  bool _didTriggerInitialSearch = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _searchController = TextEditingController(text: widget.initialQuery ?? '');
+    _selectedScope = widget.initialScope ?? GlobalSearchScope.top;
+  }
 
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    if (_selectedCategory.isEmpty) {
-      _selectedCategory = S.of(context).top_label;
+
+    if (!_didTriggerInitialSearch) {
+      final initialHasQuery = _searchController.text.trim().isNotEmpty;
+      final hasScope = widget.initialScope != null;
+
+      if (initialHasQuery || hasScope) {
+        _didTriggerInitialSearch = true;
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          if (mounted) _runSearch(_searchController.text);
+        });
+      }
     }
   }
 
-  void _onCategoryChanged(String category) {
-    setState(() {
-      _selectedCategory = category;
-    });
+  @override
+  void dispose() {
+    _searchController.dispose();
+    super.dispose();
+  }
+
+  Future<void> _runSearch(String query) async {
+    final cubit = context.read<GlobalSearchCubit>();
+
+    switch (_selectedScope) {
+      case GlobalSearchScope.top:
+        await cubit.searchTop(query);
+        break;
+      case GlobalSearchScope.discussions:
+        await cubit.searchDiscussions(query);
+        break;
+      case GlobalSearchScope.readingLists:
+        await cubit.searchReadingLists(query);
+        break;
+      case GlobalSearchScope.researchers:
+        await cubit.searchResearchers(query);
+        break;
+    }
+  }
+
+  void _onScopeSelected(GlobalSearchScope scope) {
+    setState(() => _selectedScope = scope);
+
+    final query = _searchController.text.trim();
+    if (query.isNotEmpty) _runSearch(query);
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        toolbarHeight: ResponsiveHelper.responsiveValue(context, 60),
-        leadingWidth: ResponsiveHelper.responsiveValue(context, 50),
-        leading: MyBackIcon(),
+        toolbarHeight: ResponsiveHelper.responsiveValue(context, 72),
+        leading: const MyBackIcon(),
+        leadingWidth: ResponsiveHelper.responsiveValue(context, 56),
         titleSpacing: 0,
-        title: SearchWithFilter(searchController: TextEditingController()),
+        title: Padding(
+          padding: EdgeInsets.only(right: MySizes.spaceSm(context)),
+          child: MySearchBar(
+            controller: _searchController,
+            hintText: S.of(context).search_placeholder,
+            onSubmitted: _runSearch,
+            onChanged: (value) {
+              if (value.trim().isEmpty) {
+                context.read<GlobalSearchCubit>().reset();
+              }
+            },
+          ),
+        ),
       ),
+
       body: LayoutBuilder(
         builder: (context, constraints) {
           return Center(
             child: ConstrainedBox(
-              constraints: const BoxConstraints(maxWidth: 850),
+              constraints: const BoxConstraints(maxWidth: 920),
               child: Padding(
                 padding: MySizes.paddingMd(context),
-                child: SafeArea(
-                  bottom: false,
-                  child: CustomScrollView(
-                    slivers: [
-                      SliverPersistentHeader(
-                        pinned: true,
-                        delegate: _CategoryHeaderDelegate(
-                          context: context,
-                          selectedCategory: _selectedCategory,
-                          onCategoryChanged: _onCategoryChanged,
-                          child: Column(
-                            children: [
-                              // CategoryItemsList(
-                              //   selectedCategory: _selectedCategory,
-                              //   categories: [
-                              //     S.of(context).top_label,
-                              //     S.of(context).discussions_label,
-                              //     S.of(context).reading_lists,
-                              //     S.of(context).researchers_label,
-                              //   ],
-                              //   onCategoryChanged: _onCategoryChanged,
-                              // ),
-                              SizedBox(height: MySizes.spaceLg(context)),
-                            ],
-                          ),
-                        ),
-                      ),
-                      if (_selectedCategory == S.of(context).top_label ||
-                          _selectedCategory ==
-                              S.of(context).researchers_label) ...[
-                        SliverToBoxAdapter(
-                          child: SectionTitle(
-                            title: S.of(context).researchers_label,
-                            showSeeAll: true,
-                          ),
-                        ),
-                        SliverToBoxAdapter(
-                          child: SizedBox(height: MySizes.spaceSm(context)),
-                        ),
-                        SliverList(
-                          delegate: SliverChildBuilderDelegate((
-                            context,
-                            index,
-                          ) {
-                            return Padding(
-                              padding: EdgeInsets.only(
-                                bottom: MySizes.spaceXs(context),
-                              ),
-                              child: ResearcherCard(),
-                            );
-                          }, childCount: 3),
-                        ),
-                        SliverToBoxAdapter(
-                          child: SizedBox(height: MySizes.spaceMd(context)),
-                        ),
-                        SliverToBoxAdapter(child: Divider()),
-                        SliverToBoxAdapter(
-                          child: SizedBox(height: MySizes.spaceMd(context)),
-                        ),
-                      ],
-                      if (_selectedCategory == S.of(context).top_label ||
-                          _selectedCategory ==
-                              S.of(context).discussions_label) ...[
-                        SliverToBoxAdapter(
-                          child: SectionTitle(
-                            title: S.of(context).discussions_label,
-                            showSeeAll: true,
-                          ),
-                        ),
-                        SliverToBoxAdapter(
-                          child: SizedBox(height: MySizes.spaceSm(context)),
-                        ),
-                        BlocBuilder<CommunityCubit, CommunityState>(
-                          builder: (context, state) {
-                            if (state is CommunityDiscussionsLoaded) {
-                              final discussions = state.discussions
-                                  .take(3)
-                                  .toList();
+                child: BlocBuilder<GlobalSearchCubit, GlobalSearchState>(
+                  builder: (context, state) {
+                    if (state.status == GlobalSearchStatus.loading) {
+                      return const Center(child: CircularProgressIndicator());
+                    }
 
-                              if (discussions.isEmpty) {
-                                return SliverToBoxAdapter(
-                                  child: Center(
-                                    child: Text(
-                                      S.of(context).no_discussions_found,
-                                    ),
-                                  ),
-                                );
-                              }
+                    final showPrompt =
+                        state.status == GlobalSearchStatus.initial &&
+                        state.query.isEmpty;
 
-                              return SliverList(
-                                delegate: SliverChildBuilderDelegate((
-                                  context,
-                                  index,
-                                ) {
-                                  return Padding(
-                                    padding: EdgeInsets.only(
-                                      bottom: MySizes.spaceXs(context),
-                                    ),
-                                    child: DiscussionCard(
-                                      discussion: discussions[index],
-                                    ),
-                                  );
-                                }, childCount: discussions.length),
-                              );
-                            }
-
-                            return SliverToBoxAdapter(
-                              child: Center(
-                                child: Padding(
-                                  padding: EdgeInsets.all(
-                                    MySizes.spaceMd(context),
-                                  ),
-                                  child: const CircularProgressIndicator(),
-                                ),
-                              ),
-                            );
-                          },
-                        ),
-                        SliverToBoxAdapter(
-                          child: SizedBox(height: MySizes.spaceMd(context)),
-                        ),
-                        SliverToBoxAdapter(child: Divider()),
-                        SliverToBoxAdapter(
-                          child: SizedBox(height: MySizes.spaceMd(context)),
-                        ),
-                      ],
-                      if (_selectedCategory == S.of(context).top_label ||
-                          _selectedCategory == S.of(context).reading_lists) ...[
-                        SliverToBoxAdapter(
-                          child: SectionTitle(
-                            title: S.of(context).reading_lists,
-                            showSeeAll: true,
-                          ),
-                        ),
-                        SliverToBoxAdapter(
-                          child: SizedBox(height: MySizes.spaceSm(context)),
-                        ),
-                        SliverList(
-                          delegate: SliverChildBuilderDelegate((
-                            context,
-                            index,
-                          ) {
-                            // Mock reading list data for search results
-                            final mockReadingList = ReadingList(
-                              id: 'mock-$index',
-                              title:
-                                  '${S.of(context).reading_list_item_title} ${index + 1}',
-                              description: S
-                                  .of(context)
-                                  .mock_reading_list_description,
-                              isPublic: true,
-                              ownerId: 'mock-owner',
-                              createdAt: DateTime.now(),
-                              updatedAt: DateTime.now(),
-                              paperCount: 5 + index,
-                              previewTags: ['AI', 'ML', 'Research'],
-                              owner: const ReadingListOwner(
-                                id: 'mock-owner',
-                                username: 'researcher',
-                                fullName: 'Mock Researcher',
-                              ),
-                            );
-
-                            return Padding(
-                              padding: EdgeInsets.only(
-                                bottom: MySizes.spaceXs(context),
-                              ),
-                              child: ReadingListCard(
-                                readingList: mockReadingList,
-                              ),
-                            );
-                          }, childCount: 3),
-                        ),
-                      ],
-                    ],
-                  ),
+                    return AnimatedSwitcher(
+                      duration: const Duration(milliseconds: 200),
+                      child: showPrompt
+                          ? _buildPrompt(context)
+                          : _buildResults(context, state),
+                    );
+                  },
                 ),
               ),
             ),
@@ -240,46 +146,241 @@ class _CommunitySearchResultState extends State<CommunitySearchResult> {
       ),
     );
   }
-}
 
-class _CategoryHeaderDelegate extends SliverPersistentHeaderDelegate {
-  final Widget child;
-  final BuildContext context;
-  final String selectedCategory;
-  final Function(String) onCategoryChanged;
-
-  _CategoryHeaderDelegate({
-    required this.child,
-    required this.context,
-    required this.selectedCategory,
-    required this.onCategoryChanged,
-  });
-
-  @override
-  Widget build(
-    BuildContext context,
-    double shrinkOffset,
-    bool overlapsContent,
-  ) {
-    return Container(
-      color: Theme.of(context).scaffoldBackgroundColor,
-      child: child,
+  /// PROMPT
+  Widget _buildPrompt(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        SizedBox(height: MySizes.spaceLg(context)),
+        _scopeChips(context),
+      ],
     );
   }
 
-  @override
-  double get maxExtent =>
-      ResponsiveHelper.responsiveValue(context, 50) + MySizes.spaceLg(context);
+  /// RESULTS
+  Widget _buildResults(BuildContext context, GlobalSearchState state) {
+    final r = state.results;
 
-  @override
-  double get minExtent =>
-      ResponsiveHelper.responsiveValue(context, 50) + MySizes.spaceLg(context);
+    final hasResults =
+        r.researchers.isNotEmpty ||
+        r.discussions.isNotEmpty ||
+        r.readingLists.isNotEmpty;
 
-  @override
-  bool shouldRebuild(covariant SliverPersistentHeaderDelegate oldDelegate) {
-    if (oldDelegate is _CategoryHeaderDelegate) {
-      return oldDelegate.selectedCategory != selectedCategory;
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        /// FIXED FILTERS
+        _scopeChips(context),
+
+        SizedBox(height: MySizes.spaceLg(context)),
+
+        Expanded(
+          child: !hasResults
+              ? const Center(child: Text('No results found'))
+              : SingleChildScrollView(
+                  physics: const BouncingScrollPhysics(),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      if (state.scope == GlobalSearchScope.top) ...[
+                        if (r.researchers.isNotEmpty)
+                          _buildResearchersSection(context, r.researchers),
+
+                        if (r.discussions.isNotEmpty)
+                          Padding(
+                            padding: EdgeInsets.only(
+                              top: MySizes.spaceMd(context),
+                            ),
+                            child: _buildDiscussionsSection(
+                              context,
+                              r.discussions,
+                            ),
+                          ),
+
+                        if (r.readingLists.isNotEmpty)
+                          Padding(
+                            padding: EdgeInsets.only(
+                              top: MySizes.spaceMd(context),
+                            ),
+                            child: _buildReadingListsSection(
+                              context,
+                              r.readingLists,
+                            ),
+                          ),
+                      ] else if (state.scope ==
+                          GlobalSearchScope.discussions) ...[
+                        if (r.discussions.isNotEmpty)
+                          _buildDiscussionsSection(
+                            context,
+                            r.discussions,
+                            showAll: true,
+                          ),
+                      ] else if (state.scope ==
+                          GlobalSearchScope.readingLists) ...[
+                        if (r.readingLists.isNotEmpty)
+                          _buildReadingListsSection(
+                            context,
+                            r.readingLists,
+                            showAll: true,
+                          ),
+                      ] else ...[
+                        if (r.researchers.isNotEmpty)
+                          _buildResearchersSection(
+                            context,
+                            r.researchers,
+                            showAll: true,
+                          ),
+                      ],
+
+                      SizedBox(height: MySizes.spaceLg(context)),
+                    ],
+                  ),
+                ),
+        ),
+      ],
+    );
+  }
+
+  /// FILTERS
+  Widget _scopeChips(BuildContext context) {
+    return CategoryItemsList(
+      categories: [
+        S.of(context).top_label,
+        S.of(context).discussions_label,
+        S.of(context).reading_lists,
+        S.of(context).researchers_label,
+      ],
+      showAllTab: false,
+      selectedInterest: _scopeLabel(_selectedScope),
+      onInterestChanged: (c) {
+        final scope = _scopeFromLabel(c);
+        if (scope != null) _onScopeSelected(scope);
+      },
+    );
+  }
+
+  String _scopeLabel(GlobalSearchScope scope) {
+    switch (scope) {
+      case GlobalSearchScope.top:
+        return S.of(context).top_label;
+      case GlobalSearchScope.discussions:
+        return S.of(context).discussions_label;
+      case GlobalSearchScope.readingLists:
+        return S.of(context).reading_lists;
+      case GlobalSearchScope.researchers:
+        return S.of(context).researchers_label;
     }
-    return false;
+  }
+
+  GlobalSearchScope? _scopeFromLabel(String c) {
+    if (c == S.of(context).top_label) {
+      return GlobalSearchScope.top;
+    }
+    if (c == S.of(context).discussions_label) {
+      return GlobalSearchScope.discussions;
+    }
+    if (c == S.of(context).reading_lists) {
+      return GlobalSearchScope.readingLists;
+    }
+    if (c == S.of(context).researchers_label) {
+      return GlobalSearchScope.researchers;
+    }
+    return null;
+  }
+
+  /// SECTIONS
+  Widget _buildResearchersSection(
+    BuildContext context,
+    List<User> items, {
+    bool showAll = false,
+  }) {
+    return _SearchSectionShell<User>(
+      title: S.of(context).researchers_label,
+      items: items,
+      showAll: showAll,
+      onSeeAll: () => _onScopeSelected(GlobalSearchScope.researchers),
+      itemBuilder: (u) => ResearcherCard(user: u),
+    );
+  }
+
+  Widget _buildDiscussionsSection(
+    BuildContext context,
+    List<Discussion> items, {
+    bool showAll = false,
+  }) {
+    return _SearchSectionShell<Discussion>(
+      title: S.of(context).discussions_label,
+      items: items,
+      showAll: showAll,
+      onSeeAll: () => _onScopeSelected(GlobalSearchScope.discussions),
+      itemBuilder: (d) => DiscussionCard(
+        discussion: d,
+        onTap: () => context.push(
+          RouteNames.discussionDetailsRoute(d.id),
+          extra: d,
+        ),
+      ),
+    );
+  }
+
+  Widget _buildReadingListsSection(
+    BuildContext context,
+    List<ReadingList> items, {
+    bool showAll = false,
+  }) {
+    return _SearchSectionShell<ReadingList>(
+      title: S.of(context).reading_lists,
+      items: items,
+      showAll: showAll,
+      onSeeAll: () => _onScopeSelected(GlobalSearchScope.readingLists),
+      itemBuilder: (r) => ReadingListCard(
+        readingList: r,
+        onTap: () =>
+            context.push(RouteNames.readingListDetailsRoute(r.id), extra: r),
+      ),
+    );
+  }
+}
+
+/// SECTION SHELL
+class _SearchSectionShell<T> extends StatelessWidget {
+  const _SearchSectionShell({
+    required this.title,
+    required this.items,
+    required this.itemBuilder,
+    required this.onSeeAll,
+    this.showAll = false,
+  });
+
+  final String title;
+  final List<T> items;
+  final Widget Function(T) itemBuilder;
+  final VoidCallback onSeeAll;
+  final bool showAll;
+
+  @override
+  Widget build(BuildContext context) {
+    final visible = showAll ? items : items.take(3).toList();
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        SectionTitle(
+          title: title,
+          showSeeAll: items.length > 3 && !showAll,
+          onTap: onSeeAll,
+        ),
+        SizedBox(height: MySizes.spaceSm(context)),
+        ListView.separated(
+          shrinkWrap: true,
+          physics: const NeverScrollableScrollPhysics(),
+          itemCount: visible.length,
+          separatorBuilder: (_, __) =>
+              SizedBox(height: MySizes.spaceSm(context)),
+          itemBuilder: (_, i) => itemBuilder(visible[i]),
+        ),
+      ],
+    );
   }
 }

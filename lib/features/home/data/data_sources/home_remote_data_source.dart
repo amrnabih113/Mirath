@@ -1,5 +1,9 @@
+import '../../../discussions/data/models/discussion_model.dart';
+import '../../../reading_lists/data/models/reading_list_model.dart';
+import '../../../users/data/models/user_model.dart';
 import '../models/home_recent_response_model.dart';
 import '../models/home_recommendations_response_model.dart';
+import '../models/global_search_response_model.dart';
 import '../models/save_paper_response_model.dart';
 import '../models/search_history_response_model.dart';
 import '../models/search_paper_model.dart';
@@ -23,6 +27,30 @@ abstract class HomeRemoteDataSource {
   Future<void> unsavePaper(String paperId);
 
   Future<List<SearchPaperModel>> searchPapers(
+    String query, {
+    int page = 1,
+    int limit = 10,
+  });
+
+  Future<GlobalSearchResponseModel> searchGlobal(
+    String query, {
+    int page = 1,
+    int limit = 10,
+  });
+
+  Future<List<DiscussionModel>> searchDiscussions(
+    String query, {
+    int page = 1,
+    int limit = 10,
+  });
+
+  Future<List<ReadingListModel>> searchReadingLists(
+    String query, {
+    int page = 1,
+    int limit = 10,
+  });
+
+  Future<List<UserModel>> searchResearchers(
     String query, {
     int page = 1,
     int limit = 10,

@@ -36,6 +36,7 @@ import 'package:mirath/features/discussions/domain/usecases/vote_on_comment_usec
 import 'package:mirath/features/discussions/domain/usecases/vote_on_discussion_usecase.dart';
 import 'package:mirath/features/discussions/presentation/cubit/community_cubit.dart';
 import 'package:mirath/features/discussions/presentation/cubit/discussion_details_cubit.dart';
+import 'package:mirath/features/discussions/presentation/cubit/global_search_cubit.dart';
 import '../features/home/domain/usecases/get_paper_categories_usecase.dart';
 import 'package:mirath/features/paper_annotations/data/data_sources/annotation_local_data_source.dart';
 import 'package:mirath/features/paper_annotations/data/data_sources/annotation_local_data_source_impl.dart';
@@ -77,6 +78,10 @@ import 'package:mirath/features/home/domain/usecases/get_recommendations_usecase
 import 'package:mirath/features/home/domain/usecases/get_search_history_usecase.dart';
 import 'package:mirath/features/home/domain/usecases/delete_search_history_usecase.dart';
 import 'package:mirath/features/home/domain/usecases/clear_search_history_usecase.dart';
+import 'package:mirath/features/home/domain/usecases/search_discussions_usecase.dart';
+import 'package:mirath/features/home/domain/usecases/search_global_usecase.dart';
+import 'package:mirath/features/home/domain/usecases/search_reading_lists_usecase.dart';
+import 'package:mirath/features/home/domain/usecases/search_researchers_usecase.dart';
 import 'package:mirath/features/home/domain/usecases/search_papers_usecase.dart';
 import 'package:mirath/features/home/domain/usecases/save_paper_usecase.dart';
 import 'package:mirath/features/home/domain/usecases/unsave_paper_usecase.dart';
@@ -439,6 +444,10 @@ class DI {
     sl.registerLazySingleton(() => SavePaperUseCase(repository: sl()));
     sl.registerLazySingleton(() => UnsavePaperUseCase(repository: sl()));
     sl.registerLazySingleton(() => SearchPapersUseCase(repository: sl()));
+    sl.registerLazySingleton(() => SearchGlobalUseCase(repository: sl()));
+    sl.registerLazySingleton(() => SearchDiscussionsUseCase(repository: sl()));
+    sl.registerLazySingleton(() => SearchReadingListsUseCase(repository: sl()));
+    sl.registerLazySingleton(() => SearchResearchersUseCase(repository: sl()));
     sl.registerLazySingleton(() => GetSearchHistoryUseCase(repository: sl()));
     sl.registerLazySingleton(
       () => DeleteSearchHistoryUseCase(repository: sl()),
@@ -463,6 +472,15 @@ class DI {
         deleteSearchHistoryUseCase: sl(),
         clearSearchHistoryUseCase: sl(),
         searchPapersUseCase: sl(),
+      ),
+    );
+
+    sl.registerFactory(
+      () => GlobalSearchCubit(
+        searchGlobalUseCase: sl(),
+        searchDiscussionsUseCase: sl(),
+        searchReadingListsUseCase: sl(),
+        searchResearchersUseCase: sl(),
       ),
     );
 

@@ -30,7 +30,9 @@ import 'package:mirath/generated/l10n.dart';
 import 'core/constants/route_names.dart';
 import 'features/discussions/presentation/cubit/community_cubit.dart';
 import 'features/discussions/presentation/cubit/discussion_details_cubit.dart';
+import 'features/discussions/presentation/cubit/global_search_cubit.dart';
 import 'features/discussions/presentation/screens/community_search_result.dart';
+import 'features/discussions/presentation/cubit/global_search_state.dart';
 import 'features/reading_lists/presentation/screens/reading_list_details_screen.dart';
 import 'features/home/presentation/cubit/home_cubit.dart';
 import 'core/services/local_storage_service.dart';
@@ -312,10 +314,17 @@ final appRouter = GoRouter(
     GoRoute(
       path: RouteNames.search,
       pageBuilder: (context, state) {
+        final extra = state.extra as Map<String, dynamic>?;
         return PageTransitions.smoothTransition(
           BlocProvider(
             create: (_) => sl<SearchCubit>(),
-            child: const SearchScreen(),
+            child: SearchScreen(
+              hintText: extra?['hintText'] as String? ?? 'Search',
+              showHeading: extra?['showHeading'] as bool? ?? true,
+              resultRoute:
+                  extra?['resultRoute'] as String? ??
+                  RouteNames.homeSearchResults,
+            ),
           ),
         );
       },
@@ -345,8 +354,37 @@ final appRouter = GoRouter(
     ),
     GoRoute(
       path: RouteNames.communitySearchResults,
-      pageBuilder: (context, state) =>
-          PageTransitions.smoothTransition(const CommunitySearchResult()),
+      pageBuilder: (context, state) {
+        final initialQuery = state.extra is String
+            ? state.extra as String
+            : null;
+        final scopeParam = state.uri.queryParameters['scope'];
+        GlobalSearchScope? initialScope;
+        switch (scopeParam) {
+          case 'discussions':
+            initialScope = GlobalSearchScope.discussions;
+            break;
+          case 'readingLists':
+            initialScope = GlobalSearchScope.readingLists;
+            break;
+          case 'researchers':
+            initialScope = GlobalSearchScope.researchers;
+            break;
+          case 'top':
+          default:
+            initialScope = GlobalSearchScope.top;
+        }
+
+        return PageTransitions.smoothTransition(
+          BlocProvider(
+            create: (_) => sl<GlobalSearchCubit>(),
+            child: CommunitySearchResult(
+              initialQuery: initialQuery,
+              initialScope: initialScope,
+            ),
+          ),
+        );
+      },
     ),
 
     /// Paper Details - requires paperId in path
