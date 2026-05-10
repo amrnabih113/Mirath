@@ -48,28 +48,31 @@ class _PaperScreenState extends State<PaperScreen> {
       _error = null;
     });
     final result = await sl<GetPaperByIdUseCase>()(id);
-    result.fold((failure) {
-      setState(() {
-        _isLoading = false;
-        _error = 'Failed to load paper';
-      });
-    }, (full) {
-      final paper = PaperEntity(
-        id: full.id,
-        title: full.title,
-        abstract: full.abstract,
-        publishedAt: full.publishedAt,
-        authors: full.authors,
-        categories: full.categories,
-        isSaved: false,
-        preprint: '',
-        citation: full.citation,
-      );
-      setState(() {
-        _currentPaper = paper;
-        _isLoading = false;
-      });
-    });
+    result.fold(
+      (failure) {
+        setState(() {
+          _isLoading = false;
+          _error = 'Failed to load paper';
+        });
+      },
+      (full) {
+        final paper = PaperEntity(
+          id: full.id,
+          title: full.title,
+          abstract: full.abstract,
+          publishedAt: full.publishedAt,
+          authors: full.authors,
+          categories: full.categories,
+          isSaved: false,
+          preprint: '',
+          citation: full.citation,
+        );
+        setState(() {
+          _currentPaper = paper;
+          _isLoading = false;
+        });
+      },
+    );
   }
 
   @override
@@ -84,7 +87,9 @@ class _PaperScreenState extends State<PaperScreen> {
     }
 
     if (currentPaper == null) {
-      return Scaffold(body: Center(child: Text(S.of(context).error_no_paper_data)));
+      return Scaffold(
+        body: Center(child: Text(S.of(context).error_no_paper_data)),
+      );
     }
 
     return Scaffold(

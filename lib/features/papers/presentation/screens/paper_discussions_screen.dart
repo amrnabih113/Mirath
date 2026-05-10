@@ -76,9 +76,7 @@ class _PaperDiscussionsScreenState extends State<PaperDiscussionsScreen> {
                   if (state is CommunityDiscussionsLoaded) {
                     final targetId = widget.paper?.id ?? widget.paperId;
                     final discussions = state.discussions
-                        .where(
-                          (d) => d.papers.any((p) => p.id == targetId),
-                        )
+                        .where((d) => d.papers.any((p) => p.id == targetId))
                         .toList();
 
                     if (discussions.isEmpty) {
@@ -100,7 +98,10 @@ class _PaperDiscussionsScreenState extends State<PaperDiscussionsScreen> {
                             SizedBox(height: MySizes.spaceMd(context)),
                             ElevatedButton(
                               onPressed: () {
-                                context.push(RouteNames.addDiscussion, extra: widget.paper ?? widget.paperId);
+                                context.push(
+                                  RouteNames.addDiscussion,
+                                  extra: widget.paper ?? widget.paperId,
+                                );
                               },
                               child: Text(
                                 S.of(context).start_discussion_button,
@@ -122,7 +123,12 @@ class _PaperDiscussionsScreenState extends State<PaperDiscussionsScreen> {
                           return DiscussionCard(
                             discussion: discussion,
                             onTap: () {
-                              context.push(RouteNames.discussionDetailsRoute(discussion.id), extra: discussion);
+                              context.push(
+                                RouteNames.discussionDetailsRoute(
+                                  discussion.id,
+                                ),
+                                extra: discussion,
+                              );
                             },
                           );
                         },

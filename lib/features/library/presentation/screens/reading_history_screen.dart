@@ -8,7 +8,6 @@ import 'package:mirath/features/common/widgets/my_back_icon.dart';
 import 'package:mirath/features/home/presentation/widgets/home_shimmer_loading.dart';
 import 'package:mirath/features/home/presentation/widgets/paper_card.dart';
 import 'package:mirath/features/library/presentation/cubit/library_cubit.dart';
-import 'package:mirath/features/library/presentation/widgets/delete_button.dart';
 
 class ReadingHistoryScreen extends StatefulWidget {
   const ReadingHistoryScreen({super.key});
@@ -20,6 +19,7 @@ class ReadingHistoryScreen extends StatefulWidget {
 class _ReadingHistoryScreenState extends State<ReadingHistoryScreen> {
   static const int _pageSize = 20;
   late final ScrollController _scrollController;
+  final Set<String> _selectedPaperIds = <String>{};
 
   @override
   void initState() {
@@ -32,6 +32,30 @@ class _ReadingHistoryScreenState extends State<ReadingHistoryScreen> {
     _scrollController.removeListener(_onScroll);
     _scrollController.dispose();
     super.dispose();
+  }
+
+  bool get _isSelectionMode => _selectedPaperIds.isNotEmpty;
+
+  void _toggleSelection(String paperId) {
+    setState(() {
+      if (_selectedPaperIds.contains(paperId)) {
+        _selectedPaperIds.remove(paperId);
+      } else {
+        _selectedPaperIds.add(paperId);
+      }
+    });
+  }
+
+  void _enterSelectionMode(String paperId) {
+    setState(() {
+      _selectedPaperIds.add(paperId);
+    });
+  }
+
+  void _exitSelectionMode() {
+    setState(() {
+      _selectedPaperIds.clear();
+    });
   }
 
   void _onScroll() {
@@ -53,7 +77,15 @@ class _ReadingHistoryScreenState extends State<ReadingHistoryScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        leading: MyBackIcon(),
+        leading: MyBackIcon(
+          onTap: () {
+            if (_isSelectionMode) {
+              _exitSelectionMode();
+              return;
+            }
+            Navigator.of(context).maybePop();
+          },
+        ),
         title: Text(
           'Reading History',
           style: context.headlineLarge.copyWith(
@@ -62,7 +94,30 @@ class _ReadingHistoryScreenState extends State<ReadingHistoryScreen> {
           ),
         ),
         centerTitle: true,
-        actions: [DeleteButton()],
+        actions: _isSelectionMode
+            ? [
+                Padding(
+                  padding: const EdgeInsets.only(right: 8),
+                  child: TextButton.icon(
+                    onPressed: _selectedPaperIds.isEmpty
+                        ? null
+                        : _confirmAndDeleteSelected,
+                    icon: const Icon(Icons.checklist_rtl_outlined),
+                    label: Text(
+                      'Delete selected (${_selectedPaperIds.length})',
+                    ),
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.only(right: 8),
+                  child: TextButton.icon(
+                    onPressed: _confirmAndClearAll,
+                    icon: const Icon(Icons.delete_forever_outlined),
+                    label: const Text('Delete all'),
+                  ),
+                ),
+              ]
+            : [],
       ),
       body: Center(
         child: LayoutBuilder(
@@ -126,11 +181,26 @@ class _ReadingHistoryScreenState extends State<ReadingHistoryScreen> {
                             paper: state.readingHistory[index].paper,
                             isHistory: true,
                             lastReadAt: state.readingHistory[index].viewedAt,
+                            isSelected: _selectedPaperIds.contains(
+                              state.readingHistory[index].paperId,
+                            ),
                             onTap: () {
+                              final paperId =
+                                  state.readingHistory[index].paperId;
+                              if (_isSelectionMode) {
+                                _toggleSelection(paperId);
+                                return;
+                              }
+
                               final paper = state.readingHistory[index].paper;
                               context.push(
                                 RouteNames.paperDetailsRoute(paper.id),
                                 extra: paper,
+                              );
+                            },
+                            onLongPress: () {
+                              _enterSelectionMode(
+                                state.readingHistory[index].paperId,
                               );
                             },
                           );
@@ -149,5 +219,89 @@ class _ReadingHistoryScreenState extends State<ReadingHistoryScreen> {
         ),
       ),
     );
+  }
+
+  Future<void> _confirmAndDeleteSelected() async {
+    final state = context.read<LibraryCubit>().state;
+    if (state is! GetReadingHistorySuccess || _selectedPaperIds.isEmpty) {
+      return;
+    }
+
+    final selectedItems = state.readingHistory
+        .where((item) => _selectedPaperIds.contains(item.paperId))
+        .toList();
+    if (selectedItems.isEmpty) return;
+
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (dialogContext) => AlertDialog(
+        title: const Text('Delete selected history items?'),
+        content: Text(
+          'Remove ${selectedItems.length} selected papers from your reading history?',
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(dialogContext).pop(false),
+            child: const Text('Cancel'),
+          ),
+          TextButton(
+            onPressed: () => Navigator.of(dialogContext).pop(true),
+            child: const Text('Delete'),
+          ),
+        ],
+      ),
+    );
+
+    if (confirmed != true || !mounted) return;
+
+    final cubit = context.read<LibraryCubit>();
+    for (final item in selectedItems) {
+      await cubit.removePaperFromReadingHistory(item.paperId);
+    }
+
+    if (!mounted) return;
+    await cubit.getReadingHistory(page: 1, limit: _pageSize);
+    if (!mounted) return;
+    _exitSelectionMode();
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(content: Text('Selected history items deleted')),
+    );
+  }
+
+  Future<void> _confirmAndClearAll() async {
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (dialogContext) => AlertDialog(
+        title: const Text('Delete all history?'),
+        content: const Text(
+          'This will remove every paper from your reading history.',
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(dialogContext).pop(false),
+            child: const Text('Cancel'),
+          ),
+          TextButton(
+            onPressed: () => Navigator.of(dialogContext).pop(true),
+            child: const Text('Delete'),
+          ),
+        ],
+      ),
+    );
+
+    if (confirmed != true || !mounted) return;
+
+    final cubit = context.read<LibraryCubit>();
+    await cubit.clearAllReadingHistory();
+    if (!mounted) return;
+
+    if (cubit.state is ClearAllReadingHistorySuccess) {
+      await cubit.getReadingHistory(page: 1, limit: _pageSize);
+      if (!mounted) return;
+      _exitSelectionMode();
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(const SnackBar(content: Text('Reading history cleared')));
+    }
   }
 }

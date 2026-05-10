@@ -30,7 +30,12 @@ class PaperReadingScreen extends StatefulWidget {
   final String? paperId;
   final VoidCallback? backonTap;
 
-  const PaperReadingScreen({super.key, this.paper, this.paperId, this.backonTap});
+  const PaperReadingScreen({
+    super.key,
+    this.paper,
+    this.paperId,
+    this.backonTap,
+  });
 
   @override
   State<PaperReadingScreen> createState() => _PaperReadingScreenState();

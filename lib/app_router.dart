@@ -406,7 +406,8 @@ final appRouter = GoRouter(
       path: RouteNames.paperDiscussions,
       pageBuilder: (context, state) {
         final paperId = state.pathParameters['paperId'] ?? '';
-        if (paperId.isEmpty) return PageTransitions.smoothTransition(const SizedBox.shrink());
+        if (paperId.isEmpty)
+          return PageTransitions.smoothTransition(const SizedBox.shrink());
 
         final extraPaper = state.extra as PaperEntity?;
 

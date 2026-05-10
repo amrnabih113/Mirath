@@ -20,12 +20,16 @@ class PaperCard extends StatefulWidget {
     this.paper,
     this.isHistory = false,
     this.lastReadAt,
+    this.isSelected = false,
+    this.onLongPress,
     required this.onTap,
   });
   final int? number;
   final PaperEntity? paper;
   final bool isHistory;
   final DateTime? lastReadAt;
+  final bool isSelected;
+  final VoidCallback? onLongPress;
   final VoidCallback onTap;
   @override
   State<PaperCard> createState() => _PaperCardState();
@@ -67,16 +71,21 @@ class _PaperCardState extends State<PaperCard> {
     final isTopRanked = widget.number != null && widget.number! <= 3;
     return GestureDetector(
       onTap: widget.onTap,
+      onLongPress: widget.onLongPress,
       child: Container(
         padding: EdgeInsets.all(ResponsiveHelper.responsiveValue(context, 16)),
         decoration: BoxDecoration(
-          color: MyColors.white,
+          color: widget.isSelected
+              ? MyColors.primaryShade50.withValues(alpha: 0.75)
+              : MyColors.white,
           borderRadius: BorderRadius.circular(
             ResponsiveHelper.responsiveValue(context, 16),
           ),
           border: Border.all(
-            color: MyColors.primaryShade500.withValues(alpha: 0.3),
-            width: 1,
+            color: widget.isSelected
+                ? MyColors.primaryShade700
+                : MyColors.primaryShade500.withValues(alpha: 0.3),
+            width: widget.isSelected ? 2 : 1,
           ),
           boxShadow: [
             BoxShadow(
