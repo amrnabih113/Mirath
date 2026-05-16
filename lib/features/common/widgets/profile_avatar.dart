@@ -1,6 +1,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+
 import '../../../core/helpers/responsive_helper.dart';
 import '../../../core/utils/my_colors.dart';
 
@@ -44,7 +45,7 @@ class ProfileAvatar extends StatelessWidget {
         radius: contentSize / 2,
         backgroundColor: Colors.transparent,
         backgroundImage: imageUrl != null && imageUrl!.isNotEmpty
-            ? CachedNetworkImageProvider(imageUrl!)
+            ? CachedNetworkImageProvider(imageUrl!,)
             : null,
         child: imageUrl == null || imageUrl!.isEmpty
             ? SvgPicture.asset(

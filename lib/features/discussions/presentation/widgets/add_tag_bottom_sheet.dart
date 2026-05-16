@@ -1,16 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:hugeicons/hugeicons.dart';
-import 'package:mirath/generated/l10n.dart';
 import 'package:shimmer/shimmer.dart';
-import 'package:mirath/core/helpers/responsive_helper.dart';
-import 'package:mirath/core/utils/my_colors.dart';
-import 'package:mirath/core/utils/my_extenstions.dart';
-import 'package:mirath/core/utils/my_sizes.dart';
-import 'package:mirath/features/common/widgets/my_search_bar.dart';
-import 'package:mirath/features/interests/domain/entities/interest.dart';
-import 'package:mirath/features/interests/presentation/cubit/interests_cubit.dart';
-import 'package:mirath/features/interests/presentation/cubit/interests_state.dart';
+
+import '../../../../core/helpers/responsive_helper.dart';
+import '../../../../core/utils/my_colors.dart';
+import '../../../../core/utils/my_extenstions.dart';
+import '../../../../core/utils/my_sizes.dart';
+import '../../../../generated/l10n.dart';
+import '../../../common/widgets/my_search_bar.dart';
+import '../../../interests/domain/entities/interest.dart';
+import '../../../interests/presentation/cubit/interests_cubit.dart';
+import '../../../interests/presentation/cubit/interests_state.dart';
 
 class AddTagBottomSheet extends StatefulWidget {
   final Function(String, String) onTagSelected; // id, name

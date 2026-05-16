@@ -1,7 +1,8 @@
 import 'package:dartz/dartz.dart';
-import 'package:mirath/core/error/failuors.dart';
-import 'package:mirath/features/library/domain/entities/library_data.dart';
-import 'package:mirath/features/library/domain/repositories/library_repository.dart';
+
+import '../../../../core/error/failuors.dart';
+import '../entities/library_data.dart';
+import '../repositories/library_repository.dart';
 
 class GetLibraryData {
   final LibraryRepository libraryRepository;

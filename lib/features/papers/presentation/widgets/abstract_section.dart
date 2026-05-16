@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:mirath/core/utils/my_colors.dart';
-import 'package:mirath/core/utils/my_extenstions.dart';
-import 'package:mirath/core/utils/my_sizes.dart';
-import 'package:mirath/features/papers/presentation/widgets/latex_renderer.dart';
-import 'package:mirath/features/papers/presentation/widgets/my_text_icon.dart';
-import 'package:mirath/generated/l10n.dart';
+
+import '../../../../core/utils/my_colors.dart';
+import '../../../../core/utils/my_extenstions.dart';
+import '../../../../core/utils/my_sizes.dart';
+import '../../../../generated/l10n.dart';
+import 'latex_renderer.dart';
+import 'my_text_icon.dart';
 
 class AbstractSection extends StatelessWidget {
   final String abstractText;

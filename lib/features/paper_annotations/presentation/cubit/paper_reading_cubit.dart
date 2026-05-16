@@ -1,20 +1,21 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:mirath/core/utils/my_logger.dart';
-import 'package:mirath/features/paper_annotations/presentation/widgets/annotation_webview.dart';
 import 'package:uuid/uuid.dart';
+
+import '../../../../core/utils/my_logger.dart';
 import '../../../home/domain/entities/paper_entity.dart';
 import '../../../papers/domain/usecases/get_paper_by_id_usecase.dart';
 import '../../domain/entites/highlight_entity.dart';
 import '../../domain/entites/highlight_note_params.dart';
 import '../../domain/entites/paper_highlights_params.dart';
 import '../../domain/usecases/add_highlight_note_usecase.dart';
-import '../../domain/usecases/delete_highlight_usecase.dart';
 import '../../domain/usecases/delete_highlight_note_usecase.dart';
+import '../../domain/usecases/delete_highlight_usecase.dart';
 import '../../domain/usecases/get_annotated_highlights_usecase.dart';
 import '../../domain/usecases/get_highlights_usecase.dart';
 import '../../domain/usecases/save_highlight_usecase.dart';
 import '../../domain/usecases/update_highlight_note_usecase.dart';
 import '../../domain/usecases/update_highlight_usecase.dart';
+import '../widgets/annotation_webview.dart';
 import 'paper_reading_state.dart';
 
 class PaperReadingCubit extends Cubit<PaperReadingState> {

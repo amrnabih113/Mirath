@@ -9,8 +9,9 @@ class LibraryDataLoading extends LibraryState {}
 
 class LibraryDataSuccess extends LibraryState {
   final LibraryData libraryData;
+  final bool fromCache;
 
-  LibraryDataSuccess({required this.libraryData});
+  LibraryDataSuccess({required this.libraryData, this.fromCache = false});
 }
 
 class LibraryDataFailure extends LibraryState {

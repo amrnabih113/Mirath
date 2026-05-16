@@ -1,6 +1,8 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:mirath/core/utils/my_logger.dart';
-import '../../../../core/error/failuors.dart';
+import '../../../../core/network/network_manager.dart';
+import '../../../../injection/injection_container.dart';
+import '../../../../core/sync/retry_service.dart';
+import '../../../../core/utils/my_logger.dart';
 import '../../../../core/services/user_cache_service.dart';
 import '../../domain/entities/comment.dart';
 import '../../domain/entities/create_comment_params.dart';
@@ -36,7 +38,14 @@ class DiscussionDetailsCubit extends Cubit<DiscussionDetailsState> {
     required this.userCacheService,
   }) : super(const DiscussionDetailsInitial());
 
-  Future<void> loadDiscussionDetails(String discussionId) async {
+  Future<void> loadDiscussionDetails(
+    String discussionId, {
+    bool forceRefresh = false,
+  }) async {
+    if (forceRefresh && !await NetworkManager.instance.isConnected) {
+      return;
+    }
+
     emit(const DiscussionDetailsLoading());
 
     final discussionResult = await getDiscussionByIdUseCase(discussionId);
@@ -176,34 +185,34 @@ class DiscussionDetailsCubit extends Cubit<DiscussionDetailsState> {
       content: content,
       parentId: parentId,
     );
-    MyLogger.debug('[CUBIT] 🌐 Calling createCommentUseCase...');
+    MyLogger.debug('[CUBIT] 🌐 Attempting immediate createComment...');
+    final connected = NetworkManager.instance.currentConnectionStatus;
+    if (!connected) {
+      // Enqueue for background sync and keep pending comment
+      await sl<RetryService>().enqueue('create_comment', {
+        'discussionId': discussionId,
+        'content': content,
+        'parentId': parentId,
+        'clientId': tempId,
+      });
+      MyLogger.debug('[CUBIT] ✉️ Offline: enqueued create_comment');
+      return;
+    }
 
     final result = await createCommentUseCase(params);
     MyLogger.debug('[CUBIT] 📨 UseCase returned result');
 
     result.fold(
-      (failure) {
-        MyLogger.debug('[CUBIT] ❌ API call failed: ${failure.message}');
-        final errorMessage = _getErrorMessage(failure);
-
-        // Remove the pending comment on failure
-        final failedComments = updatedComments
-            .where((c) => c.id != tempId)
-            .toList();
+      (failure) async {
         MyLogger.debug(
-          '[CUBIT] 🗑️ Removing temp comment, ${failedComments.length} comments remain',
+          '[CUBIT] ❌ API call failed: ${failure.message} — enqueuing for retry',
         );
-
-        final state = this.state;
-        if (state is DiscussionDetailsLoaded) {
-          MyLogger.debug('[CUBIT] 📤 Emitting error state');
-          emit(
-            state.copyWith(
-              comments: failedComments,
-              commentSubmissionError: errorMessage,
-            ),
-          );
-        }
+        await sl<RetryService>().enqueue('create_comment', {
+          'discussionId': discussionId,
+          'content': content,
+          'parentId': parentId,
+          'clientId': tempId,
+        });
       },
       (newComment) {
         MyLogger.debug(
@@ -222,41 +231,20 @@ class DiscussionDetailsCubit extends Cubit<DiscussionDetailsState> {
         final finalComments = updatedComments
             .map((c) => c.id == tempId ? resolvedComment : c)
             .toList();
-        MyLogger.debug(
-          '[CUBIT] 🔄 Replaced temp comment with real comment, ${finalComments.length} comments total',
-        );
-
         final state = this.state;
         if (state is DiscussionDetailsLoaded) {
-          MyLogger.debug('[CUBIT] 📤 Emitting final state with real comment');
           emit(
             state.copyWith(
               comments: finalComments,
               commentSubmissionError: null,
             ),
           );
-          MyLogger.debug('[CUBIT] ✓ Final state emitted');
         }
       },
     );
   }
 
-  String _getErrorMessage(Failure failure) {
-    if (failure is NetworkFailure) {
-      return 'Network error. Please check your connection.';
-    } else if (failure is UnauthorizedFailure) {
-      return 'Authentication failed. Please log in again.';
-    } else if (failure is ValidationFailure) {
-      return 'Invalid input. Please check your comment.';
-    } else if (failure is TimeoutFailure) {
-      return 'Request timeout. Please try again.';
-    } else if (failure is ServerFailure) {
-      return 'Server error. Please try again later.';
-    }
-    return failure.message.isNotEmpty
-        ? failure.message
-        : 'Failed to post comment. Please try again.';
-  }
+  // Note: error mapping handled upstream; keep messages short in UI
 
   Future<void> voteOnComment({
     required String commentId,
@@ -325,12 +313,27 @@ class DiscussionDetailsCubit extends Cubit<DiscussionDetailsState> {
 
     emit(currentState.copyWith(comments: updatedComments));
 
+    // Attempt immediate API call if online; otherwise enqueue
+    final connected = NetworkManager.instance.currentConnectionStatus;
+    if (!connected) {
+      await sl<RetryService>().enqueue('vote_comment', {
+        'commentId': commentId,
+        'upvote': voteType == 'UP',
+      });
+      return;
+    }
+
     final result = isRemovingVote
         ? await deleteCommentVoteUseCase(commentId)
         : await voteOnCommentUseCase(VoteParams(id: commentId, type: voteType));
 
     result.fold(
-      (failure) {
+      (failure) async {
+        // enqueue for retry and refresh to revert if needed
+        await sl<RetryService>().enqueue('vote_comment', {
+          'commentId': commentId,
+          'upvote': voteType == 'UP',
+        });
         refreshComments(currentState.discussion.id);
       },
       (_) {
@@ -399,6 +402,15 @@ class DiscussionDetailsCubit extends Cubit<DiscussionDetailsState> {
 
     emit(currentState.copyWith(discussion: updatedDiscussion));
 
+    final connected = NetworkManager.instance.currentConnectionStatus;
+    if (!connected) {
+      await sl<RetryService>().enqueue('vote_discussion', {
+        'discussionId': discussionId,
+        'upvote': voteType == 'UP',
+      });
+      return;
+    }
+
     final result = isRemovingVote
         ? await deleteDiscussionVoteUseCase(discussionId)
         : await voteOnDiscussionUseCase(
@@ -406,8 +418,11 @@ class DiscussionDetailsCubit extends Cubit<DiscussionDetailsState> {
           );
 
     result.fold(
-      (failure) {
-        // Revert on failure by reloading
+      (failure) async {
+        await sl<RetryService>().enqueue('vote_discussion', {
+          'discussionId': discussionId,
+          'upvote': voteType == 'UP',
+        });
         loadDiscussionDetails(discussionId);
       },
       (_) {

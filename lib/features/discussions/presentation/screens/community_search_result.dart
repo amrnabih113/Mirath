@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
-import 'package:mirath/generated/l10n.dart';
 
 import '../../../../core/constants/route_names.dart';
 import '../../../../core/helpers/responsive_helper.dart';
 import '../../../../core/utils/my_sizes.dart';
+import '../../../../generated/l10n.dart';
 import '../../../common/widgets/my_back_icon.dart';
 import '../../../common/widgets/my_search_bar.dart';
 import '../../../common/widgets/section_title.dart';

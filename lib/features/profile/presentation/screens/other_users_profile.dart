@@ -2,15 +2,18 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hugeicons/hugeicons.dart';
-import 'package:mirath/core/constants/route_names.dart';
-import 'package:mirath/core/services/sharing_service.dart';
-import 'package:mirath/core/utils/my_colors.dart';
-import 'package:mirath/core/utils/my_sizes.dart';
-import 'package:mirath/features/profile/presentation/widgets/user_data.dart';
-import 'package:mirath/features/profile/presentation/widgets/user_tabs.dart';
-import 'package:mirath/features/users/presentation/cubit/profile_header_cubit.dart';
-import 'package:mirath/features/users/presentation/cubit/profile_header_state.dart';
-import 'package:mirath/generated/l10n.dart';
+
+import '../../../../core/constants/route_names.dart';
+import '../../../../core/network/network_manager.dart';
+import '../../../../core/services/sharing_service.dart';
+import '../../../../core/ui/widgets/state_views.dart';
+import '../../../../core/utils/my_colors.dart';
+import '../../../../core/utils/my_sizes.dart';
+import '../../../../generated/l10n.dart';
+import '../../../users/presentation/cubit/profile_header_cubit.dart';
+import '../../../users/presentation/cubit/profile_header_state.dart';
+import '../widgets/user_data.dart';
+import '../widgets/user_tabs.dart';
 
 class OtherUsersProfile extends StatefulWidget {
   const OtherUsersProfile({super.key, required this.userId});
@@ -69,7 +72,25 @@ class _OtherUsersProfileState extends State<OtherUsersProfile> {
                     }
 
                     if (state is ProfileHeaderError) {
-                      return Center(child: Text(state.message));
+                      final offline =
+                          !NetworkManager.instance.currentConnectionStatus;
+                      return offline
+                          ? OfflineStateView(
+                              title: 'Offline',
+                              message: state.message,
+                              actionLabel: 'Retry',
+                              onAction: () => context
+                                  .read<ProfileHeaderCubit>()
+                                  .getProfileHeader(widget.userId),
+                            )
+                          : ErrorStateView(
+                              title: 'Error',
+                              message: state.message,
+                              actionLabel: 'Retry',
+                              onAction: () => context
+                                  .read<ProfileHeaderCubit>()
+                                  .getProfileHeader(widget.userId),
+                            );
                     }
 
                     final loaded = state as ProfileHeaderLoaded;

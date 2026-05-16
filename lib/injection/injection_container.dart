@@ -1,22 +1,23 @@
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:get_it/get_it.dart';
 import 'package:dio/dio.dart';
-import 'package:mirath/features/library/data/data_sources/library_data_sources.dart';
-import 'package:mirath/features/library/data/data_sources/library_data_sources_impl.dart';
-import 'package:mirath/features/library/data/repositories/library_repository_impl.dart';
-import 'package:mirath/features/library/domain/repositories/library_repository.dart';
-import 'package:mirath/features/library/domain/usecases/clear_all_reading_history.dart';
-import 'package:mirath/features/library/domain/usecases/get_all_saved_papers.dart';
-import 'package:mirath/features/library/domain/usecases/get_library_data.dart';
-import 'package:mirath/features/library/domain/usecases/get_reading_history.dart';
-import 'package:mirath/features/library/domain/usecases/remove_paper_from_reading_history.dart';
-import 'package:mirath/features/library/domain/usecases/update_reading_history.dart';
-import 'package:mirath/features/library/presentation/cubit/library_cubit.dart';
-import 'package:mirath/features/Layout/presentation/cubit/layout_cubit.dart';
-import 'package:mirath/features/reading_lists/domain/usecases/delete_reading_list_usecase.dart';
-import 'package:mirath/features/reading_lists/domain/usecases/save_reading_list_usecase.dart';
-import 'package:mirath/features/reading_lists/domain/usecases/unsave_reading_list_usecase.dart';
-import 'package:mirath/features/reading_lists/domain/usecases/update_reading_list_usecase.dart';
+import '../features/library/data/data_sources/library_data_sources.dart';
+import '../features/library/data/data_sources/library_data_sources_impl.dart';
+import '../features/library/data/repositories/library_repository_impl.dart';
+import '../features/library/domain/repositories/library_repository.dart';
+import '../features/library/domain/usecases/clear_all_reading_history.dart';
+import '../features/library/domain/usecases/get_all_saved_papers.dart';
+import '../features/library/domain/usecases/get_library_data.dart';
+import '../features/library/domain/usecases/get_reading_history.dart';
+import '../features/library/domain/usecases/remove_paper_from_reading_history.dart';
+import '../features/library/domain/usecases/update_reading_history.dart';
+import '../features/library/presentation/cubit/library_cubit.dart';
+import '../features/Layout/presentation/cubit/layout_cubit.dart';
+import '../features/reading_lists/domain/usecases/delete_reading_list_usecase.dart';
+import '../features/reading_lists/domain/usecases/reading_list_cache_usecases.dart';
+import '../features/reading_lists/domain/usecases/save_reading_list_usecase.dart';
+import '../features/reading_lists/domain/usecases/unsave_reading_list_usecase.dart';
+import '../features/reading_lists/domain/usecases/update_reading_list_usecase.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 // ignore: unused_import
 import 'package:mirath/features/auth/data/repositories/fake_auth_repository_impl.dart';
@@ -25,7 +26,10 @@ import 'package:mirath/features/discussions/data/data_sources/community_remote_d
 import 'package:mirath/features/discussions/data/repositories/community_repository_impl.dart';
 import 'package:mirath/features/discussions/domain/repositories/community_repository.dart';
 import 'package:mirath/features/discussions/domain/usecases/create_comment_usecase.dart';
+import 'package:mirath/features/discussions/domain/entities/create_comment_params.dart';
 import 'package:mirath/features/discussions/domain/usecases/create_discussion_usecase.dart';
+import 'package:mirath/features/discussions/domain/entities/create_discussion_params.dart';
+import 'package:mirath/features/discussions/domain/usecases/community_cache_usecases.dart';
 import 'package:mirath/features/discussions/domain/usecases/delete_comment_vote_usecase.dart';
 import 'package:mirath/features/discussions/domain/usecases/delete_discussion_usecase.dart';
 import 'package:mirath/features/discussions/domain/usecases/delete_discussion_vote_usecase.dart';
@@ -33,11 +37,13 @@ import 'package:mirath/features/discussions/domain/usecases/get_all_discussions_
 import 'package:mirath/features/discussions/domain/usecases/get_discussion_by_id_usecase.dart';
 import 'package:mirath/features/discussions/domain/usecases/get_discussion_comments_usecase.dart';
 import 'package:mirath/features/discussions/domain/usecases/vote_on_comment_usecase.dart';
+import 'package:mirath/features/discussions/domain/entities/vote_params.dart';
 import 'package:mirath/features/discussions/domain/usecases/vote_on_discussion_usecase.dart';
 import 'package:mirath/features/discussions/presentation/cubit/community_cubit.dart';
 import 'package:mirath/features/discussions/presentation/cubit/discussion_details_cubit.dart';
 import 'package:mirath/features/discussions/presentation/cubit/global_search_cubit.dart';
 import '../features/home/domain/usecases/get_paper_categories_usecase.dart';
+import '../features/home/domain/usecases/home_cache_usecases.dart';
 import 'package:mirath/features/paper_annotations/data/data_sources/annotation_local_data_source.dart';
 import 'package:mirath/features/paper_annotations/data/data_sources/annotation_local_data_source_impl.dart';
 import 'package:mirath/features/paper_annotations/data/data_sources/annotation_remote_data_source.dart';
@@ -91,10 +97,17 @@ import 'package:mirath/features/chatbot/presentation/cubit/chatbot_cubit.dart';
 
 import '../core/network/dio_client.dart';
 import '../core/network/network_manager.dart';
+import '../core/cache/hive_cache_service.dart';
+import '../core/cache/cache_keys.dart';
+import 'package:mirath/features/discussions/data/models/comment_model.dart';
+import 'package:mirath/core/sync/retry_queue.dart';
 import '../core/services/image_picker_service.dart';
 import '../core/services/local_storage_service.dart';
 import '../core/services/secure_storage_service.dart';
 import '../core/services/user_cache_service.dart';
+import '../core/sync/hive_retry_queue.dart';
+import '../core/sync/sync_manager.dart';
+import '../core/sync/retry_service.dart';
 // Auth importss
 import '../features/auth/data/data_sources/auth_remote_data_source.dart';
 import '../features/auth/data/data_sources/auth_remote_data_source_impl.dart';
@@ -134,6 +147,7 @@ import '../features/users/domain/usecases/get_current_user_usecase.dart';
 import '../features/users/domain/usecases/get_user_profile_header_usecase.dart';
 import '../features/users/domain/usecases/setup_profile_usecase.dart';
 import '../features/users/domain/usecases/unfollow_user_usecase.dart';
+import '../features/users/domain/usecases/users_cache_usecases.dart';
 import '../features/users/presentation/cubit/profile_header_cubit.dart';
 import '../features/users/presentation/cubit/set_up_profile_cubit.dart';
 
@@ -175,6 +189,22 @@ class DI {
     final localStorage = await LocalStorageService.init();
     sl.registerLazySingleton<LocalStorageService>(() => localStorage);
 
+    final hiveCacheService = await HiveCacheService.init();
+    sl.registerLazySingleton<HiveCacheService>(() => hiveCacheService);
+
+    // Retry queue (persistent)
+    sl.registerLazySingleton<RetryQueue>(
+      () => HiveRetryQueue(cacheService: sl()),
+    );
+
+    // Retry service helper
+    sl.registerLazySingleton(() => RetryService(sl()));
+
+    // Sync manager
+    sl.registerLazySingleton<SyncManager>(
+      () => SyncManager(retryQueue: sl())..start(),
+    );
+
     /// User Cache Service ///
     sl.registerLazySingleton<UserCacheService>(() => UserCacheService(sl()));
 
@@ -198,6 +228,7 @@ class DI {
         secureStorage: sl(),
         localStorage: sl(),
         userCache: sl(),
+        cacheService: sl(),
       ),
     );
 
@@ -250,11 +281,219 @@ class DI {
 
     /// Community Repository ///
     sl.registerLazySingleton<CommunityRepository>(
-      () => CommunityRepositoryImpl(remoteDataSource: sl()),
+      () => CommunityRepositoryImpl(remoteDataSource: sl(), cacheService: sl()),
     );
 
     /// Community UseCases ///
     sl.registerLazySingleton(() => CreateDiscussionUseCase(sl()));
+    // Register sync handler for queued discussion creations
+    // (SyncManager is already registered above; fetch and register handler)
+    sl<SyncManager>().registerHandler('create_discussion', (payload) async {
+      try {
+        final title = payload['title'] as String? ?? '';
+        final content = payload['content'] as String? ?? '';
+        final topics =
+            (payload['topicIds'] as List?)?.map((e) => e.toString()).toList() ??
+            <String>[];
+        final paperIds = (payload['paperIds'] as List?)
+            ?.map((e) => e.toString())
+            .toList();
+        final params = CreateDiscussionParams(
+          title: title,
+          content: content,
+          topicIds: topics,
+          paperIds: paperIds,
+        );
+        final result = await sl<CreateDiscussionUseCase>()(params);
+        result.fold(
+          (_) {
+            // failure will be retried
+            throw Exception('create_discussion failed');
+          },
+          (discussion) async {
+            // repository already upserts the server discussion; remove local draft if present
+            final clientId = payload['clientId'] as String?;
+            if (clientId != null && clientId.isNotEmpty) {
+              await sl<CommunityRepository>().removeCachedDiscussion(clientId);
+            }
+          },
+        );
+      } catch (_) {
+        rethrow; // let SyncManager retry later
+      }
+    });
+    // Other queued operation handlers
+    sl<SyncManager>().registerHandler('create_comment', (payload) async {
+      try {
+        final discussionId = payload['discussionId']?.toString() ?? '';
+        final content = payload['content']?.toString() ?? '';
+        final parentId = payload['parentId']?.toString();
+        final clientId = payload['clientId']?.toString();
+
+        final result = await sl<CreateCommentUseCase>()(
+          CreateCommentParams(
+            discussionId: discussionId,
+            content: content,
+            parentId: parentId,
+          ),
+        );
+
+        result.fold(
+          (failure) {
+            throw Exception('create_comment failed');
+          },
+          (comment) async {
+            // Try to convert to model json; CommentModel has toJson()
+            Map<String, dynamic> json;
+            if (comment is CommentModel) {
+              json = comment.toJson();
+            } else {
+              // Fallback minimal mapping
+              json = {
+                'id': comment.id,
+                'content': comment.content,
+                'upvoteCount': comment.upvoteCount,
+                'downvoteCount': comment.downvoteCount,
+                'authorId': comment.authorId,
+                'discussionId': comment.discussionId,
+                'parentId': comment.parentId,
+                'createdAt': comment.createdAt.toIso8601String(),
+                'updatedAt': comment.updatedAt.toIso8601String(),
+                'hasVoted': comment.hasVoted,
+                'userVoteType': comment.userVoteType,
+                'author': {
+                  'id': comment.author.id,
+                  'username': comment.author.username,
+                  'fullName': comment.author.fullName,
+                  'photoUrl': comment.author.photoUrl,
+                },
+              };
+            }
+
+            // Persist server comment and update discussion comment list
+            await sl<HiveCacheService>().putJson(
+              CacheKeys.commentById(json['id'].toString()),
+              json,
+            );
+            await sl<HiveCacheService>().upsertInJsonList(
+              key: CacheKeys.comments(discussionId),
+              item: json,
+              idField: 'id',
+            );
+
+            // Remove local draft if present
+            if (clientId != null && clientId.isNotEmpty) {
+              await sl<HiveCacheService>().remove(
+                CacheKeys.commentById(clientId),
+              );
+              await sl<HiveCacheService>().removeFromJsonList(
+                key: CacheKeys.comments(discussionId),
+                itemId: clientId,
+                idField: 'id',
+              );
+            }
+          },
+        );
+      } catch (_) {
+        rethrow;
+      }
+    });
+
+    sl<SyncManager>().registerHandler('vote_discussion', (payload) async {
+      try {
+        final discussionId = payload['discussionId']?.toString() ?? '';
+        final upvote = payload['upvote'] as bool? ?? true;
+        final params = VoteParams(
+          id: discussionId,
+          type: upvote ? 'up' : 'down',
+        );
+        await sl<VoteOnDiscussionUseCase>()(params);
+      } catch (_) {
+        rethrow;
+      }
+    });
+
+    sl<SyncManager>().registerHandler('vote_comment', (payload) async {
+      try {
+        final commentId = payload['commentId']?.toString() ?? '';
+        final upvote = payload['upvote'] as bool? ?? true;
+        final params = VoteParams(id: commentId, type: upvote ? 'up' : 'down');
+        await sl<VoteOnCommentUseCase>()(params);
+      } catch (_) {
+        rethrow;
+      }
+    });
+
+    sl<SyncManager>().registerHandler('save_paper', (payload) async {
+      try {
+        final paperId = payload['paperId']?.toString() ?? '';
+        await sl<SavePaperUseCase>()(paperId);
+      } catch (_) {
+        rethrow;
+      }
+    });
+
+    sl<SyncManager>().registerHandler('unsave_paper', (payload) async {
+      try {
+        final paperId = payload['paperId']?.toString() ?? '';
+        await sl<UnsavePaperUseCase>()(paperId);
+      } catch (_) {
+        rethrow;
+      }
+    });
+
+    sl<SyncManager>().registerHandler('delete_discussion', (payload) async {
+      try {
+        final id = payload['discussionId']?.toString() ?? '';
+        await sl<DeleteDiscussionUseCase>()(id);
+      } catch (_) {
+        rethrow;
+      }
+    });
+
+    // Messaging: send_message handler — posts to API and reconciles clientId
+    sl<SyncManager>().registerHandler('send_message', (payload) async {
+      try {
+        final conversationId = payload['conversationId']?.toString() ?? '';
+        final text = payload['text']?.toString() ?? '';
+        final clientId = payload['clientId']?.toString();
+
+        final body = {
+          'conversationId': conversationId,
+          'text': text,
+          if (clientId != null) 'clientId': clientId,
+        };
+
+        final resp = await sl<DioClient>().post('/messages', data: body);
+        final data = resp.data as Map<String, dynamic>;
+
+        // Build server message and persist
+        final serverMessage = data;
+        // Upsert into message-by-id and conversation list
+        await sl<HiveCacheService>().putJson(
+          CacheKeys.messageById(serverMessage['id'].toString()),
+          serverMessage,
+        );
+        await sl<HiveCacheService>().upsertInJsonList(
+          key: CacheKeys.messages(conversationId),
+          item: serverMessage,
+          idField: 'id',
+        );
+
+        // Remove local draft if clientId provided
+        if (clientId != null && clientId.isNotEmpty) {
+          await sl<HiveCacheService>().remove(CacheKeys.messageById(clientId));
+          await sl<HiveCacheService>().removeFromJsonList(
+            key: CacheKeys.messages(conversationId),
+            itemId: clientId,
+            idField: 'id',
+          );
+        }
+      } catch (_) {
+        rethrow;
+      }
+    });
+
     sl.registerLazySingleton(() => GetAllDiscussionsUseCase(sl()));
     sl.registerLazySingleton(() => GetDiscussionByIdUseCase(sl()));
     sl.registerLazySingleton(() => DeleteDiscussionUseCase(sl()));
@@ -264,10 +503,12 @@ class DI {
     sl.registerLazySingleton(() => GetDiscussionCommentsUseCase(sl()));
     sl.registerLazySingleton(() => VoteOnCommentUseCase(sl()));
     sl.registerLazySingleton(() => DeleteCommentVoteUseCase(sl()));
+    sl.registerLazySingleton(() => CommunityCacheUseCases(repository: sl()));
 
     /// Community Cubit ///
     sl.registerFactory(
       () => CommunityCubit(
+        communityCacheUseCases: sl(),
         getAllDiscussionsUseCase: sl(),
         voteOnDiscussionUseCase: sl(),
         deleteDiscussionVoteUseCase: sl(),
@@ -295,7 +536,7 @@ class DI {
 
     /// Library Repository ///
     sl.registerLazySingleton<LibraryRepository>(
-      () => LibraryRepositoryImpl(libraryDataSources: sl()),
+      () => LibraryRepositoryImpl(libraryDataSources: sl(), cacheService: sl()),
     );
 
     /// Library UseCases ///
@@ -321,6 +562,7 @@ class DI {
         clearAllReadingHistoryUseCase: sl(),
         getAllSavedPapersUseCase: sl(),
         removePaperFromReadingHistoryUseCase: sl(),
+        cacheService: sl(),
       ),
     );
 
@@ -333,7 +575,8 @@ class DI {
 
     /// Reading List Repository ///
     sl.registerLazySingleton<ReadingListRepository>(
-      () => ReadingListRepositoryImpl(remoteDataSource: sl()),
+      () =>
+          ReadingListRepositoryImpl(remoteDataSource: sl(), cacheService: sl()),
     );
 
     /// Reading List UseCases ///
@@ -346,10 +589,12 @@ class DI {
     sl.registerLazySingleton(() => UnsaveReadingListUseCase(sl()));
     sl.registerLazySingleton(() => UpdateReadingListUseCase(sl()));
     sl.registerLazySingleton(() => DeleteReadingListUseCase(sl()));
+    sl.registerLazySingleton(() => ReadingListCacheUseCases(repository: sl()));
 
     /// Reading List Cubit ///
     sl.registerFactory(
       () => ReadingListCubit(
+        readingListCacheUseCases: sl(),
         getReadingListsUseCase: sl(),
         createReadingListUseCase: sl(),
         getReadingListByIdUseCase: sl(),
@@ -374,6 +619,7 @@ class DI {
         networkManager: sl(),
         userCacheService: sl(),
         localStorageService: sl(),
+        cacheService: sl(),
       ),
     );
 
@@ -386,15 +632,20 @@ class DI {
     sl.registerLazySingleton(() => UnfollowUserUsecase(sl()));
     sl.registerLazySingleton(() => GetFollowersUsecase(usersRepository: sl()));
     sl.registerLazySingleton(() => GetFollowingUsecase(usersRepository: sl()));
+    sl.registerLazySingleton(() => UsersCacheUseCases(repository: sl()));
 
     /// Users Cubits ///
     sl.registerFactory(() => SetUpProfileCubit(imagePickerService: sl()));
     sl.registerLazySingleton(
-      () =>
-          ProfileCubit(getCurrentUserUsecase: sl(), updateProfileUsecase: sl()),
+      () => ProfileCubit(
+        usersCacheUseCases: sl(),
+        getCurrentUserUsecase: sl(),
+        updateProfileUsecase: sl(),
+      ),
     );
     sl.registerFactory(
       () => ProfileHeaderCubit(
+        usersCacheUseCases: sl(),
         getUserProfileHeaderUsecase: sl(),
         followUserUsecase: sl(),
         unfollowUserUsecase: sl(),
@@ -435,7 +686,11 @@ class DI {
 
     /// Home Repository ///
     sl.registerLazySingleton<HomeRepository>(
-      () => HomeRepositoryImpl(remoteDataSource: sl(), networkManager: sl()),
+      () => HomeRepositoryImpl(
+        remoteDataSource: sl(),
+        networkManager: sl(),
+        cacheService: sl(),
+      ),
     );
 
     /// Home UseCases ///
@@ -454,10 +709,12 @@ class DI {
       () => DeleteSearchHistoryUseCase(repository: sl()),
     );
     sl.registerLazySingleton(() => ClearSearchHistoryUseCase(repository: sl()));
+    sl.registerLazySingleton(() => HomeCacheUseCases(repository: sl()));
 
     /// Home Cubit ///
     sl.registerLazySingleton(
       () => HomeCubit(
+        homeCacheUseCases: sl(),
         getRecentPapersUseCase: sl(),
         getRecommendationsUseCase: sl(),
         getCurrentUserUsecase: sl(),
@@ -499,7 +756,11 @@ class DI {
 
     // Repository
     sl.registerLazySingleton<PaperRepository>(
-      () => PaperRepositoryImpl(remoteDataSource: sl(), networkManager: sl()),
+      () => PaperRepositoryImpl(
+        remoteDataSource: sl(),
+        networkManager: sl(),
+        cacheService: sl(),
+      ),
     );
 
     // UseCases

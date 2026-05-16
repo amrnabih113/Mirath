@@ -1,9 +1,11 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
+import '../../../../core/network/network_manager.dart';
 import '../../domain/entities/add_paper_to_list_params.dart';
 import '../../domain/entities/create_reading_list_params.dart';
 import '../../domain/entities/reading_list_query_params.dart';
 import '../../domain/usecases/add_paper_to_list_usecase.dart';
 import '../../domain/usecases/create_reading_list_usecase.dart';
+import '../../domain/usecases/reading_list_cache_usecases.dart';
 import '../../domain/usecases/save_reading_list_usecase.dart';
 import '../../domain/usecases/get_reading_list_by_id_usecase.dart';
 import '../../domain/usecases/get_reading_lists_usecase.dart';
@@ -12,6 +14,7 @@ import '../../domain/usecases/unsave_reading_list_usecase.dart';
 import 'reading_list_state.dart';
 
 class ReadingListCubit extends Cubit<ReadingListState> {
+  final ReadingListCacheUseCases readingListCacheUseCases;
   final GetReadingListsUseCase getReadingListsUseCase;
   final CreateReadingListUseCase createReadingListUseCase;
   final GetReadingListByIdUseCase getReadingListByIdUseCase;
@@ -23,6 +26,7 @@ class ReadingListCubit extends Cubit<ReadingListState> {
   ReadingListQueryParams _currentQuery = const ReadingListQueryParams();
 
   ReadingListCubit({
+    required this.readingListCacheUseCases,
     required this.getReadingListsUseCase,
     required this.createReadingListUseCase,
     required this.getReadingListByIdUseCase,
@@ -32,36 +36,72 @@ class ReadingListCubit extends Cubit<ReadingListState> {
     required this.unsaveReadingListUseCase,
   }) : super(const ReadingListInitial());
 
-  Future<void> getReadingLists({ReadingListQueryParams? params}) async {
+  Future<void> getReadingLists({
+    ReadingListQueryParams? params,
+    bool forceRefresh = false,
+  }) async {
+    if (forceRefresh && !await NetworkManager.instance.isConnected) {
+      return;
+    }
+
     _currentQuery = params ?? const ReadingListQueryParams();
-    emit(const ReadingListLoading());
+
+    final cachedReadingLists = await readingListCacheUseCases
+        .getCachedReadingLists(_currentQuery);
+
+    if (cachedReadingLists.isNotEmpty) {
+      emit(ReadingListsLoaded(readingLists: cachedReadingLists));
+    } else {
+      emit(const ReadingListLoading());
+    }
+
+    if (cachedReadingLists.isNotEmpty && !forceRefresh) {
+      return;
+    }
 
     final result = await getReadingListsUseCase(_currentQuery);
 
     result.fold(
       (failure) {
-        emit(const ReadingListError(message: 'Failed to fetch reading lists'));
+        if (cachedReadingLists.isEmpty) {
+          emit(
+            const ReadingListError(message: 'Failed to fetch reading lists'),
+          );
+        }
       },
       (readingLists) {
-        emit(ReadingListsLoaded(readingLists  : readingLists));
+        readingListCacheUseCases.cacheReadingLists(readingLists, _currentQuery);
+        emit(ReadingListsLoaded(readingLists: readingLists));
       },
     );
   }
 
-  Future<void> getUserReadingLists() async {
-    await getReadingLists();
+  Future<void> getUserReadingLists({bool forceRefresh = false}) async {
+    await getReadingLists(forceRefresh: forceRefresh);
   }
 
-  Future<void> getSavedReadingLists() async {
-    await getReadingLists(params: const ReadingListQueryParams(saved: true));
+  Future<void> getSavedReadingLists({bool forceRefresh = false}) async {
+    await getReadingLists(
+      params: const ReadingListQueryParams(saved: true),
+      forceRefresh: forceRefresh,
+    );
   }
 
-  Future<void> getAllReadingLists() async {
-    await getReadingLists(params: const ReadingListQueryParams(all: true));
+  Future<void> getAllReadingLists({bool forceRefresh = false}) async {
+    await getReadingLists(
+      params: const ReadingListQueryParams(all: true),
+      forceRefresh: forceRefresh,
+    );
   }
 
-  Future<void> getOwnerReadingLists(String ownerId) async {
-    await getReadingLists(params: ReadingListQueryParams(ownerId: ownerId));
+  Future<void> getOwnerReadingLists(
+    String ownerId, {
+    bool forceRefresh = false,
+  }) async {
+    await getReadingLists(
+      params: ReadingListQueryParams(ownerId: ownerId),
+      forceRefresh: forceRefresh,
+    );
   }
 
   Future<void> createReadingList(CreateReadingListParams params) async {
@@ -72,22 +112,49 @@ class ReadingListCubit extends Cubit<ReadingListState> {
         emit(const ReadingListError(message: 'Failed to create reading list'));
       },
       (readingList) {
-        // Reload the lists after creation
-        getReadingLists(params: _currentQuery);
+        final currentState = state;
+        if (currentState is ReadingListsLoaded) {
+          final updatedLists = [readingList, ...currentState.readingLists];
+          readingListCacheUseCases.cacheReadingLists(
+            updatedLists,
+            _currentQuery,
+          );
+          emit(currentState.copyWith(readingLists: updatedLists));
+        } else {
+          readingListCacheUseCases.upsertCachedReadingList(readingList);
+          getReadingLists(params: _currentQuery);
+        }
       },
     );
   }
 
-  Future<void> getReadingListById(String id) async {
-    emit(const ReadingListLoading());
+  Future<void> getReadingListById(
+    String id, {
+    bool forceRefresh = false,
+  }) async {
+    if (forceRefresh && !await NetworkManager.instance.isConnected) {
+      return;
+    }
+
+    final cachedReadingList = await readingListCacheUseCases
+        .getCachedReadingListById(id);
+
+    if (cachedReadingList != null) {
+      emit(ReadingListDetailsLoaded(readingList: cachedReadingList));
+    } else {
+      emit(const ReadingListLoading());
+    }
 
     final result = await getReadingListByIdUseCase(id);
 
     result.fold(
       (failure) {
-        emit(const ReadingListError(message: 'Failed to fetch reading list'));
+        if (cachedReadingList == null) {
+          emit(const ReadingListError(message: 'Failed to fetch reading list'));
+        }
       },
       (readingList) {
+        readingListCacheUseCases.updateReadingListDetailsCache(readingList);
         emit(ReadingListDetailsLoaded(readingList: readingList));
       },
     );
@@ -109,11 +176,22 @@ class ReadingListCubit extends Cubit<ReadingListState> {
         emit(const ReadingListError(message: 'Failed to add paper to list'));
       },
       (_) {
-        emit(
-          const ReadingListOperationSuccess(
-            message: 'Paper added successfully',
-          ),
-        );
+        final currentState = state;
+        if (currentState is ReadingListDetailsLoaded) {
+          emit(
+            ReadingListDetailsLoaded(
+              readingList: currentState.readingList.copyWith(
+                paperCount: currentState.readingList.paperCount + 1,
+              ),
+            ),
+          );
+        } else {
+          emit(
+            const ReadingListOperationSuccess(
+              message: 'Paper added successfully',
+            ),
+          );
+        }
       },
     );
   }
@@ -136,11 +214,24 @@ class ReadingListCubit extends Cubit<ReadingListState> {
         );
       },
       (_) {
-        emit(
-          const ReadingListOperationSuccess(
-            message: 'Paper removed successfully',
-          ),
-        );
+        final currentState = state;
+        if (currentState is ReadingListDetailsLoaded) {
+          emit(
+            ReadingListDetailsLoaded(
+              readingList: currentState.readingList.copyWith(
+                paperCount: currentState.readingList.paperCount > 0
+                    ? currentState.readingList.paperCount - 1
+                    : 0,
+              ),
+            ),
+          );
+        } else {
+          emit(
+            const ReadingListOperationSuccess(
+              message: 'Paper removed successfully',
+            ),
+          );
+        }
       },
     );
   }
@@ -155,6 +246,10 @@ class ReadingListCubit extends Cubit<ReadingListState> {
       (_) {
         final currentState = state;
         if (currentState is ReadingListDetailsLoaded) {
+          readingListCacheUseCases.updateReadingListSavedState(
+            readingListId: id,
+            isSaved: true,
+          );
           emit(
             ReadingListDetailsLoaded(
               readingList: currentState.readingList.copyWith(isSaved: true),
@@ -175,6 +270,10 @@ class ReadingListCubit extends Cubit<ReadingListState> {
       (_) {
         final currentState = state;
         if (currentState is ReadingListDetailsLoaded) {
+          readingListCacheUseCases.updateReadingListSavedState(
+            readingListId: id,
+            isSaved: false,
+          );
           emit(
             ReadingListDetailsLoaded(
               readingList: currentState.readingList.copyWith(isSaved: false),

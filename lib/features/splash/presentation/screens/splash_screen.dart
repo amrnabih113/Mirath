@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:mirath/core/helpers/responsive_helper.dart';
+import '../../../../core/helpers/responsive_helper.dart';
 
 import '../../../../core/utils/my_colors.dart';
 import '../../../../core/utils/my_extenstions.dart';
 import '../../../../core/utils/my_logger.dart';
 import '../../../auth/presentation/cubit/auth_cubit.dart';
 import 'package:go_router/go_router.dart';
-import 'package:mirath/core/constants/route_names.dart';
+import '../../../../core/constants/route_names.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});

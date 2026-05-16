@@ -1,8 +1,8 @@
 import 'package:dartz/dartz.dart';
-import 'package:mirath/core/error/failuors.dart';
-import 'package:mirath/core/usecases/usecase.dart';
-import 'package:mirath/features/users/domain/entities/follows.dart';
-import 'package:mirath/features/users/domain/repositories/users_repository.dart';
+import '../../../../core/error/failuors.dart';
+import '../../../../core/usecases/usecase.dart';
+import '../entities/follows.dart';
+import '../repositories/users_repository.dart';
 
 class GetFollowersUsecase implements UseCase<List<Follows>, String> {
   final UsersRepository usersRepository;

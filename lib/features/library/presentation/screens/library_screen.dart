@@ -1,13 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
-import 'package:mirath/generated/l10n.dart';
-import 'package:mirath/core/utils/my_extenstions.dart';
-import 'package:mirath/core/utils/my_sizes.dart';
-import 'package:mirath/features/library/presentation/cubit/library_cubit.dart';
-import 'package:mirath/features/library/presentation/widgets/lib_tiles.dart';
-import 'package:mirath/features/library/presentation/widgets/my_item.dart';
-import 'package:mirath/features/library/presentation/widgets/my_item_shimmer.dart';
+
+import '../../../../core/utils/my_extenstions.dart';
+import '../../../../core/utils/my_sizes.dart';
+import '../../../../generated/l10n.dart';
+import '../cubit/library_cubit.dart';
+import '../widgets/lib_tiles.dart';
+import '../widgets/my_item.dart';
+import '../widgets/my_item_shimmer.dart';
 
 class LibraryScreen extends StatelessWidget {
   const LibraryScreen({super.key});
@@ -40,7 +41,44 @@ class LibraryScreen extends StatelessWidget {
                         if (state is LibraryDataLoading) {
                           return const MyItemShimmer();
                         } else if (state is LibraryDataSuccess) {
-                          return MyItem(data: state.libraryData);
+                          return Column(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              if (state.fromCache)
+                                Container(
+                                  width: double.infinity,
+                                  padding: const EdgeInsets.symmetric(
+                                    horizontal: 12,
+                                    vertical: 8,
+                                  ),
+                                  decoration: BoxDecoration(
+                                    color: Theme.of(
+                                      context,
+                                    ).colorScheme.surfaceVariant,
+                                    borderRadius: BorderRadius.circular(8),
+                                  ),
+                                  child: Row(
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: [
+                                      const Icon(
+                                        Icons.wifi_off_rounded,
+                                        size: 18,
+                                      ),
+                                      const SizedBox(width: 8),
+                                      Text(
+                                        'Showing cached data',
+                                        style: Theme.of(
+                                          context,
+                                        ).textTheme.bodySmall,
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              if (state.fromCache)
+                                SizedBox(height: MySizes.spaceSm(context)),
+                              MyItem(data: state.libraryData),
+                            ],
+                          );
                         } else if (state is LibraryDataFailure) {
                           return Text('Error: ${state.errorMessage}');
                         } else {

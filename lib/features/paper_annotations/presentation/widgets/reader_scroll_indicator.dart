@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:mirath/core/helpers/responsive_helper.dart';
-import 'package:mirath/core/utils/my_colors.dart';
-import 'package:mirath/core/utils/my_sizes.dart';
+
+import '../../../../core/helpers/responsive_helper.dart';
+import '../../../../core/utils/my_colors.dart';
+import '../../../../core/utils/my_sizes.dart';
 
 class ReaderScrollIndicator extends StatelessWidget {
   final double progress;

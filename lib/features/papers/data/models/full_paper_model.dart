@@ -1,4 +1,4 @@
-import 'package:mirath/features/papers/domain/entites/full_paper_entity.dart';
+import '../../domain/entites/full_paper_entity.dart';
 
 class FullPaperModel extends FullPaperEntity {
   const FullPaperModel({

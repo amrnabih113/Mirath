@@ -6,12 +6,12 @@ import 'package:flutter/services.dart';
 import 'package:flutter_markdown/flutter_markdown.dart';
 import 'package:hugeicons/hugeicons.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
-import 'package:mirath/core/helpers/my_loaders.dart';
-import 'package:mirath/core/helpers/responsive_helper.dart';
-import 'package:mirath/core/utils/my_colors.dart';
-import 'package:mirath/core/utils/my_extenstions.dart';
-import 'package:mirath/core/utils/my_sizes.dart';
 
+import '../../../../core/helpers/my_loaders.dart';
+import '../../../../core/helpers/responsive_helper.dart';
+import '../../../../core/utils/my_colors.dart';
+import '../../../../core/utils/my_extenstions.dart';
+import '../../../../core/utils/my_sizes.dart';
 import '../../domain/entities/chat_message.dart';
 import 'image_preview_overlay.dart';
 
@@ -176,6 +176,30 @@ class MessageBubble extends StatelessWidget {
                                     ),
                                   ),
                                 ),
+                              ),
+                            ),
+                          // Pending indicator for user's outgoing messages
+                          if (message.isUser && message.isPending)
+                            Padding(
+                              padding: const EdgeInsets.only(top: 6.0),
+                              child: Row(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  SizedBox(
+                                    width: 12,
+                                    height: 12,
+                                    child: CircularProgressIndicator(
+                                      strokeWidth: 2,
+                                    ),
+                                  ),
+                                  const SizedBox(width: 8),
+                                  Text(
+                                    'Sending...',
+                                    style: Theme.of(
+                                      context,
+                                    ).textTheme.bodySmall,
+                                  ),
+                                ],
                               ),
                             ),
                         ],

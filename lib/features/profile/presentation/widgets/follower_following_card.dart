@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:hugeicons/hugeicons.dart';
-import 'package:mirath/core/helpers/responsive_helper.dart';
-import 'package:mirath/core/utils/my_colors.dart';
-import 'package:mirath/core/utils/my_extenstions.dart';
-import 'package:mirath/core/utils/my_sizes.dart';
-import 'package:mirath/features/users/domain/entities/follows.dart';
+
+import '../../../../core/helpers/responsive_helper.dart';
+import '../../../../core/utils/my_colors.dart';
+import '../../../../core/utils/my_extenstions.dart';
+import '../../../../core/utils/my_sizes.dart';
+import '../../../users/domain/entities/follows.dart';
 
 class FollowerFollowingCard extends StatefulWidget {
   const FollowerFollowingCard({

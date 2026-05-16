@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_math_fork/flutter_math.dart';
-import 'package:mirath/core/utils/my_colors.dart';
 import 'package:shimmer/shimmer.dart';
+
+import '../../../../core/utils/my_colors.dart';
 
 /// Native Flutter LaTeX renderer using flutter_math_fork
 /// Supports inline math ($...$) and display math ($$...$$)

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:hugeicons/hugeicons.dart';
-import 'package:mirath/features/home/presentation/widgets/paper_card.dart';
+import '../../../home/presentation/widgets/paper_card.dart';
 import '../../../../core/helpers/responsive_helper.dart';
 import '../../../../core/utils/my_colors.dart';
 import '../../../../core/utils/my_extenstions.dart';

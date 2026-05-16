@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:hugeicons/hugeicons.dart';
-import 'package:mirath/core/utils/my_extenstions.dart';
-import 'package:mirath/core/utils/my_sizes.dart';
-import 'package:mirath/features/common/widgets/my_back_icon.dart';
-import 'package:mirath/features/profile/presentation/widgets/setting_tiles.dart';
-import 'package:mirath/generated/l10n.dart';
+import '../../../../core/utils/my_extenstions.dart';
+import '../../../../core/utils/my_sizes.dart';
+import '../../../common/widgets/my_back_icon.dart';
+import '../widgets/setting_tiles.dart';
+import '../../../../generated/l10n.dart';
 
 class SettingScreen extends StatelessWidget {
   const SettingScreen({super.key});

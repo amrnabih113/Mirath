@@ -2,13 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
-import 'package:mirath/core/constants/route_names.dart';
-import 'package:mirath/core/helpers/responsive_helper.dart';
-import 'package:mirath/core/utils/my_colors.dart';
-import 'package:mirath/core/utils/my_extenstions.dart';
-import 'package:mirath/core/utils/my_sizes.dart';
-import 'package:mirath/features/library/presentation/cubit/library_cubit.dart';
 import 'package:shimmer/shimmer.dart';
+
+import '../../../../core/constants/route_names.dart';
+import '../../../../core/helpers/responsive_helper.dart';
+import '../../../../core/utils/my_colors.dart';
+import '../../../../core/utils/my_extenstions.dart';
+import '../../../../core/utils/my_sizes.dart';
+import '../cubit/library_cubit.dart';
 
 class ReadLaterContainer extends StatelessWidget {
   const ReadLaterContainer({super.key});

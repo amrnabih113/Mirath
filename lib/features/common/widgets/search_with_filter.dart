@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hugeicons/hugeicons.dart';
 
-import '../../../core/utils/my_sizes.dart';
 import '../../../core/constants/route_names.dart';
+import '../../../core/utils/my_sizes.dart';
 import 'my_search_bar.dart';
 
 class SearchWithFilter extends StatelessWidget {

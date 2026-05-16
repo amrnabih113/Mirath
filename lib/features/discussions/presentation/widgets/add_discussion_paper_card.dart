@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:hugeicons/hugeicons.dart';
-import 'package:mirath/core/helpers/responsive_helper.dart';
-import 'package:mirath/core/utils/my_colors.dart';
-import 'package:mirath/core/utils/my_sizes.dart';
-import 'package:mirath/features/home/domain/entities/paper_entity.dart';
+
+import '../../../../core/helpers/responsive_helper.dart';
+import '../../../../core/utils/my_colors.dart';
+import '../../../../core/utils/my_sizes.dart';
+import '../../../home/domain/entities/paper_entity.dart';
 
 class AddDiscussionPaperCard extends StatelessWidget {
   final PaperEntity paper;

@@ -1,5 +1,5 @@
 import 'package:equatable/equatable.dart';
-import 'package:mirath/features/chatbot/domain/entities/chat_message.dart';
+import '../../domain/entities/chat_message.dart';
 
 sealed class ChatbotState extends Equatable {
   const ChatbotState();

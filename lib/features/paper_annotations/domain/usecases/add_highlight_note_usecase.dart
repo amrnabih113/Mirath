@@ -1,6 +1,6 @@
 import 'package:dartz/dartz.dart';
-import 'package:mirath/core/error/failuors.dart';
-import 'package:mirath/core/usecases/usecase.dart';
+import '../../../../core/error/failuors.dart';
+import '../../../../core/usecases/usecase.dart';
 import '../entites/highlight_entity.dart';
 import '../entites/highlight_note_params.dart';
 import '../repositories/annotation_repository.dart';

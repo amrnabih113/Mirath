@@ -1,5 +1,4 @@
-import 'package:mirath/features/papers/data/models/paper_model.dart';
-
+import '../../../papers/data/models/paper_model.dart';
 import '../../domain/entities/reading_list_paper.dart';
 
 class ReadingListPaperModel extends ReadingListPaper {

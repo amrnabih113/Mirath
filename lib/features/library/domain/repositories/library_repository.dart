@@ -1,8 +1,9 @@
 import 'package:dartz/dartz.dart';
-import 'package:mirath/core/error/failuors.dart';
-import 'package:mirath/features/library/domain/entities/library_data.dart';
-import 'package:mirath/features/library/domain/entities/reading_history.dart';
-import 'package:mirath/features/library/domain/entities/saved_papers.dart';
+
+import '../../../../core/error/failuors.dart';
+import '../entities/library_data.dart';
+import '../entities/reading_history.dart';
+import '../entities/saved_papers.dart';
 
 abstract class LibraryRepository {
   Future<Either<Failure, LibraryData>> getLibraryData();

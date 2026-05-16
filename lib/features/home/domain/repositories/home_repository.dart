@@ -1,4 +1,5 @@
 import 'package:dartz/dartz.dart';
+
 import '../../../../core/error/failuors.dart';
 import '../../../discussions/domain/entities/discussion.dart';
 import '../../../reading_lists/domain/entities/reading_list.dart';
@@ -14,7 +15,31 @@ abstract class HomeRepository {
     int limit = 10,
   });
 
+  Future<List<PaperEntity>> getCachedRecentPapers({
+    String? category,
+    int page = 1,
+    int limit = 10,
+  });
+
+  Future<void> cacheRecentPapers(
+    List<PaperEntity> papers, {
+    String? category,
+    int page = 1,
+    int limit = 10,
+  });
+
   Future<Either<Failure, List<PaperEntity>>> getRecommendations({
+    int page = 1,
+    int limit = 5,
+  });
+
+  Future<List<PaperEntity>> getCachedRecommendations({
+    int page = 1,
+    int limit = 5,
+  });
+
+  Future<void> cacheRecommendations(
+    List<PaperEntity> papers, {
     int page = 1,
     int limit = 5,
   });
@@ -24,9 +49,19 @@ abstract class HomeRepository {
     int limit = 20,
   });
 
+  Future<List<String>> getCachedPaperCategories({int page = 1, int limit = 20});
+
+  Future<void> cachePaperCategories(
+    List<String> categories, {
+    int page = 1,
+    int limit = 20,
+  });
+
   Future<Either<Failure, void>> savePaper(String paperId);
 
   Future<Either<Failure, void>> unsavePaper(String paperId);
+
+  Future<void> updatePaperSavedInCache(String paperId, bool isSaved);
 
   Future<Either<Failure, List<PaperEntity>>> searchPapers(
     String query, {

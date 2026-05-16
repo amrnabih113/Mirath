@@ -1,9 +1,9 @@
-import 'package:mirath/core/network/dio_client.dart';
-import 'package:mirath/core/utils/my_constants.dart';
-import 'package:mirath/features/library/data/data_sources/library_data_sources.dart';
-import 'package:mirath/features/library/data/models/library_data_model.dart';
-import 'package:mirath/features/library/data/models/reading_history_model.dart';
-import 'package:mirath/features/library/data/models/saved_papers_model.dart';
+import '../../../../core/network/dio_client.dart';
+import '../../../../core/utils/my_constants.dart';
+import '../models/library_data_model.dart';
+import '../models/reading_history_model.dart';
+import '../models/saved_papers_model.dart';
+import 'library_data_sources.dart';
 
 class LibraryDataSourcesImpl implements LibraryDataSources {
   final DioClient dioClient;

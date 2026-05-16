@@ -1,11 +1,11 @@
 import '../../../../core/network/dio_client.dart';
 import '../../../../core/utils/my_constants.dart';
-import '../models/reading_list_response.dart';
-import '../models/reading_lists_response.dart';
 import '../../domain/entities/add_paper_to_list_params.dart';
 import '../../domain/entities/create_reading_list_params.dart';
 import '../../domain/entities/reading_list_query_params.dart';
 import '../../domain/entities/update_reading_list_params.dart';
+import '../models/reading_list_response.dart';
+import '../models/reading_lists_response.dart';
 import 'reading_list_remote_data_source.dart';
 
 class ReadingListRemoteDataSourceImpl implements ReadingListRemoteDataSource {

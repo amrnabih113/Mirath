@@ -17,28 +17,43 @@ class MyLoaders {
   }) {
     final isDark = MyHelperFunctions.isDarkMode(context);
     final bgColor = isDark
-        ? MyColors.darkerGrey.withValues(alpha: 0.9)
-        : MyColors.grey.withValues(alpha: 0.9);
+        ? MyColors.darkerGrey.withValues(alpha: 0.85)
+        : MyColors.white.withOpacity(0.96);
 
     ScaffoldMessenger.of(context)
       ..hideCurrentSnackBar()
       ..showSnackBar(
         SnackBar(
           elevation: 0,
-          duration: const Duration(seconds: 3),
+          duration: const Duration(seconds: 2),
           backgroundColor: Colors.transparent,
+          behavior: SnackBarBehavior.floating,
+          margin: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
           content: Container(
-            padding: const EdgeInsets.all(10.0),
-            margin: const EdgeInsets.symmetric(horizontal: 40),
+            padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
             decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(20),
+              borderRadius: BorderRadius.circular(12),
               color: bgColor,
-            ),
-            child: Center(
-              child: Text(
-                message,
-                style: Theme.of(context).textTheme.labelLarge,
+              border: Border.all(
+                color: MyColors.grey.withValues(alpha: 0.12),
               ),
+            ),
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                const SizedBox(width: 6),
+                Expanded(
+                  child: Text(
+                    message,
+                    style: Theme.of(context)
+                        .textTheme
+                        .bodyMedium
+                        ?.copyWith(color: MyColors.textPrimary),
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                ),
+              ],
             ),
           ),
         ),
@@ -95,7 +110,7 @@ class MyLoaders {
     required String message,
     required IconData icon,
     required Color backgroundColor,
-    int duration = 3,
+    int duration = 2,
   }) {
     final overlay = Overlay.of(context);
     final overlayEntry = OverlayEntry(
@@ -110,25 +125,24 @@ class MyLoaders {
               duration: const Duration(milliseconds: 200),
               offset: const Offset(0, 0),
               child: Container(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 16,
-                  vertical: 14,
-                ),
+                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
                 decoration: BoxDecoration(
-                  color: backgroundColor,
-                  borderRadius: BorderRadius.circular(16),
-                  boxShadow: [
-                    BoxShadow(
-                      color: MyColors.black.withValues(alpha: 0.05),
-                      blurRadius: 8,
-                      offset: const Offset(0, 4),
-                    ),
-                  ],
+                  color: backgroundColor.withOpacity(0.95),
+                  borderRadius: BorderRadius.circular(12),
                 ),
                 child: Row(
-                  mainAxisAlignment: MainAxisAlignment.start,
                   children: [
-                    Icon(icon, color: MyColors.white, size: 24),
+                    Container(
+                      width: 36,
+                      height: 36,
+                      decoration: BoxDecoration(
+                        color: MyColors.white.withOpacity(0.12),
+                        shape: BoxShape.circle,
+                      ),
+                      child: Center(
+                        child: Icon(icon, color: MyColors.white, size: 18),
+                      ),
+                    ),
                     const SizedBox(width: 12),
                     Expanded(
                       child: Column(
@@ -137,15 +151,15 @@ class MyLoaders {
                         children: [
                           Text(
                             title,
-                            style: Theme.of(context).textTheme.titleMedium
-                                ?.copyWith(color: MyColors.white),
+                            style: Theme.of(context).textTheme.bodyLarge
+                                ?.copyWith(color: MyColors.white, fontWeight: FontWeight.w600),
                           ),
                           if (message.isNotEmpty) ...[
                             const SizedBox(height: 4),
                             Text(
                               message,
                               style: Theme.of(context).textTheme.bodySmall
-                                  ?.copyWith(color: MyColors.white),
+                                  ?.copyWith(color: MyColors.white.withOpacity(0.95)),
                             ),
                           ],
                         ],

@@ -1,14 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
-import 'package:mirath/core/constants/route_names.dart';
-import 'package:mirath/core/utils/my_sizes.dart';
-import 'package:mirath/features/library/presentation/widgets/read_later_container.dart';
-import 'package:mirath/features/reading_lists/presentation/cubit/reading_list_cubit.dart';
-import 'package:mirath/features/reading_lists/presentation/cubit/reading_list_state.dart';
-import 'package:mirath/features/reading_lists/presentation/widgets/reading_list_card.dart';
-import 'package:mirath/features/reading_lists/presentation/widgets/reading_list_shimmer_loading.dart';
-import 'package:mirath/injection/injection_container.dart';
+import '../../../../../core/constants/route_names.dart';
+import '../../../../../core/utils/my_sizes.dart';
+import '../../widgets/read_later_container.dart';
+import '../../../../reading_lists/presentation/cubit/reading_list_cubit.dart';
+import '../../../../reading_lists/presentation/cubit/reading_list_state.dart';
+import '../../../../reading_lists/presentation/widgets/reading_list_card.dart';
+import '../../../../reading_lists/presentation/widgets/reading_list_shimmer_loading.dart';
+import '../../../../../injection/injection_container.dart';
+import '../../../../../core/network/network_manager.dart';
+import '../../../../../core/ui/widgets/state_views.dart';
 
 class YourListsTab extends StatelessWidget {
   const YourListsTab({super.key});
@@ -84,6 +86,7 @@ class YourListsTab extends StatelessWidget {
           }
 
           if (state is ReadingListError) {
+            final offline = !NetworkManager.instance.currentConnectionStatus;
             return ListView(
               padding: EdgeInsets.only(
                 left: MySizes.spaceMd(context),
@@ -98,7 +101,23 @@ class YourListsTab extends StatelessWidget {
               children: [
                 const ReadLaterContainer(),
                 SizedBox(height: MySizes.spaceMd(context)),
-                Center(child: Text(state.message)),
+                offline
+                    ? OfflineStateView(
+                        title: 'Offline',
+                        message: state.message,
+                        actionLabel: 'Retry',
+                        onAction: () => context
+                            .read<ReadingListCubit>()
+                            .getReadingLists(forceRefresh: true),
+                      )
+                    : ErrorStateView(
+                        title: 'Error',
+                        message: state.message,
+                        actionLabel: 'Retry',
+                        onAction: () => context
+                            .read<ReadingListCubit>()
+                            .getReadingLists(forceRefresh: true),
+                      ),
               ],
             );
           }

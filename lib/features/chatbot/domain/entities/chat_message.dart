@@ -5,6 +5,7 @@ class ChatMessage {
   final DateTime timestamp;
   final List<String>? imagePaths;
   final bool isComplete;
+  final bool isPending;
 
   ChatMessage({
     required this.id,
@@ -13,6 +14,7 @@ class ChatMessage {
     required this.timestamp,
     this.imagePaths,
     this.isComplete = true,
+    this.isPending = false,
   });
 
   ChatMessage copyWith({
@@ -22,6 +24,7 @@ class ChatMessage {
     DateTime? timestamp,
     List<String>? imagePaths,
     bool? isComplete,
+    bool? isPending,
   }) {
     return ChatMessage(
       id: id ?? this.id,
@@ -30,6 +33,7 @@ class ChatMessage {
       timestamp: timestamp ?? this.timestamp,
       imagePaths: imagePaths ?? this.imagePaths,
       isComplete: isComplete ?? this.isComplete,
+      isPending: isPending ?? this.isPending,
     );
   }
 }

@@ -1,4 +1,4 @@
-import 'package:mirath/features/users/data/models/follows_model.dart';
+import '../models/follows_model.dart';
 
 import '../../domain/entities/profile_setup_data.dart';
 import '../../domain/entities/update_profile_data.dart';

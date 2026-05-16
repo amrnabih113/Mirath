@@ -1,13 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
-import 'package:mirath/core/constants/route_names.dart';
-import 'package:mirath/core/utils/my_extenstions.dart';
-import 'package:mirath/core/utils/my_sizes.dart';
-import 'package:mirath/features/common/widgets/my_back_icon.dart';
-import 'package:mirath/features/home/presentation/widgets/home_shimmer_loading.dart';
-import 'package:mirath/features/home/presentation/widgets/paper_card.dart';
-import 'package:mirath/features/library/presentation/cubit/library_cubit.dart';
+
+import '../../../../core/constants/route_names.dart';
+import '../../../../core/utils/my_extenstions.dart';
+import '../../../../core/utils/my_sizes.dart';
+import '../../../common/widgets/my_back_icon.dart';
+import '../../../home/presentation/widgets/home_shimmer_loading.dart';
+import '../../../home/presentation/widgets/paper_card.dart';
+import '../cubit/library_cubit.dart';
 
 class ReadingHistoryScreen extends StatefulWidget {
   const ReadingHistoryScreen({super.key});

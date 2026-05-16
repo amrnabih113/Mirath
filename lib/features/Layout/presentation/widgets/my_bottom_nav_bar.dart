@@ -2,12 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hugeicons/hugeicons.dart';
-import 'package:mirath/generated/l10n.dart';
 
+import '../../../../core/constants/route_names.dart';
 import '../../../../core/helpers/responsive_helper.dart';
 import '../../../../core/utils/my_colors.dart';
 import '../../../../core/utils/my_sizes.dart';
-import '../../../../core/constants/route_names.dart';
+import '../../../../generated/l10n.dart';
 import '../cubit/layout_cubit.dart';
 import 'nav_item.dart';
 

@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:mirath/core/helpers/responsive_helper.dart';
-import 'package:mirath/core/utils/my_sizes.dart';
-import 'package:mirath/generated/l10n.dart';
+
+import '../../../../core/helpers/responsive_helper.dart';
+import '../../../../core/utils/my_sizes.dart';
+import '../../../../generated/l10n.dart';
 
 class ReaderSearchBar extends StatelessWidget {
   final TextEditingController controller;

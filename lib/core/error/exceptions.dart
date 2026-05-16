@@ -47,6 +47,30 @@ class UnauthorizedException implements Exception {
   String toString() => 'UnauthorizedException: ${message ?? ''}';
 }
 
+class ForbiddenException implements Exception {
+  final String? message;
+  ForbiddenException([this.message]);
+
+  @override
+  String toString() => 'ForbiddenException: ${message ?? ''}';
+}
+
+class EmptyResponseException implements Exception {
+  final String? message;
+  EmptyResponseException([this.message]);
+
+  @override
+  String toString() => 'EmptyResponseException: ${message ?? ''}';
+}
+
+class ParsingException implements Exception {
+  final String? message;
+  ParsingException([this.message]);
+
+  @override
+  String toString() => 'ParsingException: ${message ?? ''}';
+}
+
 class ValidationException implements Exception {
   final String? message;
   final dynamic errors;
@@ -98,7 +122,7 @@ Exception fromDioException(DioException dio) {
     final status = resp.statusCode ?? 0;
     final msg = resp.statusMessage ?? resp.data?.toString();
     if (status == 401) return UnauthorizedException(msg);
-    if (status == 403) return UnauthorizedException(msg);
+    if (status == 403) return ForbiddenException(msg);
     if (status == 404) return NotFoundException(msg);
     if (status == 409) return ConflictException(msg);
     if (status == 422) return ValidationException(msg, resp.data);
@@ -108,4 +132,3 @@ Exception fromDioException(DioException dio) {
 
   return UnexpectedException(dio.message);
 }
-

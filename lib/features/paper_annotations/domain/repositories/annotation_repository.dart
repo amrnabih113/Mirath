@@ -1,5 +1,6 @@
 import 'package:dartz/dartz.dart';
-import 'package:mirath/core/error/failuors.dart';
+
+import '../../../../core/error/failuors.dart';
 import '../entites/highlight_entity.dart';
 import '../entites/highlight_note_params.dart';
 import '../entites/paper_highlights_params.dart';

@@ -1,6 +1,5 @@
-import 'package:mirath/core/network/dio_client.dart';
-import 'package:mirath/core/utils/my_constants.dart';
-
+import '../../../../core/network/dio_client.dart';
+import '../../../../core/utils/my_constants.dart';
 import '../models/highlight_model.dart';
 import '../models/paper_highlights_response.dart';
 import 'annotation_remote_data_source.dart';

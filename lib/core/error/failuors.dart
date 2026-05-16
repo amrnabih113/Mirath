@@ -33,6 +33,10 @@ class UnauthorizedFailure extends Failure {
     : super();
 }
 
+class ForbiddenFailure extends Failure {
+  const ForbiddenFailure([super.message = ErrorMessages.forbidden]) : super();
+}
+
 class CacheFailure extends Failure {
   const CacheFailure([super.message = ErrorMessages.cache]) : super();
 }
@@ -136,6 +140,9 @@ Failure mapExceptionToFailure(Object? exception) {
   if (exception is ex.UnauthorizedException) {
     return UnauthorizedFailure(exception.message ?? ErrorMessages.unauthorized);
   }
+  if (exception is ex.ForbiddenException) {
+    return ForbiddenFailure(exception.message ?? ErrorMessages.forbidden);
+  }
   if (exception is ex.ValidationException) {
     return ValidationFailure(exception.message ?? ErrorMessages.validation);
   }
@@ -144,6 +151,12 @@ Failure mapExceptionToFailure(Object? exception) {
   }
   if (exception is ex.ConflictException) {
     return ConflictFailure(exception.message ?? ErrorMessages.conflict);
+  }
+  if (exception is ex.EmptyResponseException) {
+    return UnexpectedFailure(exception.message ?? 'No content returned.');
+  }
+  if (exception is ex.ParsingException) {
+    return UnexpectedFailure(exception.message ?? 'Failed to parse response.');
   }
 
   // Dio errors (Dio v5 uses DioException)
@@ -180,7 +193,7 @@ Failure mapExceptionToFailure(Object? exception) {
         return UnauthorizedFailure(errorMessage ?? ErrorMessages.unauthorized);
       }
       if (status == 403) {
-        return UnauthorizedFailure(errorMessage ?? ErrorMessages.forbidden);
+        return ForbiddenFailure(errorMessage ?? ErrorMessages.forbidden);
       }
       if (status == 404) {
         return NotFoundFailure(errorMessage ?? ErrorMessages.notFound);

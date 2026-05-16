@@ -1,17 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
-import 'package:mirath/core/helpers/responsive_helper.dart';
-import 'package:mirath/core/utils/my_colors.dart';
-import 'package:mirath/core/utils/my_extenstions.dart';
-import 'package:mirath/core/utils/my_sizes.dart';
-import 'package:mirath/core/constants/route_names.dart';
-import 'package:mirath/features/common/widgets/my_back_icon.dart';
-import 'package:mirath/features/discussions/presentation/cubit/community_cubit.dart';
-import 'package:mirath/features/discussions/presentation/cubit/community_state.dart';
-import 'package:mirath/features/discussions/presentation/widgets/discussion_card.dart';
-import 'package:mirath/features/home/domain/entities/paper_entity.dart';
-import 'package:mirath/generated/l10n.dart';
+
+import '../../../../core/constants/route_names.dart';
+import '../../../../core/helpers/responsive_helper.dart';
+import '../../../../core/utils/my_colors.dart';
+import '../../../../core/utils/my_extenstions.dart';
+import '../../../../core/utils/my_sizes.dart';
+import '../../../../generated/l10n.dart';
+import '../../../common/widgets/my_back_icon.dart';
+import '../../../discussions/presentation/cubit/community_cubit.dart';
+import '../../../discussions/presentation/cubit/community_state.dart';
+import '../../../discussions/presentation/widgets/discussion_card.dart';
+import '../../../home/domain/entities/paper_entity.dart';
 
 class PaperDiscussionsScreen extends StatefulWidget {
   final PaperEntity? paper;

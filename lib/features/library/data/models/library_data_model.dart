@@ -1,4 +1,4 @@
-import 'package:mirath/features/library/domain/entities/library_data.dart';
+import '../../domain/entities/library_data.dart';
 
 class LibraryDataModel extends LibraryData {
   LibraryDataModel({
@@ -15,5 +15,14 @@ class LibraryDataModel extends LibraryData {
       savedCount: json['savedCount'] ?? 0,
       projectsCount: json['projectsCount'] ?? 0,
     );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'listsCount': listsCount,
+      'createdCount': createdCount,
+      'savedCount': savedCount,
+      'projectsCount': projectsCount,
+    };
   }
 }

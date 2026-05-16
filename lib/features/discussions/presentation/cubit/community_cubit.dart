@@ -1,16 +1,21 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../domain/entities/discussion.dart';
-import 'package:mirath/features/discussions/domain/entities/get_discussions_params.dart';
-import 'package:mirath/features/discussions/domain/entities/vote_params.dart';
-import 'package:mirath/features/discussions/domain/usecases/delete_discussion_vote_usecase.dart';
-import 'package:mirath/features/discussions/domain/usecases/get_all_discussions_usecase.dart';
-import 'package:mirath/features/discussions/domain/usecases/vote_on_discussion_usecase.dart';
-import 'package:mirath/features/users/domain/usecases/follow_user_usecase.dart';
-import 'package:mirath/features/users/domain/usecases/unfollow_user_usecase.dart';
-import 'package:mirath/core/utils/my_logger.dart';
+import '../../../../core/network/network_manager.dart';
+import '../../../../injection/injection_container.dart';
+import '../../../../core/sync/retry_service.dart';
+import '../../domain/entities/get_discussions_params.dart';
+import '../../domain/entities/vote_params.dart';
+import '../../domain/usecases/community_cache_usecases.dart';
+import '../../domain/usecases/delete_discussion_vote_usecase.dart';
+import '../../domain/usecases/get_all_discussions_usecase.dart';
+import '../../domain/usecases/vote_on_discussion_usecase.dart';
+import '../../../users/domain/usecases/follow_user_usecase.dart';
+import '../../../users/domain/usecases/unfollow_user_usecase.dart';
+import '../../../../core/utils/my_logger.dart';
 import 'community_state.dart';
 
 class CommunityCubit extends Cubit<CommunityState> {
+  final CommunityCacheUseCases communityCacheUseCases;
   final GetAllDiscussionsUseCase getAllDiscussionsUseCase;
   final VoteOnDiscussionUseCase voteOnDiscussionUseCase;
   final DeleteDiscussionVoteUseCase deleteDiscussionVoteUseCase;
@@ -18,6 +23,7 @@ class CommunityCubit extends Cubit<CommunityState> {
   final UnfollowUserUsecase unfollowUserUsecase;
 
   CommunityCubit({
+    required this.communityCacheUseCases,
     required this.getAllDiscussionsUseCase,
     required this.voteOnDiscussionUseCase,
     required this.deleteDiscussionVoteUseCase,
@@ -29,18 +35,51 @@ class CommunityCubit extends Cubit<CommunityState> {
   int _currentPage = 1;
   String _currentSort = 'new';
   String? _currentTopicId;
+  String? _currentAuthorId;
 
   Future<void> getDiscussions({
     String sort = 'new',
     String? topicId,
+    String? authorId,
     int limit = 10,
+    bool forceRefresh = false,
   }) async {
-    emit(const CommunityLoading());
+    if (forceRefresh && !await NetworkManager.instance.isConnected) {
+      return;
+    }
+
+    final cachedDiscussions = await communityCacheUseCases.getCachedDiscussions(
+      GetDiscussionsParams(
+        page: 1,
+        limit: limit,
+        sort: sort,
+        topicId: topicId,
+        authorId: authorId,
+      ),
+    );
+
+    if (cachedDiscussions.isNotEmpty) {
+      emit(
+        CommunityDiscussionsLoaded(
+          discussions: cachedDiscussions,
+          hasReachedMax: cachedDiscussions.length < limit,
+          currentSort: sort,
+          currentTopicId: topicId,
+        ),
+      );
+    } else {
+      emit(const CommunityLoading());
+    }
 
     // Reset pagination for new filter/sort
     _currentPage = 1;
     _currentSort = sort;
     _currentTopicId = topicId;
+    _currentAuthorId = authorId;
+
+    if (cachedDiscussions.isNotEmpty && !forceRefresh) {
+      return;
+    }
 
     final result = await getAllDiscussionsUseCase(
       GetDiscussionsParams(
@@ -48,14 +87,27 @@ class CommunityCubit extends Cubit<CommunityState> {
         limit: limit,
         sort: sort,
         topicId: topicId,
+        authorId: authorId,
       ),
     );
 
     result.fold(
       (failure) {
-        emit(const CommunityError(message: 'Failed to fetch discussions'));
+        if (cachedDiscussions.isEmpty) {
+          emit(const CommunityError(message: 'Failed to fetch discussions'));
+        }
       },
       (discussions) {
+        communityCacheUseCases.cacheDiscussions(
+          discussions,
+          GetDiscussionsParams(
+            page: 1,
+            limit: limit,
+            sort: sort,
+            topicId: topicId,
+            authorId: authorId,
+          ),
+        );
         emit(
           CommunityDiscussionsLoaded(
             discussions: discussions,
@@ -84,6 +136,7 @@ class CommunityCubit extends Cubit<CommunityState> {
         limit: limit,
         sort: _currentSort,
         topicId: _currentTopicId,
+        authorId: _currentAuthorId,
       ),
     );
 
@@ -94,6 +147,17 @@ class CommunityCubit extends Cubit<CommunityState> {
       (newDiscussions) {
         final allDiscussions = List.of(currentState.discussions)
           ..addAll(newDiscussions);
+
+        communityCacheUseCases.cacheDiscussions(
+          allDiscussions,
+          GetDiscussionsParams(
+            page: 1,
+            limit: limit,
+            sort: _currentSort,
+            topicId: _currentTopicId,
+            authorId: _currentAuthorId,
+          ),
+        );
 
         emit(
           currentState.copyWith(
@@ -110,7 +174,9 @@ class CommunityCubit extends Cubit<CommunityState> {
     await getDiscussions(
       sort: _currentSort,
       topicId: _currentTopicId,
+      authorId: _currentAuthorId,
       limit: limit,
+      forceRefresh: true,
     );
   }
 
@@ -194,7 +260,16 @@ class CommunityCubit extends Cubit<CommunityState> {
 
     emit(currentState.copyWith(discussions: updatedDiscussions));
 
-    // Make API call in the background
+    // Try immediate sync if online; otherwise enqueue
+    final connected = NetworkManager.instance.currentConnectionStatus;
+    if (!connected) {
+      await sl<RetryService>().enqueue('vote_discussion', {
+        'discussionId': discussionId,
+        'upvote': voteType == 'UP',
+      });
+      return;
+    }
+
     final result = isRemovingVote
         ? await deleteDiscussionVoteUseCase(discussionId)
         : await voteOnDiscussionUseCase(
@@ -202,12 +277,21 @@ class CommunityCubit extends Cubit<CommunityState> {
           );
 
     result.fold(
-      (failure) {
+      (failure) async {
+        await sl<RetryService>().enqueue('vote_discussion', {
+          'discussionId': discussionId,
+          'upvote': voteType == 'UP',
+        });
         // On failure, revert to previous state by reloading
         getDiscussions(sort: _currentSort, topicId: _currentTopicId);
       },
       (_) {
         // Success - keep the optimistic update (no need to reload)
+        communityCacheUseCases.updateDiscussionVoteInCache(
+          discussionId: discussionId,
+          voteType: voteType,
+          isRemovingVote: isRemovingVote,
+        );
       },
     );
   }
@@ -231,6 +315,10 @@ class CommunityCubit extends Cubit<CommunityState> {
       },
       (success) {
         MyLogger.debug('Successfully followed user: $userId');
+        communityCacheUseCases.updateDiscussionFollowState(
+          userId: userId,
+          isFollowing: true,
+        );
 
         // Update all discussions from this author with isFollowing = true
         final updatedDiscussions = currentState.discussions.map((discussion) {
@@ -259,6 +347,10 @@ class CommunityCubit extends Cubit<CommunityState> {
       },
       (success) {
         MyLogger.debug('Successfully unfollowed user: $userId');
+        communityCacheUseCases.updateDiscussionFollowState(
+          userId: userId,
+          isFollowing: false,
+        );
 
         // Update all discussions from this author with isFollowing = false
         final updatedDiscussions = currentState.discussions.map((discussion) {

@@ -1,14 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
-import 'package:mirath/core/constants/route_names.dart';
-import 'package:mirath/features/home/domain/entities/paper_entity.dart';
-import '../cubit/home_cubit.dart';
-import '../cubit/home_state.dart';
+
+import '../../../../core/constants/route_names.dart';
 import '../../../../core/helpers/responsive_helper.dart';
+import '../../../../core/ui/widgets/state_views.dart';
 import '../../../../core/utils/my_sizes.dart';
 import '../../../../generated/l10n.dart';
 import '../../../common/widgets/section_title.dart';
+import '../../domain/entities/paper_entity.dart';
+import '../cubit/home_cubit.dart';
+import '../cubit/home_state.dart';
 import '../widgets/category_items_list.dart';
 import '../widgets/home_search_bar.dart';
 import '../widgets/home_shimmer_loading.dart';
@@ -54,7 +56,7 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Future<void> _onRefresh() async {
-    await context.read<HomeCubit>().loadAllPapers();
+    await context.read<HomeCubit>().loadAllPapers(forceRefresh: true);
   }
 
   @override
@@ -109,12 +111,22 @@ class _HomeScreenState extends State<HomeScreen> {
                 SizedBox(height: MySizes.spaceMd(context)),
                 BlocBuilder<HomeCubit, HomeState>(
                   builder: (context, state) {
-                    if (state is HomePapersLoaded) {
-                      return CategoryItemsList(
-                        categories: state.categories,
-                        selectedInterest: state.selectedCategory,
-                        maxItems: 10,
+                    // Treat updated state (HomePapersUpdated) the same as the
+                    // loaded state so UI sections (categories) don't fall back
+                    // to a loading shimmer during optimistic updates.
+                    if (state is HomePapersLoaded ||
+                        state is HomePapersUpdated) {
+                      final categories = state is HomePapersLoaded
+                          ? state.categories
+                          : (state as HomePapersUpdated).categories;
+                      final selected = state is HomePapersLoaded
+                          ? state.selectedCategory
+                          : (state as HomePapersUpdated).selectedCategory;
 
+                      return CategoryItemsList(
+                        categories: categories,
+                        selectedInterest: selected,
+                        maxItems: 10,
                         onInterestChanged: (interestName) {
                           context.push(
                             RouteNames.recentlyPublished,
@@ -123,6 +135,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         },
                       );
                     }
+
                     return const InterestsShimmerLoading();
                   },
                 ),
@@ -151,6 +164,33 @@ class _HomeScreenState extends State<HomeScreen> {
                           return const PaperListShimmer();
                         }
 
+                        if (state is HomeError) {
+                          final isOffline =
+                              state.message.toLowerCase().contains(
+                                'internet',
+                              ) ||
+                              state.message.toLowerCase().contains('network');
+
+                          return isOffline
+                              ? OfflineStateView(
+                                  title: 'You are offline',
+                                  message:
+                                      'We could not load fresh papers. Connect to the internet or browse your cached content.',
+                                  actionLabel: S.of(context).retry_button,
+                                  onAction: () => context
+                                      .read<HomeCubit>()
+                                      .loadAllPapers(forceRefresh: true),
+                                )
+                              : ErrorStateView(
+                                  title: 'Something went wrong',
+                                  message: state.message,
+                                  actionLabel: S.of(context).retry_button,
+                                  onAction: () => context
+                                      .read<HomeCubit>()
+                                      .loadAllPapers(forceRefresh: true),
+                                );
+                        }
+
                         if (state is HomePapersLoaded ||
                             state is HomePapersUpdated) {
                           late List<PaperEntity> recentPapers;
@@ -168,29 +208,15 @@ class _HomeScreenState extends State<HomeScreen> {
 
                           // Handle empty papers list
                           if (papers.isEmpty) {
-                            return Padding(
-                              padding: EdgeInsets.symmetric(
-                                vertical: MySizes.spaceLg(context) * 2,
-                              ),
-                              child: Center(
-                                child: Column(
-                                  children: [
-                                    Icon(
-                                      Icons.article_outlined,
-                                      size: 64,
-                                      color: Colors.grey[400],
-                                    ),
-                                    SizedBox(height: MySizes.spaceMd(context)),
-                                    Text(
-                                      'No papers available',
-                                      style: TextStyle(
-                                        fontSize: 16,
-                                        color: Colors.grey[600],
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
+                            return EmptyStateView(
+                              icon: Icons.article_outlined,
+                              title: 'No papers available',
+                              message:
+                                  'There is nothing to show right now. Try again later or refresh when you are online.',
+                              actionLabel: S.of(context).retry_button,
+                              onAction: () => context
+                                  .read<HomeCubit>()
+                                  .loadAllPapers(forceRefresh: true),
                             );
                           }
 

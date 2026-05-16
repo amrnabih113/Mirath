@@ -1,17 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:mirath/core/constants/route_names.dart';
-import 'package:mirath/features/users/domain/entities/follows.dart';
-import 'package:mirath/features/users/domain/usecases/follow_user_usecase.dart';
-import 'package:mirath/features/users/domain/usecases/get_followers_usecase.dart';
-import 'package:mirath/features/users/domain/usecases/get_following_usecase.dart';
-import 'package:mirath/features/users/domain/usecases/unfollow_user_usecase.dart';
-import 'package:mirath/injection/injection_container.dart';
-import 'package:mirath/core/utils/my_colors.dart';
-import 'package:mirath/core/utils/my_sizes.dart';
-import 'package:mirath/features/common/widgets/my_back_icon.dart';
-import 'package:mirath/features/profile/presentation/widgets/follower_following_card.dart';
-import 'package:mirath/generated/l10n.dart';
+
+import '../../../../core/constants/route_names.dart';
+import '../../../../core/utils/my_colors.dart';
+import '../../../../core/utils/my_sizes.dart';
+import '../../../../generated/l10n.dart';
+import '../../../../injection/injection_container.dart';
+import '../../../common/widgets/my_back_icon.dart';
+import '../../../users/domain/entities/follows.dart';
+import '../../../users/domain/usecases/follow_user_usecase.dart';
+import '../../../users/domain/usecases/get_followers_usecase.dart';
+import '../../../users/domain/usecases/get_following_usecase.dart';
+import '../../../users/domain/usecases/unfollow_user_usecase.dart';
+import '../widgets/follower_following_card.dart';
 
 class FollowerFollowingScreen extends StatefulWidget {
   const FollowerFollowingScreen({

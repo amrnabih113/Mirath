@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:hugeicons/hugeicons.dart';
-import 'package:mirath/core/utils/my_extenstions.dart';
-import 'package:mirath/core/utils/my_sizes.dart';
+
+import '../../../core/utils/my_extenstions.dart';
+import '../../../core/utils/my_sizes.dart';
 
 class InfoRow extends StatelessWidget {
   final List<List<dynamic>> icon;

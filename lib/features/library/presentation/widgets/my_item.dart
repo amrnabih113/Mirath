@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:hugeicons/hugeicons.dart';
-import 'package:mirath/core/helpers/responsive_helper.dart';
-import 'package:mirath/core/utils/my_sizes.dart';
-import 'package:mirath/features/library/domain/entities/library_data.dart';
-import 'package:mirath/features/library/presentation/widgets/lib_item.dart';
+
+import '../../../../core/helpers/responsive_helper.dart';
+import '../../../../core/utils/my_sizes.dart';
+import '../../domain/entities/library_data.dart';
+import 'lib_item.dart';
 
 class MyItem extends StatelessWidget {
   const MyItem({super.key, required this.data});

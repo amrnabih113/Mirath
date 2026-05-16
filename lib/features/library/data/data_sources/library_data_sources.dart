@@ -1,6 +1,6 @@
-import 'package:mirath/features/library/data/models/library_data_model.dart';
-import 'package:mirath/features/library/data/models/reading_history_model.dart';
-import 'package:mirath/features/library/data/models/saved_papers_model.dart';
+import '../models/library_data_model.dart';
+import '../models/reading_history_model.dart';
+import '../models/saved_papers_model.dart';
 
 abstract class LibraryDataSources {
   Future<void> clearAllReadingHistory();

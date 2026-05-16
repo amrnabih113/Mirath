@@ -2,14 +2,15 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
-import 'package:mirath/core/utils/my_colors.dart';
-import 'package:mirath/core/utils/my_extenstions.dart';
-import 'package:mirath/core/utils/my_sizes.dart';
-
-import 'package:mirath/features/common/widgets/my_back_icon.dart';
-import 'package:mirath/features/common/widgets/tag_chip.dart';
-import 'package:mirath/features/interests/presentation/cubit/interests_cubit.dart';
-import 'package:mirath/features/interests/presentation/cubit/interests_state.dart';
+import '../../../../core/network/network_manager.dart';
+import '../../../../core/ui/widgets/state_views.dart';
+import '../../../../core/utils/my_colors.dart';
+import '../../../../core/utils/my_extenstions.dart';
+import '../../../../core/utils/my_sizes.dart';
+import '../../../common/widgets/my_back_icon.dart';
+import '../../../common/widgets/tag_chip.dart';
+import '../../../interests/presentation/cubit/interests_cubit.dart';
+import '../../../interests/presentation/cubit/interests_state.dart';
 
 class EditInterstsScreen extends StatefulWidget {
   const EditInterstsScreen({super.key, this.initialSelected = const []});
@@ -185,7 +186,25 @@ class _EditInterstsScreenState extends State<EditInterstsScreen> {
                       }
 
                       if (state is InterestsError) {
-                        return Center(child: Text(state.message));
+                        final offline =
+                            !NetworkManager.instance.currentConnectionStatus;
+                        return offline
+                            ? OfflineStateView(
+                                title: 'Offline',
+                                message: state.message,
+                                actionLabel: 'Retry',
+                                onAction: () => context
+                                    .read<InterestsCubit>()
+                                    .getAllInterests(),
+                              )
+                            : ErrorStateView(
+                                title: 'Error',
+                                message: state.message,
+                                actionLabel: 'Retry',
+                                onAction: () => context
+                                    .read<InterestsCubit>()
+                                    .getAllInterests(),
+                              );
                       }
 
                       if (state is InterestsLoaded) {
