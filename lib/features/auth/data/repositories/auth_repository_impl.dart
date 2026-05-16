@@ -1,6 +1,7 @@
 import 'package:dartz/dartz.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:mirath/core/cache/hive_cache_service.dart';
 import 'package:mirath/core/services/local_storage_service.dart';
 
 import '../../../../core/error/failuors.dart';
@@ -18,6 +19,7 @@ class AuthRepositoryImpl implements AuthRepository {
   final SecureStorageService _secureStorage;
   final UserCacheService _userCache;
   final LocalStorageService _localStorage;
+  final HiveCacheService _cacheService;
 
   String? _cachedEmail;
   String? _cachedResetToken;
@@ -27,10 +29,12 @@ class AuthRepositoryImpl implements AuthRepository {
     required SecureStorageService secureStorage,
     required UserCacheService userCache,
     required LocalStorageService localStorage,
+    required HiveCacheService cacheService,
   }) : _remoteDataSource = remoteDataSource,
        _secureStorage = secureStorage,
        _userCache = userCache,
-       _localStorage = localStorage;
+       _localStorage = localStorage,
+       _cacheService = cacheService;
 
   @override
   Future<Either<Failure, void>> signIn(SigninData signinData) async {
@@ -83,7 +87,11 @@ class AuthRepositoryImpl implements AuthRepository {
   @override
   Future<Either<Failure, void>> signOut() async {
     try {
-      await _remoteDataSource.signout();
+      try {
+        await _remoteDataSource.signout();
+      } catch (_) {
+        // Logout should still clear local state even when the network is down.
+      }
       try {
         await GoogleSignIn().signOut();
       } catch (_) {
@@ -95,6 +103,7 @@ class AuthRepositoryImpl implements AuthRepository {
       await _userCache.clearUser();
       await _localStorage.removeData(MyConstants.userDataKey);
       await _localStorage.clearAll();
+      await _cacheService.clearAll();
 
       MyLogger.info('[AuthRepository] User cache cleared on signout');
       return const Right(null);

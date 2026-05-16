@@ -2,10 +2,13 @@ import 'dart:convert';
 
 import 'package:dartz/dartz.dart';
 import 'package:dio/dio.dart';
+import 'package:mirath/core/cache/cache_keys.dart';
+import 'package:mirath/core/cache/hive_cache_service.dart';
 import 'package:mirath/core/services/local_storage_service.dart';
 import 'package:mirath/core/services/user_cache_service.dart';
 import 'package:mirath/core/utils/my_constants.dart';
 import 'package:mirath/features/auth/data/models/auth_user_data.dart';
+import 'package:mirath/features/users/data/models/user_model.dart';
 import 'package:mirath/features/users/domain/entities/follows.dart';
 
 import '../../../../core/error/failuors.dart';
@@ -22,12 +25,14 @@ class UsersRepositoryImpl implements UsersRepository {
   final NetworkManager networkManager;
   final UserCacheService userCacheService;
   final LocalStorageService localStorageService;
+  final HiveCacheService cacheService;
 
   const UsersRepositoryImpl({
     required this.remoteDataSource,
     required this.networkManager,
     required this.userCacheService,
     required this.localStorageService,
+    required this.cacheService,
   });
 
   @override
@@ -39,6 +44,7 @@ class UsersRepositoryImpl implements UsersRepository {
 
       if (await networkManager.isConnected) {
         final result = await remoteDataSource.setupProfile(profileSetupData);
+        await cacheCurrentUser(result.data);
         MyLogger.info('[UsersRepository] Profile setup successful');
         return Right(result.data);
       } else {
@@ -63,6 +69,7 @@ class UsersRepositoryImpl implements UsersRepository {
 
       if (await networkManager.isConnected) {
         final result = await remoteDataSource.getCurrentUser();
+        await cacheCurrentUser(result.data);
         MyLogger.info('[UsersRepository] Get current user successful');
         return Right(result.data);
       } else {
@@ -81,6 +88,27 @@ class UsersRepositoryImpl implements UsersRepository {
   }
 
   @override
+  Future<User?> getCachedCurrentUser() async {
+    final cached = await cacheService.getJson(
+      CacheKeys.profile('current-user'),
+      allowStale: true,
+    );
+    if (cached == null) {
+      return null;
+    }
+
+    return UserModel.fromJson(cached);
+  }
+
+  @override
+  Future<void> cacheCurrentUser(User user) async {
+    await cacheService.putJson(
+      CacheKeys.profile('current-user'),
+      user.toJson(),
+    );
+  }
+
+  @override
   Future<Either<Failure, User>> updateProfile(
     UpdateProfileData updateProfileData,
   ) async {
@@ -95,7 +123,7 @@ class UsersRepositoryImpl implements UsersRepository {
         localStorageService.removeData(MyConstants.userDataKey);
         final jsonString = jsonEncode(user.toJson());
         await localStorageService.setData(MyConstants.userDataKey, jsonString);
-      userCacheService.saveUser(
+        userCacheService.saveUser(
           AuthUserData(
             id: user.id,
             email: user.email,
@@ -104,6 +132,7 @@ class UsersRepositoryImpl implements UsersRepository {
             status: user.status,
           ),
         );
+        await cacheCurrentUser(user);
         MyLogger.info('[UsersRepository] Profile update successful');
 
         return Right(result.data);
@@ -129,6 +158,7 @@ class UsersRepositoryImpl implements UsersRepository {
 
       if (await networkManager.isConnected) {
         final result = await remoteDataSource.getUserProfileHeader(userId);
+        await cacheUserProfileHeader(result.profile);
         MyLogger.info('[UsersRepository] Get user profile header successful');
         return Right(result.profile);
       } else {
@@ -149,12 +179,31 @@ class UsersRepositoryImpl implements UsersRepository {
   }
 
   @override
+  Future<User?> getCachedUserProfileHeader(String userId) async {
+    final cached = await cacheService.getJson(
+      CacheKeys.profile(userId),
+      allowStale: true,
+    );
+    if (cached == null) {
+      return null;
+    }
+
+    return UserModel.fromJson(cached);
+  }
+
+  @override
+  Future<void> cacheUserProfileHeader(User user) async {
+    await cacheService.putJson(CacheKeys.profile(user.id), user.toJson());
+  }
+
+  @override
   Future<Either<Failure, void>> followUser(String userId) async {
     try {
       MyLogger.info('[UsersRepository] Following user: $userId');
 
       if (await networkManager.isConnected) {
         await remoteDataSource.followUser(userId);
+        await updateCachedFollowState(userId: userId, isFollowing: true);
         MyLogger.info('[UsersRepository] Follow user successful');
         return const Right(null);
       } else {
@@ -177,6 +226,7 @@ class UsersRepositoryImpl implements UsersRepository {
 
       if (await networkManager.isConnected) {
         await remoteDataSource.unfollowUser(userId);
+        await updateCachedFollowState(userId: userId, isFollowing: false);
         MyLogger.info('[UsersRepository] Unfollow user successful');
         return const Right(null);
       } else {
@@ -192,6 +242,25 @@ class UsersRepositoryImpl implements UsersRepository {
       );
       return Left(UnexpectedFailure(error.toString()));
     }
+  }
+
+  @override
+  Future<void> updateCachedFollowState({
+    required String userId,
+    required bool isFollowing,
+  }) async {
+    Map<String, dynamic> transform(Map<String, dynamic> current) {
+      current['isFollowing'] = isFollowing;
+      current['isFollowed'] = isFollowing;
+      return current;
+    }
+
+    await cacheService.updateJsonListItemsByPrefix(
+      prefix: CacheKeys.profilePrefix,
+      itemId: userId,
+      idField: 'id',
+      updater: transform,
+    );
   }
 
   @override

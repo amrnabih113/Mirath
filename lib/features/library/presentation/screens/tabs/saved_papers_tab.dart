@@ -9,6 +9,8 @@ import 'package:mirath/features/reading_lists/presentation/cubit/reading_list_st
 import 'package:mirath/features/reading_lists/presentation/widgets/reading_list_card.dart';
 import 'package:mirath/features/reading_lists/presentation/widgets/reading_list_shimmer_loading.dart';
 import 'package:mirath/injection/injection_container.dart';
+import '../../../../../core/network/network_manager.dart';
+import '../../../../../core/ui/widgets/state_views.dart';
 
 class SavedPapersTab extends StatelessWidget {
   const SavedPapersTab({super.key});
@@ -77,7 +79,24 @@ class SavedPapersTab extends StatelessWidget {
           }
 
           if (state is ReadingListError) {
-            return Center(child: Text(state.message));
+            final offline = !NetworkManager.instance.currentConnectionStatus;
+            return offline
+                ? OfflineStateView(
+                    title: 'Offline',
+                    message: state.message,
+                    actionLabel: 'Retry',
+                    onAction: () => context
+                        .read<ReadingListCubit>()
+                        .getSavedReadingLists(forceRefresh: true),
+                  )
+                : ErrorStateView(
+                    title: 'Error',
+                    message: state.message,
+                    actionLabel: 'Retry',
+                    onAction: () => context
+                        .read<ReadingListCubit>()
+                        .getSavedReadingLists(forceRefresh: true),
+                  );
           }
 
           return const SizedBox();

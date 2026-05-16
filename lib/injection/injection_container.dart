@@ -14,6 +14,7 @@ import 'package:mirath/features/library/domain/usecases/update_reading_history.d
 import 'package:mirath/features/library/presentation/cubit/library_cubit.dart';
 import 'package:mirath/features/Layout/presentation/cubit/layout_cubit.dart';
 import 'package:mirath/features/reading_lists/domain/usecases/delete_reading_list_usecase.dart';
+import 'package:mirath/features/reading_lists/domain/usecases/reading_list_cache_usecases.dart';
 import 'package:mirath/features/reading_lists/domain/usecases/save_reading_list_usecase.dart';
 import 'package:mirath/features/reading_lists/domain/usecases/unsave_reading_list_usecase.dart';
 import 'package:mirath/features/reading_lists/domain/usecases/update_reading_list_usecase.dart';
@@ -26,6 +27,7 @@ import 'package:mirath/features/discussions/data/repositories/community_reposito
 import 'package:mirath/features/discussions/domain/repositories/community_repository.dart';
 import 'package:mirath/features/discussions/domain/usecases/create_comment_usecase.dart';
 import 'package:mirath/features/discussions/domain/usecases/create_discussion_usecase.dart';
+import 'package:mirath/features/discussions/domain/usecases/community_cache_usecases.dart';
 import 'package:mirath/features/discussions/domain/usecases/delete_comment_vote_usecase.dart';
 import 'package:mirath/features/discussions/domain/usecases/delete_discussion_usecase.dart';
 import 'package:mirath/features/discussions/domain/usecases/delete_discussion_vote_usecase.dart';
@@ -38,6 +40,7 @@ import 'package:mirath/features/discussions/presentation/cubit/community_cubit.d
 import 'package:mirath/features/discussions/presentation/cubit/discussion_details_cubit.dart';
 import 'package:mirath/features/discussions/presentation/cubit/global_search_cubit.dart';
 import '../features/home/domain/usecases/get_paper_categories_usecase.dart';
+import '../features/home/domain/usecases/home_cache_usecases.dart';
 import 'package:mirath/features/paper_annotations/data/data_sources/annotation_local_data_source.dart';
 import 'package:mirath/features/paper_annotations/data/data_sources/annotation_local_data_source_impl.dart';
 import 'package:mirath/features/paper_annotations/data/data_sources/annotation_remote_data_source.dart';
@@ -91,6 +94,7 @@ import 'package:mirath/features/chatbot/presentation/cubit/chatbot_cubit.dart';
 
 import '../core/network/dio_client.dart';
 import '../core/network/network_manager.dart';
+import '../core/cache/hive_cache_service.dart';
 import '../core/services/image_picker_service.dart';
 import '../core/services/local_storage_service.dart';
 import '../core/services/secure_storage_service.dart';
@@ -134,6 +138,7 @@ import '../features/users/domain/usecases/get_current_user_usecase.dart';
 import '../features/users/domain/usecases/get_user_profile_header_usecase.dart';
 import '../features/users/domain/usecases/setup_profile_usecase.dart';
 import '../features/users/domain/usecases/unfollow_user_usecase.dart';
+import '../features/users/domain/usecases/users_cache_usecases.dart';
 import '../features/users/presentation/cubit/profile_header_cubit.dart';
 import '../features/users/presentation/cubit/set_up_profile_cubit.dart';
 
@@ -175,6 +180,9 @@ class DI {
     final localStorage = await LocalStorageService.init();
     sl.registerLazySingleton<LocalStorageService>(() => localStorage);
 
+    final hiveCacheService = await HiveCacheService.init();
+    sl.registerLazySingleton<HiveCacheService>(() => hiveCacheService);
+
     /// User Cache Service ///
     sl.registerLazySingleton<UserCacheService>(() => UserCacheService(sl()));
 
@@ -198,6 +206,7 @@ class DI {
         secureStorage: sl(),
         localStorage: sl(),
         userCache: sl(),
+        cacheService: sl(),
       ),
     );
 
@@ -250,7 +259,7 @@ class DI {
 
     /// Community Repository ///
     sl.registerLazySingleton<CommunityRepository>(
-      () => CommunityRepositoryImpl(remoteDataSource: sl()),
+      () => CommunityRepositoryImpl(remoteDataSource: sl(), cacheService: sl()),
     );
 
     /// Community UseCases ///
@@ -264,10 +273,12 @@ class DI {
     sl.registerLazySingleton(() => GetDiscussionCommentsUseCase(sl()));
     sl.registerLazySingleton(() => VoteOnCommentUseCase(sl()));
     sl.registerLazySingleton(() => DeleteCommentVoteUseCase(sl()));
+    sl.registerLazySingleton(() => CommunityCacheUseCases(repository: sl()));
 
     /// Community Cubit ///
     sl.registerFactory(
       () => CommunityCubit(
+        communityCacheUseCases: sl(),
         getAllDiscussionsUseCase: sl(),
         voteOnDiscussionUseCase: sl(),
         deleteDiscussionVoteUseCase: sl(),
@@ -295,7 +306,7 @@ class DI {
 
     /// Library Repository ///
     sl.registerLazySingleton<LibraryRepository>(
-      () => LibraryRepositoryImpl(libraryDataSources: sl()),
+      () => LibraryRepositoryImpl(libraryDataSources: sl(), cacheService: sl()),
     );
 
     /// Library UseCases ///
@@ -333,7 +344,8 @@ class DI {
 
     /// Reading List Repository ///
     sl.registerLazySingleton<ReadingListRepository>(
-      () => ReadingListRepositoryImpl(remoteDataSource: sl()),
+      () =>
+          ReadingListRepositoryImpl(remoteDataSource: sl(), cacheService: sl()),
     );
 
     /// Reading List UseCases ///
@@ -346,10 +358,12 @@ class DI {
     sl.registerLazySingleton(() => UnsaveReadingListUseCase(sl()));
     sl.registerLazySingleton(() => UpdateReadingListUseCase(sl()));
     sl.registerLazySingleton(() => DeleteReadingListUseCase(sl()));
+    sl.registerLazySingleton(() => ReadingListCacheUseCases(repository: sl()));
 
     /// Reading List Cubit ///
     sl.registerFactory(
       () => ReadingListCubit(
+        readingListCacheUseCases: sl(),
         getReadingListsUseCase: sl(),
         createReadingListUseCase: sl(),
         getReadingListByIdUseCase: sl(),
@@ -374,6 +388,7 @@ class DI {
         networkManager: sl(),
         userCacheService: sl(),
         localStorageService: sl(),
+        cacheService: sl(),
       ),
     );
 
@@ -386,15 +401,20 @@ class DI {
     sl.registerLazySingleton(() => UnfollowUserUsecase(sl()));
     sl.registerLazySingleton(() => GetFollowersUsecase(usersRepository: sl()));
     sl.registerLazySingleton(() => GetFollowingUsecase(usersRepository: sl()));
+    sl.registerLazySingleton(() => UsersCacheUseCases(repository: sl()));
 
     /// Users Cubits ///
     sl.registerFactory(() => SetUpProfileCubit(imagePickerService: sl()));
     sl.registerLazySingleton(
-      () =>
-          ProfileCubit(getCurrentUserUsecase: sl(), updateProfileUsecase: sl()),
+      () => ProfileCubit(
+        usersCacheUseCases: sl(),
+        getCurrentUserUsecase: sl(),
+        updateProfileUsecase: sl(),
+      ),
     );
     sl.registerFactory(
       () => ProfileHeaderCubit(
+        usersCacheUseCases: sl(),
         getUserProfileHeaderUsecase: sl(),
         followUserUsecase: sl(),
         unfollowUserUsecase: sl(),
@@ -435,7 +455,11 @@ class DI {
 
     /// Home Repository ///
     sl.registerLazySingleton<HomeRepository>(
-      () => HomeRepositoryImpl(remoteDataSource: sl(), networkManager: sl()),
+      () => HomeRepositoryImpl(
+        remoteDataSource: sl(),
+        networkManager: sl(),
+        cacheService: sl(),
+      ),
     );
 
     /// Home UseCases ///
@@ -454,10 +478,12 @@ class DI {
       () => DeleteSearchHistoryUseCase(repository: sl()),
     );
     sl.registerLazySingleton(() => ClearSearchHistoryUseCase(repository: sl()));
+    sl.registerLazySingleton(() => HomeCacheUseCases(repository: sl()));
 
     /// Home Cubit ///
     sl.registerLazySingleton(
       () => HomeCubit(
+        homeCacheUseCases: sl(),
         getRecentPapersUseCase: sl(),
         getRecommendationsUseCase: sl(),
         getCurrentUserUsecase: sl(),

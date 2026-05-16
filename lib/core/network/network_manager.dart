@@ -14,14 +14,19 @@ class NetworkManager {
   final Connectivity _connectivity = Connectivity();
   final StreamController<bool> _connectionController =
       StreamController<bool>.broadcast();
+  bool _currentConnectionStatus = true;
 
   StreamSubscription<List<ConnectivityResult>>? _connectivitySubscription;
 
   /// Public stream of connectivity states.
   Stream<bool> get connectionStream => _connectionController.stream;
 
+  bool get currentConnectionStatus => _currentConnectionStatus;
+
   /// Initialize and start monitoring network connectivity.
-  void initialize() {
+  Future<void> initialize() async {
+    _currentConnectionStatus = await isConnected;
+    _connectionController.add(_currentConnectionStatus);
     _connectivitySubscription = _connectivity.onConnectivityChanged.listen(
       _updateConnectionStatus,
     );
@@ -66,6 +71,7 @@ class NetworkManager {
   /// Internal listener: updates connection status when connectivity changes.
   Future<void> _updateConnectionStatus(List<ConnectivityResult> results) async {
     final connected = !results.contains(ConnectivityResult.none);
+    _currentConnectionStatus = connected;
     _connectionController.add(connected);
   }
 

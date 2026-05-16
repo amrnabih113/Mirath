@@ -16,6 +16,8 @@ import 'package:mirath/features/papers/presentation/widgets/abstract_section.dar
 import 'package:mirath/features/papers/presentation/widgets/expainsion_tile_widget.dart';
 import 'package:mirath/features/papers/presentation/widgets/paper_info.dart';
 import 'package:mirath/features/reading_lists/presentation/widgets/add_to_reading_list_dialog.dart';
+import '../../../../core/network/network_manager.dart';
+import '../../../../core/ui/widgets/state_views.dart';
 
 class PaperScreen extends StatefulWidget {
   final PaperEntity? paper;
@@ -83,7 +85,22 @@ class _PaperScreenState extends State<PaperScreen> {
       return const Scaffold(body: Center(child: CircularProgressIndicator()));
     }
     if (_error != null) {
-      return Scaffold(body: Center(child: Text(_error!)));
+      final offline = !NetworkManager.instance.currentConnectionStatus;
+      return Scaffold(
+        body: offline
+            ? OfflineStateView(
+                title: 'Offline',
+                message: _error!,
+                actionLabel: 'Retry',
+                onAction: () {
+                  final id = widget.paperId ?? widget.paper?.id;
+                  if (id != null) {
+                    _fetchPaper(id);
+                  }
+                },
+              )
+            : Center(child: Text(_error!)),
+      );
     }
 
     if (currentPaper == null) {

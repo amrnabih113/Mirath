@@ -12,6 +12,8 @@ import '../../../common/widgets/my_search_bar.dart';
 import '../cubit/search_cubit.dart';
 import '../cubit/search_state.dart';
 import '../widgets/paper_card.dart';
+import '../../../../core/network/network_manager.dart';
+import '../../../../core/ui/widgets/state_views.dart';
 
 class HomeSearchResultScreen extends StatefulWidget {
   const HomeSearchResultScreen({super.key});
@@ -108,7 +110,24 @@ class _HomeSearchResultScreenState extends State<HomeSearchResultScreen> {
           }
 
           if (state is SearchError) {
-            return Center(child: Text(state.message));
+            final offline = !NetworkManager.instance.currentConnectionStatus;
+            return offline
+                ? OfflineStateView(
+                    title: 'Offline',
+                    message: state.message,
+                    actionLabel: 'Retry',
+                    onAction: () => context.read<SearchCubit>().searchPapers(
+                      _controller.text,
+                    ),
+                  )
+                : ErrorStateView(
+                    title: 'Error',
+                    message: state.message,
+                    actionLabel: 'Retry',
+                    onAction: () => context.read<SearchCubit>().searchPapers(
+                      _controller.text,
+                    ),
+                  );
           }
 
           if (state is SearchResultsLoaded) {

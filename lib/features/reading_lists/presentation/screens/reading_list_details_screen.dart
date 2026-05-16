@@ -18,6 +18,8 @@ import '../../domain/entities/reading_list.dart';
 import '../../../home/domain/entities/paper_entity.dart';
 import '../cubit/reading_list_cubit.dart';
 import '../cubit/reading_list_state.dart';
+import '../../../../core/network/network_manager.dart';
+import '../../../../core/ui/widgets/state_views.dart';
 import '../widgets/reading_list_details_shimmer_loading.dart';
 
 class ReadingListDetailsScreen extends StatefulWidget {
@@ -93,7 +95,39 @@ class _ReadingListDetailsScreenState extends State<ReadingListDetailsScreen> {
               }
 
               if (state is ReadingListError) {
-                return Center(child: Text(state.message));
+                final offline =
+                    !NetworkManager.instance.currentConnectionStatus;
+                return offline
+                    ? OfflineStateView(
+                        title: 'Offline',
+                        message: state.message,
+                        actionLabel: 'Retry',
+                        onAction: () {
+                          final id =
+                              widget.readingListId ?? widget.readingList?.id;
+                          if (id != null) {
+                            context.read<ReadingListCubit>().getReadingListById(
+                              id,
+                              forceRefresh: true,
+                            );
+                          }
+                        },
+                      )
+                    : ErrorStateView(
+                        title: 'Error',
+                        message: state.message,
+                        actionLabel: 'Retry',
+                        onAction: () {
+                          final id =
+                              widget.readingListId ?? widget.readingList?.id;
+                          if (id != null) {
+                            context.read<ReadingListCubit>().getReadingListById(
+                              id,
+                              forceRefresh: true,
+                            );
+                          }
+                        },
+                      );
               }
 
               if (state is ReadingListDetailsLoaded) {
@@ -118,163 +152,183 @@ class _ReadingListDetailsScreenState extends State<ReadingListDetailsScreen> {
               padding: MySizes.paddingMd(context),
               child: SafeArea(
                 bottom: false,
-                child: CustomScrollView(
-                  slivers: [
-                    /// USER HEADER
-                    SliverToBoxAdapter(
-                      child: Row(
-                        children: [
-                          ProfileAvatar(
-                            size: ResponsiveHelper.responsiveValue(context, 40),
-                            imageUrl: readingList.owner?.photoUrl,
+                child: RefreshIndicator(
+                  onRefresh: () =>
+                      context.read<ReadingListCubit>().getReadingListById(
+                        widget.readingListId ?? readingList.id,
+                        forceRefresh: true,
+                      ),
+                  child: CustomScrollView(
+                    physics: const AlwaysScrollableScrollPhysics(),
+                    slivers: [
+                      /// USER HEADER
+                      SliverToBoxAdapter(
+                        child: Row(
+                          children: [
+                            ProfileAvatar(
+                              size: ResponsiveHelper.responsiveValue(
+                                context,
+                                40,
+                              ),
+                              imageUrl: readingList.owner?.photoUrl,
+                            ),
+                            SizedBox(width: MySizes.spaceSm(context)),
+                            Expanded(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    readingList.owner?.fullName ?? 'Unknown',
+                                    style: context.titleSmall.copyWith(
+                                      fontWeight: FontWeight.w900,
+                                    ),
+                                  ),
+                                  SizedBox(
+                                    height: MySizes.spaceXs(context) * 0.5,
+                                  ),
+                                  Text(
+                                    '${readingList.papers?.length ?? readingList.paperCount} papers • Updated ${_formatDate(readingList.updatedAt)}',
+                                    style: context.bodySmall.copyWith(
+                                      color: MyColors.textSecondary,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      SliverToBoxAdapter(
+                        child: SizedBox(height: MySizes.spaceMd(context)),
+                      ),
+
+                      /// TITLE
+                      SliverToBoxAdapter(
+                        child: Text(
+                          readingList.title,
+                          style: context.titleSmall.copyWith(
+                            fontWeight: FontWeight.w800,
                           ),
-                          SizedBox(width: MySizes.spaceSm(context)),
-                          Expanded(
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  readingList.owner?.fullName ?? 'Unknown',
-                                  style: context.titleSmall.copyWith(
-                                    fontWeight: FontWeight.w900,
-                                  ),
-                                ),
-                                SizedBox(
-                                  height: MySizes.spaceXs(context) * 0.5,
-                                ),
-                                Text(
-                                  '${readingList.papers?.length ?? readingList.paperCount} papers • Updated ${_formatDate(readingList.updatedAt)}',
-                                  style: context.bodySmall.copyWith(
-                                    color: MyColors.textSecondary,
-                                  ),
-                                ),
-                              ],
+                        ),
+                      ),
+                      SliverToBoxAdapter(
+                        child: SizedBox(height: MySizes.spaceSm(context)),
+                      ),
+
+                      /// DESCRIPTION
+                      if (readingList.description != null)
+                        SliverToBoxAdapter(
+                          child: ExpandableText(text: readingList.description!),
+                        ),
+                      if (readingList.description != null)
+                        SliverToBoxAdapter(
+                          child: SizedBox(height: MySizes.spaceMd(context)),
+                        ),
+
+                      /// TAGS
+                      if (readingList.previewTags.isNotEmpty)
+                        SliverToBoxAdapter(
+                          child: SizedBox(
+                            height: ResponsiveHelper.responsiveValue(
+                              context,
+                              28,
+                            ),
+                            child: ListView.separated(
+                              scrollDirection: Axis.horizontal,
+                              itemCount: readingList.previewTags.length,
+                              separatorBuilder: (_, _) =>
+                                  SizedBox(width: MySizes.spaceXs(context)),
+                              itemBuilder: (_, index) => TagChip(
+                                label: readingList.previewTags[index],
+                              ),
                             ),
                           ),
-                        ],
-                      ),
-                    ),
-                    SliverToBoxAdapter(
-                      child: SizedBox(height: MySizes.spaceMd(context)),
-                    ),
-
-                    /// TITLE
-                    SliverToBoxAdapter(
-                      child: Text(
-                        readingList.title,
-                        style: context.titleSmall.copyWith(
-                          fontWeight: FontWeight.w800,
                         ),
-                      ),
-                    ),
-                    SliverToBoxAdapter(
-                      child: SizedBox(height: MySizes.spaceSm(context)),
-                    ),
+                      if (readingList.previewTags.isNotEmpty)
+                        SliverToBoxAdapter(
+                          child: SizedBox(height: MySizes.spaceMd(context)),
+                        ),
 
-                    /// DESCRIPTION
-                    if (readingList.description != null)
-                      SliverToBoxAdapter(
-                        child: ExpandableText(text: readingList.description!),
-                      ),
-                    if (readingList.description != null)
-                      SliverToBoxAdapter(
-                        child: SizedBox(height: MySizes.spaceMd(context)),
-                      ),
-
-                    /// TAGS
-                    if (readingList.previewTags.isNotEmpty)
+                      /// SAVE BUTTON
                       SliverToBoxAdapter(
                         child: SizedBox(
-                          height: ResponsiveHelper.responsiveValue(context, 28),
-                          child: ListView.separated(
-                            scrollDirection: Axis.horizontal,
-                            itemCount: readingList.previewTags.length,
-                            separatorBuilder: (_, _) =>
-                                SizedBox(width: MySizes.spaceXs(context)),
-                            itemBuilder: (_, index) =>
-                                TagChip(label: readingList.previewTags[index]),
+                          width: double.infinity,
+                          child: ElevatedButton(
+                            onPressed: () {
+                              final cubit = context.read<ReadingListCubit>();
+                              final currentState = cubit.state;
+                              final currentList =
+                                  currentState is ReadingListDetailsLoaded
+                                  ? currentState.readingList
+                                  : widget.readingList;
+
+                              if (currentList == null) return;
+
+                              if (currentList.isSaved) {
+                                cubit.unsaveReadingList(currentList.id);
+                              } else {
+                                cubit.saveReadingList(currentList.id);
+                              }
+                            },
+                            child:
+                                BlocBuilder<ReadingListCubit, ReadingListState>(
+                                  builder: (context, state) {
+                                    final isSaved =
+                                        state is ReadingListDetailsLoaded
+                                        ? state.readingList.isSaved
+                                        : widget.readingList?.isSaved ?? false;
+                                    return Text(
+                                      isSaved
+                                          ? 'Unsave List'
+                                          : 'Save Full List',
+                                    );
+                                  },
+                                ),
                           ),
                         ),
                       ),
-                    if (readingList.previewTags.isNotEmpty)
                       SliverToBoxAdapter(
-                        child: SizedBox(height: MySizes.spaceMd(context)),
+                        child: SizedBox(height: MySizes.spaceLg(context)),
                       ),
 
-                    /// SAVE BUTTON
-                    SliverToBoxAdapter(
-                      child: SizedBox(
-                        width: double.infinity,
-                        child: ElevatedButton(
-                          onPressed: () {
-                            final cubit = context.read<ReadingListCubit>();
-                            final currentState = cubit.state;
-                            final currentList =
-                                currentState is ReadingListDetailsLoaded
-                                ? currentState.readingList
-                                : widget.readingList;
-
-                            if (currentList == null) return;
-
-                            if (currentList.isSaved) {
-                              cubit.unsaveReadingList(currentList.id);
-                            } else {
-                              cubit.saveReadingList(currentList.id);
-                            }
-                          },
-                          child:
-                              BlocBuilder<ReadingListCubit, ReadingListState>(
-                                builder: (context, state) {
-                                  final isSaved =
-                                      state is ReadingListDetailsLoaded
-                                      ? state.readingList.isSaved
-                                      : widget.readingList?.isSaved ?? false;
-                                  return Text(
-                                    isSaved ? 'Unsave List' : 'Save Full List',
+                      /// PAPERS LIST
+                      if (_buildPapers(readingList).isNotEmpty)
+                        SliverList(
+                          delegate: SliverChildBuilderDelegate((
+                            context,
+                            index,
+                          ) {
+                            final paper = _buildPapers(readingList)[index];
+                            return Padding(
+                              padding: EdgeInsets.only(
+                                bottom: MySizes.spaceMd(context),
+                              ),
+                              child: PaperCard(
+                                number: index + 1,
+                                paper: paper,
+                                onTap: () {
+                                  context.push(
+                                    RouteNames.paperDetailsRoute(paper.id),
+                                    extra: paper,
                                   );
                                 },
                               ),
+                            );
+                          }, childCount: _buildPapers(readingList).length),
                         ),
-                      ),
-                    ),
-                    SliverToBoxAdapter(
-                      child: SizedBox(height: MySizes.spaceLg(context)),
-                    ),
-
-                    /// PAPERS LIST
-                    if (_buildPapers(readingList).isNotEmpty)
-                      SliverList(
-                        delegate: SliverChildBuilderDelegate((context, index) {
-                          final paper = _buildPapers(readingList)[index];
-                          return Padding(
-                            padding: EdgeInsets.only(
-                              bottom: MySizes.spaceMd(context),
-                            ),
-                            child: PaperCard(
-                              number: index + 1,
-                              paper: paper,
-                              onTap: () {
-                                context.push(
-                                  RouteNames.paperDetailsRoute(paper.id),
-                                  extra: paper,
-                                );
-                              },
-                            ),
-                          );
-                        }, childCount: _buildPapers(readingList).length),
-                      ),
-                    if (_buildPapers(readingList).isEmpty)
-                      SliverToBoxAdapter(
-                        child: Center(
-                          child: Text(
-                            'No papers in this list yet',
-                            style: context.bodyMedium.copyWith(
-                              color: MyColors.textSecondary,
+                      if (_buildPapers(readingList).isEmpty)
+                        SliverToBoxAdapter(
+                          child: Center(
+                            child: Text(
+                              'No papers in this list yet',
+                              style: context.bodyMedium.copyWith(
+                                color: MyColors.textSecondary,
+                              ),
                             ),
                           ),
                         ),
-                      ),
-                  ],
+                    ],
+                  ),
                 ),
               ),
             ),

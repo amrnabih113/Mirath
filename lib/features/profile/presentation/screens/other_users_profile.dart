@@ -11,6 +11,8 @@ import 'package:mirath/features/profile/presentation/widgets/user_tabs.dart';
 import 'package:mirath/features/users/presentation/cubit/profile_header_cubit.dart';
 import 'package:mirath/features/users/presentation/cubit/profile_header_state.dart';
 import 'package:mirath/generated/l10n.dart';
+import '../../../../core/network/network_manager.dart';
+import '../../../../core/ui/widgets/state_views.dart';
 
 class OtherUsersProfile extends StatefulWidget {
   const OtherUsersProfile({super.key, required this.userId});
@@ -69,7 +71,25 @@ class _OtherUsersProfileState extends State<OtherUsersProfile> {
                     }
 
                     if (state is ProfileHeaderError) {
-                      return Center(child: Text(state.message));
+                      final offline =
+                          !NetworkManager.instance.currentConnectionStatus;
+                      return offline
+                          ? OfflineStateView(
+                              title: 'Offline',
+                              message: state.message,
+                              actionLabel: 'Retry',
+                              onAction: () => context
+                                  .read<ProfileHeaderCubit>()
+                                  .getProfileHeader(widget.userId),
+                            )
+                          : ErrorStateView(
+                              title: 'Error',
+                              message: state.message,
+                              actionLabel: 'Retry',
+                              onAction: () => context
+                                  .read<ProfileHeaderCubit>()
+                                  .getProfileHeader(widget.userId),
+                            );
                     }
 
                     final loaded = state as ProfileHeaderLoaded;

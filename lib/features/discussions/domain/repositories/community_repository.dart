@@ -19,8 +19,32 @@ abstract class CommunityRepository {
     GetDiscussionsParams params,
   );
 
+  Future<List<Discussion>> getCachedDiscussions(GetDiscussionsParams params);
+
+  Future<void> cacheDiscussions(
+    List<Discussion> discussions,
+    GetDiscussionsParams params,
+  );
+
   /// Get a specific discussion by ID
   Future<Either<Failure, Discussion>> getDiscussionById(String id);
+
+  Future<Discussion?> getCachedDiscussionById(String id);
+
+  Future<void> upsertCachedDiscussion(Discussion discussion);
+
+  Future<void> removeCachedDiscussion(String id);
+
+  Future<void> updateDiscussionVoteInCache({
+    required String discussionId,
+    required String voteType,
+    required bool isRemovingVote,
+  });
+
+  Future<void> updateDiscussionFollowState({
+    required String userId,
+    required bool isFollowing,
+  });
 
   /// Delete a discussion
   Future<Either<Failure, void>> deleteDiscussion(String id);

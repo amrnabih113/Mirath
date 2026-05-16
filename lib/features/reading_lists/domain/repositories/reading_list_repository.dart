@@ -11,11 +11,39 @@ abstract class ReadingListRepository {
     ReadingListQueryParams params,
   );
 
+  Future<List<ReadingList>> getCachedReadingLists(
+    ReadingListQueryParams params,
+  );
+
+  Future<void> cacheReadingLists(
+    List<ReadingList> readingLists,
+    ReadingListQueryParams params,
+  );
+
   Future<Either<Failure, ReadingList>> createReadingList(
     CreateReadingListParams params,
   );
 
   Future<Either<Failure, ReadingList>> getReadingListById(String id);
+
+  Future<ReadingList?> getCachedReadingListById(String id);
+
+  Future<void> upsertCachedReadingList(ReadingList readingList);
+
+  Future<void> removeCachedReadingList(String id);
+
+  Future<void> updateReadingListSavedState({
+    required String readingListId,
+    required bool isSaved,
+  });
+
+  Future<void> updateReadingListDetailsCache(ReadingList readingList);
+
+  Future<void> updateReadingListPaperCache({
+    required String readingListId,
+    required String paperId,
+    required bool isAdding,
+  });
 
   Future<Either<Failure, ReadingList>> updateReadingList(
     UpdateReadingListParams params,

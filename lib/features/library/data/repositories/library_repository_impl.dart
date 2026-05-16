@@ -6,11 +6,18 @@ import 'package:mirath/features/library/domain/entities/library_data.dart';
 import 'package:mirath/features/library/domain/entities/reading_history.dart';
 import 'package:mirath/features/library/domain/entities/saved_papers.dart';
 import 'package:mirath/features/library/domain/repositories/library_repository.dart';
+import 'package:mirath/core/cache/hive_cache_service.dart';
+import 'package:mirath/core/cache/cache_keys.dart';
+import '../models/library_data_model.dart';
 
 class LibraryRepositoryImpl implements LibraryRepository {
   final LibraryDataSources libraryDataSources;
+  final HiveCacheService cacheService;
 
-  LibraryRepositoryImpl({required this.libraryDataSources});
+  LibraryRepositoryImpl({
+    required this.libraryDataSources,
+    required this.cacheService,
+  });
 
   @override
   Future<Either<Failure, void>> clearAllReadingHistory() async {
@@ -43,13 +50,39 @@ class LibraryRepositoryImpl implements LibraryRepository {
   @override
   Future<Either<Failure, LibraryData>> getLibraryData() async {
     try {
+      // Try remote fetch
       final response = await libraryDataSources.getLibraryData();
+      // Cache the response as plain JSON
+      await cacheService.putJson(CacheKeys.libraryStats(), {
+        'listsCount': response.listsCount,
+        'createdCount': response.createdCount,
+        'savedCount': response.savedCount,
+        'projectsCount': response.projectsCount,
+      });
       return Right(response);
     } on ServerException catch (e) {
       return Left(ServerFailure(e.message!));
     } on NetworkException catch (e) {
+      // Try to return stale cached data if available
+      final cached = await cacheService.getJson(
+        CacheKeys.libraryStats(),
+        allowStale: true,
+      );
+      if (cached != null) {
+        final model = LibraryDataModel.fromJson(cached);
+        return Right(model);
+      }
       return Left(NetworkFailure(e.message!));
     } catch (e) {
+      // Fallback to cached value if available
+      final cached = await cacheService.getJson(
+        CacheKeys.libraryStats(),
+        allowStale: true,
+      );
+      if (cached != null) {
+        final model = LibraryDataModel.fromJson(cached);
+        return Right(model);
+      }
       return Left(ServerFailure('Failed to get Library Stats'));
     }
   }

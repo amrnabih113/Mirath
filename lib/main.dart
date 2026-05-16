@@ -16,7 +16,7 @@ import 'injection/injection_container.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  NetworkManager.instance.initialize();
+  await NetworkManager.instance.initialize();
   await DI.init();
   MyLogger.info('App Started');
   runApp(
@@ -73,16 +73,20 @@ class _MirathAppState extends State<MirathApp> {
     String? target;
     switch (segments[0]) {
       case 'papers':
-        if (segments.length > 1) target = RouteNames.paperDetailsRoute(segments[1]);
+        if (segments.length > 1)
+          target = RouteNames.paperDetailsRoute(segments[1]);
         break;
       case 'discussions':
-        if (segments.length > 1) target = RouteNames.discussionDetailsRoute(segments[1]);
+        if (segments.length > 1)
+          target = RouteNames.discussionDetailsRoute(segments[1]);
         break;
       case 'users':
-        if (segments.length > 1) target = RouteNames.userProfileRoute(segments[1]);
+        if (segments.length > 1)
+          target = RouteNames.userProfileRoute(segments[1]);
         break;
       case 'reading-lists':
-        if (segments.length > 1) target = RouteNames.readingListDetailsRoute(segments[1]);
+        if (segments.length > 1)
+          target = RouteNames.readingListDetailsRoute(segments[1]);
         break;
       default:
         target = null;
@@ -96,16 +100,23 @@ class _MirathAppState extends State<MirathApp> {
         final authCubit = sl<AuthCubit>();
         final currentStatus = authCubit.state.status;
 
-        MyLogger.info('[DeepLink] Handling deep link. Target: $target, AuthStatus: $currentStatus');
+        MyLogger.info(
+          '[DeepLink] Handling deep link. Target: $target, AuthStatus: $currentStatus',
+        );
 
         // If auth is still resolving, wait a moment for it to complete
-        if (currentStatus == AuthStatus.initial || currentStatus == AuthStatus.loading) {
-          MyLogger.info('[DeepLink] Auth still loading, waiting for resolution...');
+        if (currentStatus == AuthStatus.initial ||
+            currentStatus == AuthStatus.loading) {
+          MyLogger.info(
+            '[DeepLink] Auth still loading, waiting for resolution...',
+          );
           // Wait for auth status to change
           await authCubit.stream
-              .where((state) => 
-                  state.status != AuthStatus.initial && 
-                  state.status != AuthStatus.loading)
+              .where(
+                (state) =>
+                    state.status != AuthStatus.initial &&
+                    state.status != AuthStatus.loading,
+              )
               .first
               .timeout(
                 const Duration(seconds: 5),
@@ -118,7 +129,9 @@ class _MirathAppState extends State<MirathApp> {
 
         if (authStatus == AuthStatus.authenticated) {
           // Authenticated users land on Home first, then the shared item.
-          MyLogger.info('[DeepLink] User authenticated. Navigating to home then $target');
+          MyLogger.info(
+            '[DeepLink] User authenticated. Navigating to home then $target',
+          );
           appRouter.go(RouteNames.home);
           appRouter.push(target!);
           return;
@@ -126,11 +139,10 @@ class _MirathAppState extends State<MirathApp> {
 
         // Unauthenticated users must sign in first to avoid protected screens
         // firing requests and showing auth-token errors.
-        MyLogger.info('[DeepLink] User not authenticated. Redirecting to signin with target: $target');
-        appRouter.go(
-          RouteNames.signin,
-          extra: target,
+        MyLogger.info(
+          '[DeepLink] User not authenticated. Redirecting to signin with target: $target',
         );
+        appRouter.go(RouteNames.signin, extra: target);
       } catch (e) {
         MyLogger.error('[DeepLink] Failed to handle deep link: $e');
       }
@@ -146,6 +158,9 @@ class _MirathAppState extends State<MirathApp> {
       routerConfig: appRouter,
       theme: MyTheme.lightTheme(context, const Locale('en')),
       darkTheme: MyTheme.darkTheme(context, const Locale('en')),
+      builder: (context, child) {
+        return _AppConnectivityBanner(child: child ?? const SizedBox.shrink());
+      },
 
       localizationsDelegates: const [
         S.delegate,
@@ -154,6 +169,68 @@ class _MirathAppState extends State<MirathApp> {
         GlobalCupertinoLocalizations.delegate,
       ],
       supportedLocales: S.delegate.supportedLocales,
+    );
+  }
+}
+
+class _AppConnectivityBanner extends StatelessWidget {
+  final Widget child;
+
+  const _AppConnectivityBanner({required this.child});
+
+  @override
+  Widget build(BuildContext context) {
+    return StreamBuilder<bool>(
+      stream: NetworkManager.instance.connectionStream,
+      initialData: NetworkManager.instance.currentConnectionStatus,
+      builder: (context, snapshot) {
+        final isConnected = snapshot.data ?? true;
+
+        return Column(
+          children: [
+            Expanded(child: child),
+            if (!isConnected)
+              SafeArea(
+                top: false,
+                child: Material(
+                  color: Colors.transparent,
+                  child: Container(
+                    height: 24,
+                    width: double.infinity,
+                    padding: EdgeInsets.zero,
+                    decoration: const BoxDecoration(
+                      gradient: LinearGradient(
+                        colors: [Color(0xFFE5484D), Color(0xFFB42318)],
+                        begin: Alignment.centerLeft,
+                        end: Alignment.centerRight,
+                      ),
+                    ),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        const Icon(
+                          Icons.wifi_off_rounded,
+                          color: Colors.white,
+                          size: 13,
+                        ),
+                        const SizedBox(width: 6),
+                        Text(
+                          'No internet connection',
+                          style: Theme.of(context).textTheme.labelSmall
+                              ?.copyWith(
+                                color: Colors.white,
+                                fontWeight: FontWeight.w700,
+                                height: 1,
+                              ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+          ],
+        );
+      },
     );
   }
 }

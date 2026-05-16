@@ -10,6 +10,8 @@ import '../cubit/community_state.dart';
 import '../widgets/discussion_card.dart';
 import '../widgets/add_discussion_card.dart';
 import '../widgets/discussion_shimmer_loading.dart';
+import '../../../../core/network/network_manager.dart';
+import '../../../../core/ui/widgets/state_views.dart';
 
 class DiscussionTab extends StatefulWidget {
   const DiscussionTab({super.key});
@@ -52,107 +54,146 @@ class _DiscussionTabState extends State<DiscussionTab> {
         if (state is CommunityDiscussionsLoaded) {
           final discussions = state.discussions;
 
-          if (discussions.isEmpty) {
-            return Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Icon(
-                    Icons.forum_outlined,
-                    size: 80,
-                    color: MyColors.primaryShade300,
-                  ),
-                  SizedBox(height: MySizes.spaceMd(context)),
-                  Text(
-                    'No discussions yet',
-                    style: TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.w600,
-                      color: MyColors.primaryShade700,
+          return RefreshIndicator(
+            onRefresh: () =>
+                context.read<CommunityCubit>().refreshDiscussions(),
+            child: discussions.isEmpty
+                ? ListView(
+                    physics: const AlwaysScrollableScrollPhysics(),
+                    children: [
+                      SizedBox(
+                        height: MediaQuery.of(context).size.height * 0.45,
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Icon(
+                              Icons.forum_outlined,
+                              size: 80,
+                              color: MyColors.primaryShade300,
+                            ),
+                            SizedBox(height: MySizes.spaceMd(context)),
+                            Text(
+                              'No discussions yet',
+                              style: TextStyle(
+                                fontSize: 18,
+                                fontWeight: FontWeight.w600,
+                                color: MyColors.primaryShade700,
+                              ),
+                            ),
+                            SizedBox(height: MySizes.spaceXs(context)),
+                            Text(
+                              'Be the first to start a discussion!',
+                              style: TextStyle(
+                                fontSize: 14,
+                                color: MyColors.primaryShade500,
+                              ),
+                            ),
+                            SizedBox(height: MySizes.spaceLg(context)),
+                            ElevatedButton.icon(
+                              onPressed: () {
+                                context.push(RouteNames.addDiscussion);
+                              },
+                              icon: const Icon(Icons.add_comment),
+                              label: Text(
+                                S.of(context).start_discussion_button,
+                              ),
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: MyColors.primaryColor,
+                                foregroundColor: Colors.white,
+                                padding: EdgeInsets.symmetric(
+                                  horizontal: MySizes.spaceLg(context),
+                                  vertical: MySizes.spaceSm(context),
+                                ),
+                                textStyle: const TextStyle(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.w600,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  )
+                : ListView.separated(
+                    controller: scrollController,
+                    physics: const AlwaysScrollableScrollPhysics(),
+                    padding: EdgeInsets.only(
+                      top: MySizes.spaceMd(context),
+                      bottom:
+                          kBottomNavigationBarHeight +
+                          MySizes.spaceMd(context) +
+                          MediaQuery.of(context).padding.bottom,
                     ),
-                  ),
-                  SizedBox(height: MySizes.spaceXs(context)),
-                  Text(
-                    'Be the first to start a discussion!',
-                    style: TextStyle(
-                      fontSize: 14,
-                      color: MyColors.primaryShade500,
-                    ),
-                  ),
-                  SizedBox(height: MySizes.spaceLg(context)),
-                  ElevatedButton.icon(
-                    onPressed: () {
-                      context.push(RouteNames.addDiscussion);
+                    separatorBuilder: (context, index) =>
+                        SizedBox(height: MySizes.spaceMd(context)),
+                    itemBuilder: (context, index) {
+                      if (index == 0) {
+                        return const AddDiscussionCard();
+                      }
+
+                      final discussionIndex = index - 1;
+
+                      if (discussionIndex >= discussions.length) {
+                        return const Center(
+                          child: Padding(
+                            padding: EdgeInsets.all(16.0),
+                            child: CircularProgressIndicator(
+                              color: MyColors.primaryColor,
+                            ),
+                          ),
+                        );
+                      }
+
+                      return DiscussionCard(
+                        discussion: discussions[discussionIndex],
+                        onTap: () {
+                          context.push(
+                            RouteNames.discussionDetailsRoute(
+                              discussions[discussionIndex].id,
+                            ),
+                            extra: discussions[discussionIndex],
+                          );
+                        },
+                      );
                     },
-                    icon: const Icon(Icons.add_comment),
-                    label: Text(S.of(context).start_discussion_button),
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: MyColors.primaryColor,
-                      foregroundColor: Colors.white,
-                      padding: EdgeInsets.symmetric(
-                        horizontal: MySizes.spaceLg(context),
-                        vertical: MySizes.spaceSm(context),
-                      ),
-                      textStyle: const TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.w600,
-                      ),
-                    ),
+                    itemCount:
+                        discussions.length + 1 + (state.isLoadingMore ? 1 : 0),
                   ),
-                ],
-              ),
-            );
-          }
-
-          return ListView.separated(
-            controller: scrollController,
-            padding: EdgeInsets.only(
-              top: MySizes.spaceMd(context),
-              bottom:
-                  kBottomNavigationBarHeight +
-                  MySizes.spaceMd(context) +
-                  MediaQuery.of(context).padding.bottom,
-            ),
-            separatorBuilder: (context, index) =>
-                SizedBox(height: MySizes.spaceMd(context)),
-            itemBuilder: (context, index) {
-              // Add discussion prompt card at the top
-              if (index == 0) {
-                return const AddDiscussionCard();
-              }
-
-              // Adjust index for actual discussions
-              final discussionIndex = index - 1;
-
-              if (discussionIndex >= discussions.length) {
-                return const Center(
-                  child: Padding(
-                    padding: EdgeInsets.all(16.0),
-                    child: CircularProgressIndicator(
-                      color: MyColors.primaryColor,
-                    ),
-                  ),
-                );
-              }
-
-              return DiscussionCard(
-                discussion: discussions[discussionIndex],
-                onTap: () {
-                  context.push(
-                    RouteNames.discussionDetailsRoute(
-                      discussions[discussionIndex].id,
-                    ),
-                    extra: discussions[discussionIndex],
-                  );
-                },
-              );
-            },
-            itemCount: discussions.length + 1 + (state.isLoadingMore ? 1 : 0),
           );
         }
 
         if (state is CommunityError) {
-          return Center(child: Text(state.message));
+          final offline = !NetworkManager.instance.currentConnectionStatus;
+          return RefreshIndicator(
+            onRefresh: () =>
+                context.read<CommunityCubit>().refreshDiscussions(),
+            child: ListView(
+              physics: const AlwaysScrollableScrollPhysics(),
+              children: [
+                SizedBox(
+                  height: MediaQuery.of(context).size.height * 0.4,
+                  child: offline
+                      ? OfflineStateView(
+                          title: 'Offline',
+                          message: state.message,
+                          actionLabel: 'Retry',
+                          onAction: () => context
+                              .read<CommunityCubit>()
+                              .refreshDiscussions(),
+                        )
+                      : ErrorStateView(
+                          title: 'Error',
+                          message: state.message,
+                          actionLabel: 'Retry',
+                          onAction: () => context
+                              .read<CommunityCubit>()
+                              .refreshDiscussions(),
+                        ),
+                ),
+              ],
+            ),
+          );
         }
 
         return Center(child: Text(S.of(context).empty_discussions_message));

@@ -1,4 +1,5 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:mirath/core/network/network_manager.dart';
 import 'package:mirath/core/utils/my_logger.dart';
 import '../../../../core/error/failuors.dart';
 import '../../../../core/services/user_cache_service.dart';
@@ -36,7 +37,14 @@ class DiscussionDetailsCubit extends Cubit<DiscussionDetailsState> {
     required this.userCacheService,
   }) : super(const DiscussionDetailsInitial());
 
-  Future<void> loadDiscussionDetails(String discussionId) async {
+  Future<void> loadDiscussionDetails(
+    String discussionId, {
+    bool forceRefresh = false,
+  }) async {
+    if (forceRefresh && !await NetworkManager.instance.isConnected) {
+      return;
+    }
+
     emit(const DiscussionDetailsLoading());
 
     final discussionResult = await getDiscussionByIdUseCase(discussionId);

@@ -1,9 +1,11 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../../../core/network/network_manager.dart';
 import '../../../../core/usecases/no_params.dart';
 import '../../../users/domain/entities/user.dart' hide Interest;
 import '../../../users/domain/usecases/get_current_user_usecase.dart';
 import '../../domain/entities/paper_entity.dart';
+import '../../domain/usecases/home_cache_usecases.dart';
 import '../../domain/usecases/get_paper_categories_usecase.dart';
 import '../../domain/usecases/get_recent_papers_usecase.dart';
 import '../../domain/usecases/get_recommendations_usecase.dart';
@@ -12,6 +14,7 @@ import '../../domain/usecases/unsave_paper_usecase.dart';
 import 'home_state.dart';
 
 class HomeCubit extends Cubit<HomeState> {
+  final HomeCacheUseCases homeCacheUseCases;
   final GetRecentPapersUseCase getRecentPapersUseCase;
   final GetRecommendationsUseCase getRecommendationsUseCase;
   final GetCurrentUserUsecase getCurrentUserUsecase;
@@ -20,6 +23,7 @@ class HomeCubit extends Cubit<HomeState> {
   final UnsavePaperUseCase unsavePaperUseCase;
 
   HomeCubit({
+    required this.homeCacheUseCases,
     required this.getRecentPapersUseCase,
     required this.getRecommendationsUseCase,
     required this.getCurrentUserUsecase,
@@ -43,9 +47,8 @@ class HomeCubit extends Cubit<HomeState> {
     String? category,
     int page = 1,
     int limit = 10,
+    bool forceRefresh = false,
   }) async {
-    emit(const HomeLoading());
-
     // Reset page number for recent papers
     _recentPapersPage = 1;
     // Treat empty string as null (for "All" filter)
@@ -55,31 +58,79 @@ class HomeCubit extends Cubit<HomeState> {
     } else {
       _selectedCategory = null;
     }
+
+    final cachedPapers = await homeCacheUseCases.getCachedRecentPapers(
+      category: categoryToUse,
+      page: page,
+      limit: limit,
+    );
+
+    if (cachedPapers.isNotEmpty) {
+      emit(HomeRecentPapersLoaded(recentPapers: cachedPapers));
+    } else {
+      emit(const HomeLoading());
+    }
+
+    if (cachedPapers.isNotEmpty && !forceRefresh) {
+      return;
+    }
+
     final result = await getRecentPapersUseCase(
       GetRecentPapersParams(category: categoryToUse, page: page, limit: limit),
     );
 
     result.fold(
       (failure) {
-        emit(const HomeError(message: 'Failed to fetch recent papers'));
+        if (cachedPapers.isEmpty) {
+          emit(HomeError(message: failure.message));
+        }
       },
       (papers) {
+        homeCacheUseCases.cacheRecentPapers(
+          papers,
+          category: categoryToUse,
+          page: page,
+          limit: limit,
+        );
         emit(HomeRecentPapersLoaded(recentPapers: papers));
       },
     );
   }
 
-  Future<void> getRecommendations({int page = 1, int limit = 5}) async {
-    emit(const HomeLoading());
+  Future<void> getRecommendations({
+    int page = 1,
+    int limit = 5,
+    bool forceRefresh = false,
+  }) async {
+    final cachedRecommendations = await homeCacheUseCases
+        .getCachedRecommendations(page: page, limit: limit);
+
+    if (cachedRecommendations.isNotEmpty) {
+      emit(HomeRecommendationsLoaded(recommendations: cachedRecommendations));
+    } else {
+      emit(const HomeLoading());
+    }
+
+    if (cachedRecommendations.isNotEmpty && !forceRefresh) {
+      return;
+    }
+
     final result = await getRecommendationsUseCase(
       GetRecommendationsParams(page: page, limit: limit),
     );
 
     result.fold(
       (failure) {
-        emit(const HomeError(message: 'Failed to fetch recommendations'));
+        if (cachedRecommendations.isEmpty) {
+          emit(HomeError(message: failure.message));
+        }
       },
       (papers) {
+        homeCacheUseCases.cacheRecommendations(
+          papers,
+          page: page,
+          limit: limit,
+        );
         emit(HomeRecommendationsLoaded(recommendations: papers));
       },
     );
@@ -89,14 +140,48 @@ class HomeCubit extends Cubit<HomeState> {
     String? category,
     int recentLimit = 10,
     int recommendationLimit = 5,
+    bool forceRefresh = false,
   }) async {
-    emit(const HomeLoading());
+    if (forceRefresh && !await NetworkManager.instance.isConnected) {
+      return;
+    }
 
     _recommendationPage = 1;
     _recentPapersPage = 1;
     if (category != null) {
       _selectedCategory = category;
     }
+
+    final categoryToUse = category?.isEmpty == true ? null : category;
+    final cachedRecentPapers = await homeCacheUseCases.getCachedRecentPapers(
+      category: categoryToUse,
+      page: 1,
+      limit: recentLimit,
+    );
+    final cachedRecommendations = await homeCacheUseCases
+        .getCachedRecommendations(page: 1, limit: recommendationLimit);
+    final cachedCategories = await homeCacheUseCases.getCachedPaperCategories(
+      page: 1,
+      limit: 20,
+    );
+
+    if (cachedRecentPapers.isNotEmpty ||
+        cachedRecommendations.isNotEmpty ||
+        cachedCategories.isNotEmpty) {
+      emit(
+        HomePapersLoaded(
+          recentPapers: cachedRecentPapers,
+          recommendations: cachedRecommendations,
+          categories: cachedCategories,
+          selectedCategory: _selectedCategory,
+          hasReachedMaxRecommendations:
+              cachedRecommendations.length < recommendationLimit,
+        ),
+      );
+    } else {
+      emit(const HomeLoading());
+    }
+
     // Load paper categories
     final categoriesResult = await getPaperCategoriesUseCase(
       GetPaperCategoriesParams(page: 1, limit: 20),
@@ -104,8 +189,19 @@ class HomeCubit extends Cubit<HomeState> {
 
     // Load recent papers
     final recentResult = await getRecentPapersUseCase(
-      GetRecentPapersParams(category: category, page: 1, limit: recentLimit),
+      GetRecentPapersParams(
+        category: categoryToUse,
+        page: 1,
+        limit: recentLimit,
+      ),
     );
+
+    if ((cachedRecentPapers.isNotEmpty ||
+            cachedRecommendations.isNotEmpty ||
+            cachedCategories.isNotEmpty) &&
+        !forceRefresh) {
+      return;
+    }
 
     // Load recommendations
     final recommendationResult = await getRecommendationsUseCase(
@@ -117,12 +213,16 @@ class HomeCubit extends Cubit<HomeState> {
 
     recentResult.fold(
       (failure) {
-        emit(const HomeError(message: 'Failed to fetch papers'));
+        if (cachedRecentPapers.isEmpty && cachedRecommendations.isEmpty) {
+          emit(HomeError(message: failure.message));
+        }
       },
       (recentPapers) {
         recommendationResult.fold(
           (failure) {
-            emit(const HomeError(message: 'Failed to fetch recommendations'));
+            if (cachedRecentPapers.isEmpty && cachedRecommendations.isEmpty) {
+              emit(HomeError(message: failure.message));
+            }
           },
           (recommendations) {
             categoriesResult.fold(
@@ -140,6 +240,22 @@ class HomeCubit extends Cubit<HomeState> {
                 );
               },
               (categories) {
+                homeCacheUseCases.cacheRecentPapers(
+                  recentPapers,
+                  category: categoryToUse,
+                  page: 1,
+                  limit: recentLimit,
+                );
+                homeCacheUseCases.cacheRecommendations(
+                  recommendations,
+                  page: 1,
+                  limit: recommendationLimit,
+                );
+                homeCacheUseCases.cachePaperCategories(
+                  categories,
+                  page: 1,
+                  limit: 20,
+                );
                 emit(
                   HomePapersLoaded(
                     recentPapers: recentPapers,
@@ -196,6 +312,7 @@ class HomeCubit extends Cubit<HomeState> {
                 : (currentState as HomePapersUpdated).recommendations,
             categories: categories,
             selectedCategory: _selectedCategory,
+            hasReachedMaxRecent: true,
           ),
         );
       },
@@ -341,6 +458,12 @@ class HomeCubit extends Cubit<HomeState> {
       (newPapers) {
         if (isClosed) return;
         final allPapers = List.of(currentPapers)..addAll(newPapers);
+        homeCacheUseCases.cacheRecentPapers(
+          allPapers,
+          category: categoryToUse,
+          page: 1,
+          limit: limit,
+        );
 
         if (currentState is HomeRecentPapersLoaded) {
           emit(
@@ -377,6 +500,7 @@ class HomeCubit extends Cubit<HomeState> {
     result.fold((failure) {}, (_) {
       // Update paper isSaved status in state
       _updatePaperSavedStatus(paperId, true);
+      homeCacheUseCases.updatePaperSavedInCache(paperId, true);
     });
   }
 
@@ -390,6 +514,7 @@ class HomeCubit extends Cubit<HomeState> {
       (_) {
         // Update paper isSaved status in state
         _updatePaperSavedStatus(paperId, false);
+        homeCacheUseCases.updatePaperSavedInCache(paperId, false);
       },
     );
   }
