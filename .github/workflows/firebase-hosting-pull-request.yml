@@ -30,7 +30,7 @@ jobs:
       - run: flutter pub get
 
       # Build Flutter web
-      - run: flutter build web --release --web-renderer html --no-tree-shake-icons
+      - run: flutter build web --release --no-tree-shake-icons
 
       # Deploy preview to Firebase
       - uses: FirebaseExtended/action-hosting-deploy@v0
