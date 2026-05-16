@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:hugeicons/hugeicons.dart';
-import 'package:mirath/core/utils/my_colors.dart';
-import 'package:mirath/core/utils/my_sizes.dart';
-import 'package:mirath/features/common/widgets/my_back_icon.dart';
-import 'package:mirath/features/library/presentation/widgets/show_create_list_dialog.dart';
-import 'tabs/your_lists_tab.dart';
+
+import '../../../../core/utils/my_colors.dart';
+import '../../../../core/utils/my_sizes.dart';
+import '../../../common/widgets/my_back_icon.dart';
+import '../widgets/show_create_list_dialog.dart';
 import 'tabs/saved_papers_tab.dart';
+import 'tabs/your_lists_tab.dart';
 
 class ReadingListScreen extends StatelessWidget {
   const ReadingListScreen({super.key});

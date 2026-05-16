@@ -1,14 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:hugeicons_pro/hugeicons.dart';
-import 'package:mirath/generated/l10n.dart';
+
+import '../../../../../core/helpers/my_loaders.dart';
 import '../../../../../core/helpers/responsive_helper.dart';
 import '../../../../../core/services/user_cache_service.dart';
 import '../../../../../core/utils/my_colors.dart';
 import '../../../../../core/utils/my_extenstions.dart';
 import '../../../../../core/utils/my_formaters.dart';
 import '../../../../../core/utils/my_sizes.dart';
-import '../../../../../core/helpers/my_loaders.dart';
+import '../../../../../generated/l10n.dart';
 import '../../../../../injection/injection_container.dart';
 import '../../../../auth/data/models/auth_user_data.dart';
 import '../../../../common/widgets/profile_avatar.dart';

@@ -1,15 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
-import 'package:mirath/core/constants/route_names.dart';
 
+import '../../../../core/constants/route_names.dart';
+import '../../../../core/network/network_manager.dart';
+import '../../../../core/ui/widgets/state_views.dart';
 import '../../../../core/utils/my_sizes.dart';
 import '../../../../generated/l10n.dart';
 import '../../../../injection/injection_container.dart';
 import '../cubit/reading_list_cubit.dart';
 import '../cubit/reading_list_state.dart';
-import '../../../../core/network/network_manager.dart';
-import '../../../../core/ui/widgets/state_views.dart';
 import '../widgets/reading_list_card.dart';
 import '../widgets/reading_list_shimmer_loading.dart';
 

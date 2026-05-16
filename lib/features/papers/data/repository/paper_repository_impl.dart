@@ -1,14 +1,15 @@
 import 'package:dartz/dartz.dart';
-import 'package:mirath/core/error/failuors.dart';
-import 'package:mirath/core/network/network_manager.dart';
-import 'package:mirath/features/papers/data/data_sources/paper_remote_data_source.dart';
-import 'package:mirath/features/papers/domain/entites/full_paper_entity.dart';
-import 'package:mirath/features/papers/domain/repository/paper_repository.dart';
-import 'package:mirath/core/cache/hive_cache_service.dart';
-import 'package:mirath/core/api/repository_base.dart';
-import 'package:mirath/core/api/fetch_policy.dart';
-import 'package:mirath/core/api/resource.dart';
-import 'package:mirath/core/cache/cache_keys.dart';
+
+import '../../../../core/api/fetch_policy.dart';
+import '../../../../core/api/repository_base.dart';
+import '../../../../core/api/resource.dart';
+import '../../../../core/cache/cache_keys.dart';
+import '../../../../core/cache/hive_cache_service.dart';
+import '../../../../core/error/failuors.dart';
+import '../../../../core/network/network_manager.dart';
+import '../../domain/entites/full_paper_entity.dart';
+import '../../domain/repository/paper_repository.dart';
+import '../data_sources/paper_remote_data_source.dart';
 import '../models/full_paper_model.dart';
 
 class PaperRepositoryImpl extends PaperRepository with RepositoryBase {

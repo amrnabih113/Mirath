@@ -1,5 +1,5 @@
+import '../../../../core/utils/my_logger.dart';
 import '../../domain/entities/discussion_author.dart';
-import 'package:mirath/core/utils/my_logger.dart';
 
 class DiscussionAuthorModel extends DiscussionAuthor {
   const DiscussionAuthorModel({

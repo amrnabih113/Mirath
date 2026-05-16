@@ -1,7 +1,6 @@
-import 'package:mirath/core/utils/my_constants.dart';
-import 'package:mirath/features/papers/data/models/full_paper_model.dart';
-
 import '../../../../core/network/dio_client.dart';
+import '../../../../core/utils/my_constants.dart';
+import '../models/full_paper_model.dart';
 
 abstract class PaperRemoteDataSource {
   Future<FullPaperModel> getPaperById(String id);

@@ -1,7 +1,7 @@
 import 'dart:async';
 import 'dart:math';
 
-import 'package:mirath/core/sync/retry_queue.dart';
+import 'retry_queue.dart';
 import '../network/network_manager.dart';
 
 /// SyncManager processes pending operations from the RetryQueue and executes

@@ -1,7 +1,7 @@
 import 'package:dartz/dartz.dart';
-import 'package:mirath/core/cache/cache_keys.dart';
-import 'package:mirath/core/cache/hive_cache_service.dart';
-import 'package:mirath/core/error/failuors.dart';
+import '../../../../core/cache/cache_keys.dart';
+import '../../../../core/cache/hive_cache_service.dart';
+import '../../../../core/error/failuors.dart';
 import '../../../../core/error/exceptions.dart';
 import '../../domain/entities/add_paper_to_list_params.dart';
 import '../../domain/entities/create_reading_list_params.dart';
@@ -11,9 +11,9 @@ import '../../domain/entities/update_reading_list_params.dart';
 import '../../domain/repositories/reading_list_repository.dart';
 import '../data_sources/reading_list_remote_data_source.dart';
 import '../models/reading_list_model.dart';
-import 'package:mirath/core/api/repository_base.dart';
-import 'package:mirath/core/api/fetch_policy.dart';
-import 'package:mirath/core/api/resource.dart';
+import '../../../../core/api/repository_base.dart';
+import '../../../../core/api/fetch_policy.dart';
+import '../../../../core/api/resource.dart';
 
 class ReadingListRepositoryImpl
     with RepositoryBase

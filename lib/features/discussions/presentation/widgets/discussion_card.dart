@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:mirath/core/constants/route_names.dart';
+import '../../../../core/constants/route_names.dart';
 
 import '../../../../core/helpers/responsive_helper.dart';
 import '../../../home/domain/entities/paper_entity.dart';

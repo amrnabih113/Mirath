@@ -1,5 +1,5 @@
-import 'package:mirath/features/library/domain/entities/saved_papers.dart';
-import 'package:mirath/features/papers/data/models/paper_model.dart';
+import '../../../papers/data/models/paper_model.dart';
+import '../../domain/entities/saved_papers.dart';
 
 class SavedPapersModel {
   final int size;

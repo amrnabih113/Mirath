@@ -2,22 +2,23 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hugeicons/hugeicons.dart';
-import 'package:mirath/core/constants/route_names.dart';
-import 'package:mirath/core/helpers/responsive_helper.dart';
-import 'package:mirath/core/services/sharing_service.dart';
-import 'package:mirath/core/utils/my_sizes.dart';
-import 'package:mirath/features/common/widgets/my_back_icon.dart';
-import 'package:mirath/features/home/domain/entities/paper_entity.dart';
-import 'package:mirath/features/home/presentation/cubit/home_cubit.dart';
-import 'package:mirath/features/papers/domain/usecases/get_paper_by_id_usecase.dart';
-import 'package:mirath/generated/l10n.dart';
-import 'package:mirath/injection/injection_container.dart';
-import 'package:mirath/features/papers/presentation/widgets/abstract_section.dart';
-import 'package:mirath/features/papers/presentation/widgets/expainsion_tile_widget.dart';
-import 'package:mirath/features/papers/presentation/widgets/paper_info.dart';
-import 'package:mirath/features/reading_lists/presentation/widgets/add_to_reading_list_dialog.dart';
+
+import '../../../../core/constants/route_names.dart';
+import '../../../../core/helpers/responsive_helper.dart';
 import '../../../../core/network/network_manager.dart';
+import '../../../../core/services/sharing_service.dart';
 import '../../../../core/ui/widgets/state_views.dart';
+import '../../../../core/utils/my_sizes.dart';
+import '../../../../generated/l10n.dart';
+import '../../../../injection/injection_container.dart';
+import '../../../common/widgets/my_back_icon.dart';
+import '../../../home/domain/entities/paper_entity.dart';
+import '../../../home/presentation/cubit/home_cubit.dart';
+import '../../../reading_lists/presentation/widgets/add_to_reading_list_dialog.dart';
+import '../../domain/usecases/get_paper_by_id_usecase.dart';
+import '../widgets/abstract_section.dart';
+import '../widgets/expainsion_tile_widget.dart';
+import '../widgets/paper_info.dart';
 
 class PaperScreen extends StatefulWidget {
   final PaperEntity? paper;

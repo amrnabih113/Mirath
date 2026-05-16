@@ -1,5 +1,5 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:mirath/core/network/network_manager.dart';
+import '../../../../core/network/network_manager.dart';
 import '../../domain/entities/add_paper_to_list_params.dart';
 import '../../domain/entities/create_reading_list_params.dart';
 import '../../domain/entities/reading_list_query_params.dart';

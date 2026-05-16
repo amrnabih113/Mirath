@@ -1,4 +1,4 @@
-import 'package:mirath/features/home/domain/entities/paper_entity.dart';
+import '../../../home/domain/entities/paper_entity.dart';
 
 class ReadingHistoryPaper {
   final String paperId;

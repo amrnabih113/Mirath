@@ -1,6 +1,6 @@
 import 'package:dartz/dartz.dart';
-import 'package:mirath/core/error/failuors.dart';
-import 'package:mirath/features/papers/domain/entites/full_paper_entity.dart';
+import '../../../../core/error/failuors.dart';
+import '../entites/full_paper_entity.dart';
 import '../../../../core/usecases/usecase.dart';
 import '../repository/paper_repository.dart';
 

@@ -1,9 +1,9 @@
 import 'dart:async';
 
-import 'package:mirath/core/api/fetch_policy.dart';
-import 'package:mirath/core/api/resource.dart';
-import 'package:mirath/core/cache/hive_cache_service.dart';
-import 'package:mirath/core/error/failuors.dart';
+import 'fetch_policy.dart';
+import 'resource.dart';
+import '../cache/hive_cache_service.dart';
+import '../error/failuors.dart';
 
 /// A reusable repository helper implementing common fetch strategies.
 /// Subclasses can call [fetchWithCache] to get consistent stale-while-revalidate

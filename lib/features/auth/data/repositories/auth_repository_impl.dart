@@ -1,10 +1,10 @@
 import 'package:dartz/dartz.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:google_sign_in/google_sign_in.dart';
-import 'package:mirath/core/cache/hive_cache_service.dart';
-import 'package:mirath/core/services/local_storage_service.dart';
 
+import '../../../../core/cache/hive_cache_service.dart';
 import '../../../../core/error/failuors.dart';
+import '../../../../core/services/local_storage_service.dart';
 import '../../../../core/services/secure_storage_service.dart';
 import '../../../../core/services/user_cache_service.dart';
 import '../../../../core/utils/my_constants.dart';

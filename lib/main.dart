@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
-import 'package:mirath/core/constants/route_names.dart';
+import 'core/constants/route_names.dart';
 
 import 'app_router.dart';
 import 'core/network/network_manager.dart';

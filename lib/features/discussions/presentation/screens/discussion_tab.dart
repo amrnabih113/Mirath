@@ -1,17 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
-import 'package:mirath/core/utils/my_colors.dart';
-import 'package:mirath/generated/l10n.dart';
-import 'package:mirath/core/constants/route_names.dart';
-import '../../../../core/utils/my_sizes.dart';
-import '../cubit/community_cubit.dart';
-import '../cubit/community_state.dart';
-import '../widgets/discussion_card.dart';
-import '../widgets/add_discussion_card.dart';
-import '../widgets/discussion_shimmer_loading.dart';
+
+import '../../../../core/constants/route_names.dart';
 import '../../../../core/network/network_manager.dart';
 import '../../../../core/ui/widgets/state_views.dart';
+import '../../../../core/utils/my_colors.dart';
+import '../../../../core/utils/my_sizes.dart';
+import '../../../../generated/l10n.dart';
+import '../cubit/community_cubit.dart';
+import '../cubit/community_state.dart';
+import '../widgets/add_discussion_card.dart';
+import '../widgets/discussion_card.dart';
+import '../widgets/discussion_shimmer_loading.dart';
 
 class DiscussionTab extends StatefulWidget {
   const DiscussionTab({super.key});

@@ -1,6 +1,6 @@
 import 'package:dio/dio.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:mirath/features/users/data/models/follows_model.dart';
+import '../models/follows_model.dart';
 
 import '../../../../core/network/dio_client.dart';
 import '../../../../core/utils/my_constants.dart';

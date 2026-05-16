@@ -1,16 +1,16 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../core/network/network_manager.dart';
-import 'package:mirath/injection/injection_container.dart';
-import 'package:mirath/core/sync/retry_service.dart';
+import '../../../../core/sync/retry_service.dart';
 import '../../../../core/usecases/no_params.dart';
+import '../../../../injection/injection_container.dart';
 import '../../../users/domain/entities/user.dart' hide Interest;
 import '../../../users/domain/usecases/get_current_user_usecase.dart';
 import '../../domain/entities/paper_entity.dart';
-import '../../domain/usecases/home_cache_usecases.dart';
 import '../../domain/usecases/get_paper_categories_usecase.dart';
 import '../../domain/usecases/get_recent_papers_usecase.dart';
 import '../../domain/usecases/get_recommendations_usecase.dart';
+import '../../domain/usecases/home_cache_usecases.dart';
 import '../../domain/usecases/save_paper_usecase.dart';
 import '../../domain/usecases/unsave_paper_usecase.dart';
 import 'home_state.dart';

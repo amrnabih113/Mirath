@@ -1,11 +1,11 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:uuid/uuid.dart';
 import 'dart:async';
-import 'package:mirath/injection/injection_container.dart';
-import 'package:mirath/core/cache/cache_keys.dart';
-import 'package:mirath/core/cache/hive_cache_service.dart';
-import 'package:mirath/core/cache/cache_notifier.dart';
-import 'package:mirath/core/sync/retry_service.dart';
+import '../../../../injection/injection_container.dart';
+import '../../../../core/cache/cache_keys.dart';
+import '../../../../core/cache/hive_cache_service.dart';
+import '../../../../core/cache/cache_notifier.dart';
+import '../../../../core/sync/retry_service.dart';
 
 import '../../domain/entities/chat_message.dart';
 import 'chatbot_state.dart';

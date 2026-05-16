@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:mirath/core/cache/hive_cache_service.dart';
+import '../../cache/hive_cache_service.dart';
 
 class PendingQueueViewer extends StatefulWidget {
   final HiveCacheService cacheService;

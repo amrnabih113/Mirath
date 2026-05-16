@@ -1,7 +1,7 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:mirath/features/home/domain/entities/search_history_item.dart';
 
 import '../../../../core/usecases/no_params.dart';
+import '../../domain/entities/search_history_item.dart';
 import '../../domain/usecases/clear_search_history_usecase.dart';
 import '../../domain/usecases/delete_search_history_usecase.dart';
 import '../../domain/usecases/get_search_history_usecase.dart';

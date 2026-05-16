@@ -1,9 +1,12 @@
 import 'package:dartz/dartz.dart';
-import 'package:mirath/core/cache/cache_keys.dart';
-import 'package:mirath/core/cache/hive_cache_service.dart';
-import 'package:mirath/core/utils/my_logger.dart';
 
+import '../../../../core/api/fetch_policy.dart';
+import '../../../../core/api/repository_base.dart';
+import '../../../../core/api/resource.dart';
+import '../../../../core/cache/cache_keys.dart';
+import '../../../../core/cache/hive_cache_service.dart';
 import '../../../../core/error/failuors.dart';
+import '../../../../core/utils/my_logger.dart';
 import '../../domain/entities/comment.dart';
 import '../../domain/entities/create_comment_params.dart';
 import '../../domain/entities/create_discussion_params.dart';
@@ -13,9 +16,6 @@ import '../../domain/entities/vote_params.dart';
 import '../../domain/repositories/community_repository.dart';
 import '../data_sources/community_remote_data_source.dart';
 import '../models/discussion_model.dart';
-import 'package:mirath/core/api/repository_base.dart';
-import 'package:mirath/core/api/fetch_policy.dart';
-import 'package:mirath/core/api/resource.dart';
 
 class CommunityRepositoryImpl
     with RepositoryBase

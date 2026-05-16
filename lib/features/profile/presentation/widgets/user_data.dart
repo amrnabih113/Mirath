@@ -1,14 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:hugeicons/hugeicons.dart';
-import 'package:mirath/core/utils/my_colors.dart';
-import 'package:mirath/core/utils/my_enums.dart';
-import 'package:mirath/core/utils/my_extenstions.dart';
-import 'package:mirath/core/utils/my_sizes.dart';
-import 'package:mirath/features/common/widgets/custum_text_button.dart';
-import 'package:mirath/features/common/widgets/info_row.dart';
-import 'package:mirath/features/common/widgets/tag_chip.dart';
-import 'package:mirath/features/users/domain/entities/user.dart';
+
+import '../../../../core/utils/my_colors.dart';
+import '../../../../core/utils/my_enums.dart';
+import '../../../../core/utils/my_extenstions.dart';
+import '../../../../core/utils/my_sizes.dart';
+import '../../../common/widgets/custum_text_button.dart';
+import '../../../common/widgets/info_row.dart';
+import '../../../common/widgets/tag_chip.dart';
+import '../../../users/domain/entities/user.dart';
 
 class UserData extends StatelessWidget {
   const UserData({

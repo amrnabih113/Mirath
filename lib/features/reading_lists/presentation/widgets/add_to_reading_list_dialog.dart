@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:hugeicons/hugeicons.dart';
-import 'package:mirath/core/utils/my_colors.dart';
-import 'package:mirath/features/home/domain/usecases/save_paper_usecase.dart';
-import 'package:mirath/features/home/domain/usecases/unsave_paper_usecase.dart';
-import 'package:mirath/generated/l10n.dart';
+import '../../../../core/utils/my_colors.dart';
+import '../../../home/domain/usecases/save_paper_usecase.dart';
+import '../../../home/domain/usecases/unsave_paper_usecase.dart';
+import '../../../../generated/l10n.dart';
 import '../../../../core/utils/my_extenstions.dart';
 import '../../../../core/utils/my_sizes.dart';
 import '../../../../core/helpers/my_loaders.dart';

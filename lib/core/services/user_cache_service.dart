@@ -1,7 +1,6 @@
 import 'dart:convert';
 
 import '../../features/auth/data/models/auth_user_data.dart';
-
 import 'local_storage_service.dart';
 
 class UserCacheService {

@@ -1,4 +1,4 @@
-import 'package:mirath/core/cache/hive_cache_service.dart';
+import '../cache/hive_cache_service.dart';
 import 'retry_queue.dart';
 
 /// Hive-backed implementation of [RetryQueue]. Stores the queue as a JSON list

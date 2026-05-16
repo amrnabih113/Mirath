@@ -1,15 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
-import 'package:mirath/core/constants/route_names.dart';
-import 'package:mirath/features/home/domain/entities/paper_entity.dart';
-import '../cubit/home_cubit.dart';
-import '../cubit/home_state.dart';
+
+import '../../../../core/constants/route_names.dart';
 import '../../../../core/helpers/responsive_helper.dart';
+import '../../../../core/ui/widgets/state_views.dart';
 import '../../../../core/utils/my_sizes.dart';
 import '../../../../generated/l10n.dart';
-import '../../../../core/ui/widgets/state_views.dart';
 import '../../../common/widgets/section_title.dart';
+import '../../domain/entities/paper_entity.dart';
+import '../cubit/home_cubit.dart';
+import '../cubit/home_state.dart';
 import '../widgets/category_items_list.dart';
 import '../widgets/home_search_bar.dart';
 import '../widgets/home_shimmer_loading.dart';

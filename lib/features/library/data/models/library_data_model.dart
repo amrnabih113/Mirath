@@ -1,4 +1,4 @@
-import 'package:mirath/features/library/domain/entities/library_data.dart';
+import '../../domain/entities/library_data.dart';
 
 class LibraryDataModel extends LibraryData {
   LibraryDataModel({

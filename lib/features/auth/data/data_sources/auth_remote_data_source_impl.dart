@@ -1,5 +1,6 @@
-import '../../../../core/network/dio_client.dart';
 import 'package:dio/dio.dart';
+
+import '../../../../core/network/dio_client.dart';
 import '../../../../core/utils/my_constants.dart';
 import '../models/auth_response_model.dart';
 import '../models/check_setup_response_model.dart';

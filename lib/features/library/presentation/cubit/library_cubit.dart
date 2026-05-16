@@ -1,17 +1,18 @@
 import 'package:bloc/bloc.dart';
-import 'package:mirath/features/library/domain/entities/library_data.dart';
-import 'package:mirath/features/library/domain/entities/reading_history.dart';
-import 'package:mirath/features/library/domain/entities/saved_papers.dart';
-import 'package:mirath/features/library/domain/usecases/clear_all_reading_history.dart';
-import 'package:mirath/features/library/domain/usecases/get_all_saved_papers.dart';
-import 'package:mirath/features/library/domain/usecases/get_library_data.dart';
-import 'package:mirath/features/library/domain/usecases/get_reading_history.dart';
-import 'package:mirath/features/library/domain/usecases/remove_paper_from_reading_history.dart';
-import 'package:mirath/features/library/domain/usecases/update_reading_history.dart';
-import 'package:mirath/core/cache/hive_cache_service.dart';
-import 'package:mirath/core/cache/cache_keys.dart';
-import 'package:mirath/core/cache/cache_notifier.dart';
-import 'package:mirath/features/library/data/models/library_data_model.dart';
+
+import '../../../../core/cache/cache_keys.dart';
+import '../../../../core/cache/cache_notifier.dart';
+import '../../../../core/cache/hive_cache_service.dart';
+import '../../data/models/library_data_model.dart';
+import '../../domain/entities/library_data.dart';
+import '../../domain/entities/reading_history.dart';
+import '../../domain/entities/saved_papers.dart';
+import '../../domain/usecases/clear_all_reading_history.dart';
+import '../../domain/usecases/get_all_saved_papers.dart';
+import '../../domain/usecases/get_library_data.dart';
+import '../../domain/usecases/get_reading_history.dart';
+import '../../domain/usecases/remove_paper_from_reading_history.dart';
+import '../../domain/usecases/update_reading_history.dart';
 
 part 'library_state.dart';
 

@@ -1,4 +1,5 @@
 import 'package:equatable/equatable.dart';
+
 import '../../../home/domain/entities/paper_entity.dart';
 import '../../domain/entites/highlight_entity.dart';
 import '../widgets/annotation_webview.dart';

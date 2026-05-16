@@ -1,7 +1,7 @@
 import 'package:dartz/dartz.dart';
-import 'package:mirath/core/error/failuors.dart';
-import 'package:mirath/core/utils/my_logger.dart';
 
+import '../../../../core/error/failuors.dart';
+import '../../../../core/utils/my_logger.dart';
 import '../../domain/entites/highlight_entity.dart';
 import '../../domain/entites/highlight_note_params.dart';
 import '../../domain/entites/paper_highlights_params.dart';

@@ -2,15 +2,16 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:mirath/core/constants/route_names.dart';
-import 'package:mirath/core/services/local_storage_service.dart';
-import 'package:mirath/core/services/user_cache_service.dart';
-import 'package:mirath/core/utils/my_colors.dart';
-import 'package:mirath/core/utils/my_constants.dart';
-import 'package:mirath/core/utils/my_sizes.dart';
-import 'package:mirath/features/users/domain/entities/user.dart';
-import 'package:mirath/injection/injection_container.dart';
+
+import '../../../../core/constants/route_names.dart';
+import '../../../../core/services/local_storage_service.dart';
+import '../../../../core/services/user_cache_service.dart';
+import '../../../../core/utils/my_colors.dart';
+import '../../../../core/utils/my_constants.dart';
+import '../../../../core/utils/my_sizes.dart';
+import '../../../../injection/injection_container.dart';
 import '../../../common/widgets/profile_avatar.dart';
+import '../../../users/domain/entities/user.dart';
 
 class AddDiscussionCard extends StatelessWidget {
   const AddDiscussionCard({super.key});

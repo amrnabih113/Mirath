@@ -2,16 +2,16 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:hugeicons_pro/hugeicons.dart';
 import 'package:intl/intl.dart';
-import 'package:mirath/core/helpers/my_loaders.dart';
-import 'package:mirath/features/common/widgets/tag_chip.dart';
-import 'package:mirath/features/home/presentation/cubit/home_cubit.dart';
-import 'package:mirath/features/papers/presentation/widgets/latex_renderer.dart';
-import '../../domain/entities/paper_entity.dart';
 
+import '../../../../core/helpers/my_loaders.dart';
 import '../../../../core/helpers/responsive_helper.dart';
 import '../../../../core/utils/my_colors.dart';
 import '../../../../core/utils/my_extenstions.dart';
 import '../../../../core/utils/my_sizes.dart';
+import '../../../common/widgets/tag_chip.dart';
+import '../../../papers/presentation/widgets/latex_renderer.dart';
+import '../../domain/entities/paper_entity.dart';
+import '../cubit/home_cubit.dart';
 
 class PaperCard extends StatefulWidget {
   const PaperCard({

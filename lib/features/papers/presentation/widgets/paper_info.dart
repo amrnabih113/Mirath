@@ -2,15 +2,16 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:mirath/core/constants/route_names.dart';
-import 'package:mirath/core/utils/my_colors.dart';
-import 'package:mirath/core/utils/my_extenstions.dart';
-import 'package:mirath/core/utils/my_sizes.dart';
-import 'package:mirath/features/common/widgets/tag_chip.dart';
-import 'package:mirath/features/home/domain/entities/paper_entity.dart';
-import 'package:mirath/features/library/presentation/cubit/library_cubit.dart';
-import 'package:mirath/features/papers/presentation/widgets/latex_renderer.dart';
-import 'package:mirath/features/papers/presentation/widgets/my_text_icon.dart';
+
+import '../../../../core/constants/route_names.dart';
+import '../../../../core/utils/my_colors.dart';
+import '../../../../core/utils/my_extenstions.dart';
+import '../../../../core/utils/my_sizes.dart';
+import '../../../common/widgets/tag_chip.dart';
+import '../../../home/domain/entities/paper_entity.dart';
+import '../../../library/presentation/cubit/library_cubit.dart';
+import 'latex_renderer.dart';
+import 'my_text_icon.dart';
 
 class PaperInfo extends StatefulWidget {
   final PaperEntity paper;

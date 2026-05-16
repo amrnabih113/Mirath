@@ -2,17 +2,18 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hugeicons/hugeicons.dart';
-import 'package:mirath/core/helpers/responsive_helper.dart';
-import 'package:mirath/core/utils/my_colors.dart';
-import 'package:mirath/core/utils/my_extenstions.dart';
-import 'package:mirath/core/utils/my_sizes.dart';
-import 'package:mirath/features/common/widgets/my_search_bar.dart';
-import 'package:mirath/core/constants/route_names.dart';
-import 'package:mirath/features/home/domain/entities/paper_entity.dart';
-import 'package:mirath/features/home/presentation/cubit/home_cubit.dart';
-import 'package:mirath/features/home/presentation/cubit/home_state.dart';
-import 'package:mirath/features/home/presentation/widgets/paper_card.dart';
-import 'package:mirath/features/home/presentation/widgets/paper_shimmer_loading.dart';
+
+import '../../../../core/constants/route_names.dart';
+import '../../../../core/helpers/responsive_helper.dart';
+import '../../../../core/utils/my_colors.dart';
+import '../../../../core/utils/my_extenstions.dart';
+import '../../../../core/utils/my_sizes.dart';
+import '../../../common/widgets/my_search_bar.dart';
+import '../../../home/domain/entities/paper_entity.dart';
+import '../../../home/presentation/cubit/home_cubit.dart';
+import '../../../home/presentation/cubit/home_state.dart';
+import '../../../home/presentation/widgets/paper_card.dart';
+import '../../../home/presentation/widgets/paper_shimmer_loading.dart';
 
 class AddPaperBottomSheet extends StatefulWidget {
   final ValueChanged<PaperEntity> onPaperSelected;

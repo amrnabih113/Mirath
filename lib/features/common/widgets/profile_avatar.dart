@@ -1,6 +1,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+
 import '../../../core/helpers/responsive_helper.dart';
 import '../../../core/utils/my_colors.dart';
 

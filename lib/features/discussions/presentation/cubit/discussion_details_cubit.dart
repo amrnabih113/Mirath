@@ -1,8 +1,8 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:mirath/core/network/network_manager.dart';
-import 'package:mirath/injection/injection_container.dart';
-import 'package:mirath/core/sync/retry_service.dart';
-import 'package:mirath/core/utils/my_logger.dart';
+import '../../../../core/network/network_manager.dart';
+import '../../../../injection/injection_container.dart';
+import '../../../../core/sync/retry_service.dart';
+import '../../../../core/utils/my_logger.dart';
 import '../../../../core/services/user_cache_service.dart';
 import '../../domain/entities/comment.dart';
 import '../../domain/entities/create_comment_params.dart';

@@ -1,17 +1,17 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../domain/entities/discussion.dart';
-import 'package:mirath/core/network/network_manager.dart';
-import 'package:mirath/injection/injection_container.dart';
-import 'package:mirath/core/sync/retry_service.dart';
-import 'package:mirath/features/discussions/domain/entities/get_discussions_params.dart';
-import 'package:mirath/features/discussions/domain/entities/vote_params.dart';
-import 'package:mirath/features/discussions/domain/usecases/community_cache_usecases.dart';
-import 'package:mirath/features/discussions/domain/usecases/delete_discussion_vote_usecase.dart';
-import 'package:mirath/features/discussions/domain/usecases/get_all_discussions_usecase.dart';
-import 'package:mirath/features/discussions/domain/usecases/vote_on_discussion_usecase.dart';
-import 'package:mirath/features/users/domain/usecases/follow_user_usecase.dart';
-import 'package:mirath/features/users/domain/usecases/unfollow_user_usecase.dart';
-import 'package:mirath/core/utils/my_logger.dart';
+import '../../../../core/network/network_manager.dart';
+import '../../../../injection/injection_container.dart';
+import '../../../../core/sync/retry_service.dart';
+import '../../domain/entities/get_discussions_params.dart';
+import '../../domain/entities/vote_params.dart';
+import '../../domain/usecases/community_cache_usecases.dart';
+import '../../domain/usecases/delete_discussion_vote_usecase.dart';
+import '../../domain/usecases/get_all_discussions_usecase.dart';
+import '../../domain/usecases/vote_on_discussion_usecase.dart';
+import '../../../users/domain/usecases/follow_user_usecase.dart';
+import '../../../users/domain/usecases/unfollow_user_usecase.dart';
+import '../../../../core/utils/my_logger.dart';
 import 'community_state.dart';
 
 class CommunityCubit extends Cubit<CommunityState> {

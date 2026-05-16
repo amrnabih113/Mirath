@@ -7,25 +7,25 @@ import 'package:go_router/go_router.dart';
 import 'package:hugeicons/hugeicons.dart';
 import 'package:image_picker/image_picker.dart';
 
-import 'package:mirath/core/helpers/my_loaders.dart';
-import 'package:mirath/core/helpers/responsive_helper.dart';
-import 'package:mirath/core/services/image_picker_service.dart';
-import 'package:mirath/core/utils/my_colors.dart';
-import 'package:mirath/core/utils/my_enums.dart';
-import 'package:mirath/core/utils/my_extenstions.dart';
-import 'package:mirath/core/utils/my_logger.dart';
-import 'package:mirath/core/utils/my_sizes.dart';
-import 'package:mirath/core/constants/route_names.dart';
+import '../../../../core/helpers/my_loaders.dart';
+import '../../../../core/helpers/responsive_helper.dart';
+import '../../../../core/services/image_picker_service.dart';
+import '../../../../core/utils/my_colors.dart';
+import '../../../../core/utils/my_enums.dart';
+import '../../../../core/utils/my_extenstions.dart';
+import '../../../../core/utils/my_logger.dart';
+import '../../../../core/utils/my_sizes.dart';
+import '../../../../core/constants/route_names.dart';
 
-import 'package:mirath/features/common/widgets/my_back_icon.dart';
-import 'package:mirath/features/common/widgets/tag_chip.dart';
+import '../../../common/widgets/my_back_icon.dart';
+import '../../../common/widgets/tag_chip.dart';
 
-import 'package:mirath/features/profile/presentation/cubit/profile_cubit.dart';
+import '../cubit/profile_cubit.dart';
 
-import 'package:mirath/features/users/domain/entities/update_profile_data.dart';
-import 'package:mirath/features/users/domain/entities/user.dart' as UserEnt;
+import '../../../users/domain/entities/update_profile_data.dart';
+import '../../../users/domain/entities/user.dart' as UserEnt;
 
-import 'package:mirath/generated/l10n.dart';
+import '../../../../generated/l10n.dart';
 
 class EditProfileScreen extends StatefulWidget {
   const EditProfileScreen({super.key});

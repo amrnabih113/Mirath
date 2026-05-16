@@ -1,6 +1,6 @@
-# mirath
+# Mirath
 
-A new Flutter project.
+where human knowlage preserved explored passed forward
 
 ## Getting Started
 

@@ -2,10 +2,10 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:mirath/core/utils/my_colors.dart';
-import 'package:mirath/core/utils/my_logger.dart';
-import 'package:mirath/features/paper_annotations/presentation/utils/annotation_theme_colors.dart';
-import 'package:mirath/features/paper_annotations/presentation/widgets/paper_reading_shimmer_loading.dart';
+import '../../../../core/utils/my_colors.dart';
+import '../../../../core/utils/my_logger.dart';
+import '../utils/annotation_theme_colors.dart';
+import 'paper_reading_shimmer_loading.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 import 'package:webview_flutter_wkwebview/webview_flutter_wkwebview.dart';

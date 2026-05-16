@@ -1,5 +1,5 @@
-import 'package:mirath/features/library/domain/entities/reading_history.dart';
-import 'package:mirath/features/papers/data/models/paper_model.dart';
+import '../../domain/entities/reading_history.dart';
+import '../../../papers/data/models/paper_model.dart';
 
 class ReadingHistoryModel {
   final int size;

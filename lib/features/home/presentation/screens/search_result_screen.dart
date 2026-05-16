@@ -2,18 +2,18 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../../../core/constants/route_names.dart';
 import '../../../../core/helpers/responsive_helper.dart';
+import '../../../../core/network/network_manager.dart';
+import '../../../../core/ui/widgets/state_views.dart';
 import '../../../../core/utils/my_colors.dart';
 import '../../../../core/utils/my_sizes.dart';
-import '../../../../core/constants/route_names.dart';
 import '../../../../generated/l10n.dart';
 import '../../../common/widgets/my_back_icon.dart';
 import '../../../common/widgets/my_search_bar.dart';
 import '../cubit/search_cubit.dart';
 import '../cubit/search_state.dart';
 import '../widgets/paper_card.dart';
-import '../../../../core/network/network_manager.dart';
-import '../../../../core/ui/widgets/state_views.dart';
 
 class HomeSearchResultScreen extends StatefulWidget {
   const HomeSearchResultScreen({super.key});

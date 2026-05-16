@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:mirath/core/utils/my_sizes.dart';
+
+import '../../../../core/utils/my_sizes.dart';
 
 class MyItemShimmer extends StatefulWidget {
   const MyItemShimmer({super.key});

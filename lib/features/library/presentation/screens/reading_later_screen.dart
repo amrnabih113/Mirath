@@ -1,15 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
-import 'package:mirath/core/helpers/responsive_helper.dart';
-import 'package:mirath/core/utils/my_colors.dart';
-import 'package:mirath/core/utils/my_extenstions.dart';
-import 'package:mirath/core/utils/my_formaters.dart';
-import 'package:mirath/core/utils/my_sizes.dart';
-import 'package:mirath/features/common/widgets/my_back_icon.dart';
-import 'package:mirath/features/home/presentation/widgets/home_shimmer_loading.dart';
-import 'package:mirath/features/home/presentation/widgets/paper_card.dart';
-import 'package:mirath/features/library/presentation/cubit/library_cubit.dart';
+
+import '../../../../core/helpers/responsive_helper.dart';
+import '../../../../core/utils/my_colors.dart';
+import '../../../../core/utils/my_extenstions.dart';
+import '../../../../core/utils/my_formaters.dart';
+import '../../../../core/utils/my_sizes.dart';
+import '../../../common/widgets/my_back_icon.dart';
+import '../../../home/presentation/widgets/home_shimmer_loading.dart';
+import '../../../home/presentation/widgets/paper_card.dart';
+import '../cubit/library_cubit.dart';
 
 class ReadingLaterScreen extends StatefulWidget {
   const ReadingLaterScreen({super.key});

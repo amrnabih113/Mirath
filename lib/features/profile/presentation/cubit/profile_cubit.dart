@@ -1,13 +1,13 @@
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
-import 'package:mirath/core/network/network_manager.dart';
-import 'package:mirath/features/users/domain/entities/user.dart';
 
+import '../../../../core/network/network_manager.dart';
 import '../../../../core/usecases/no_params.dart';
-import '../../../users/domain/usecases/users_cache_usecases.dart';
+import '../../../users/domain/entities/update_profile_data.dart';
+import '../../../users/domain/entities/user.dart';
 import '../../../users/domain/usecases/get_current_user_usecase.dart';
 import '../../../users/domain/usecases/update_profile_usecase.dart';
-import '../../../users/domain/entities/update_profile_data.dart';
+import '../../../users/domain/usecases/users_cache_usecases.dart';
 
 part 'profile_state.dart';
 

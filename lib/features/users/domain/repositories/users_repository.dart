@@ -1,7 +1,7 @@
 import 'package:dartz/dartz.dart';
-import 'package:mirath/features/users/domain/entities/follows.dart';
 
 import '../../../../core/error/failuors.dart';
+import '../entities/follows.dart';
 import '../entities/profile_setup_data.dart';
 import '../entities/update_profile_data.dart';
 import '../entities/user.dart';

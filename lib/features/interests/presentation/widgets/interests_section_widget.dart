@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:mirath/generated/l10n.dart';
 
 import '../../../../core/utils/my_extenstions.dart';
 import '../../../../core/utils/my_sizes.dart';
+import '../../../../generated/l10n.dart';
 import '../cubit/interests_cubit.dart';
 import '../cubit/interests_state.dart';
 import 'interests_list_widget.dart';

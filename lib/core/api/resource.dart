@@ -1,4 +1,4 @@
-import 'package:mirath/core/error/failuors.dart';
+import '../error/failuors.dart';
 
 enum ResourceStatus { loading, success, error }
 

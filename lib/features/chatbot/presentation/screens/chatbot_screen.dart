@@ -3,12 +3,12 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 
+import '../../../../core/network/network_manager.dart';
 import '../../../../core/services/user_cache_service.dart';
-import '../../../../core/utils/my_colors.dart';
-import '../../../../injection/injection_container.dart';
 import '../../../../core/ui/widgets/offline_banner.dart';
 import '../../../../core/ui/widgets/sync_indicator.dart';
-import '../../../../core/network/network_manager.dart';
+import '../../../../core/utils/my_colors.dart';
+import '../../../../injection/injection_container.dart';
 import '../cubit/chatbot_cubit.dart';
 import '../cubit/chatbot_state.dart';
 import '../widgets/chat_input_area.dart';

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'discussion_tab.dart';
-import 'package:mirath/features/reading_lists/presentation/screens/reading_lists_tab.dart';
+import '../../../reading_lists/presentation/screens/reading_lists_tab.dart';
 import '../widgets/tab_bar_sliver_delegate.dart';
 
 import '../../../../core/utils/my_colors.dart';

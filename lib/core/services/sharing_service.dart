@@ -1,9 +1,10 @@
 import 'package:share_plus/share_plus.dart';
-import 'package:mirath/features/home/domain/entities/paper_entity.dart';
-import 'package:mirath/features/discussions/domain/entities/discussion.dart';
-import 'package:mirath/features/users/domain/entities/user.dart';
-import 'package:mirath/features/reading_lists/domain/entities/reading_list.dart';
-import 'package:mirath/core/utils/my_logger.dart';
+
+import '../../features/discussions/domain/entities/discussion.dart';
+import '../../features/home/domain/entities/paper_entity.dart';
+import '../../features/reading_lists/domain/entities/reading_list.dart';
+import '../../features/users/domain/entities/user.dart';
+import '../utils/my_logger.dart';
 
 /// Service to handle sharing of various content types within the app
 /// Generates shareable URLs using universal links that work across platforms

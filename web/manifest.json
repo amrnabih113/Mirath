@@ -1,11 +1,11 @@
 {
-    "name": "mirath",
-    "short_name": "mirath",
+    "name": "Mirath",
+    "short_name": "Mirath",
     "start_url": ".",
     "display": "standalone",
     "background_color": "#D5C6B4",
     "theme_color": "#D5C6B4",
-    "description": "A new Flutter project.",
+    "description": "where human knowlage preserved explored passed forward",
     "orientation": "portrait-primary",
     "prefer_related_applications": false,
     "icons": [

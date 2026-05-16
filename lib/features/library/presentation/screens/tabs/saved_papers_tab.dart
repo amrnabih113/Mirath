@@ -1,16 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
-import 'package:mirath/core/constants/route_names.dart';
-import 'package:mirath/core/utils/my_sizes.dart';
-import 'package:mirath/core/utils/my_extenstions.dart';
-import 'package:mirath/features/reading_lists/presentation/cubit/reading_list_cubit.dart';
-import 'package:mirath/features/reading_lists/presentation/cubit/reading_list_state.dart';
-import 'package:mirath/features/reading_lists/presentation/widgets/reading_list_card.dart';
-import 'package:mirath/features/reading_lists/presentation/widgets/reading_list_shimmer_loading.dart';
-import 'package:mirath/injection/injection_container.dart';
+
+import '../../../../../core/constants/route_names.dart';
 import '../../../../../core/network/network_manager.dart';
 import '../../../../../core/ui/widgets/state_views.dart';
+import '../../../../../core/utils/my_extenstions.dart';
+import '../../../../../core/utils/my_sizes.dart';
+import '../../../../../injection/injection_container.dart';
+import '../../../../reading_lists/presentation/cubit/reading_list_cubit.dart';
+import '../../../../reading_lists/presentation/cubit/reading_list_state.dart';
+import '../../../../reading_lists/presentation/widgets/reading_list_card.dart';
+import '../../../../reading_lists/presentation/widgets/reading_list_shimmer_loading.dart';
 
 class SavedPapersTab extends StatelessWidget {
   const SavedPapersTab({super.key});

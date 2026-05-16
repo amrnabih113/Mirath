@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:mirath/core/utils/my_colors.dart';
+import '../../../../core/utils/my_colors.dart';
 
 /// Annotation Theme Colors
 /// Provides theme-aware colors for the annotation feature

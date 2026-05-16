@@ -1,14 +1,15 @@
 import 'package:dartz/dartz.dart';
-import 'package:mirath/core/error/exceptions.dart';
-import 'package:mirath/core/error/failuors.dart';
-import 'package:mirath/features/library/data/data_sources/library_data_sources.dart';
-import 'package:mirath/features/library/domain/entities/library_data.dart';
-import 'package:mirath/features/library/domain/entities/reading_history.dart';
-import 'package:mirath/features/library/domain/entities/saved_papers.dart';
-import 'package:mirath/features/library/domain/repositories/library_repository.dart';
-import 'package:mirath/core/cache/hive_cache_service.dart';
-import 'package:mirath/core/cache/cache_keys.dart';
-import 'package:mirath/core/cache/cache_notifier.dart';
+
+import '../../../../core/cache/cache_keys.dart';
+import '../../../../core/cache/cache_notifier.dart';
+import '../../../../core/cache/hive_cache_service.dart';
+import '../../../../core/error/exceptions.dart';
+import '../../../../core/error/failuors.dart';
+import '../../domain/entities/library_data.dart';
+import '../../domain/entities/reading_history.dart';
+import '../../domain/entities/saved_papers.dart';
+import '../../domain/repositories/library_repository.dart';
+import '../data_sources/library_data_sources.dart';
 import '../models/library_data_model.dart';
 
 class LibraryRepositoryImpl implements LibraryRepository {

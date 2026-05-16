@@ -1,4 +1,4 @@
-import 'package:mirath/core/sync/retry_queue.dart';
+import 'retry_queue.dart';
 
 class RetryService {
   final RetryQueue retryQueue;

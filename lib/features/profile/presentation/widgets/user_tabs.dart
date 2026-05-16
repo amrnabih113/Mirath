@@ -1,17 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
-import 'package:mirath/core/constants/route_names.dart';
-import 'package:mirath/features/discussions/presentation/cubit/community_cubit.dart';
-import 'package:mirath/features/discussions/presentation/cubit/community_state.dart';
-import 'package:mirath/features/discussions/presentation/widgets/discussion_card.dart';
-import 'package:mirath/features/reading_lists/presentation/cubit/reading_list_cubit.dart';
-import 'package:mirath/features/reading_lists/presentation/cubit/reading_list_state.dart';
-import 'package:mirath/features/reading_lists/presentation/widgets/reading_list_card.dart';
-import 'package:mirath/generated/l10n.dart';
-import 'package:mirath/injection/injection_container.dart';
+
+import '../../../../core/constants/route_names.dart';
 import '../../../../core/network/network_manager.dart';
 import '../../../../core/ui/widgets/state_views.dart';
+import '../../../../generated/l10n.dart';
+import '../../../../injection/injection_container.dart';
+import '../../../discussions/presentation/cubit/community_cubit.dart';
+import '../../../discussions/presentation/cubit/community_state.dart';
+import '../../../discussions/presentation/widgets/discussion_card.dart';
+import '../../../reading_lists/presentation/cubit/reading_list_cubit.dart';
+import '../../../reading_lists/presentation/cubit/reading_list_state.dart';
+import '../../../reading_lists/presentation/widgets/reading_list_card.dart';
 
 class UserTabs extends StatelessWidget {
   const UserTabs({super.key, required this.userId});

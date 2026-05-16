@@ -1,8 +1,9 @@
 import 'package:dartz/dartz.dart';
-import 'package:mirath/core/error/failuors.dart';
+
+import '../../../../core/error/failuors.dart';
 import '../../../../core/usecases/usecase.dart';
-import '../entities/reading_list_query_params.dart';
 import '../entities/reading_list.dart';
+import '../entities/reading_list_query_params.dart';
 import '../repositories/reading_list_repository.dart';
 
 class GetReadingListsUseCase

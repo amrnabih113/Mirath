@@ -2,23 +2,23 @@ import 'dart:convert';
 
 import 'package:dartz/dartz.dart';
 import 'package:dio/dio.dart';
-import 'package:mirath/core/cache/cache_keys.dart';
-import 'package:mirath/core/cache/hive_cache_service.dart';
-import 'package:mirath/core/services/local_storage_service.dart';
-import 'package:mirath/core/services/user_cache_service.dart';
-import 'package:mirath/core/utils/my_constants.dart';
-import 'package:mirath/features/auth/data/models/auth_user_data.dart';
-import 'package:mirath/features/users/data/models/user_model.dart';
-import 'package:mirath/features/users/domain/entities/follows.dart';
 
+import '../../../../core/cache/cache_keys.dart';
+import '../../../../core/cache/hive_cache_service.dart';
 import '../../../../core/error/failuors.dart';
 import '../../../../core/network/network_manager.dart';
+import '../../../../core/services/local_storage_service.dart';
+import '../../../../core/services/user_cache_service.dart';
+import '../../../../core/utils/my_constants.dart';
 import '../../../../core/utils/my_logger.dart';
+import '../../../auth/data/models/auth_user_data.dart';
+import '../../domain/entities/follows.dart';
 import '../../domain/entities/profile_setup_data.dart';
 import '../../domain/entities/update_profile_data.dart';
 import '../../domain/entities/user.dart';
 import '../../domain/repositories/users_repository.dart';
 import '../data_sources/users_remote_data_source.dart';
+import '../models/user_model.dart';
 
 class UsersRepositoryImpl implements UsersRepository {
   final UsersRemoteDataSource remoteDataSource;
