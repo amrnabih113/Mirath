@@ -2,6 +2,7 @@
 
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
+import 'package:dartz/dartz.dart';
 import '../../../../core/utils/my_constants.dart';
 
 import '../../../../core/error/failuors.dart';
@@ -207,7 +208,10 @@ class AuthCubit extends Cubit<AuthState> {
     // Small delay to ensure the app is fully initialized
     await Future.delayed(const Duration(milliseconds: 100));
 
-    final result = await isSignedInUseCase(const NoParams());
+    final result = await isSignedInUseCase(const NoParams()).timeout(
+      const Duration(seconds: 4),
+      onTimeout: () => Left(ServerFailure('Auth status check timed out')),
+    );
 
     await result.fold(
       (_) async {
@@ -231,7 +235,10 @@ class AuthCubit extends Cubit<AuthState> {
         } else {
           MyLogger.info('[AuthCubit] User logged in, checking verification...');
           // Check verification status
-          final verifiedResult = await isVerifiedUseCase(const NoParams());
+          final verifiedResult = await isVerifiedUseCase(const NoParams()).timeout(
+            const Duration(seconds: 4),
+            onTimeout: () => Left(ServerFailure('Verification check timed out')),
+          );
           verifiedResult.fold(
             (_) {
               MyLogger.info(

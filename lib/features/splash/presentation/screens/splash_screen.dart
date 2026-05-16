@@ -5,7 +5,6 @@ import '../../../../core/helpers/responsive_helper.dart';
 
 import '../../../../core/utils/my_colors.dart';
 import '../../../../core/utils/my_extenstions.dart';
-import '../../../../core/utils/my_logger.dart';
 import '../../../auth/presentation/cubit/auth_cubit.dart';
 import 'package:go_router/go_router.dart';
 import '../../../../core/constants/route_names.dart';
@@ -27,7 +26,6 @@ class _SplashScreenState extends State<SplashScreen>
   void initState() {
     super.initState();
     _setupAnimations();
-    _checkAuthStatus();
   }
 
   void _setupAnimations() {
@@ -49,11 +47,6 @@ class _SplashScreenState extends State<SplashScreen>
     ).animate(CurvedAnimation(parent: _controller, curve: Curves.easeOutBack));
 
     _controller.forward();
-  }
-
-  void _checkAuthStatus() {
-    MyLogger.info('[SplashScreen] Calling checkAuthStatus on cubit');
-    context.read<AuthCubit>().checkAuthStatus();
   }
 
   @override

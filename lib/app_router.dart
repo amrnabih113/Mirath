@@ -125,11 +125,14 @@ final appRouter = GoRouter(
     if (authStatus == AuthStatus.authenticated) {
       // Try to use cached result first
       final cached = _setupCheckCache.getIfValid();
-      if (cached != null) {
+        if (cached != null) {
         hasSetupProfile = cached;
       } else {
         try {
-          hasSetupProfile = await authCubit.checkSetup();
+          hasSetupProfile = await authCubit.checkSetup().timeout(
+            const Duration(seconds: 4),
+            onTimeout: () => false,
+          );
           _setupCheckCache.set(hasSetupProfile);
         } catch (e) {
           MyLogger.warning(
@@ -157,6 +160,42 @@ final appRouter = GoRouter(
       RouteNames.onboarding,
       ...authPaths,
     ];
+
+    // If the app is still on splash after auth has resolved, leave splash here
+    // instead of relying on the splash screen widget to navigate.
+    if (currentLocation == RouteNames.splash) {
+      if (authStatus == AuthStatus.initial || authStatus == AuthStatus.loading) {
+        return null;
+      }
+
+      if (authStatus == AuthStatus.authenticated) {
+        if (!hasSetupProfile) {
+          return RouteNames.setupProfile;
+        }
+
+        return RouteNames.home;
+      }
+
+      if (authStatus == AuthStatus.success) {
+        return RouteNames.home;
+      }
+
+      if (authStatus == AuthStatus.unverified) {
+        return RouteNames.verifyAccount;
+      }
+
+      if (authStatus == AuthStatus.error) {
+        return RouteNames.signin;
+      }
+
+      if (authStatus == AuthStatus.unauthenticated) {
+        if (!hasSeenOnboarding) {
+          return RouteNames.onboarding;
+        }
+
+        return RouteNames.signin;
+      }
+    }
 
     final isPublicPath = publicPaths.contains(currentLocation);
     final isProtectedPath = !isPublicPath && currentLocation != '/';
