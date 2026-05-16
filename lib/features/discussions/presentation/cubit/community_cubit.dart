@@ -1,6 +1,8 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../domain/entities/discussion.dart';
 import 'package:mirath/core/network/network_manager.dart';
+import 'package:mirath/injection/injection_container.dart';
+import 'package:mirath/core/sync/retry_service.dart';
 import 'package:mirath/features/discussions/domain/entities/get_discussions_params.dart';
 import 'package:mirath/features/discussions/domain/entities/vote_params.dart';
 import 'package:mirath/features/discussions/domain/usecases/community_cache_usecases.dart';
@@ -258,7 +260,16 @@ class CommunityCubit extends Cubit<CommunityState> {
 
     emit(currentState.copyWith(discussions: updatedDiscussions));
 
-    // Make API call in the background
+    // Try immediate sync if online; otherwise enqueue
+    final connected = NetworkManager.instance.currentConnectionStatus;
+    if (!connected) {
+      await sl<RetryService>().enqueue('vote_discussion', {
+        'discussionId': discussionId,
+        'upvote': voteType == 'UP',
+      });
+      return;
+    }
+
     final result = isRemovingVote
         ? await deleteDiscussionVoteUseCase(discussionId)
         : await voteOnDiscussionUseCase(
@@ -266,7 +277,11 @@ class CommunityCubit extends Cubit<CommunityState> {
           );
 
     result.fold(
-      (failure) {
+      (failure) async {
+        await sl<RetryService>().enqueue('vote_discussion', {
+          'discussionId': discussionId,
+          'upvote': voteType == 'UP',
+        });
         // On failure, revert to previous state by reloading
         getDiscussions(sort: _currentSort, topicId: _currentTopicId);
       },

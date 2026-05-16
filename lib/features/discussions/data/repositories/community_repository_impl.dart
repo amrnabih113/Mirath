@@ -13,8 +13,13 @@ import '../../domain/entities/vote_params.dart';
 import '../../domain/repositories/community_repository.dart';
 import '../data_sources/community_remote_data_source.dart';
 import '../models/discussion_model.dart';
+import 'package:mirath/core/api/repository_base.dart';
+import 'package:mirath/core/api/fetch_policy.dart';
+import 'package:mirath/core/api/resource.dart';
 
-class CommunityRepositoryImpl implements CommunityRepository {
+class CommunityRepositoryImpl
+    with RepositoryBase
+    implements CommunityRepository {
   final CommunityRemoteDataSource _remoteDataSource;
   final HiveCacheService _cacheService;
 
@@ -23,6 +28,9 @@ class CommunityRepositoryImpl implements CommunityRepository {
     required HiveCacheService cacheService,
   }) : _remoteDataSource = remoteDataSource,
        _cacheService = cacheService;
+
+  @override
+  HiveCacheService get cacheService => _cacheService;
 
   @override
   Future<Either<Failure, Discussion>> createDiscussion(
@@ -63,13 +71,20 @@ class CommunityRepositoryImpl implements CommunityRepository {
 
   @override
   Future<Either<Failure, Discussion>> getDiscussionById(String id) async {
-    try {
-      final response = await _remoteDataSource.getDiscussionById(id);
-      await upsertCachedDiscussion(response.data);
-      return Right(response.data);
-    } catch (e) {
-      return Left(mapExceptionToFailure(e));
+    final cacheKey = CacheKeys.discussionById(id);
+    final res = await fetchWithCache<Discussion>(
+      cacheKey: cacheKey,
+      fetchRemote: () async =>
+          (await _remoteDataSource.getDiscussionById(id)).data,
+      fromJson: (json) => DiscussionModel.fromJson(json),
+      policy: FetchPolicy.staleWhileRevalidate,
+    );
+
+    if (res.status == ResourceStatus.success && res.data != null) {
+      return Right(res.data!);
     }
+    if (res.failure != null) return Left(res.failure!);
+    return Left(mapExceptionToFailure(Exception('Failed to fetch discussion')));
   }
 
   @override
@@ -157,6 +172,11 @@ class CommunityRepositoryImpl implements CommunityRepository {
   Future<Either<Failure, void>> voteOnComment(VoteParams params) async {
     try {
       await _remoteDataSource.voteOnComment(id: params.id, type: params.type);
+      await updateCommentVoteInCache(
+        commentId: params.id,
+        voteType: params.type,
+        isRemovingVote: false,
+      );
       return const Right(null);
     } catch (e) {
       return Left(mapExceptionToFailure(e));
@@ -167,10 +187,83 @@ class CommunityRepositoryImpl implements CommunityRepository {
   Future<Either<Failure, void>> deleteCommentVote(String id) async {
     try {
       await _remoteDataSource.deleteCommentVote(id);
+      await updateCommentVoteInCache(
+        commentId: id,
+        voteType: 'UP',
+        isRemovingVote: true,
+      );
       return const Right(null);
     } catch (e) {
       return Left(mapExceptionToFailure(e));
     }
+  }
+
+  @override
+  Future<void> updateCommentVoteInCache({
+    required String commentId,
+    required String voteType,
+    required bool isRemovingVote,
+  }) async {
+    Map<String, dynamic> transform(Map<String, dynamic> current) {
+      final upvoteCount = (current['upvoteCount'] as int?) ?? 0;
+      final downvoteCount = (current['downvoteCount'] as int?) ?? 0;
+      final hasVoted = current['hasVoted'] as bool? ?? false;
+      final currentVote = current['userVoteType'] as String?;
+
+      var nextUpvotes = upvoteCount;
+      var nextDownvotes = downvoteCount;
+      var nextHasVoted = hasVoted;
+      String? nextVote = currentVote;
+
+      if (isRemovingVote) {
+        if (voteType == 'UP') {
+          nextUpvotes = nextUpvotes - 1;
+        } else if (voteType == 'DOWN') {
+          nextDownvotes = nextDownvotes - 1;
+        }
+        nextHasVoted = false;
+        nextVote = null;
+      } else if (hasVoted && currentVote != voteType) {
+        if (currentVote == 'UP') {
+          nextUpvotes = nextUpvotes - 1;
+        } else if (currentVote == 'DOWN') {
+          nextDownvotes = nextDownvotes - 1;
+        }
+        if (voteType == 'UP') {
+          nextUpvotes = nextUpvotes + 1;
+        } else if (voteType == 'DOWN') {
+          nextDownvotes = nextDownvotes + 1;
+        }
+        nextVote = voteType;
+      } else {
+        if (voteType == 'UP') {
+          nextUpvotes = nextUpvotes + 1;
+        } else if (voteType == 'DOWN') {
+          nextDownvotes = nextDownvotes + 1;
+        }
+        nextHasVoted = true;
+        nextVote = voteType;
+      }
+
+      current['upvoteCount'] = nextUpvotes;
+      current['downvoteCount'] = nextDownvotes;
+      current['hasVoted'] = nextHasVoted;
+      current['userVoteType'] = nextVote;
+      return current;
+    }
+
+    await _cacheService.updateJsonListItem(
+      key: CacheKeys.commentById(commentId),
+      itemId: commentId,
+      idField: 'id',
+      updater: transform,
+    );
+    await _cacheService.updateJsonListItemsByPrefix(
+      prefix: CacheKeys.commentsPrefix,
+      itemId: commentId,
+      idField: 'id',
+      updater: transform,
+    );
   }
 
   @override

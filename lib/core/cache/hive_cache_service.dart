@@ -4,6 +4,7 @@ import 'package:hive/hive.dart';
 import 'package:path_provider/path_provider.dart';
 
 import 'cache_record.dart';
+import 'cache_notifier.dart';
 
 class HiveCacheService {
   static const String _boxName = 'mirath_cache';
@@ -40,6 +41,7 @@ class HiveCacheService {
         ttlSeconds: ttl.inSeconds,
       ),
     );
+    CacheNotifier.instance.notify(key);
   }
 
   Future<void> putJsonList(
@@ -48,6 +50,7 @@ class HiveCacheService {
     Duration ttl = defaultTtl,
   }) async {
     await putJson(key, {'items': payload}, ttl: ttl);
+    CacheNotifier.instance.notify(key);
   }
 
   Future<Map<String, dynamic>?> getJson(

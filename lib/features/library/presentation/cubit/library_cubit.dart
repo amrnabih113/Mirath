@@ -8,6 +8,10 @@ import 'package:mirath/features/library/domain/usecases/get_library_data.dart';
 import 'package:mirath/features/library/domain/usecases/get_reading_history.dart';
 import 'package:mirath/features/library/domain/usecases/remove_paper_from_reading_history.dart';
 import 'package:mirath/features/library/domain/usecases/update_reading_history.dart';
+import 'package:mirath/core/cache/hive_cache_service.dart';
+import 'package:mirath/core/cache/cache_keys.dart';
+import 'package:mirath/core/cache/cache_notifier.dart';
+import 'package:mirath/features/library/data/models/library_data_model.dart';
 
 part 'library_state.dart';
 
@@ -19,25 +23,66 @@ class LibraryCubit extends Cubit<LibraryState> {
     required this.clearAllReadingHistoryUseCase,
     required this.getAllSavedPapersUseCase,
     required this.removePaperFromReadingHistoryUseCase,
-  }) : super(LibraryInitial());
+    required this.cacheService,
+  }) : super(LibraryInitial()) {
+    CacheNotifier.instance.stream.listen((key) {
+      if (key == CacheKeys.libraryStats()) {
+        _onLibraryStatsUpdated();
+      }
+    });
+  }
   final GetLibraryData getLibraryDataUseCase;
   final GetReadingHistory getReadingHistoryUseCase;
   final UpdateReadingHistory updateReadingHistoryUseCase;
   final ClearAllReadingHistory clearAllReadingHistoryUseCase;
   final GetAllSavedPapers getAllSavedPapersUseCase;
   final RemovePaperFromReadingHistory removePaperFromReadingHistoryUseCase;
+  final HiveCacheService cacheService;
   //1- Library Data Function
   Future<void> getLibraryData() async {
     emit(LibraryDataLoading());
     var result = await getLibraryDataUseCase.call();
     result.fold(
       (failure) {
-        emit(LibraryDataFailure(errorMessage: failure.message));
+        // Try to read stale cached data if available
+        try {
+          cacheService
+              .getJson(CacheKeys.libraryStats())
+              .then((cached) {
+                if (cached != null) {
+                  final cachedModel = LibraryDataModel.fromJson(cached);
+                  emit(
+                    LibraryDataSuccess(
+                      libraryData: cachedModel,
+                      fromCache: true,
+                    ),
+                  );
+                  return;
+                }
+                emit(LibraryDataFailure(errorMessage: failure.message));
+              })
+              .catchError((_) {
+                emit(LibraryDataFailure(errorMessage: failure.message));
+              });
+        } catch (e) {
+          emit(LibraryDataFailure(errorMessage: failure.message));
+        }
       },
       (libData) {
-        emit(LibraryDataSuccess(libraryData: libData));
+        emit(LibraryDataSuccess(libraryData: libData, fromCache: false));
       },
     );
+  }
+
+  Future<void> _onLibraryStatsUpdated() async {
+    final cached = await cacheService.getJson(
+      CacheKeys.libraryStats(),
+      allowStale: true,
+    );
+    if (cached != null) {
+      final model = LibraryDataModel.fromJson(cached);
+      emit(LibraryDataSuccess(libraryData: model, fromCache: false));
+    }
   }
 
   // 2- Get Reading History Function

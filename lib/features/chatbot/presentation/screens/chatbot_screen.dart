@@ -6,6 +6,9 @@ import 'package:lucide_icons_flutter/lucide_icons.dart';
 import '../../../../core/services/user_cache_service.dart';
 import '../../../../core/utils/my_colors.dart';
 import '../../../../injection/injection_container.dart';
+import '../../../../core/ui/widgets/offline_banner.dart';
+import '../../../../core/ui/widgets/sync_indicator.dart';
+import '../../../../core/network/network_manager.dart';
 import '../cubit/chatbot_cubit.dart';
 import '../cubit/chatbot_state.dart';
 import '../widgets/chat_input_area.dart';
@@ -164,6 +167,20 @@ class _ChatbotScreenState extends State<ChatbotScreen> {
         builder: (context, state) {
           return Column(
             children: [
+              // Offline / sync indicators
+              if (!NetworkManager.instance.currentConnectionStatus)
+                const OfflineBanner(),
+              if (state is ChatbotMessageSending)
+                const Padding(
+                  padding: EdgeInsets.symmetric(
+                    vertical: 6.0,
+                    horizontal: 12.0,
+                  ),
+                  child: Align(
+                    alignment: Alignment.centerLeft,
+                    child: SyncIndicator(syncing: true),
+                  ),
+                ),
               // Messages list
               Expanded(
                 child: MessagesList(

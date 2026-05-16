@@ -110,12 +110,22 @@ class _HomeScreenState extends State<HomeScreen> {
                 SizedBox(height: MySizes.spaceMd(context)),
                 BlocBuilder<HomeCubit, HomeState>(
                   builder: (context, state) {
-                    if (state is HomePapersLoaded) {
-                      return CategoryItemsList(
-                        categories: state.categories,
-                        selectedInterest: state.selectedCategory,
-                        maxItems: 10,
+                    // Treat updated state (HomePapersUpdated) the same as the
+                    // loaded state so UI sections (categories) don't fall back
+                    // to a loading shimmer during optimistic updates.
+                    if (state is HomePapersLoaded ||
+                        state is HomePapersUpdated) {
+                      final categories = state is HomePapersLoaded
+                          ? state.categories
+                          : (state as HomePapersUpdated).categories;
+                      final selected = state is HomePapersLoaded
+                          ? state.selectedCategory
+                          : (state as HomePapersUpdated).selectedCategory;
 
+                      return CategoryItemsList(
+                        categories: categories,
+                        selectedInterest: selected,
+                        maxItems: 10,
                         onInterestChanged: (interestName) {
                           context.push(
                             RouteNames.recentlyPublished,
@@ -124,6 +134,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         },
                       );
                     }
+
                     return const InterestsShimmerLoading();
                   },
                 ),

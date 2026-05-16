@@ -1,5 +1,11 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:uuid/uuid.dart';
+import 'dart:async';
+import 'package:mirath/injection/injection_container.dart';
+import 'package:mirath/core/cache/cache_keys.dart';
+import 'package:mirath/core/cache/hive_cache_service.dart';
+import 'package:mirath/core/cache/cache_notifier.dart';
+import 'package:mirath/core/sync/retry_service.dart';
 
 import '../../domain/entities/chat_message.dart';
 import 'chatbot_state.dart';
@@ -8,11 +14,48 @@ class ChatbotCubit extends Cubit<ChatbotState> {
   ChatbotCubit() : super(const ChatbotInitial());
 
   final List<ChatMessage> _messages = [];
+  StreamSubscription<String>? _cacheSub;
   int _responseIndex = 0;
 
   void initialize() {
-    // _loadMockMessages();
-    emit(ChatbotLoaded(messages: _messages));
+    _loadCachedMessages();
+    // subscribe to cache updates for chatbot conversation
+    _cacheSub = CacheNotifier.instance.stream.listen((key) {
+      if (key == CacheKeys.messages('chatbot')) {
+        _loadCachedMessages();
+      }
+    });
+  }
+
+  @override
+  Future<void> close() {
+    _cacheSub?.cancel();
+    return super.close();
+  }
+
+  Future<void> _loadCachedMessages() async {
+    final convoId = 'chatbot';
+    final cached =
+        await sl<HiveCacheService>().getJsonList(
+          CacheKeys.messages(convoId),
+          allowStale: true,
+        ) ??
+        [];
+    _messages.clear();
+    for (final json in cached.reversed) {
+      final msg = ChatMessage(
+        id: json['id']?.toString() ?? const Uuid().v4(),
+        text: json['text']?.toString() ?? '',
+        isUser: json['senderId']?.toString() == 'me',
+        timestamp:
+            DateTime.tryParse(json['createdAt']?.toString() ?? '') ??
+            DateTime.now(),
+        isComplete: (json['status']?.toString() != 'pending'),
+        isPending: json['status']?.toString() == 'pending',
+      );
+      _messages.add(msg);
+    }
+    emit(ChatbotLoaded(messages: List.from(_messages)));
   }
 
   // void _loadMockMessages() {
@@ -51,10 +94,36 @@ class ChatbotCubit extends Cubit<ChatbotState> {
       isUser: true,
       timestamp: DateTime.now(),
       imagePaths: imagePaths,
+      isPending: true,
     );
 
     _messages.add(userMessage);
     emit(ChatbotMessageSending(messages: List.from(_messages)));
+
+    // Persist pending message and enqueue for send
+    final clientId = userMessage.id;
+    final convoId = 'chatbot';
+    final messageJson = {
+      'id': clientId,
+      'clientId': clientId,
+      'conversationId': convoId,
+      'senderId': 'me',
+      'text': userMessage.text,
+      'status': 'pending',
+      'createdAt': userMessage.timestamp.toIso8601String(),
+      'updatedAt': userMessage.timestamp.toIso8601String(),
+    };
+    // Use conversation-specific key
+    sl<HiveCacheService>().upsertInJsonList(
+      key: CacheKeys.messages(convoId),
+      item: messageJson,
+      idField: 'id',
+    );
+    sl<RetryService>().enqueue('send_message', {
+      'conversationId': convoId,
+      'text': userMessage.text,
+      'clientId': clientId,
+    });
 
     _streamAiResponse(userMessage.text);
   }

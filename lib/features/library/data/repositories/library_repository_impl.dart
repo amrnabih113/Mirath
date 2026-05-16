@@ -8,6 +8,7 @@ import 'package:mirath/features/library/domain/entities/saved_papers.dart';
 import 'package:mirath/features/library/domain/repositories/library_repository.dart';
 import 'package:mirath/core/cache/hive_cache_service.dart';
 import 'package:mirath/core/cache/cache_keys.dart';
+import 'package:mirath/core/cache/cache_notifier.dart';
 import '../models/library_data_model.dart';
 
 class LibraryRepositoryImpl implements LibraryRepository {
@@ -50,15 +51,33 @@ class LibraryRepositoryImpl implements LibraryRepository {
   @override
   Future<Either<Failure, LibraryData>> getLibraryData() async {
     try {
-      // Try remote fetch
+      // 1. Try to return cached data immediately (allow stale) and revalidate
+      final cached = await cacheService.getJson(
+        CacheKeys.libraryStats(),
+        allowStale: true,
+      );
+      if (cached != null) {
+        final cachedModel = LibraryDataModel.fromJson(cached);
+        // Revalidate in background
+        libraryDataSources
+            .getLibraryData()
+            .then((remote) async {
+              try {
+                await cacheService.putJson(
+                  CacheKeys.libraryStats(),
+                  remote.toJson(),
+                );
+              } catch (_) {}
+            })
+            .catchError((_) {});
+        return Right(cachedModel);
+      }
+
+      // 2. No cache → fetch remote
       final response = await libraryDataSources.getLibraryData();
-      // Cache the response as plain JSON
-      await cacheService.putJson(CacheKeys.libraryStats(), {
-        'listsCount': response.listsCount,
-        'createdCount': response.createdCount,
-        'savedCount': response.savedCount,
-        'projectsCount': response.projectsCount,
-      });
+      await cacheService.putJson(CacheKeys.libraryStats(), response.toJson());
+      // notify subscribers
+      CacheNotifier.instance.notify(CacheKeys.libraryStats());
       return Right(response);
     } on ServerException catch (e) {
       return Left(ServerFailure(e.message!));

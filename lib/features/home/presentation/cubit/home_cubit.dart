@@ -1,6 +1,8 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../core/network/network_manager.dart';
+import 'package:mirath/injection/injection_container.dart';
+import 'package:mirath/core/sync/retry_service.dart';
 import '../../../../core/usecases/no_params.dart';
 import '../../../users/domain/entities/user.dart' hide Interest;
 import '../../../users/domain/usecases/get_current_user_usecase.dart';
@@ -495,28 +497,40 @@ class HomeCubit extends Cubit<HomeState> {
   }
 
   Future<void> savePaper(String paperId) async {
-    final result = await savePaperUseCase(paperId);
+    // Optimistic update
+    _updatePaperSavedStatus(paperId, true);
+    homeCacheUseCases.updatePaperSavedInCache(paperId, true);
 
-    result.fold((failure) {}, (_) {
-      // Update paper isSaved status in state
-      _updatePaperSavedStatus(paperId, true);
-      homeCacheUseCases.updatePaperSavedInCache(paperId, true);
-    });
+    // Try immediate sync if online; otherwise enqueue for retry
+    final connected = NetworkManager.instance.currentConnectionStatus;
+    if (connected) {
+      try {
+        await savePaperUseCase(paperId);
+        return;
+      } catch (_) {
+        // fallthrough to enqueue
+      }
+    }
+
+    await sl<RetryService>().enqueue('save_paper', {'paperId': paperId});
   }
 
   Future<void> unsavePaper(String paperId) async {
-    final result = await unsavePaperUseCase(paperId);
+    // Optimistic update
+    _updatePaperSavedStatus(paperId, false);
+    homeCacheUseCases.updatePaperSavedInCache(paperId, false);
 
-    result.fold(
-      (failure) {
-        // Handle error if needed
-      },
-      (_) {
-        // Update paper isSaved status in state
-        _updatePaperSavedStatus(paperId, false);
-        homeCacheUseCases.updatePaperSavedInCache(paperId, false);
-      },
-    );
+    final connected = NetworkManager.instance.currentConnectionStatus;
+    if (connected) {
+      try {
+        await unsavePaperUseCase(paperId);
+        return;
+      } catch (_) {
+        // enqueue on failure
+      }
+    }
+
+    await sl<RetryService>().enqueue('unsave_paper', {'paperId': paperId});
   }
 
   void updatePaperSavedStatus(String paperId, bool isSaved) {

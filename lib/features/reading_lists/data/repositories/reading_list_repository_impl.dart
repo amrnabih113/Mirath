@@ -11,8 +11,13 @@ import '../../domain/entities/update_reading_list_params.dart';
 import '../../domain/repositories/reading_list_repository.dart';
 import '../data_sources/reading_list_remote_data_source.dart';
 import '../models/reading_list_model.dart';
+import 'package:mirath/core/api/repository_base.dart';
+import 'package:mirath/core/api/fetch_policy.dart';
+import 'package:mirath/core/api/resource.dart';
 
-class ReadingListRepositoryImpl implements ReadingListRepository {
+class ReadingListRepositoryImpl
+    with RepositoryBase
+    implements ReadingListRepository {
   final ReadingListRemoteDataSource remoteDataSource;
   final HiveCacheService cacheService;
 
@@ -110,17 +115,21 @@ class ReadingListRepositoryImpl implements ReadingListRepository {
 
   @override
   Future<Either<Failure, ReadingList>> getReadingListById(String id) async {
-    try {
-      final response = await remoteDataSource.getReadingListById(id);
-      await updateReadingListDetailsCache(response.data);
-      return Right(response.data);
-    } on ServerException catch (e) {
-      return Left(ServerFailure(e.message!));
-    } on NetworkException catch (e) {
-      return Left(NetworkFailure(e.message!));
-    } catch (e) {
-      return Left(ServerFailure('Failed to fetch reading list'));
+    final cacheKey = CacheKeys.readingListById(id);
+    final res = await fetchWithCache<ReadingList>(
+      cacheKey: cacheKey,
+      fetchRemote: () async =>
+          (await remoteDataSource.getReadingListById(id)).data,
+      fromJson: (json) => ReadingListModel.fromJson(json),
+      policy: FetchPolicy.staleWhileRevalidate,
+    );
+
+    if (res.status == ResourceStatus.success && res.data != null) {
+      return Right(res.data!);
     }
+
+    if (res.failure != null) return Left(res.failure!);
+    return Left(ServerFailure('Failed to fetch reading list'));
   }
 
   @override

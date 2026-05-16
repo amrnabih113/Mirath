@@ -8,7 +8,12 @@ import 'package:mirath/core/utils/my_colors.dart';
 import 'package:mirath/core/utils/my_extenstions.dart';
 import 'package:mirath/core/utils/my_sizes.dart';
 import 'package:mirath/features/discussions/domain/entities/create_discussion_params.dart';
-import 'package:mirath/features/discussions/domain/usecases/create_discussion_usecase.dart';
+import 'package:mirath/core/sync/retry_service.dart';
+import 'package:uuid/uuid.dart';
+import 'package:mirath/features/discussions/data/models/discussion_model.dart';
+import 'package:mirath/features/discussions/data/models/discussion_author_model.dart';
+import 'package:mirath/features/discussions/domain/repositories/community_repository.dart';
+import 'package:mirath/core/services/user_cache_service.dart';
 import 'package:mirath/features/home/domain/entities/paper_entity.dart';
 import 'package:mirath/features/home/presentation/cubit/home_cubit.dart';
 import 'package:mirath/features/interests/presentation/cubit/interests_cubit.dart';
@@ -278,31 +283,62 @@ class _AddDiscussionScreenState extends State<AddDiscussionScreen> {
         topicIds: selectedTags,
         paperIds: selectedPapers.map((p) => p.id).toList(),
       );
+      // Optimistic create: insert draft locally and enqueue for background sync
+      final localId = 'local-${const Uuid().v4()}';
 
-      final result = await sl<CreateDiscussionUseCase>()(params);
+      final userCache = sl<UserCacheService>();
+      final currentUser = userCache.getCachedUser();
 
-      if (!mounted) return;
-
-      result.fold(
-        (failure) {
-          setState(() => isPosting = false);
-          MyLoaders.errorSnackBar(
-            context: context,
-            title: S.of(context).error_title,
-            message: failure.message.isNotEmpty
-                ? failure.message
-                : S.of(context).failed_to_create_discussion,
-          );
-        },
-        (discussion) {
-          MyLoaders.successSnackBar(
-            context: context,
-            title: S.of(context).success,
-            message: S.of(context).discussion_created_successfully,
-          );
-          context.pop();
-        },
+      final author = DiscussionAuthorModel(
+        id: currentUser?.id ?? '',
+        username: currentUser?.username ?? '',
+        fullName: currentUser?.fullName ?? '',
+        photoUrl: currentUser?.photoURL,
+        bio: '',
+        role: 'USER',
+        isPremium: false,
+        isFollowing: false,
+        isMe: true,
       );
+
+      final draft = DiscussionModel(
+        id: localId,
+        title: params.title,
+        content: params.content,
+        upvoteCount: 0,
+        downvoteCount: 0,
+        commentCount: 0,
+        authorId: author.id,
+        paperIds: params.paperIds ?? [],
+        papers: [],
+        createdAt: DateTime.now(),
+        updatedAt: DateTime.now(),
+        hasVoted: false,
+        userVoteType: null,
+        topics: [],
+        author: author,
+      );
+
+      // Persist draft in cache so lists show it immediately
+      await sl<CommunityRepository>().upsertCachedDiscussion(draft);
+
+      // Enqueue for background sync
+      await sl<RetryService>().enqueue('create_discussion', {
+        'title': params.title,
+        'content': params.content,
+        'topicIds': params.topicIds,
+        'paperIds': params.paperIds,
+        'clientId': localId,
+      });
+
+      MyLoaders.successSnackBar(
+        context: context,
+        title: S.of(context).success,
+        message: '${S.of(context).discussion_created_successfully} (pending)',
+      );
+      if (mounted) context.pop();
+
+      setState(() => isPosting = false);
     } catch (e) {
       if (!mounted) return;
       setState(() => isPosting = false);

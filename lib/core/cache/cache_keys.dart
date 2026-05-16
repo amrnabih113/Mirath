@@ -54,4 +54,31 @@ class CacheKeys {
   static String libraryStats() {
     return 'library:stats';
   }
+
+  // Messaging cache keys
+  static const String messagesPrefix = 'messages:conversation';
+
+  static String messages(String conversationId) {
+    return '$messagesPrefix|id=$conversationId';
+  }
+
+  static String messageById(String messageId) {
+    return '$messagesPrefix|messageId=$messageId';
+  }
+
+  // Paper
+  static String paperById(String paperId) {
+    return 'paper:id=$paperId';
+  }
+
+  // Discussion comments
+  static const String commentsPrefix = 'community:comments';
+
+  static String comments(String discussionId) {
+    return '$commentsPrefix|discussionId=$discussionId';
+  }
+
+  static String commentById(String commentId) {
+    return '$commentsPrefix|commentId=$commentId';
+  }
 }

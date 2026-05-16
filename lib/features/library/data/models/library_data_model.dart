@@ -16,4 +16,13 @@ class LibraryDataModel extends LibraryData {
       projectsCount: json['projectsCount'] ?? 0,
     );
   }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'listsCount': listsCount,
+      'createdCount': createdCount,
+      'savedCount': savedCount,
+      'projectsCount': projectsCount,
+    };
+  }
 }

@@ -68,4 +68,10 @@ abstract class CommunityRepository {
 
   /// Delete vote from a comment
   Future<Either<Failure, void>> deleteCommentVote(String id);
+
+  Future<void> updateCommentVoteInCache({
+    required String commentId,
+    required String voteType,
+    required bool isRemovingVote,
+  });
 }
