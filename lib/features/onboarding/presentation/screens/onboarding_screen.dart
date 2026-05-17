@@ -61,84 +61,92 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
               child: SafeArea(
                 child: LayoutBuilder(
                   builder: (context, constraints) {
-                    return ConstrainedBox(
-                      constraints: BoxConstraints(maxWidth: 850),
-                      child: Center(
-                        child: Column(
-                          children: [
-                            // PageView
-                            Expanded(
-                              child: PageView.builder(
-                                controller: _pageController,
-                                onPageChanged: (index) {
-                                  context.read<OnboardingCubit>().goToPage(
-                                    index,
-                                  );
-                                },
-                                itemCount: widget.pages.length,
-                                itemBuilder: (context, index) {
-                                  return OnboardingPageWidget(
-                                    page: widget.pages[index],
-                                  );
-                                },
-                              ),
-                            ),
-
-                            Padding(
-                              padding: EdgeInsets.all(MySizes.spaceLg(context)),
-                              child: Column(
-                                mainAxisSize: MainAxisSize.min,
-                                children: [
-                                  // Page indicator
-                                  PageIndicator(
-                                    currentPage: state.currentPage,
-                                    totalPages: state.totalPages,
-                                  ),
-                                  SizedBox(
-                                    height: ResponsiveHelper.responsiveValue(
-                                      context,
-                                      20,
-                                    ),
-                                  ),
-                                  // Navigation button
-                                  Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.end,
-                                        children: [
-                                          if (!state.isLastPage)
-                                            SkipButton(
-                                              onPressed: () => context
-                                                  .read<OnboardingCubit>()
-                                                  .skipOnboarding(),
-                                            ),
-                                        ],
+                    return Center(
+                      child: ConstrainedBox(
+                        constraints: BoxConstraints(maxWidth: 850),
+                        child: Center(
+                          child: Column(
+                            mainAxisSize: MainAxisSize.min,
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              SizedBox(
+                                height: constraints.maxHeight * 0.72,
+                                child: PageView.builder(
+                                  controller: _pageController,
+                                  onPageChanged: (index) {
+                                    context.read<OnboardingCubit>().goToPage(
+                                      index,
+                                    );
+                                  },
+                                  itemCount: widget.pages.length,
+                                  itemBuilder: (context, index) {
+                                    return Center(
+                                      child: OnboardingPageWidget(
+                                        page: widget.pages[index],
                                       ),
-                                      SizedBox(
-                                        width: MySizes.buttonWidth(context),
-                                        height: MySizes.buttonHeight(context),
-                                        child: ElevatedButton(
-                                          onPressed: () {
-                                            context
-                                                .read<OnboardingCubit>()
-                                                .nextPage();
-                                          },
-                                          child: Text(
-                                            state.isLastPage
-                                                ? S.of(context).get_started
-                                                : S.of(context).next,
+                                    );
+                                  },
+                                ),
+                              ),
+
+                              Padding(
+                                padding: EdgeInsets.all(
+                                  MySizes.spaceLg(context),
+                                ),
+                                child: Column(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    // Page indicator
+                                    PageIndicator(
+                                      currentPage: state.currentPage,
+                                      totalPages: state.totalPages,
+                                    ),
+                                    SizedBox(
+                                      height: ResponsiveHelper.responsiveValue(
+                                        context,
+                                        20,
+                                      ),
+                                    ),
+                                    // Navigation button
+                                    Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.end,
+                                          children: [
+                                            if (!state.isLastPage)
+                                              SkipButton(
+                                                onPressed: () => context
+                                                    .read<OnboardingCubit>()
+                                                    .skipOnboarding(),
+                                              ),
+                                          ],
+                                        ),
+                                        SizedBox(
+                                          width: MySizes.buttonWidth(context),
+                                          height: MySizes.buttonHeight(context),
+                                          child: ElevatedButton(
+                                            onPressed: () {
+                                              context
+                                                  .read<OnboardingCubit>()
+                                                  .nextPage();
+                                            },
+                                            child: Text(
+                                              state.isLastPage
+                                                  ? S.of(context).get_started
+                                                  : S.of(context).next,
+                                            ),
                                           ),
                                         ),
-                                      ),
-                                    ],
-                                  ),
-                                ],
+                                      ],
+                                    ),
+                                  ],
+                                ),
                               ),
-                            ),
-                          ],
+                            ],
+                          ),
                         ),
                       ),
                     );
