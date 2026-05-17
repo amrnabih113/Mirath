@@ -123,37 +123,36 @@
 
   <!-- Flutter Bootstrap -->
   <script>
-    // Ensure loader prefers HTML renderer in dev and production to avoid CanvasKit CDN fetches
+    // Intercept the bootstrap's buildConfig assignment and force HTML rendering.
+    // This is safer than mutating the generated bootstrap file and avoids CanvasKit
+    // imports without relying on deprecated window.flutterWebRenderer.
     try {
       window._flutter = window._flutter || {};
-      window._flutter.buildConfig = window._flutter.buildConfig || {
+      let flutterBuildConfig = {
         builds: [{ compileTarget: 'dart2js', renderer: 'html', mainJsPath: 'main.dart.js' }]
       };
+
+      Object.defineProperty(window._flutter, 'buildConfig', {
+        configurable: true,
+        get: () => flutterBuildConfig,
+        set: (value) {
+          if (value && Array.isArray(value.builds)) {
+            flutterBuildConfig = {
+              ...value,
+              builds: value.builds.map((build) => ({
+                ...build,
+                renderer: 'html',
+              })),
+            };
+          } else {
+            flutterBuildConfig = {
+              builds: [{ compileTarget: 'dart2js', renderer: 'html', mainJsPath: 'main.dart.js' }],
+            };
+          }
+        },
+      });
     } catch (e) {
       // ignore
-    }
-
-    // Prevent runtime from trying to dynamically import CanvasKit from CDN
-    // by short-circuiting the loader when CanvasKit is not desired or blocked.
-    try {
-      if (!window.flutterCanvasKit) {
-        window.flutterCanvasKit = {};
-        window.flutterCanvasKitLoaded = Promise.resolve(window.flutterCanvasKit);
-      }
-    } catch (e) {
-      // ignore
-    }
-
-    // Use engine initializer if available (modern API) to request HTML renderer
-    try {
-      if (typeof createEngineInitializer === 'function') {
-        createEngineInitializer().initializeEngine({ flutterWebRenderer: 'html' });
-      } else {
-        // fallback for older toolchains
-        window.flutterWebRenderer = 'html';
-      }
-    } catch (e) {
-      try { window.flutterWebRenderer = 'html'; } catch (_) {}
     }
   </script>
   <script src="flutter_bootstrap.js" async></script>

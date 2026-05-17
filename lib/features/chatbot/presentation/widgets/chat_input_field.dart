@@ -52,7 +52,7 @@ class ChatInputField extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
                 _AttachmentOption(
-                  icon: LucideIcons.camera,
+                  icon: HugeIcons.strokeRoundedCamera01,
                   label: S.of(context).attachment_camera,
                   onTap: () {
                     Navigator.pop(context);
@@ -60,7 +60,7 @@ class ChatInputField extends StatelessWidget {
                   },
                 ),
                 _AttachmentOption(
-                  icon: LucideIcons.imagePlus,
+                  icon: HugeIcons.strokeRoundedImage01,
                   label: S.of(context).attachment_photos,
                   onTap: () {
                     Navigator.pop(context);
@@ -68,7 +68,7 @@ class ChatInputField extends StatelessWidget {
                   },
                 ),
                 _AttachmentOption(
-                  icon: LucideIcons.paperclip,
+                  icon: HugeIcons.strokeRoundedAttachment,
                   label: S.of(context).attachment_files,
                   onTap: () {
                     Navigator.pop(context);
@@ -104,7 +104,10 @@ class ChatInputField extends StatelessWidget {
                   color: MyColors.textSecondary,
                 ),
                 prefixIcon: IconButton(
-                  icon: HugeIcon(icon: HugeIcons.strokeRoundedPlusSign, color: MyColors.textSecondary),
+                  icon: HugeIcon(
+                    icon: HugeIcons.strokeRoundedPlusSign,
+                    color: MyColors.textSecondary,
+                  ),
                   onPressed: () => _showAttachmentOptions(context),
                 ),
                 suffixIcon: IconButton(
@@ -175,7 +178,7 @@ class ChatInputField extends StatelessWidget {
 enum AttachmentType { gallery, camera, document }
 
 class _AttachmentOption extends StatelessWidget {
-  final IconData icon;
+  final List<List<dynamic>> icon;
   final String label;
   final VoidCallback onTap;
 
@@ -201,8 +204,8 @@ class _AttachmentOption extends StatelessWidget {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Icon(
-              icon,
+            HugeIcon(
+              icon: icon,
               color: MyColors.primaryColor,
               size: MySizes.iconMedium(context),
             ),

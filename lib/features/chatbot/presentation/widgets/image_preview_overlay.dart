@@ -86,7 +86,11 @@ class _ImagePreviewOverlayState extends State<ImagePreviewOverlay> {
               top: 16,
               right: 16,
               child: IconButton(
-                icon: HugeIcon(icon: HugeIcons.strokeRoundedCancel01, color: MyColors.white, size: 28),
+                icon: HugeIcon(
+                  icon: HugeIcons.strokeRoundedCancel01,
+                  color: MyColors.white,
+                  size: 28,
+                ),
                 onPressed: () => Navigator.of(context).pop(),
               ),
             ),
@@ -132,8 +136,8 @@ class _ImagePreviewOverlayState extends State<ImagePreviewOverlay> {
                 bottom: 0,
                 child: Center(
                   child: IconButton(
-                    icon: Icon(
-                      LucideIcons.chevronLeft,
+                    icon: HugeIcon(
+                      icon: HugeIcons.strokeRoundedArrowLeft01,
                       color: MyColors.white,
                       size: 36,
                     ),
@@ -155,8 +159,8 @@ class _ImagePreviewOverlayState extends State<ImagePreviewOverlay> {
                 bottom: 0,
                 child: Center(
                   child: IconButton(
-                    icon: Icon(
-                      LucideIcons.chevronRight,
+                    icon: HugeIcon(
+                      icon: HugeIcons.strokeRoundedArrowRight01,
                       color: MyColors.white,
                       size: 36,
                     ),
