@@ -22,12 +22,14 @@ class MyConstants {
 
   // base url
   // Override with --dart-define=API_BASE_URL=https://your-api.example.com/
-    static String get baseUrl {
-        const definedBaseUrl = String.fromEnvironment('API_BASE_URL', defaultValue: '');
-        return definedBaseUrl.isNotEmpty
-                ? definedBaseUrl
-                : 'http://192.168.1.5:3000/';
-    }
+  static String get baseUrl {
+    const definedBaseUrl = String.fromEnvironment(
+      'API_BASE_URL',
+      defaultValue: '',
+    );
+    return definedBaseUrl.isNotEmpty ? definedBaseUrl : "http://localhost:3000/";
+    //    : 'http://192.168.1.5:3000/';
+  }
 
   // When building the web app, use an HTTPS backend URL if the site is served
   // over HTTPS. Browsers block HTTPS pages from calling HTTP APIs.

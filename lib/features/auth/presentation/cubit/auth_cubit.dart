@@ -235,10 +235,12 @@ class AuthCubit extends Cubit<AuthState> {
         } else {
           MyLogger.info('[AuthCubit] User logged in, checking verification...');
           // Check verification status
-          final verifiedResult = await isVerifiedUseCase(const NoParams()).timeout(
-            const Duration(seconds: 4),
-            onTimeout: () => Left(ServerFailure('Verification check timed out')),
-          );
+          final verifiedResult = await isVerifiedUseCase(const NoParams())
+              .timeout(
+                const Duration(seconds: 4),
+                onTimeout: () =>
+                    Left(ServerFailure('Verification check timed out')),
+              );
           verifiedResult.fold(
             (_) {
               MyLogger.info(
@@ -383,10 +385,15 @@ class AuthCubit extends Cubit<AuthState> {
     final result = await getCurrentUserUsecase(const NoParams());
     await result.fold(
       (failure) async {
-        MyLogger.warning('[AuthCubit] Failed to load current user: ${failure.message}');
+        MyLogger.warning(
+          '[AuthCubit] Failed to load current user: ${failure.message}',
+        );
       },
       (user) async {
-        await localStorage.setData(MyConstants.userDataKey, jsonEncode(user.toJson()));
+        await localStorage.setData(
+          MyConstants.userDataKey,
+          jsonEncode(user.toJson()),
+        );
       },
     );
   }

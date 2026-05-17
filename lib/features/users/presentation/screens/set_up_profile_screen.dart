@@ -15,6 +15,7 @@ import '../../../../core/utils/my_logger.dart';
 import '../../../../core/utils/my_sizes.dart';
 import '../../../../generated/l10n.dart';
 import '../../../../injection/injection_container.dart';
+import '../../../../core/ui/widgets/my_app_bar.dart';
 import '../../../auth/presentation/cubit/auth_cubit.dart';
 import '../../../common/widgets/screen_decoration.dart';
 import '../../../common/widgets/text_feild_with_lable.dart';
@@ -67,7 +68,7 @@ class _SetUpProfileScreenContentState
       builder: (context, state) {
         return Scaffold(
           extendBodyBehindAppBar: true,
-          appBar: AppBar(
+          appBar: MyAppBar(
             backgroundColor: Colors.transparent,
             elevation: 0,
             automaticallyImplyLeading: false,

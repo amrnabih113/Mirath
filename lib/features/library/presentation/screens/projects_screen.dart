@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:hugeicons/hugeicons.dart';
+import 'package:mirath/core/ui/widgets/my_app_bar.dart';
+import 'package:mirath/core/ui/widgets/my_body.dart';
 
 import '../../../../core/utils/my_extenstions.dart';
 import '../../../../core/utils/my_sizes.dart';
@@ -12,7 +14,7 @@ class ProjectsScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
+      appBar: MyAppBar(
         leading: MyBackIcon(),
         title: Text(
           'Your Projects',
@@ -37,19 +39,7 @@ class ProjectsScreen extends StatelessWidget {
           ),
         ],
       ),
-      body: Center(
-        child: LayoutBuilder(
-          builder: (context, constraints) {
-            return ConstrainedBox(
-              constraints: const BoxConstraints(maxWidth: 850),
-              child: Padding(
-                padding: MySizes.paddingSm(context),
-                child: Center(child: Text('No Projects Yet')),
-              ),
-            );
-          },
-        ),
-      ),
-    );
+      body:MyBody(child: Text('No Projects Yet')));
+             
   }
 }

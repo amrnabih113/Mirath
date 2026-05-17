@@ -99,7 +99,10 @@ class _SplashScreenState extends State<SplashScreen>
                         'Mirath',
                         style: context.titleLarge.copyWith(
                           fontWeight: FontWeight.bold,
-                          fontSize: ResponsiveHelper.responsiveValue(context, 40),
+                          fontSize: ResponsiveHelper.responsiveValue(
+                            context,
+                            40,
+                          ),
                           color: Color(0xff5C3110),
                           fontFamily: GoogleFonts.anticDidone().fontFamily,
                           letterSpacing: 1.2,

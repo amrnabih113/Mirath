@@ -1,11 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'package:mirath/core/ui/widgets/my_app_bar.dart';
 
 import '../../../../core/utils/my_extenstions.dart';
+import '../../../../core/helpers/responsive_helper.dart';
 import '../../../../core/utils/my_sizes.dart';
 import '../../../../generated/l10n.dart';
 import '../cubit/library_cubit.dart';
+import '../../../../core/constants/route_names.dart';
 import '../widgets/lib_tiles.dart';
 import '../widgets/my_item.dart';
 import '../widgets/my_item_shimmer.dart';
@@ -16,12 +19,12 @@ class LibraryScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
+      appBar: MyAppBar(
         title: Text(
           S.of(context).your_library,
           style: context.headlineLarge.copyWith(
             color: Colors.black,
-            fontSize: 20,
+            fontSize: ResponsiveHelper.responsiveValue(context, 20),
           ),
         ),
       ),
@@ -47,24 +50,41 @@ class LibraryScreen extends StatelessWidget {
                               if (state.fromCache)
                                 Container(
                                   width: double.infinity,
-                                  padding: const EdgeInsets.symmetric(
-                                    horizontal: 12,
-                                    vertical: 8,
+                                  padding: EdgeInsets.symmetric(
+                                    horizontal:
+                                        ResponsiveHelper.responsiveValue(
+                                          context,
+                                          12,
+                                        ),
+                                    vertical: ResponsiveHelper.responsiveValue(
+                                      context,
+                                      8,
+                                    ),
                                   ),
                                   decoration: BoxDecoration(
-                                    color: Theme.of(
-                                      context,
-                                    ).colorScheme.surfaceVariant,
-                                    borderRadius: BorderRadius.circular(8),
+                                    borderRadius: BorderRadius.circular(
+                                      ResponsiveHelper.responsiveValue(
+                                        context,
+                                        8,
+                                      ),
+                                    ),
                                   ),
                                   child: Row(
                                     mainAxisSize: MainAxisSize.min,
                                     children: [
-                                      const Icon(
+                                      Icon(
                                         Icons.wifi_off_rounded,
-                                        size: 18,
+                                        size: ResponsiveHelper.responsiveValue(
+                                          context,
+                                          18,
+                                        ),
                                       ),
-                                      const SizedBox(width: 8),
+                                      SizedBox(
+                                        width: ResponsiveHelper.responsiveValue(
+                                          context,
+                                          8,
+                                        ),
+                                      ),
                                       Text(
                                         'Showing cached data',
                                         style: Theme.of(
@@ -90,28 +110,28 @@ class LibraryScreen extends StatelessWidget {
                     LibTiles(
                       title: "Read Later", //S.of(context).reading_later,
                       onTap: () {
-                        context.push('/read-later');
+                        context.push(RouteNames.readLater);
                       },
                     ),
                     SizedBox(height: MySizes.spaceMd(context)),
                     LibTiles(
                       title: S.of(context).projects,
                       onTap: () {
-                        context.push('/projects');
+                        context.push(RouteNames.projects);
                       },
                     ),
                     SizedBox(height: MySizes.spaceMd(context)),
                     LibTiles(
                       title: S.of(context).reading_lists,
                       onTap: () {
-                        context.push('/reading-lists');
+                        context.push(RouteNames.readingLists);
                       },
                     ),
                     SizedBox(height: MySizes.spaceMd(context)),
                     LibTiles(
                       title: S.of(context).reading_history,
                       onTap: () {
-                        context.push('/reading-history');
+                        context.push(RouteNames.readingHistory);
                       },
                     ),
                   ],

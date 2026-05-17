@@ -137,9 +137,12 @@ class _ChatbotScreenState extends State<ChatbotScreen> {
     return Scaffold(
       appBar: AppBar(
         elevation: 0,
-            leading: Builder(
+        leading: Builder(
           builder: (context) => IconButton(
-            icon: HugeIcon(icon: HugeIcons.strokeRoundedMenu01, color: MyColors.textPrimary),
+            icon: HugeIcon(
+              icon: HugeIcons.strokeRoundedMenu01,
+              color: MyColors.textPrimary,
+            ),
             onPressed: () {
               Scaffold.of(context).openDrawer();
             },
@@ -148,7 +151,10 @@ class _ChatbotScreenState extends State<ChatbotScreen> {
 
         actions: [
           IconButton(
-            icon: HugeIcon(icon: HugeIcons.strokeRoundedComment01, color: MyColors.textPrimary),
+            icon: HugeIcon(
+              icon: HugeIcons.strokeRoundedComment01,
+              color: MyColors.textPrimary,
+            ),
             onPressed: () {},
           ),
         ],

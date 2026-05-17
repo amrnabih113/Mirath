@@ -25,7 +25,7 @@ class LibItem extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.center,
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          HugeIcon(icon: icon),
+          HugeIcon(icon: icon, size: MySizes.iconSmall(context)),
           SizedBox(height: MySizes.spaceSm(context) * .5),
           Text(title),
           SizedBox(height: MySizes.spaceSm(context) * .5),

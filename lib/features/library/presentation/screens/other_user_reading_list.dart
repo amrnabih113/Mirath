@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:hugeicons/hugeicons.dart';
+import 'package:mirath/core/ui/widgets/my_app_bar.dart';
 import '../../../home/presentation/widgets/paper_card.dart';
 import '../../../../core/helpers/responsive_helper.dart';
 import '../../../../core/utils/my_colors.dart';
@@ -14,11 +15,9 @@ class OtherUserReadingList extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        toolbarHeight: ResponsiveHelper.responsiveValue(context, 50),
-        leadingWidth: ResponsiveHelper.responsiveValue(context, 50),
+      appBar: MyAppBar(
+     
         leading: const MyBackIcon(),
-        titleSpacing: 0,
         actions: [
           Padding(
             padding: EdgeInsets.only(right: MySizes.spaceSm(context)),
