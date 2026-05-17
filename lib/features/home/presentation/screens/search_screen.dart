@@ -80,82 +80,78 @@ class _SearchScreenState extends State<SearchScreen> {
       body: MyBody(
         padding: MySizes.paddingMd(context),
         child: Column(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  children: [
-                    if (widget.showHeading) ...[
-                      SearchScreenHeading(
-                        onClearAll: () =>
-                            context.read<SearchCubit>().clearSearchHistory(),
-                      ),
-                      SizedBox(height: MySizes.spaceSm(context)),
-                    ],
-                    Expanded(
-                      child: BlocBuilder<SearchCubit, SearchState>(
-                        builder: (context, state) {
-                          if (state is SearchHistoryLoading ||
-                              state is SearchInitial) {
-                            return const Center(
-                              child: CircularProgressIndicator(),
-                            );
-                          }
-
-                          if (state is SearchError) {
-                            return Center(
-                              child: Text(
-                                state.message,
-                                style: Theme.of(context).textTheme.bodyMedium,
-                              ),
-                            );
-                          }
-
-                          final history = state is SearchHistoryLoaded
-                              ? state.history
-                              : <SearchHistoryItem>[];
-                          final query = _searchController.text.trim();
-                          final filtered = query.isEmpty
-                              ? history
-                              : history
-                                    .where(
-                                      (item) => item.query
-                                          .toLowerCase()
-                                          .contains(query.toLowerCase()),
-                                    )
-                                    .toList();
-
-                          if (filtered.isEmpty) {
-                            return Center(
-                              child: Text(
-                                'No recent searches',
-                                style: Theme.of(context).textTheme.bodyMedium,
-                              ),
-                            );
-                          }
-
-                          return ListView.separated(
-                            separatorBuilder: (context, index) =>
-                                SizedBox(height: MySizes.spaceXs(context)),
-                            padding: EdgeInsets.zero,
-                            itemCount: filtered.length,
-                            itemBuilder: (context, index) {
-                              final item = filtered[index];
-                              return InkWell(
-                                onTap: () => _onSubmitSearch(item.query),
-                                child: SearchItem(
-                                  itemTitle: item.query,
-                                  onTap: () => context
-                                      .read<SearchCubit>()
-                                      .deleteSearchHistoryItem(item.id),
-                                ),
-                              );
-                            },
-                          );
-                        },
-                      ),
-                    ),
-                  ],
-                ),
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: [
+            if (widget.showHeading) ...[
+              SearchScreenHeading(
+                onClearAll: () =>
+                    context.read<SearchCubit>().clearSearchHistory(),
               ),
-            );
-       
+              SizedBox(height: MySizes.spaceSm(context)),
+            ],
+            Expanded(
+              child: BlocBuilder<SearchCubit, SearchState>(
+                builder: (context, state) {
+                  if (state is SearchHistoryLoading || state is SearchInitial) {
+                    return const Center(child: CircularProgressIndicator());
+                  }
+
+                  if (state is SearchError) {
+                    return Center(
+                      child: Text(
+                        state.message,
+                        style: Theme.of(context).textTheme.bodyMedium,
+                      ),
+                    );
+                  }
+
+                  final history = state is SearchHistoryLoaded
+                      ? state.history
+                      : <SearchHistoryItem>[];
+                  final query = _searchController.text.trim();
+                  final filtered = query.isEmpty
+                      ? history
+                      : history
+                            .where(
+                              (item) => item.query.toLowerCase().contains(
+                                query.toLowerCase(),
+                              ),
+                            )
+                            .toList();
+
+                  if (filtered.isEmpty) {
+                    return Center(
+                      child: Text(
+                        'No recent searches',
+                        style: Theme.of(context).textTheme.bodyMedium,
+                      ),
+                    );
+                  }
+
+                  return ListView.separated(
+                    separatorBuilder: (context, index) =>
+                        SizedBox(height: MySizes.spaceXs(context)),
+                    padding: EdgeInsets.zero,
+                    itemCount: filtered.length,
+                    itemBuilder: (context, index) {
+                      final item = filtered[index];
+                      return InkWell(
+                        onTap: () => _onSubmitSearch(item.query),
+                        child: SearchItem(
+                          itemTitle: item.query,
+                          onTap: () => context
+                              .read<SearchCubit>()
+                              .deleteSearchHistoryItem(item.id),
+                        ),
+                      );
+                    },
+                  );
+                },
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
   }
 }

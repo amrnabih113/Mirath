@@ -84,7 +84,9 @@ class _PaperScreenState extends State<PaperScreen> {
     final currentPaper = _currentPaper;
 
     if (_isLoading) {
-      return Scaffold(body: MyBody(child: const Center(child: CircularProgressIndicator())));
+      return Scaffold(
+        body: MyBody(child: const Center(child: CircularProgressIndicator())),
+      );
     }
     if (_error != null) {
       final offline = !NetworkManager.instance.currentConnectionStatus;
@@ -106,8 +108,10 @@ class _PaperScreenState extends State<PaperScreen> {
     }
 
     if (currentPaper == null) {
-          return Scaffold(
-        body: MyBody(child: Center(child: Text(S.of(context).error_no_paper_data))),
+      return Scaffold(
+        body: MyBody(
+          child: Center(child: Text(S.of(context).error_no_paper_data)),
+        ),
       );
     }
 
@@ -145,36 +149,37 @@ class _PaperScreenState extends State<PaperScreen> {
       ),
       body: MyBody(
         child: Center(
-        child: LayoutBuilder(
-          builder: (context, constraints) {
-            return ConstrainedBox(
-              constraints: const BoxConstraints(maxWidth: 850),
-              child: Padding(
-                padding: MySizes.paddingMd(context),
-                child: SingleChildScrollView(
-                  child: Column(
-                    children: [
-                      PaperInfo(
-                        paper: currentPaper,
-                        onSavePressed: _onSavePressed,
-                      ),
-                      SizedBox(height: MySizes.spaceMd(context)),
-                      AbstractSection(
-                        abstractText: currentPaper.abstract,
-                        onStartDiscussion: _onStartDiscussion,
-                        onViewDiscussions: _onViewDiscussions,
-                      ),
-                      SizedBox(height: MySizes.spaceMd(context)),
-                      ExpainsionTileWidget(),
-                    ],
+          child: LayoutBuilder(
+            builder: (context, constraints) {
+              return ConstrainedBox(
+                constraints: const BoxConstraints(maxWidth: 850),
+                child: Padding(
+                  padding: MySizes.paddingMd(context),
+                  child: SingleChildScrollView(
+                    child: Column(
+                      children: [
+                        PaperInfo(
+                          paper: currentPaper,
+                          onSavePressed: _onSavePressed,
+                        ),
+                        SizedBox(height: MySizes.spaceMd(context)),
+                        AbstractSection(
+                          abstractText: currentPaper.abstract,
+                          onStartDiscussion: _onStartDiscussion,
+                          onViewDiscussions: _onViewDiscussions,
+                        ),
+                        SizedBox(height: MySizes.spaceMd(context)),
+                        ExpainsionTileWidget(),
+                      ],
+                    ),
                   ),
                 ),
-              ),
-            );
-          },
+              );
+            },
+          ),
         ),
       ),
-      )  );
+    );
   }
 
   void _onSavePressed() {

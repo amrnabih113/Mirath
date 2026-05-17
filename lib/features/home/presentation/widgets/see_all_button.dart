@@ -53,9 +53,7 @@ class SeeAllButton extends StatelessWidget {
                 'See all',
                 style: context.bodySmall.copyWith(
                   fontSize: ResponsiveHelper.responsiveValue(context, 12.5),
-                  fontWeight: FontWeight.w700,
                   color: MyColors.white,
-                  letterSpacing: 0.3,
                 ),
               ),
               HugeIcon(

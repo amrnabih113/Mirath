@@ -161,8 +161,6 @@ class _OtherUsersProfileState extends State<OtherUsersProfile> {
         ),
       ),
     );
-
-    
   }
 }
 

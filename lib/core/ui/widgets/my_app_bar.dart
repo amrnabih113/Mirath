@@ -13,6 +13,7 @@ class MyAppBar extends StatelessWidget implements PreferredSizeWidget {
     this.titleSpacing,
     this.centerTitle,
     this.maxWidth = 850,
+    this.padding,
     this.height,
     this.backgroundColor,
     this.elevation,
@@ -26,6 +27,7 @@ class MyAppBar extends StatelessWidget implements PreferredSizeWidget {
   final double? titleSpacing;
   final bool? centerTitle;
   final double maxWidth;
+  final EdgeInsetsGeometry? padding;
   final double? height;
   final Color? backgroundColor;
   final double? elevation;
@@ -42,24 +44,23 @@ class MyAppBar extends StatelessWidget implements PreferredSizeWidget {
     return PreferredSize(
       preferredSize: Size.fromHeight(computedHeight),
       child: Center(
-        child: LayoutBuilder(
-          builder: (context, constraints) {
-            return ConstrainedBox(
-              constraints: BoxConstraints(maxWidth: maxWidth),
-              child: AppBar(
-                leading: leading,
-                leadingWidth: leadingWidth,
-                title: title,
-                titleSpacing: titleSpacing,
-                actions: actions,
-                toolbarHeight: computedHeight,
-                centerTitle: centerTitle,
-                backgroundColor: backgroundColor,
-                elevation: elevation,
-                automaticallyImplyLeading: automaticallyImplyLeading ?? true,
-              ),
-            );
-          },
+        child: ConstrainedBox(
+          constraints: BoxConstraints(maxWidth: maxWidth),
+          child: Padding(
+            padding: padding ?? EdgeInsets.zero,
+            child: AppBar(
+              leading: leading,
+              leadingWidth: leadingWidth,
+              title: title,
+              titleSpacing: titleSpacing,
+              actions: actions,
+              toolbarHeight: computedHeight,
+              centerTitle: centerTitle,
+              backgroundColor: backgroundColor,
+              elevation: elevation,
+              automaticallyImplyLeading: automaticallyImplyLeading ?? true,
+            ),
+          ),
         ),
       ),
     );

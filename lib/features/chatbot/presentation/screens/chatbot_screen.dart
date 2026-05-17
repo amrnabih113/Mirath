@@ -164,51 +164,51 @@ class _ChatbotScreenState extends State<ChatbotScreen> {
       drawer: const Drawer(),
       body: MyBody(
         child: BlocConsumer<ChatbotCubit, ChatbotState>(
-        bloc: _chatbotCubit,
-        listener: (context, state) {
-          if (state is ChatbotLoaded || state is ChatbotMessageSending) {
-            _scrollToBottom(followTyping: true);
-          }
-        },
-        builder: (context, state) {
-          return Column(
-            children: [
-              // Offline / sync indicators
-              if (!NetworkManager.instance.currentConnectionStatus)
-                const OfflineBanner(),
-              if (state is ChatbotMessageSending)
-                const Padding(
-                  padding: EdgeInsets.symmetric(
-                    vertical: 6.0,
-                    horizontal: 12.0,
+          bloc: _chatbotCubit,
+          listener: (context, state) {
+            if (state is ChatbotLoaded || state is ChatbotMessageSending) {
+              _scrollToBottom(followTyping: true);
+            }
+          },
+          builder: (context, state) {
+            return Column(
+              children: [
+                // Offline / sync indicators
+                if (!NetworkManager.instance.currentConnectionStatus)
+                  const OfflineBanner(),
+                if (state is ChatbotMessageSending)
+                  const Padding(
+                    padding: EdgeInsets.symmetric(
+                      vertical: 6.0,
+                      horizontal: 12.0,
+                    ),
+                    child: Align(
+                      alignment: Alignment.centerLeft,
+                      child: SyncIndicator(syncing: true),
+                    ),
                   ),
-                  child: Align(
-                    alignment: Alignment.centerLeft,
-                    child: SyncIndicator(syncing: true),
+                // Messages list
+                Expanded(
+                  child: MessagesList(
+                    state: state,
+                    scrollController: _scrollController,
+                    userName: _userName,
                   ),
                 ),
-              // Messages list
-              Expanded(
-                child: MessagesList(
-                  state: state,
-                  scrollController: _scrollController,
-                  userName: _userName,
-                ),
-              ),
 
-              // Input area
-              ChatInputArea(
-                messageController: _messageController,
-                selectedImages: _selectedImages,
-                onPickAttachment: _pickAttachment,
-                onSendMessage: _sendMessage,
-                onRemoveImage: _removeImage,
-                onTextChanged: () => setState(() {}),
-              ),
-            ],
-          );
-        },
-      ),
+                // Input area
+                ChatInputArea(
+                  messageController: _messageController,
+                  selectedImages: _selectedImages,
+                  onPickAttachment: _pickAttachment,
+                  onSendMessage: _sendMessage,
+                  onRemoveImage: _removeImage,
+                  onTextChanged: () => setState(() {}),
+                ),
+              ],
+            );
+          },
+        ),
       ),
     );
   }

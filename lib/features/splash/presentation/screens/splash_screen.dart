@@ -69,7 +69,7 @@ class _SplashScreenState extends State<SplashScreen>
           context.go(RouteNames.signin);
         }
       },
-        child: Scaffold(
+      child: Scaffold(
         backgroundColor: MyColors.light,
         body: MyBody(
           padding: EdgeInsets.zero,

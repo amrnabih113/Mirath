@@ -61,10 +61,7 @@ class _ReadingLaterScreenState extends State<ReadingLaterScreen>
                     // HEADER (static while loading)
                     SliverToBoxAdapter(
                       child: Container(
-                        height: ResponsiveHelper.responsiveValue(
-                          context,
-                          100,
-                        ),
+                        height: ResponsiveHelper.responsiveValue(context, 100),
                         width: MySizes.screenWidth(context),
 
                         decoration: BoxDecoration(
@@ -86,9 +83,7 @@ class _ReadingLaterScreenState extends State<ReadingLaterScreen>
                                 fontWeight: FontWeight.w700,
                               ),
                             ),
-                            SizedBox(
-                              height: MySizes.spaceSm(context) * 0.5,
-                            ),
+                            SizedBox(height: MySizes.spaceSm(context) * 0.5),
 
                             // Keep a stable subtitle while loading
                             Text('Loading…'),
@@ -116,9 +111,7 @@ class _ReadingLaterScreenState extends State<ReadingLaterScreen>
               final savedPapersList = state.savedPapers;
               final formattedDate = savedPapersList.isEmpty
                   ? '0'
-                  : MyFormaters.relativeTime(
-                      savedPapersList.first.createdAt,
-                    );
+                  : MyFormaters.relativeTime(savedPapersList.first.createdAt);
 
               return Padding(
                 padding: MySizes.paddingMd(context),
@@ -127,10 +120,7 @@ class _ReadingLaterScreenState extends State<ReadingLaterScreen>
                     // HEADER
                     SliverToBoxAdapter(
                       child: Container(
-                        height: ResponsiveHelper.responsiveValue(
-                          context,
-                          100,
-                        ),
+                        height: ResponsiveHelper.responsiveValue(context, 100),
                         width: MySizes.screenWidth(context),
 
                         decoration: BoxDecoration(
@@ -152,9 +142,7 @@ class _ReadingLaterScreenState extends State<ReadingLaterScreen>
                                 fontWeight: FontWeight.w700,
                               ),
                             ),
-                            SizedBox(
-                              height: MySizes.spaceSm(context) * 0.5,
-                            ),
+                            SizedBox(height: MySizes.spaceSm(context) * 0.5),
 
                             Text(
                               '${savedPapersList.length} papers • Updated $formattedDate',
@@ -174,9 +162,7 @@ class _ReadingLaterScreenState extends State<ReadingLaterScreen>
                         child: Column(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            const Text(
-                              'You haven’t added any research papers',
-                            ),
+                            const Text('You haven’t added any research papers'),
                             TextButton(
                               onPressed: () {},
                               child: Text(

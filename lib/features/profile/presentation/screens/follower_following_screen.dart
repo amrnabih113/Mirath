@@ -79,105 +79,104 @@ class _FollowerFollowingScreenState extends State<FollowerFollowingScreen> {
         ),
         body: MyBody(
           child: Column(
+            children: [
+              TabBar(
+                indicatorColor: MyColors.primaryShade900,
+                labelColor: Colors.black,
+                unselectedLabelColor: Colors.grey,
+                tabs: [
+                  Tab(text: S.of(context).followers),
+                  Tab(text: S.of(context).following),
+                ],
+              ),
+              Expanded(
+                child: TabBarView(
                   children: [
-                    TabBar(
-                      indicatorColor: MyColors.primaryShade900,
-                      labelColor: Colors.black,
-                      unselectedLabelColor: Colors.grey,
-                      tabs: [
-                        Tab(text: S.of(context).followers),
-                        Tab(text: S.of(context).following),
-                      ],
+                    FutureBuilder<List<Follows>>(
+                      future: _followersFuture,
+                      builder: (context, snapshot) {
+                        if (snapshot.connectionState ==
+                            ConnectionState.waiting) {
+                          return const Center(
+                            child: CircularProgressIndicator(),
+                          );
+                        }
+
+                        final users = snapshot.data ?? const <Follows>[];
+                        if (users.isEmpty) {
+                          return Center(
+                            child: Text(S.of(context).no_results_found),
+                          );
+                        }
+
+                        return ListView.separated(
+                          padding: const EdgeInsets.all(8),
+                          itemCount: users.length,
+                          itemBuilder: (context, index) =>
+                              FollowerFollowingCard(
+                                user: users[index],
+                                onUserTap: () {
+                                  context.push(
+                                    RouteNames.userProfileRoute(
+                                      users[index].id,
+                                    ),
+                                  );
+                                },
+                                onFollowToggle: (_) {
+                                  return _toggleFollow(users[index]);
+                                },
+                              ),
+                          separatorBuilder: (context, index) =>
+                              SizedBox(height: MySizes.spaceXs(context)),
+                        );
+                      },
                     ),
-                    Expanded(
-                      child: TabBarView(
-                        children: [
-                          FutureBuilder<List<Follows>>(
-                            future: _followersFuture,
-                            builder: (context, snapshot) {
-                              if (snapshot.connectionState ==
-                                  ConnectionState.waiting) {
-                                return const Center(
-                                  child: CircularProgressIndicator(),
-                                );
-                              }
+                    FutureBuilder<List<Follows>>(
+                      future: _followingFuture,
+                      builder: (context, snapshot) {
+                        if (snapshot.connectionState ==
+                            ConnectionState.waiting) {
+                          return const Center(
+                            child: CircularProgressIndicator(),
+                          );
+                        }
 
-                              final users = snapshot.data ?? const <Follows>[];
-                              if (users.isEmpty) {
-                                return Center(
-                                  child: Text(S.of(context).no_results_found),
-                                );
-                              }
+                        final users = snapshot.data ?? const <Follows>[];
+                        if (users.isEmpty) {
+                          return Center(
+                            child: Text(S.of(context).no_results_found),
+                          );
+                        }
 
-                              return ListView.separated(
-                                padding: const EdgeInsets.all(8),
-                                itemCount: users.length,
-                                itemBuilder: (context, index) =>
-                                    FollowerFollowingCard(
-                                      user: users[index],
-                                      onUserTap: () {
-                                        context.push(
-                                          RouteNames.userProfileRoute(
-                                            users[index].id,
-                                          ),
-                                        );
-                                      },
-                                      onFollowToggle: (_) {
-                                        return _toggleFollow(users[index]);
-                                      },
+                        return ListView.separated(
+                          padding: const EdgeInsets.all(8),
+                          itemCount: users.length,
+                          itemBuilder: (context, index) =>
+                              FollowerFollowingCard(
+                                user: users[index],
+                                onUserTap: () {
+                                  context.push(
+                                    RouteNames.userProfileRoute(
+                                      users[index].id,
                                     ),
-                                separatorBuilder: (context, index) =>
-                                    SizedBox(height: MySizes.spaceXs(context)),
-                              );
-                            },
-                          ),
-                          FutureBuilder<List<Follows>>(
-                            future: _followingFuture,
-                            builder: (context, snapshot) {
-                              if (snapshot.connectionState ==
-                                  ConnectionState.waiting) {
-                                return const Center(
-                                  child: CircularProgressIndicator(),
-                                );
-                              }
-
-                              final users = snapshot.data ?? const <Follows>[];
-                              if (users.isEmpty) {
-                                return Center(
-                                  child: Text(S.of(context).no_results_found),
-                                );
-                              }
-
-                              return ListView.separated(
-                                padding: const EdgeInsets.all(8),
-                                itemCount: users.length,
-                                itemBuilder: (context, index) =>
-                                    FollowerFollowingCard(
-                                      user: users[index],
-                                      onUserTap: () {
-                                        context.push(
-                                          RouteNames.userProfileRoute(
-                                            users[index].id,
-                                          ),
-                                        );
-                                      },
-                                      onFollowToggle: (_) {
-                                        return _toggleFollow(users[index]);
-                                      },
-                                    ),
-                                separatorBuilder: (context, index) => SizedBox(
-                                  height: MySizes.spaceXs(context) * 0.5,
-                                ),
-                              );
-                            },
-                          ),
-                        ],
-                      ),
+                                  );
+                                },
+                                onFollowToggle: (_) {
+                                  return _toggleFollow(users[index]);
+                                },
+                              ),
+                          separatorBuilder: (context, index) =>
+                              SizedBox(height: MySizes.spaceXs(context) * 0.5),
+                        );
+                      },
                     ),
                   ],
                 ),
-       )) );
-            }
-          
-
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
 }

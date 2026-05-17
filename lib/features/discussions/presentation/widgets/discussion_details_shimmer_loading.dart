@@ -52,61 +52,57 @@ class DiscussionDetailsShimmerLoading extends StatelessWidget {
           bottom: false,
           child: CustomScrollView(
             slivers: [
-                      // User header shimmer
-                      SliverToBoxAdapter(
-                        child: _buildUserHeaderShimmer(context),
-                      ),
-                      SliverToBoxAdapter(
-                        child: SizedBox(height: MySizes.spaceMd(context)),
-                      ),
-                      // Title shimmer
-                      SliverToBoxAdapter(child: _buildTitleShimmer(context)),
-                      SliverToBoxAdapter(
-                        child: SizedBox(height: MySizes.spaceMd(context)),
-                      ),
-                      // Content shimmer
-                      SliverToBoxAdapter(child: _buildContentShimmer(context)),
-                      SliverToBoxAdapter(
-                        child: SizedBox(height: MySizes.spaceMd(context)),
-                      ),
-                      // Tags shimmer
-                      SliverToBoxAdapter(child: _buildTagsShimmer(context)),
-                      SliverToBoxAdapter(
-                        child: SizedBox(height: MySizes.spaceMd(context)),
-                      ),
-                      // Action buttons shimmer
-                      SliverToBoxAdapter(
-                        child: _buildActionButtonsShimmer(context),
-                      ),
-                      SliverToBoxAdapter(
-                        child: SizedBox(height: MySizes.spaceLg(context)),
-                      ),
-                      // Comments section title
-                      SliverToBoxAdapter(
-                        child: Shimmer.fromColors(
-                          baseColor: MyColors.primaryShade100,
-                          highlightColor: MyColors.primaryShade50,
-                          child: Container(
-                            width: 100,
-                            height: 20,
-                            decoration: BoxDecoration(
-                              color: MyColors.white,
-                              borderRadius: BorderRadius.circular(4),
-                            ),
-                          ),
-                        ),
-                      ),
-                      SliverToBoxAdapter(
-                        child: SizedBox(height: MySizes.spaceMd(context)),
-                      ),
-                      // Comments shimmer
-                      SliverList(
-                        delegate: SliverChildBuilderDelegate(
-                          (context, index) => _buildCommentShimmer(context),
-                          childCount: 3,
-                        ),
-                      ),
-                    ],
+              // User header shimmer
+              SliverToBoxAdapter(child: _buildUserHeaderShimmer(context)),
+              SliverToBoxAdapter(
+                child: SizedBox(height: MySizes.spaceMd(context)),
+              ),
+              // Title shimmer
+              SliverToBoxAdapter(child: _buildTitleShimmer(context)),
+              SliverToBoxAdapter(
+                child: SizedBox(height: MySizes.spaceMd(context)),
+              ),
+              // Content shimmer
+              SliverToBoxAdapter(child: _buildContentShimmer(context)),
+              SliverToBoxAdapter(
+                child: SizedBox(height: MySizes.spaceMd(context)),
+              ),
+              // Tags shimmer
+              SliverToBoxAdapter(child: _buildTagsShimmer(context)),
+              SliverToBoxAdapter(
+                child: SizedBox(height: MySizes.spaceMd(context)),
+              ),
+              // Action buttons shimmer
+              SliverToBoxAdapter(child: _buildActionButtonsShimmer(context)),
+              SliverToBoxAdapter(
+                child: SizedBox(height: MySizes.spaceLg(context)),
+              ),
+              // Comments section title
+              SliverToBoxAdapter(
+                child: Shimmer.fromColors(
+                  baseColor: MyColors.primaryShade100,
+                  highlightColor: MyColors.primaryShade50,
+                  child: Container(
+                    width: 100,
+                    height: 20,
+                    decoration: BoxDecoration(
+                      color: MyColors.white,
+                      borderRadius: BorderRadius.circular(4),
+                    ),
+                  ),
+                ),
+              ),
+              SliverToBoxAdapter(
+                child: SizedBox(height: MySizes.spaceMd(context)),
+              ),
+              // Comments shimmer
+              SliverList(
+                delegate: SliverChildBuilderDelegate(
+                  (context, index) => _buildCommentShimmer(context),
+                  childCount: 3,
+                ),
+              ),
+            ],
           ),
         ),
       ),

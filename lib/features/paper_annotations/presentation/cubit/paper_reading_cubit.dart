@@ -15,7 +15,7 @@ import '../../domain/usecases/get_highlights_usecase.dart';
 import '../../domain/usecases/save_highlight_usecase.dart';
 import '../../domain/usecases/update_highlight_note_usecase.dart';
 import '../../domain/usecases/update_highlight_usecase.dart';
-import '../widgets/annotation_webview.dart';
+import '../widgets/annotation_webview_platform.dart';
 import 'paper_reading_state.dart';
 
 class PaperReadingCubit extends Cubit<PaperReadingState> {
