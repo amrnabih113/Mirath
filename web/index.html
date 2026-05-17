@@ -19,50 +19,48 @@
 
   <meta charset="UTF-8">
   <meta content="IE=Edge" http-equiv="X-UA-Compatible">
-  <meta name="description" content="A new Flutter project.">
+  <meta name="description" content="Mirath App">
 
   <!-- Google Sign-In client ID for web -->
-  <meta name="google-signin-client_id"
+  <meta
+    name="google-signin-client_id"
     content="551081167484-v7ute4pkh7nvb7v4gu8383cchvc0jd6h.apps.googleusercontent.com">
 
-  <!-- iOS meta tags & icons -->
+  <!-- Mobile -->
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+  <!-- iOS -->
   <meta name="mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black">
   <meta name="apple-mobile-web-app-title" content="Mirath">
-  <link rel="apple-touch-icon" href="icons/Icon-192.png">
 
-  <!-- Favicon -->
+  <!-- Icons -->
+  <link rel="apple-touch-icon" href="icons/Icon-192.png">
   <link rel="icon" type="image/png" href="favicon.png">
 
-  <title>Mirath</title>
+  <!-- Manifest -->
   <link rel="manifest" href="manifest.json">
 
+  <title>Mirath</title>
 
-  <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" name="viewport">
-  <!-- Minimal CSP to allow fonts and Google sign-in; hosting headers may override this -->
-  <meta http-equiv="Content-Security-Policy"
-    content="default-src 'self'; script-src 'self' 'unsafe-inline' https://accounts.google.com https://apis.google.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com data:; img-src 'self' data:; connect-src 'self' https:;">
+  <!-- CSP -->
+  <meta
+    http-equiv="Content-Security-Policy"
+    content="
+      default-src 'self';
+      script-src 'self' 'unsafe-inline' https://accounts.google.com https://apis.google.com;
+      style-src 'self' 'unsafe-inline' https://fonts.googleapis.com;
+      font-src 'self' https://fonts.gstatic.com data:;
+      img-src 'self' data:;
+      connect-src 'self' https:;
+    ">
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+  <!-- Splash Screen Style -->
   <style id="splash-screen-style">
     html {
-      height: 100%
+      height: 100%;
     }
 
     body {
@@ -77,48 +75,7 @@
       position: absolute;
       top: 50%;
       left: 50%;
-      -ms-transform: translate(-50%, -50%);
       transform: translate(-50%, -50%);
-    }
-
-    .contain {
-      display: block;
-      width: 100%;
-      height: 100%;
-      object-fit: contain;
-    }
-
-    .stretch {
-      display: block;
-      width: 100%;
-      height: 100%;
-    }
-
-    .cover {
-      display: block;
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-    }
-
-    .bottom {
-      position: absolute;
-      bottom: 0;
-      left: 50%;
-      -ms-transform: translate(-50%, 0);
-      transform: translate(-50%, 0);
-    }
-
-    .bottomLeft {
-      position: absolute;
-      bottom: 0;
-      left: 0;
-    }
-
-    .bottomRight {
-      position: absolute;
-      bottom: 0;
-      right: 0;
     }
 
     @media (prefers-color-scheme: dark) {
@@ -127,57 +84,68 @@
       }
     }
   </style>
+
+  <!-- Splash Screen Remove Helper -->
   <script id="splash-screen-script">
     function removeSplashFromWeb() {
       document.getElementById("splash")?.remove();
-      document.getElementById("splash-branding")?.remove();
       document.body.style.background = "transparent";
     }
   </script>
 </head>
 
 <body>
+
+  <!-- Splash -->
   <picture id="splash">
     <source
-      srcset="splash/img/light-1x.png 1x, splash/img/light-2x.png 2x, splash/img/light-3x.png 3x, splash/img/light-4x.png 4x"
+      srcset="
+        splash/img/light-1x.png 1x,
+        splash/img/light-2x.png 2x,
+        splash/img/light-3x.png 3x,
+        splash/img/light-4x.png 4x"
       media="(prefers-color-scheme: light)">
+
     <source
-      srcset="splash/img/dark-1x.png 1x, splash/img/dark-2x.png 2x, splash/img/dark-3x.png 3x, splash/img/dark-4x.png 4x"
+      srcset="
+        splash/img/dark-1x.png 1x,
+        splash/img/dark-2x.png 2x,
+        splash/img/dark-3x.png 3x,
+        splash/img/dark-4x.png 4x"
       media="(prefers-color-scheme: dark)">
-    <img class="center" aria-hidden="true" src="splash/img/light-1x.png" alt="">
+
+    <img
+      class="center"
+      aria-hidden="true"
+      src="splash/img/light-1x.png"
+      alt="">
   </picture>
 
-
-
-
-
-
-
-
-
-
+  <!-- Flutter Bootstrap -->
   <script>
-    // Use the engine initializer API to configure the web engine (non-deprecated).
-    // This avoids using window.flutterConfiguration / window.flutterWebRenderer.
+    // Ensure loader prefers HTML renderer in dev and production to avoid CanvasKit CDN fetches
+    try {
+      window._flutter = window._flutter || {};
+      window._flutter.buildConfig = window._flutter.buildConfig || {
+        builds: [{ compileTarget: 'dart2js', renderer: 'html', mainJsPath: 'main.dart.js' }]
+      };
+    } catch (e) {
+      // ignore
+    }
+
+    // Use engine initializer if available (modern API) to request HTML renderer
     try {
       if (typeof createEngineInitializer === 'function') {
-        // Preferred modern initialization
-        createEngineInitializer().initializeEngine({
-          flutterWebRenderer: 'html'
-        });
+        createEngineInitializer().initializeEngine({ flutterWebRenderer: 'html' });
       } else {
-        // Fallback for older engines / debug environments
+        // fallback for older toolchains
         window.flutterWebRenderer = 'html';
       }
     } catch (e) {
-      try {
-        // Final fallback: set the legacy flag (deprecated) so the app uses HTML renderer
-        window.flutterWebRenderer = 'html';
-      } catch (_) {}
+      try { window.flutterWebRenderer = 'html'; } catch (_) {}
     }
   </script>
   <script src="flutter_bootstrap.js" async></script>
-
 
 </body>
 
