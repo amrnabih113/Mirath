@@ -40,7 +40,8 @@
 
   <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" name="viewport">
   <!-- Minimal CSP to allow fonts and Google sign-in; hosting headers may override this -->
-  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://accounts.google.com https://apis.google.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com data:; img-src 'self' data:; connect-src 'self' https:;">
+  <meta http-equiv="Content-Security-Policy"
+    content="default-src 'self'; script-src 'self' 'unsafe-inline' https://accounts.google.com https://apis.google.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com data:; img-src 'self' data:; connect-src 'self' https:;">
 
 
 
@@ -160,14 +161,19 @@
     // This avoids using window.flutterConfiguration / window.flutterWebRenderer.
     try {
       if (typeof createEngineInitializer === 'function') {
-        const engineInitializer = createEngineInitializer();
-        engineInitializer.initializeEngine({
-          flutterWebRenderer: 'html',
-          canvasKitBaseUrl: 'canvaskit/'
+        // Preferred modern initialization
+        createEngineInitializer().initializeEngine({
+          flutterWebRenderer: 'html'
         });
+      } else {
+        // Fallback for older engines / debug environments
+        window.flutterWebRenderer = 'html';
       }
     } catch (e) {
-      /* ignore - fall back to default engine init */
+      try {
+        // Final fallback: set the legacy flag (deprecated) so the app uses HTML renderer
+        window.flutterWebRenderer = 'html';
+      } catch (_) {}
     }
   </script>
   <script src="flutter_bootstrap.js" async></script>
