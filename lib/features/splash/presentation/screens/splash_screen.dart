@@ -8,6 +8,7 @@ import '../../../../core/utils/my_extenstions.dart';
 import '../../../auth/presentation/cubit/auth_cubit.dart';
 import 'package:go_router/go_router.dart';
 import '../../../../core/constants/route_names.dart';
+import '../../../../core/ui/widgets/my_body.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
@@ -68,9 +69,10 @@ class _SplashScreenState extends State<SplashScreen>
           context.go(RouteNames.signin);
         }
       },
-      child: Scaffold(
+        child: Scaffold(
         backgroundColor: MyColors.light,
-        body: Center(
+        body: MyBody(
+          padding: EdgeInsets.zero,
           child: AnimatedBuilder(
             animation: _controller,
             builder: (context, child) {

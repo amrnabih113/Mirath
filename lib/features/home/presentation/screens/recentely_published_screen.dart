@@ -17,6 +17,8 @@ import '../widgets/category_items_list.dart';
 import '../widgets/home_shimmer_loading.dart';
 import '../widgets/interests_shimmer_loading.dart';
 import '../widgets/paper_card.dart';
+import '../../../../core/ui/widgets/my_app_bar.dart';
+import '../../../../core/ui/widgets/my_body.dart';
 
 class RecentelyPublishedScreen extends StatefulWidget {
   final String? selectedCategory;
@@ -92,38 +94,18 @@ class _RecentelyPublishedScreenState extends State<RecentelyPublishedScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: PreferredSize(
-        preferredSize: Size.fromHeight(
-          ResponsiveHelper.responsiveValue(context, 60),
+      appBar: MyAppBar(
+        height: ResponsiveHelper.responsiveValue(context, 60),
+        leading: const MyBackIcon(),
+        title: Text(
+          S.of(context).recently_published,
+          style: context.titleLarge.copyWith(fontWeight: FontWeight.w900),
         ),
-        child: Center(
-          child: LayoutBuilder(
-            builder: (context, constraints) {
-              return ConstrainedBox(
-                constraints: const BoxConstraints(maxWidth: 850),
-                child: AppBar(
-                  leading: const MyBackIcon(),
-                  title: Text(
-                    S.of(context).recently_published,
-                    style: context.titleLarge.copyWith(
-                      fontWeight: FontWeight.w900,
-                    ),
-                  ),
-                  centerTitle: true,
-                ),
-              );
-            },
-          ),
-        ),
+        centerTitle: true,
       ),
-      body: Center(
-        child: LayoutBuilder(
-          builder: (context, constraints) {
-            return ConstrainedBox(
-              constraints: const BoxConstraints(maxWidth: 850),
-              child: Padding(
-                padding: MySizes.paddingMd(context),
-                child: Column(
+      body: MyBody(
+        padding: MySizes.paddingMd(context),
+        child: Column(
                   children: [
                     // Custom search bar for filtering categories
                     Container(
@@ -338,9 +320,5 @@ class _RecentelyPublishedScreenState extends State<RecentelyPublishedScreen> {
                 ),
               ),
             );
-          },
-        ),
-      ),
-    );
   }
 }

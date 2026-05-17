@@ -14,6 +14,8 @@ import '../cubit/chatbot_state.dart';
 import '../widgets/chat_input_area.dart';
 import '../widgets/chat_input_field.dart';
 import '../widgets/messages_list.dart';
+import '../../../../core/ui/widgets/my_app_bar.dart';
+import '../../../../core/ui/widgets/my_body.dart';
 
 class ChatbotScreen extends StatefulWidget {
   const ChatbotScreen({super.key});
@@ -135,7 +137,7 @@ class _ChatbotScreenState extends State<ChatbotScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
+      appBar: MyAppBar(
         elevation: 0,
         leading: Builder(
           builder: (context) => IconButton(
@@ -160,7 +162,8 @@ class _ChatbotScreenState extends State<ChatbotScreen> {
         ],
       ),
       drawer: const Drawer(),
-      body: BlocConsumer<ChatbotCubit, ChatbotState>(
+      body: MyBody(
+        child: BlocConsumer<ChatbotCubit, ChatbotState>(
         bloc: _chatbotCubit,
         listener: (context, state) {
           if (state is ChatbotLoaded || state is ChatbotMessageSending) {
@@ -205,6 +208,7 @@ class _ChatbotScreenState extends State<ChatbotScreen> {
             ],
           );
         },
+      ),
       ),
     );
   }

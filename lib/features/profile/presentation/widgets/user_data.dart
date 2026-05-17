@@ -207,7 +207,7 @@ class UserData extends StatelessWidget {
           InfoRow(icon: HugeIcons.strokeRoundedMail01, text: user.email),
           SizedBox(height: MySizes.spaceXs(context)),
           SizedBox(
-            height: MySizes.spaceXl(context),
+            height: ResponsiveHelper.responsiveValue(context, 28),
             child: ListView.separated(
               scrollDirection: Axis.horizontal,
               itemBuilder: (BuildContext context, int index) {

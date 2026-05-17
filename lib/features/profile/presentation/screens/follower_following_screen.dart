@@ -13,6 +13,8 @@ import '../../../users/domain/usecases/get_followers_usecase.dart';
 import '../../../users/domain/usecases/get_following_usecase.dart';
 import '../../../users/domain/usecases/unfollow_user_usecase.dart';
 import '../widgets/follower_following_card.dart';
+import '../../../../core/ui/widgets/my_app_bar.dart';
+import '../../../../core/ui/widgets/my_body.dart';
 
 class FollowerFollowingScreen extends StatefulWidget {
   const FollowerFollowingScreen({
@@ -70,17 +72,13 @@ class _FollowerFollowingScreenState extends State<FollowerFollowingScreen> {
       length: 2,
       initialIndex: widget.initialTabIndex.clamp(0, 1),
       child: Scaffold(
-        appBar: AppBar(
+        appBar: MyAppBar(
           leading: MyBackIcon(),
           title: Text(headerTitle),
           centerTitle: true,
         ),
-        body: Center(
-          child: LayoutBuilder(
-            builder: (context, constraints) {
-              return ConstrainedBox(
-                constraints: const BoxConstraints(maxWidth: 850),
-                child: Column(
+        body: MyBody(
+          child: Column(
                   children: [
                     TabBar(
                       indicatorColor: MyColors.primaryShade900,
@@ -178,11 +176,8 @@ class _FollowerFollowingScreenState extends State<FollowerFollowingScreen> {
                     ),
                   ],
                 ),
-              );
-            },
-          ),
-        ),
-      ),
-    );
-  }
+       )) );
+            }
+          
+
 }

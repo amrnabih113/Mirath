@@ -159,7 +159,7 @@ class _ReadingHistoryScreenState extends State<ReadingHistoryScreen> {
 
               return ListView.separated(
                 controller: _scrollController,
-                padding: const EdgeInsets.all(8),
+                padding: MySizes.paddingSm(context),
                 itemCount:
                     state.readingHistory.length + (state.isLoadingMore ? 1 : 0),
                 itemBuilder: (context, index) {
@@ -192,7 +192,7 @@ class _ReadingHistoryScreenState extends State<ReadingHistoryScreen> {
                   );
                 },
                 separatorBuilder: (context, index) =>
-                    SizedBox(height: MySizes.spaceXs(context) * 0.5),
+                    SizedBox(height: MySizes.spaceLg(context)),
               );
             }
 

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'package:mirath/core/ui/widgets/my_app_bar.dart';
 
 import '../../../../core/helpers/my_loaders.dart';
 import '../../../../core/utils/my_colors.dart';
@@ -57,7 +58,12 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
     final screenHeight = MediaQuery.of(context).size.height;
     return Scaffold(
       extendBodyBehindAppBar: true,
-      appBar: AppBar(leading: MyBackIcon()),
+      appBar: MyAppBar(
+        leading: MyBackIcon(),
+        backgroundColor: Colors.transparent,
+        elevation: 0,
+        automaticallyImplyLeading: true,
+      ),
       body: ScreenDecoration(
         dark: false,
         child: BlocListener<AuthCubit, AuthState>(

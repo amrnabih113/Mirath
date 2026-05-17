@@ -5,6 +5,8 @@ import '../../../../core/utils/my_sizes.dart';
 import '../../../common/widgets/my_back_icon.dart';
 import '../widgets/setting_tiles.dart';
 import '../../../../generated/l10n.dart';
+import '../../../../core/ui/widgets/my_app_bar.dart';
+import '../../../../core/ui/widgets/my_body.dart';
 
 class SettingScreen extends StatelessWidget {
   const SettingScreen({super.key});
@@ -12,18 +14,13 @@ class SettingScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
+      appBar: MyAppBar(
         leading: MyBackIcon(),
         title: Text(S.of(context).settings),
         centerTitle: true,
       ),
-      body: Center(
-        child: LayoutBuilder(
-          builder: (context, constraints) {
-            return ConstrainedBox(
-              constraints: const BoxConstraints(maxWidth: 850),
-
-              child: Column(
+      body: MyBody(
+        child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Padding(
@@ -82,10 +79,7 @@ class SettingScreen extends StatelessWidget {
                   ),
                 ],
               ),
-            );
-          },
-        ),
-      ),
-    );
-  }
-}
+    ));
+          }}
+     
+ 

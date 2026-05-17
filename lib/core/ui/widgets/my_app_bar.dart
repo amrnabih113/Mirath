@@ -9,6 +9,8 @@ class MyAppBar extends StatelessWidget implements PreferredSizeWidget {
     this.leading,
     this.title,
     this.actions,
+    this.leadingWidth,
+    this.titleSpacing,
     this.centerTitle,
     this.maxWidth = 850,
     this.height,
@@ -20,6 +22,8 @@ class MyAppBar extends StatelessWidget implements PreferredSizeWidget {
   final Widget? leading;
   final Widget? title;
   final List<Widget>? actions;
+  final double? leadingWidth;
+  final double? titleSpacing;
   final bool? centerTitle;
   final double maxWidth;
   final double? height;
@@ -33,7 +37,7 @@ class MyAppBar extends StatelessWidget implements PreferredSizeWidget {
   @override
   Widget build(BuildContext context) {
     final computedHeight =
-        height ?? ResponsiveHelper.responsiveValue(context, 40);
+        height ?? ResponsiveHelper.responsiveValue(context, 50);
 
     return PreferredSize(
       preferredSize: Size.fromHeight(computedHeight),
@@ -44,8 +48,11 @@ class MyAppBar extends StatelessWidget implements PreferredSizeWidget {
               constraints: BoxConstraints(maxWidth: maxWidth),
               child: AppBar(
                 leading: leading,
+                leadingWidth: leadingWidth,
                 title: title,
+                titleSpacing: titleSpacing,
                 actions: actions,
+                toolbarHeight: computedHeight,
                 centerTitle: centerTitle,
                 backgroundColor: backgroundColor,
                 elevation: elevation,

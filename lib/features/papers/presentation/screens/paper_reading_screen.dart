@@ -25,6 +25,8 @@ import '../../../paper_annotations/presentation/widgets/reader_action_menu.dart'
 import '../../../paper_annotations/presentation/widgets/reader_scroll_indicator.dart';
 import '../../../paper_annotations/presentation/widgets/selection_overlay.dart';
 import '../../../paper_annotations/presentation/widgets/translation_sheet.dart';
+import '../../../../core/ui/widgets/my_app_bar.dart';
+import '../../../../core/ui/widgets/my_body.dart';
 
 class PaperReadingScreen extends StatefulWidget {
   final PaperEntity? paper;
@@ -844,11 +846,13 @@ class _PaperReadingScreenState extends State<PaperReadingScreen> {
             print('[PaperReadingScreen] Showing error state: ${state.message}');
             return Scaffold(
               backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-              appBar: AppBar(),
-              body: Center(
-                child: Text(
-                  state.message,
-                  style: Theme.of(context).textTheme.bodyLarge,
+              appBar: MyAppBar(),
+              body: MyBody(
+                child: Center(
+                  child: Text(
+                    state.message,
+                    style: Theme.of(context).textTheme.bodyLarge,
+                  ),
                 ),
               ),
             );
@@ -874,30 +878,20 @@ class _PaperReadingScreenState extends State<PaperReadingScreen> {
               padding: EdgeInsets.all(MySizes.spaceMd(context)),
               child: ReaderScrollIndicator(progress: state.scrollProgress),
             ),
-            appBar: PreferredSize(
-              preferredSize: Size.fromHeight(
-                ResponsiveHelper.responsiveValue(context, 56),
-              ),
-              child: Center(
-                child: LayoutBuilder(
-                  builder: (BuildContext context, BoxConstraints constraints) {
-                    return ConstrainedBox(
-                      constraints: const BoxConstraints(maxWidth: 850),
-                      child: AppBar(
-                        leading: state.searchOpen ? null : const MyBackIcon(),
-                        automaticallyImplyLeading: !state.searchOpen,
-                        title: state.searchOpen
-                            ? null
-                            : null, // No title in normal mode
-                        actions: state.searchOpen
-                            ? [
-                                // Search mode: show search field and controls
-                                Expanded(
-                                  child: Padding(
-                                    padding: EdgeInsets.symmetric(
-                                      horizontal: MySizes.spaceMd(context),
-                                    ),
-                                    child: Row(
+            appBar: MyAppBar(
+              height: ResponsiveHelper.responsiveValue(context, 56),
+              leading: state.searchOpen ? null : const MyBackIcon(),
+              automaticallyImplyLeading: !state.searchOpen,
+              title: state.searchOpen ? null : null,
+              actions: state.searchOpen
+                  ? [
+                      // Search mode: show search field and controls
+                      Expanded(
+                        child: Padding(
+                          padding: EdgeInsets.symmetric(
+                            horizontal: MySizes.spaceMd(context),
+                          ),
+                          child: Row(
                                       children: [
                                         Expanded(
                                           child: TextField(
@@ -971,11 +965,8 @@ class _PaperReadingScreenState extends State<PaperReadingScreen> {
                               ]
                             : [],
                       ),
-                    );
-                  },
-                ),
-              ),
-            ),
+                   
+            
             body: SafeArea(
               child: Stack(
                 children: [
@@ -1123,10 +1114,7 @@ class _PaperReadingScreenState extends State<PaperReadingScreen> {
                     ),
                 ],
               ),
-            ),
-          );
-        },
-      ),
-    );
-  }
+          ));
+      }));
+}
 }

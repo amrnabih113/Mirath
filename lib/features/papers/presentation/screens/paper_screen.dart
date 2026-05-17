@@ -8,6 +8,7 @@ import '../../../../core/helpers/responsive_helper.dart';
 import '../../../../core/network/network_manager.dart';
 import '../../../../core/services/sharing_service.dart';
 import '../../../../core/ui/widgets/state_views.dart';
+import '../../../../core/ui/widgets/my_body.dart';
 import '../../../../core/utils/my_sizes.dart';
 import '../../../../generated/l10n.dart';
 import '../../../../injection/injection_container.dart';
@@ -83,7 +84,7 @@ class _PaperScreenState extends State<PaperScreen> {
     final currentPaper = _currentPaper;
 
     if (_isLoading) {
-      return const Scaffold(body: Center(child: CircularProgressIndicator()));
+      return Scaffold(body: MyBody(child: const Center(child: CircularProgressIndicator())));
     }
     if (_error != null) {
       final offline = !NetworkManager.instance.currentConnectionStatus;
@@ -105,8 +106,8 @@ class _PaperScreenState extends State<PaperScreen> {
     }
 
     if (currentPaper == null) {
-      return Scaffold(
-        body: Center(child: Text(S.of(context).error_no_paper_data)),
+          return Scaffold(
+        body: MyBody(child: Center(child: Text(S.of(context).error_no_paper_data))),
       );
     }
 
@@ -142,7 +143,8 @@ class _PaperScreenState extends State<PaperScreen> {
           ),
         ),
       ),
-      body: Center(
+      body: MyBody(
+        child: Center(
         child: LayoutBuilder(
           builder: (context, constraints) {
             return ConstrainedBox(
@@ -172,7 +174,7 @@ class _PaperScreenState extends State<PaperScreen> {
           },
         ),
       ),
-    );
+      )  );
   }
 
   void _onSavePressed() {

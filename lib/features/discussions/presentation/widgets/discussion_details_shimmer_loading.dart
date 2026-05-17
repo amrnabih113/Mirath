@@ -4,6 +4,8 @@ import 'package:shimmer/shimmer.dart';
 import '../../../../core/helpers/responsive_helper.dart';
 import '../../../../core/utils/my_colors.dart';
 import '../../../../core/utils/my_sizes.dart';
+import '../../../../core/ui/widgets/my_app_bar.dart';
+import '../../../../core/ui/widgets/my_body.dart';
 
 class DiscussionDetailsShimmerLoading extends StatelessWidget {
   const DiscussionDetailsShimmerLoading({super.key});
@@ -11,9 +13,10 @@ class DiscussionDetailsShimmerLoading extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        toolbarHeight: ResponsiveHelper.responsiveValue(context, 50),
-        leadingWidth: ResponsiveHelper.responsiveValue(context, 50),
+      appBar: MyAppBar(
+        title: null,
+        // preserve toolbar sizing
+        height: ResponsiveHelper.responsiveValue(context, 50),
         leading: Shimmer.fromColors(
           baseColor: MyColors.primaryShade100,
           highlightColor: MyColors.primaryShade50,
@@ -25,7 +28,6 @@ class DiscussionDetailsShimmerLoading extends StatelessWidget {
             ),
           ),
         ),
-        titleSpacing: 0,
         actions: [
           Padding(
             padding: EdgeInsets.only(right: MySizes.spaceSm(context)),
@@ -44,17 +46,12 @@ class DiscussionDetailsShimmerLoading extends StatelessWidget {
           ),
         ],
       ),
-      body: LayoutBuilder(
-        builder: (context, constraints) {
-          return Center(
-            child: ConstrainedBox(
-              constraints: const BoxConstraints(maxWidth: 850),
-              child: Padding(
-                padding: MySizes.paddingMd(context),
-                child: SafeArea(
-                  bottom: false,
-                  child: CustomScrollView(
-                    slivers: [
+      body: MyBody(
+        padding: MySizes.paddingMd(context),
+        child: SafeArea(
+          bottom: false,
+          child: CustomScrollView(
+            slivers: [
                       // User header shimmer
                       SliverToBoxAdapter(
                         child: _buildUserHeaderShimmer(context),
@@ -110,12 +107,8 @@ class DiscussionDetailsShimmerLoading extends StatelessWidget {
                         ),
                       ),
                     ],
-                  ),
-                ),
-              ),
-            ),
-          );
-        },
+          ),
+        ),
       ),
     );
   }

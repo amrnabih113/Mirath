@@ -12,6 +12,8 @@ import '../cubit/search_cubit.dart';
 import '../cubit/search_state.dart';
 import '../widgets/search_item.dart';
 import '../widgets/search_screen_heading.dart';
+import '../../../../core/ui/widgets/my_app_bar.dart';
+import '../../../../core/ui/widgets/my_body.dart';
 
 class SearchScreen extends StatefulWidget {
   final String hintText;
@@ -60,45 +62,24 @@ class _SearchScreenState extends State<SearchScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: PreferredSize(
-        preferredSize: Size.fromHeight(
-          ResponsiveHelper.responsiveValue(context, 60),
-        ),
-        child: Center(
-          child: LayoutBuilder(
-            builder: (BuildContext context, BoxConstraints constraints) {
-              return ConstrainedBox(
-                constraints: BoxConstraints(maxWidth: 850),
-                child: AppBar(
-                  toolbarHeight: ResponsiveHelper.responsiveValue(context, 55),
-                  leadingWidth: ResponsiveHelper.responsiveValue(context, 60),
-                  leading: MyBackIcon(),
-                  titleSpacing: 0,
-                  title: Padding(
-                    padding: EdgeInsets.only(right: MySizes.spaceSm(context)),
-                    child: MySearchBar(
-                      controller: _searchController,
-                      hintText: widget.hintText,
-                      showSuffixIcon: false,
-                      onChanged: _onQueryChanged,
-                      onSubmitted: _onSubmitSearch,
-                    ),
-                  ),
-                ),
-              );
-            },
+      appBar: MyAppBar(
+        height: ResponsiveHelper.responsiveValue(context, 60),
+        leading: MyBackIcon(),
+        title: Padding(
+          padding: EdgeInsets.only(right: MySizes.spaceSm(context)),
+          child: MySearchBar(
+            controller: _searchController,
+            hintText: widget.hintText,
+            showSuffixIcon: false,
+            onChanged: _onQueryChanged,
+            onSubmitted: _onSubmitSearch,
           ),
         ),
       ),
 
-      body: Center(
-        child: LayoutBuilder(
-          builder: (BuildContext context, BoxConstraints constraints) {
-            return ConstrainedBox(
-              constraints: BoxConstraints(maxWidth: 850),
-              child: Padding(
-                padding: MySizes.paddingMd(context),
-                child: Column(
+      body: MyBody(
+        padding: MySizes.paddingMd(context),
+        child: Column(
                   mainAxisAlignment: MainAxisAlignment.start,
                   children: [
                     if (widget.showHeading) ...[
@@ -175,9 +156,6 @@ class _SearchScreenState extends State<SearchScreen> {
                 ),
               ),
             );
-          },
-        ),
-      ),
-    );
+       
   }
 }

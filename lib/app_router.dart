@@ -64,6 +64,7 @@ import 'features/users/presentation/screens/set_up_profile_screen.dart';
 import 'generated/l10n.dart';
 import 'injection/injection_container.dart';
 import 'core/ui/widgets/my_app_bar.dart';
+import 'core/ui/widgets/my_body.dart';
 
 // Helper class to make AuthCubit work with GoRouter's refreshListenable
 class _AuthStateNotifier extends ChangeNotifier {
@@ -646,9 +647,11 @@ final appRouter = GoRouter(
         if (readingListId.isEmpty) {
           return PageTransitions.smoothTransition(
             Scaffold(
-              appBar: AppBar(title: Text(S.of(context).error_label)),
-              body: const Center(
-                child: Text('Error: No reading list ID provided'),
+              appBar: MyAppBar(title: Text(S.of(context).error_label)),
+              body: const MyBody(
+                child: Center(
+                  child: Text('Error: No reading list ID provided'),
+                ),
               ),
             ),
           );
@@ -717,8 +720,10 @@ final appRouter = GoRouter(
         if (userId.isEmpty) {
           return PageTransitions.smoothTransition(
             Scaffold(
-              appBar: AppBar(title: Text(S.of(context).error_label)),
-              body: const Center(child: Text('Error: No user data provided')),
+              appBar: MyAppBar(title: Text(S.of(context).error_label)),
+              body: const MyBody(
+                child: Center(child: Text('Error: No user data provided')),
+              ),
             ),
           );
         }

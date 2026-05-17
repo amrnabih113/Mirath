@@ -57,8 +57,8 @@ class MySearchBar extends StatelessWidget {
             horizontal: MySizes.spaceMd(context),
           ),
           prefixIconConstraints: BoxConstraints(
-            minWidth: MySizes.iconSmall(context) * 2,
-            minHeight: MySizes.iconSmall(context) * 2,
+            minWidth: MySizes.iconSmall(context),
+            minHeight: MySizes.iconSmall(context),
           ),
           suffixIconConstraints: BoxConstraints(
             minWidth: MySizes.iconSmall(context) * 2,

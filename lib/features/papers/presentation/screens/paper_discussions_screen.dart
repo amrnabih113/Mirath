@@ -13,6 +13,8 @@ import '../../../discussions/presentation/cubit/community_cubit.dart';
 import '../../../discussions/presentation/cubit/community_state.dart';
 import '../../../discussions/presentation/widgets/discussion_card.dart';
 import '../../../home/domain/entities/paper_entity.dart';
+import '../../../../core/ui/widgets/my_app_bar.dart';
+import '../../../../core/ui/widgets/my_body.dart';
 
 class PaperDiscussionsScreen extends StatefulWidget {
   final PaperEntity? paper;
@@ -34,35 +36,16 @@ class _PaperDiscussionsScreenState extends State<PaperDiscussionsScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: PreferredSize(
-        preferredSize: Size.fromHeight(
-          ResponsiveHelper.responsiveValue(context, 50),
-        ),
-        child: Center(
-          child: LayoutBuilder(
-            builder: (BuildContext context, BoxConstraints constraints) {
-              return ConstrainedBox(
-                constraints: const BoxConstraints(maxWidth: 850),
-                child: AppBar(
-                  leadingWidth: ResponsiveHelper.responsiveValue(context, 50),
-                  leading: MyBackIcon(),
-                  titleSpacing: 0,
-                  title: Text(
-                    S.of(context).discussions_label,
-                    style: context.titleMedium,
-                  ),
-                ),
-              );
-            },
-          ),
+      appBar: MyAppBar(
+        height: ResponsiveHelper.responsiveValue(context, 50),
+        leading: MyBackIcon(),
+        title: Text(
+          S.of(context).discussions_label,
+          style: context.titleMedium,
         ),
       ),
-      body: Center(
-        child: LayoutBuilder(
-          builder: (context, constraints) {
-            return ConstrainedBox(
-              constraints: const BoxConstraints(maxWidth: 850),
-              child: BlocBuilder<CommunityCubit, CommunityState>(
+      body: MyBody(
+        child: BlocBuilder<CommunityCubit, CommunityState>(
                 builder: (context, state) {
                   if (state is CommunityLoading) {
                     return const Center(child: CircularProgressIndicator());
@@ -140,10 +123,6 @@ class _PaperDiscussionsScreenState extends State<PaperDiscussionsScreen> {
                   return const SizedBox();
                 },
               ),
-            );
-          },
-        ),
-      ),
-    );
-  }
+     ) );
+          }
 }

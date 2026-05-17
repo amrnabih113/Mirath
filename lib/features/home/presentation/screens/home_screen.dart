@@ -17,6 +17,8 @@ import '../widgets/home_shimmer_loading.dart';
 import '../widgets/interests_shimmer_loading.dart';
 import '../widgets/paper_card.dart';
 import '../widgets/welcome_header.dart';
+import '../../../../core/ui/widgets/my_app_bar.dart';
+import '../../../../core/ui/widgets/my_body.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -63,33 +65,20 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget build(BuildContext context) {
     late List<PaperEntity> papers;
     return Scaffold(
-      appBar: PreferredSize(
-        preferredSize: Size.fromHeight(
-          ResponsiveHelper.responsiveValue(context, 60),
-        ),
-        child: Center(
-          child: LayoutBuilder(
-            builder: (context, constraints) {
-              return ConstrainedBox(
-                constraints: const BoxConstraints(maxWidth: 850),
-                child: BlocBuilder<HomeCubit, HomeState>(
-                  builder: (context, state) {
-                    return WelcomeHeader();
-                  },
-                ),
-              );
-            },
-          ),
+      appBar: MyAppBar(
+        height: ResponsiveHelper.responsiveValue(context, 60),
+        title: BlocBuilder<HomeCubit, HomeState>(
+          builder: (context, state) {
+            return const WelcomeHeader();
+          },
         ),
       ),
-      body: Center(
-        child: ConstrainedBox(
-          constraints: const BoxConstraints(maxWidth: 850),
-          child: RefreshIndicator(
-            onRefresh: _onRefresh,
-            child: ListView(
-              controller: scrollController,
-              padding: MySizes.paddingMd(context),
+      body: MyBody(
+        padding: MySizes.paddingMd(context),
+        child: RefreshIndicator(
+          onRefresh: _onRefresh,
+          child: ListView(
+            controller: scrollController,
               children: [
                 const HomeSearchBar(),
                 SizedBox(height: MySizes.spaceLg(context)),
@@ -266,7 +255,6 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
           ),
         ),
-      ),
-    );
+      );
   }
 }

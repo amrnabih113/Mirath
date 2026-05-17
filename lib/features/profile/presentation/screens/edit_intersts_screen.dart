@@ -11,6 +11,8 @@ import '../../../common/widgets/my_back_icon.dart';
 import '../../../common/widgets/tag_chip.dart';
 import '../../../interests/presentation/cubit/interests_cubit.dart';
 import '../../../interests/presentation/cubit/interests_state.dart';
+import '../../../../core/ui/widgets/my_app_bar.dart';
+import '../../../../core/ui/widgets/my_body.dart';
 
 class EditInterstsScreen extends StatefulWidget {
   const EditInterstsScreen({super.key, this.initialSelected = const []});
@@ -120,17 +122,14 @@ class _EditInterstsScreenState extends State<EditInterstsScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
+      appBar: MyAppBar(
         leading: const MyBackIcon(),
         title: const Text('Interests'),
         centerTitle: true,
       ),
-      body: Center(
-        child: ConstrainedBox(
-          constraints: const BoxConstraints(maxWidth: 850),
-          child: Padding(
-            padding: MySizes.paddingSm(context),
-            child: Column(
+      body: MyBody(
+        padding: MySizes.paddingSm(context),
+        child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
@@ -243,8 +242,6 @@ class _EditInterstsScreenState extends State<EditInterstsScreen> {
               ],
             ),
           ),
-        ),
-      ),
-    );
+        );
   }
 }
