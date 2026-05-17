@@ -133,6 +133,17 @@
       // ignore
     }
 
+    // Prevent runtime from trying to dynamically import CanvasKit from CDN
+    // by short-circuiting the loader when CanvasKit is not desired or blocked.
+    try {
+      if (!window.flutterCanvasKit) {
+        window.flutterCanvasKit = {};
+        window.flutterCanvasKitLoaded = Promise.resolve(window.flutterCanvasKit);
+      }
+    } catch (e) {
+      // ignore
+    }
+
     // Use engine initializer if available (modern API) to request HTML renderer
     try {
       if (typeof createEngineInitializer === 'function') {
