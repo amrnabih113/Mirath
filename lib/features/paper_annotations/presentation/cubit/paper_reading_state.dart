@@ -2,7 +2,7 @@ import 'package:equatable/equatable.dart';
 
 import '../../../home/domain/entities/paper_entity.dart';
 import '../../domain/entites/highlight_entity.dart';
-import '../widgets/annotation_webview.dart';
+import '../widgets/annotation_webview_platform.dart';
 
 abstract class PaperReadingState extends Equatable {
   const PaperReadingState();

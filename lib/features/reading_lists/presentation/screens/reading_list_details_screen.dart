@@ -21,6 +21,7 @@ import '../cubit/reading_list_state.dart';
 import '../../../../core/network/network_manager.dart';
 import '../../../../core/ui/widgets/state_views.dart';
 import '../widgets/reading_list_details_shimmer_loading.dart';
+import '../../../../core/ui/widgets/my_app_bar.dart';
 
 class ReadingListDetailsScreen extends StatefulWidget {
   final ReadingList? readingList;
@@ -64,11 +65,8 @@ class _ReadingListDetailsScreenState extends State<ReadingListDetailsScreen> {
     return BlocBuilder<ReadingListCubit, ReadingListState>(
       builder: (context, state) {
         return Scaffold(
-          appBar: AppBar(
-            toolbarHeight: ResponsiveHelper.responsiveValue(context, 50),
-            leadingWidth: ResponsiveHelper.responsiveValue(context, 50),
+          appBar: MyAppBar(
             leading: const MyBackIcon(),
-            titleSpacing: 0,
             actions: [
               if (state is ReadingListDetailsLoaded)
                 Padding(

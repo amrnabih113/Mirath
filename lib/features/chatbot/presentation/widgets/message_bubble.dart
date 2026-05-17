@@ -271,11 +271,13 @@ class MessageBubble extends StatelessWidget {
                                         children: [
                                           IconButton(
                                             icon: HugeIcon(
-                                              icon: HugeIcons.strokeRoundedCopy01,
-                                              size: ResponsiveHelper.responsiveValue(
-                                                context,
-                                                16,
-                                              ),
+                                              icon:
+                                                  HugeIcons.strokeRoundedCopy01,
+                                              size:
+                                                  ResponsiveHelper.responsiveValue(
+                                                    context,
+                                                    16,
+                                                  ),
                                               color: MyColors.textSecondary,
                                             ),
                                             padding: EdgeInsets.zero,
@@ -294,10 +296,11 @@ class MessageBubble extends StatelessWidget {
                                           IconButton(
                                             icon: Icon(
                                               Icons.thumb_up,
-                                              size: ResponsiveHelper.responsiveValue(
-                                                context,
-                                                16,
-                                              ),
+                                              size:
+                                                  ResponsiveHelper.responsiveValue(
+                                                    context,
+                                                    16,
+                                                  ),
                                               color: MyColors.textSecondary,
                                             ),
                                             padding: EdgeInsets.zero,
@@ -306,10 +309,11 @@ class MessageBubble extends StatelessWidget {
                                           IconButton(
                                             icon: Icon(
                                               Icons.thumb_down,
-                                              size: ResponsiveHelper.responsiveValue(
-                                                context,
-                                                16,
-                                              ),
+                                              size:
+                                                  ResponsiveHelper.responsiveValue(
+                                                    context,
+                                                    16,
+                                                  ),
                                               color: MyColors.textSecondary,
                                             ),
                                             padding: EdgeInsets.zero,
@@ -317,11 +321,13 @@ class MessageBubble extends StatelessWidget {
                                           ),
                                           IconButton(
                                             icon: HugeIcon(
-                                              icon: HugeIcons.strokeRoundedShare08,
-                                              size: ResponsiveHelper.responsiveValue(
-                                                context,
-                                                16,
-                                              ),
+                                              icon: HugeIcons
+                                                  .strokeRoundedShare08,
+                                              size:
+                                                  ResponsiveHelper.responsiveValue(
+                                                    context,
+                                                    16,
+                                                  ),
                                               color: MyColors.textSecondary,
                                             ),
                                             padding: EdgeInsets.zero,

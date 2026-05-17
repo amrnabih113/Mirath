@@ -28,6 +28,8 @@ import '../widgets/discussion_details_shimmer_loading.dart';
 import '../widgets/disscusion_action_buttons.dart';
 import '../widgets/disscussion_paper_card.dart';
 import '../widgets/user_information_header.dart';
+import '../../../../core/ui/widgets/my_app_bar.dart';
+import '../../../../core/ui/widgets/my_body.dart';
 
 class DisscussionDetailsScreen extends StatefulWidget {
   final Discussion? discussion;
@@ -141,7 +143,9 @@ class _DisscussionDetailsScreenState extends State<DisscussionDetailsScreen> {
           }
 
           return Scaffold(
-            body: Center(child: Text(S.of(context).no_discussion_data)),
+            body: MyBody(
+              child: Center(child: Text(S.of(context).no_discussion_data)),
+            ),
           );
         },
       ),
@@ -180,11 +184,9 @@ class _DisscussionDetailsScreenState extends State<DisscussionDetailsScreen> {
   ) {
     final discussion = state.discussion;
     return Scaffold(
-      appBar: AppBar(
-        toolbarHeight: ResponsiveHelper.responsiveValue(context, 50),
-        leadingWidth: ResponsiveHelper.responsiveValue(context, 50),
+      appBar: MyAppBar(
+        height: ResponsiveHelper.responsiveValue(context, 50),
         leading: MyBackIcon(),
-        titleSpacing: 0,
         actions: [
           Padding(
             padding: EdgeInsets.only(right: MySizes.spaceSm(context)),
@@ -204,158 +206,145 @@ class _DisscussionDetailsScreenState extends State<DisscussionDetailsScreen> {
           ),
         ],
       ),
-      body: LayoutBuilder(
-        builder: (context, constraints) {
-          return Center(
-            child: ConstrainedBox(
-              constraints: const BoxConstraints(maxWidth: 850),
-              child: Padding(
-                padding: MySizes.paddingMd(context),
-                child: SafeArea(
-                  bottom: false,
-                  child: RefreshIndicator(
-                    onRefresh: () => context
-                        .read<DiscussionDetailsCubit>()
-                        .loadDiscussionDetails(
-                          discussion.id,
-                          forceRefresh: true,
-                        ),
-                    child: CustomScrollView(
-                      physics: const AlwaysScrollableScrollPhysics(),
-                      slivers: [
-                        SliverToBoxAdapter(
-                          child: UserInformationHeader(
-                            showMoreButton: false,
-                            discussion: discussion,
-                          ),
-                        ),
-                        SliverToBoxAdapter(
-                          child: SizedBox(height: MySizes.spaceMd(context)),
-                        ),
-                        SliverToBoxAdapter(
-                          child: Text(
-                            discussion.title,
-                            style: context.titleSmall.copyWith(
-                              fontWeight: FontWeight.w800,
-                            ),
-                          ),
-                        ),
-                        SliverToBoxAdapter(
-                          child: SizedBox(height: MySizes.spaceSm(context)),
-                        ),
-                        SliverToBoxAdapter(
-                          child: Text(
-                            discussion.content,
-                            style: context.bodyMedium.copyWith(height: 1.5),
-                          ),
-                        ),
-                        SliverToBoxAdapter(
-                          child: SizedBox(height: MySizes.spaceMd(context)),
-                        ),
-                        if (discussion.papers.isNotEmpty)
-                          SliverToBoxAdapter(
-                            child: DisscussionPaperCard(
-                              paper: discussion.papers.first,
-                              onTap: () {
-                                final discussionPaper = discussion.papers.first;
-                                final paperEntity = PaperEntity(
-                                  id: discussionPaper.id,
-                                  title: discussionPaper.title,
-                                  abstract: discussionPaper.abstract,
-                                  authors: discussionPaper.authors,
-                                  publishedAt: DateTime.now(),
-                                  categories: [],
-                                  isSaved: false,
-                                  preprint: '',
-                                  citation: '',
-                                );
-                                context.push(
-                                  RouteNames.paperDetailsRoute(paperEntity.id),
-                                  extra: paperEntity,
-                                );
-                              },
-                            ),
-                          ),
-                        if (discussion.papers.isNotEmpty)
-                          SliverToBoxAdapter(
-                            child: SizedBox(height: MySizes.spaceMd(context)),
-                          ),
-                        SliverToBoxAdapter(
-                          child: Wrap(
-                            spacing: MySizes.spaceXs(context),
-                            runSpacing: MySizes.spaceXs(context),
-                            children: discussion.topics
-                                .map((topic) => TagChip(label: topic.name))
-                                .toList(),
-                          ),
-                        ),
-                        SliverToBoxAdapter(
-                          child: SizedBox(height: MySizes.spaceMd(context)),
-                        ),
-                        SliverToBoxAdapter(
-                          child: DisscusionActionButtons(
-                            discussion: discussion,
-                            onVote: (voteType) {
-                              context
-                                  .read<DiscussionDetailsCubit>()
-                                  .voteOnDiscussion(
-                                    discussionId: discussion.id,
-                                    voteType: voteType,
-                                  );
-                            },
-                          ),
-                        ),
-                        SliverToBoxAdapter(
-                          child: SizedBox(height: MySizes.spaceXs(context)),
-                        ),
-                        SliverToBoxAdapter(
-                          child: Divider(color: MyColors.primaryShade700),
-                        ),
-                        SliverToBoxAdapter(
-                          child: SizedBox(height: MySizes.spaceSm(context)),
-                        ),
-
-                        SliverToBoxAdapter(
-                          child: Row(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Expanded(
-                                child: TextField(
-                                  controller: _commentController,
-                                  cursorColor: MyColors.primaryColor,
-                                  maxLines: 4,
-                                  minLines: 1,
-                                  decoration: InputDecoration(
-                                    hintText: S.of(context).comment_hint,
-                                    errorText: state.commentSubmissionError,
-                                  ),
-                                ),
-                              ),
-                              IconButton(
-                                onPressed: () => _submitComment(context, state),
-                                padding: EdgeInsets.zero,
-                                icon: Icon(
-                                  HugeIconsStroke.sent,
-                                  size: MySizes.iconSmall(context),
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                        SliverToBoxAdapter(
-                          child: SizedBox(height: MySizes.spaceMd(context)),
-                        ),
-                        SliverToBoxAdapter(
-                          child: CommentsList(comments: state.comments),
-                        ),
-                      ],
+      body: MyBody(
+        padding: MySizes.paddingMd(context),
+        child: SafeArea(
+          bottom: false,
+          child: RefreshIndicator(
+            onRefresh: () => context
+                .read<DiscussionDetailsCubit>()
+                .loadDiscussionDetails(discussion.id, forceRefresh: true),
+            child: CustomScrollView(
+              physics: const AlwaysScrollableScrollPhysics(),
+              slivers: [
+                SliverToBoxAdapter(
+                  child: UserInformationHeader(
+                    showMoreButton: false,
+                    discussion: discussion,
+                  ),
+                ),
+                SliverToBoxAdapter(
+                  child: SizedBox(height: MySizes.spaceMd(context)),
+                ),
+                SliverToBoxAdapter(
+                  child: Text(
+                    discussion.title,
+                    style: context.titleSmall.copyWith(
+                      fontWeight: FontWeight.w800,
                     ),
                   ),
                 ),
-              ),
+                SliverToBoxAdapter(
+                  child: SizedBox(height: MySizes.spaceSm(context)),
+                ),
+                SliverToBoxAdapter(
+                  child: Text(
+                    discussion.content,
+                    style: context.bodyMedium.copyWith(height: 1.5),
+                  ),
+                ),
+                SliverToBoxAdapter(
+                  child: SizedBox(height: MySizes.spaceMd(context)),
+                ),
+                if (discussion.papers.isNotEmpty)
+                  SliverToBoxAdapter(
+                    child: DisscussionPaperCard(
+                      paper: discussion.papers.first,
+                      onTap: () {
+                        final discussionPaper = discussion.papers.first;
+                        final paperEntity = PaperEntity(
+                          id: discussionPaper.id,
+                          title: discussionPaper.title,
+                          abstract: discussionPaper.abstract,
+                          authors: discussionPaper.authors,
+                          publishedAt: DateTime.now(),
+                          categories: [],
+                          isSaved: false,
+                          preprint: '',
+                          citation: '',
+                        );
+
+                        context.push(
+                          RouteNames.paperDetailsRoute(paperEntity.id),
+                          extra: paperEntity,
+                        );
+                      },
+                    ),
+                  ),
+                if (discussion.papers.isNotEmpty)
+                  SliverToBoxAdapter(
+                    child: SizedBox(height: MySizes.spaceMd(context)),
+                  ),
+                SliverToBoxAdapter(
+                  child: Wrap(
+                    spacing: MySizes.spaceXs(context),
+                    runSpacing: MySizes.spaceXs(context),
+                    children: discussion.topics
+                        .map((topic) => TagChip(label: topic.name))
+                        .toList(),
+                  ),
+                ),
+                SliverToBoxAdapter(
+                  child: SizedBox(height: MySizes.spaceMd(context)),
+                ),
+                SliverToBoxAdapter(
+                  child: DisscusionActionButtons(
+                    discussion: discussion,
+                    onVote: (voteType) {
+                      context.read<DiscussionDetailsCubit>().voteOnDiscussion(
+                        discussionId: discussion.id,
+                        voteType: voteType,
+                      );
+                    },
+                  ),
+                ),
+                SliverToBoxAdapter(
+                  child: SizedBox(height: MySizes.spaceXs(context)),
+                ),
+                SliverToBoxAdapter(
+                  child: Divider(color: MyColors.primaryShade700),
+                ),
+                SliverToBoxAdapter(
+                  child: SizedBox(height: MySizes.spaceSm(context)),
+                ),
+
+                SliverToBoxAdapter(
+                  child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Expanded(
+                        child: TextField(
+                          controller: _commentController,
+                          cursorColor: MyColors.primaryColor,
+                          maxLines: 4,
+                          minLines: 1,
+                          decoration: InputDecoration(
+                            hintText: S.of(context).comment_hint,
+                            errorText: state.commentSubmissionError,
+                          ),
+                        ),
+                      ),
+                      IconButton(
+                        onPressed: () => _submitComment(context, state),
+                        padding: EdgeInsets.zero,
+                        icon: Icon(
+                          HugeIconsStroke.sent,
+                          size: MySizes.iconSmall(context),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                SliverToBoxAdapter(
+                  child: SizedBox(height: MySizes.spaceMd(context)),
+                ),
+                SliverToBoxAdapter(
+                  child: CommentsList(comments: state.comments),
+                ),
+              ],
             ),
-          );
-        },
+          ),
+        ),
       ),
     );
   }

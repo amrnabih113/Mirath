@@ -11,6 +11,7 @@ import '../cubit/auth_cubit.dart';
 import '../widgets/otp_widget.dart';
 import '../widgets/timer_widget.dart';
 import '../widgets/verified_button_widget.dart';
+import '../../../../core/ui/widgets/my_app_bar.dart';
 
 class OtpScreen extends StatelessWidget {
   OtpScreen({super.key});
@@ -39,7 +40,12 @@ class OtpScreen extends StatelessWidget {
       },
       child: Scaffold(
         extendBodyBehindAppBar: true,
-        appBar: AppBar(leading: MyBackIcon()),
+        appBar: MyAppBar(
+          leading: MyBackIcon(),
+          backgroundColor: Colors.transparent,
+          elevation: 0,
+          automaticallyImplyLeading: true,
+        ),
         body: ScreenDecoration(
           dark: false,
           child: LayoutBuilder(

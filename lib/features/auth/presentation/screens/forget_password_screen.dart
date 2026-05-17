@@ -11,6 +11,7 @@ import '../../../../generated/l10n.dart';
 import '../../../common/widgets/my_back_icon.dart';
 import '../../../common/widgets/screen_decoration.dart';
 import '../cubit/auth_cubit.dart';
+import '../../../../core/ui/widgets/my_app_bar.dart';
 
 class ForgetPasswordScreen extends StatefulWidget {
   const ForgetPasswordScreen({super.key});
@@ -59,7 +60,12 @@ class _ForgetPasswordScreenState extends State<ForgetPasswordScreen> {
 
     return Scaffold(
       extendBodyBehindAppBar: true,
-      appBar: AppBar(leading: MyBackIcon()),
+      appBar: MyAppBar(
+        leading: MyBackIcon(),
+        backgroundColor: Colors.transparent,
+        elevation: 0,
+        automaticallyImplyLeading: true,
+      ),
       body: ScreenDecoration(
         dark: false,
         child: BlocListener<AuthCubit, AuthState>(

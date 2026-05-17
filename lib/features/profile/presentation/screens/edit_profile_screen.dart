@@ -26,6 +26,8 @@ import '../../../users/domain/entities/update_profile_data.dart';
 import '../../../users/domain/entities/user.dart' as UserEnt;
 
 import '../../../../generated/l10n.dart';
+import '../../../../core/ui/widgets/my_app_bar.dart';
+import '../../../../core/ui/widgets/my_body.dart';
 
 class EditProfileScreen extends StatefulWidget {
   const EditProfileScreen({super.key});
@@ -213,19 +215,19 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
         }
 
         return Scaffold(
-          appBar: AppBar(
+          appBar: MyAppBar(
             elevation: 0,
             backgroundColor: Colors.transparent,
             leading: const MyBackIcon(),
             centerTitle: true,
           ),
-          body: Center(
+          body: MyBody(
+            padding: MySizes.paddingLg(context),
             child: ConstrainedBox(
               constraints: const BoxConstraints(maxWidth: 850),
               child: Form(
                 key: _formKey,
                 child: SingleChildScrollView(
-                  padding: MySizes.paddingLg(context),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [

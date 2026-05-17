@@ -4,6 +4,8 @@ import 'package:shimmer/shimmer.dart';
 import '../../../../core/helpers/responsive_helper.dart';
 import '../../../../core/utils/my_colors.dart';
 import '../../../../core/utils/my_sizes.dart';
+import '../../../../core/ui/widgets/my_app_bar.dart';
+import '../../../../core/ui/widgets/my_body.dart';
 
 class DiscussionDetailsShimmerLoading extends StatelessWidget {
   const DiscussionDetailsShimmerLoading({super.key});
@@ -11,9 +13,10 @@ class DiscussionDetailsShimmerLoading extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        toolbarHeight: ResponsiveHelper.responsiveValue(context, 50),
-        leadingWidth: ResponsiveHelper.responsiveValue(context, 50),
+      appBar: MyAppBar(
+        title: null,
+        // preserve toolbar sizing
+        height: ResponsiveHelper.responsiveValue(context, 50),
         leading: Shimmer.fromColors(
           baseColor: MyColors.primaryShade100,
           highlightColor: MyColors.primaryShade50,
@@ -25,7 +28,6 @@ class DiscussionDetailsShimmerLoading extends StatelessWidget {
             ),
           ),
         ),
-        titleSpacing: 0,
         actions: [
           Padding(
             padding: EdgeInsets.only(right: MySizes.spaceSm(context)),
@@ -44,78 +46,65 @@ class DiscussionDetailsShimmerLoading extends StatelessWidget {
           ),
         ],
       ),
-      body: LayoutBuilder(
-        builder: (context, constraints) {
-          return Center(
-            child: ConstrainedBox(
-              constraints: const BoxConstraints(maxWidth: 850),
-              child: Padding(
-                padding: MySizes.paddingMd(context),
-                child: SafeArea(
-                  bottom: false,
-                  child: CustomScrollView(
-                    slivers: [
-                      // User header shimmer
-                      SliverToBoxAdapter(
-                        child: _buildUserHeaderShimmer(context),
-                      ),
-                      SliverToBoxAdapter(
-                        child: SizedBox(height: MySizes.spaceMd(context)),
-                      ),
-                      // Title shimmer
-                      SliverToBoxAdapter(child: _buildTitleShimmer(context)),
-                      SliverToBoxAdapter(
-                        child: SizedBox(height: MySizes.spaceMd(context)),
-                      ),
-                      // Content shimmer
-                      SliverToBoxAdapter(child: _buildContentShimmer(context)),
-                      SliverToBoxAdapter(
-                        child: SizedBox(height: MySizes.spaceMd(context)),
-                      ),
-                      // Tags shimmer
-                      SliverToBoxAdapter(child: _buildTagsShimmer(context)),
-                      SliverToBoxAdapter(
-                        child: SizedBox(height: MySizes.spaceMd(context)),
-                      ),
-                      // Action buttons shimmer
-                      SliverToBoxAdapter(
-                        child: _buildActionButtonsShimmer(context),
-                      ),
-                      SliverToBoxAdapter(
-                        child: SizedBox(height: MySizes.spaceLg(context)),
-                      ),
-                      // Comments section title
-                      SliverToBoxAdapter(
-                        child: Shimmer.fromColors(
-                          baseColor: MyColors.primaryShade100,
-                          highlightColor: MyColors.primaryShade50,
-                          child: Container(
-                            width: 100,
-                            height: 20,
-                            decoration: BoxDecoration(
-                              color: MyColors.white,
-                              borderRadius: BorderRadius.circular(4),
-                            ),
-                          ),
-                        ),
-                      ),
-                      SliverToBoxAdapter(
-                        child: SizedBox(height: MySizes.spaceMd(context)),
-                      ),
-                      // Comments shimmer
-                      SliverList(
-                        delegate: SliverChildBuilderDelegate(
-                          (context, index) => _buildCommentShimmer(context),
-                          childCount: 3,
-                        ),
-                      ),
-                    ],
+      body: MyBody(
+        padding: MySizes.paddingMd(context),
+        child: SafeArea(
+          bottom: false,
+          child: CustomScrollView(
+            slivers: [
+              // User header shimmer
+              SliverToBoxAdapter(child: _buildUserHeaderShimmer(context)),
+              SliverToBoxAdapter(
+                child: SizedBox(height: MySizes.spaceMd(context)),
+              ),
+              // Title shimmer
+              SliverToBoxAdapter(child: _buildTitleShimmer(context)),
+              SliverToBoxAdapter(
+                child: SizedBox(height: MySizes.spaceMd(context)),
+              ),
+              // Content shimmer
+              SliverToBoxAdapter(child: _buildContentShimmer(context)),
+              SliverToBoxAdapter(
+                child: SizedBox(height: MySizes.spaceMd(context)),
+              ),
+              // Tags shimmer
+              SliverToBoxAdapter(child: _buildTagsShimmer(context)),
+              SliverToBoxAdapter(
+                child: SizedBox(height: MySizes.spaceMd(context)),
+              ),
+              // Action buttons shimmer
+              SliverToBoxAdapter(child: _buildActionButtonsShimmer(context)),
+              SliverToBoxAdapter(
+                child: SizedBox(height: MySizes.spaceLg(context)),
+              ),
+              // Comments section title
+              SliverToBoxAdapter(
+                child: Shimmer.fromColors(
+                  baseColor: MyColors.primaryShade100,
+                  highlightColor: MyColors.primaryShade50,
+                  child: Container(
+                    width: 100,
+                    height: 20,
+                    decoration: BoxDecoration(
+                      color: MyColors.white,
+                      borderRadius: BorderRadius.circular(4),
+                    ),
                   ),
                 ),
               ),
-            ),
-          );
-        },
+              SliverToBoxAdapter(
+                child: SizedBox(height: MySizes.spaceMd(context)),
+              ),
+              // Comments shimmer
+              SliverList(
+                delegate: SliverChildBuilderDelegate(
+                  (context, index) => _buildCommentShimmer(context),
+                  childCount: 3,
+                ),
+              ),
+            ],
+          ),
+        ),
       ),
     );
   }

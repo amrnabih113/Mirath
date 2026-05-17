@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'my_app_bar.dart';
 import '../../cache/hive_cache_service.dart';
 
 class PendingQueueViewer extends StatefulWidget {
@@ -33,7 +34,7 @@ class _PendingQueueViewerState extends State<PendingQueueViewer> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Pending Queue')),
+      appBar: MyAppBar(title: const Text('Pending Queue')),
       body: RefreshIndicator(
         onRefresh: _load,
         child: ListView.builder(

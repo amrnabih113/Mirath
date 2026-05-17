@@ -7,6 +7,8 @@ import '../../../common/widgets/my_back_icon.dart';
 import '../widgets/show_create_list_dialog.dart';
 import 'tabs/saved_papers_tab.dart';
 import 'tabs/your_lists_tab.dart';
+import '../../../../core/ui/widgets/my_app_bar.dart';
+import '../../../../core/ui/widgets/my_body.dart';
 
 class ReadingListScreen extends StatelessWidget {
   const ReadingListScreen({super.key});
@@ -16,7 +18,7 @@ class ReadingListScreen extends StatelessWidget {
     return DefaultTabController(
       length: 2,
       child: Scaffold(
-        appBar: AppBar(
+        appBar: MyAppBar(
           leading: MyBackIcon(),
           actions: [
             IconButton(
@@ -33,34 +35,27 @@ class ReadingListScreen extends StatelessWidget {
             ),
           ],
         ),
-        body: Center(
-          child: LayoutBuilder(
-            builder: (context, constraints) {
-              return ConstrainedBox(
-                constraints: const BoxConstraints(maxWidth: 850),
-                child: Column(
-                  children: [
-                    TabBar(
-                      indicatorColor: MyColors.primaryShade900,
-                      labelColor: Colors.black,
-                      unselectedLabelColor: Colors.grey,
-                      tabs: const [
-                        Tab(text: 'Your Lists'),
-                        Tab(text: 'Saved lists'),
-                      ],
-                    ),
-                    Expanded(
-                      child: Padding(
-                        padding: MySizes.paddingSm(context),
-                        child: const TabBarView(
-                          children: [YourListsTab(), SavedPapersTab()],
-                        ),
-                      ),
-                    ),
-                  ],
+        body: MyBody(
+          child: Column(
+            children: [
+              TabBar(
+                indicatorColor: MyColors.primaryShade900,
+                labelColor: Colors.black,
+                unselectedLabelColor: Colors.grey,
+                tabs: const [
+                  Tab(text: 'Your Lists'),
+                  Tab(text: 'Saved lists'),
+                ],
+              ),
+              Expanded(
+                child: Padding(
+                  padding: MySizes.paddingSm(context),
+                  child: const TabBarView(
+                    children: [YourListsTab(), SavedPapersTab()],
+                  ),
                 ),
-              );
-            },
+              ),
+            ],
           ),
         ),
       ),

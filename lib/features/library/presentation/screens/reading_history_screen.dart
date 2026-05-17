@@ -9,6 +9,8 @@ import '../../../common/widgets/my_back_icon.dart';
 import '../../../home/presentation/widgets/home_shimmer_loading.dart';
 import '../../../home/presentation/widgets/paper_card.dart';
 import '../cubit/library_cubit.dart';
+import '../../../../core/ui/widgets/my_app_bar.dart';
+import '../../../../core/ui/widgets/my_body.dart';
 
 class ReadingHistoryScreen extends StatefulWidget {
   const ReadingHistoryScreen({super.key});
@@ -77,7 +79,7 @@ class _ReadingHistoryScreenState extends State<ReadingHistoryScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
+      appBar: MyAppBar(
         leading: MyBackIcon(
           onTap: () {
             if (_isSelectionMode) {
@@ -88,11 +90,8 @@ class _ReadingHistoryScreenState extends State<ReadingHistoryScreen> {
           },
         ),
         title: Text(
-          'Reading History',
-          style: context.headlineLarge.copyWith(
-            color: Colors.black,
-            fontSize: 20,
-          ),
+          'Reading history',
+          style: context.titleLarge.copyWith(color: Colors.black),
         ),
         centerTitle: true,
         actions: _isSelectionMode
@@ -120,102 +119,84 @@ class _ReadingHistoryScreenState extends State<ReadingHistoryScreen> {
               ]
             : [],
       ),
-      body: Center(
-        child: LayoutBuilder(
-          builder: (context, constraints) {
-            return ConstrainedBox(
-              constraints: const BoxConstraints(maxWidth: 850),
-              child: Padding(
-                padding: MySizes.paddingSm(context),
-                child: BlocBuilder<LibraryCubit, LibraryState>(
-                  builder: (context, state) {
-                    if (state is GetReadingHistoryLoading) {
-                      return const PaperListShimmer();
-                    }
+      body: MyBody(
+        child: BlocBuilder<LibraryCubit, LibraryState>(
+          builder: (context, state) {
+            if (state is GetReadingHistoryLoading) {
+              return const PaperListShimmer();
+            }
 
-                    if (state is GetReadingHistoryFailure) {
-                      return Center(
-                        child: Text(
-                          state.errorMessage,
-                          style: context.bodyMedium,
-                          textAlign: TextAlign.center,
+            if (state is GetReadingHistoryFailure) {
+              return Center(
+                child: Text(
+                  state.errorMessage,
+                  style: context.bodyMedium,
+                  textAlign: TextAlign.center,
+                ),
+              );
+            }
+
+            if (state is GetReadingHistorySuccess) {
+              if (state.readingHistory.isEmpty) {
+                return Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Text('You haven’t read any research papers'),
+                    TextButton(
+                      onPressed: () {},
+                      child: Text(
+                        'Explore',
+                        style: context.bodyLarge.copyWith(
+                          decoration: TextDecoration.underline,
+                          decorationThickness: 2,
                         ),
-                      );
-                    }
+                      ),
+                    ),
+                  ],
+                );
+              }
 
-                    if (state is GetReadingHistorySuccess) {
-                      if (state.readingHistory.isEmpty) {
-                        return Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: [
-                            Text('You haven’t read any research papers'),
-                            TextButton(
-                              onPressed: () {},
-                              child: Text(
-                                'Explore',
-                                style: context.bodyLarge.copyWith(
-                                  decoration: TextDecoration.underline,
-                                  decorationThickness: 2,
-                                ),
-                              ),
-                            ),
-                          ],
-                        );
+              return ListView.separated(
+                controller: _scrollController,
+                padding: MySizes.paddingSm(context),
+                itemCount:
+                    state.readingHistory.length + (state.isLoadingMore ? 1 : 0),
+                itemBuilder: (context, index) {
+                  if (index >= state.readingHistory.length) {
+                    return const Padding(
+                      padding: EdgeInsets.symmetric(vertical: 16),
+                      child: Center(child: CircularProgressIndicator()),
+                    );
+                  }
+
+                  final item = state.readingHistory[index];
+                  return PaperCard(
+                    paper: item.paper,
+                    isHistory: true,
+                    lastReadAt: item.viewedAt,
+                    isSelected: _selectedPaperIds.contains(item.paperId),
+                    onTap: () {
+                      final paperId = item.paperId;
+                      if (_isSelectionMode) {
+                        _toggleSelection(paperId);
+                        return;
                       }
 
-                      return ListView.separated(
-                        controller: _scrollController,
-                        padding: const EdgeInsets.all(8),
-                        itemCount:
-                            state.readingHistory.length +
-                            (state.isLoadingMore ? 1 : 0),
-                        itemBuilder: (context, index) {
-                          if (index >= state.readingHistory.length) {
-                            return const Padding(
-                              padding: EdgeInsets.symmetric(vertical: 16),
-                              child: Center(child: CircularProgressIndicator()),
-                            );
-                          }
-
-                          return PaperCard(
-                            paper: state.readingHistory[index].paper,
-                            isHistory: true,
-                            lastReadAt: state.readingHistory[index].viewedAt,
-                            isSelected: _selectedPaperIds.contains(
-                              state.readingHistory[index].paperId,
-                            ),
-                            onTap: () {
-                              final paperId =
-                                  state.readingHistory[index].paperId;
-                              if (_isSelectionMode) {
-                                _toggleSelection(paperId);
-                                return;
-                              }
-
-                              final paper = state.readingHistory[index].paper;
-                              context.push(
-                                RouteNames.paperDetailsRoute(paper.id),
-                                extra: paper,
-                              );
-                            },
-                            onLongPress: () {
-                              _enterSelectionMode(
-                                state.readingHistory[index].paperId,
-                              );
-                            },
-                          );
-                        },
-                        separatorBuilder: (context, index) =>
-                            SizedBox(height: MySizes.spaceXs(context) * 0.5),
+                      context.push(
+                        RouteNames.paperDetailsRoute(item.paper.id),
+                        extra: item.paper,
                       );
-                    }
+                    },
+                    onLongPress: () => _enterSelectionMode(item.paperId),
+                  );
+                },
+                separatorBuilder: (context, index) =>
+                    SizedBox(height: MySizes.spaceLg(context)),
+              );
+            }
 
-                    return const SizedBox.shrink();
-                  },
-                ),
-              ),
-            );
+            return const SizedBox.shrink();
           },
         ),
       ),
@@ -224,12 +205,10 @@ class _ReadingHistoryScreenState extends State<ReadingHistoryScreen> {
 
   Future<void> _confirmAndDeleteSelected() async {
     final state = context.read<LibraryCubit>().state;
-    if (state is! GetReadingHistorySuccess || _selectedPaperIds.isEmpty) {
-      return;
-    }
+    if (state is! GetReadingHistorySuccess || _selectedPaperIds.isEmpty) return;
 
     final selectedItems = state.readingHistory
-        .where((item) => _selectedPaperIds.contains(item.paperId))
+        .where((i) => _selectedPaperIds.contains(i.paperId))
         .toList();
     if (selectedItems.isEmpty) return;
 
@@ -253,30 +232,23 @@ class _ReadingHistoryScreenState extends State<ReadingHistoryScreen> {
       ),
     );
 
-    if (confirmed != true || !mounted) return;
-
-    final cubit = context.read<LibraryCubit>();
-    for (final item in selectedItems) {
-      await cubit.removePaperFromReadingHistory(item.paperId);
+    if (confirmed == true) {
+      final cubit = context.read<LibraryCubit>();
+      for (final id in selectedItems.map((e) => e.paperId)) {
+        await cubit.removePaperFromReadingHistory(id);
+        if (!mounted) return;
+      }
+      _exitSelectionMode();
+      cubit.getReadingHistory();
     }
-
-    if (!mounted) return;
-    await cubit.getReadingHistory(page: 1, limit: _pageSize);
-    if (!mounted) return;
-    _exitSelectionMode();
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text('Selected history items deleted')),
-    );
   }
 
   Future<void> _confirmAndClearAll() async {
     final confirmed = await showDialog<bool>(
       context: context,
       builder: (dialogContext) => AlertDialog(
-        title: const Text('Delete all history?'),
-        content: const Text(
-          'This will remove every paper from your reading history.',
-        ),
+        title: const Text('Clear reading history?'),
+        content: const Text('Remove all papers from your reading history?'),
         actions: [
           TextButton(
             onPressed: () => Navigator.of(dialogContext).pop(false),
@@ -284,25 +256,17 @@ class _ReadingHistoryScreenState extends State<ReadingHistoryScreen> {
           ),
           TextButton(
             onPressed: () => Navigator.of(dialogContext).pop(true),
-            child: const Text('Delete'),
+            child: const Text('Clear'),
           ),
         ],
       ),
     );
 
-    if (confirmed != true || !mounted) return;
-
-    final cubit = context.read<LibraryCubit>();
-    await cubit.clearAllReadingHistory();
-    if (!mounted) return;
-
-    if (cubit.state is ClearAllReadingHistorySuccess) {
-      await cubit.getReadingHistory(page: 1, limit: _pageSize);
+    if (confirmed == true) {
+      final cubit = context.read<LibraryCubit>();
+      await cubit.clearAllReadingHistory();
       if (!mounted) return;
-      _exitSelectionMode();
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(const SnackBar(content: Text('Reading history cleared')));
+      cubit.getReadingHistory();
     }
   }
 }

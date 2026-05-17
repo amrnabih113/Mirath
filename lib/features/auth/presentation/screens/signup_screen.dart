@@ -11,6 +11,7 @@ import '../../../common/widgets/screen_decoration.dart';
 import '../cubit/auth_cubit.dart';
 import '../widgets/signup_form.dart';
 import '../widgets/signup_header.dart';
+import '../../../../core/ui/widgets/my_app_bar.dart';
 
 class SignupScreen extends StatelessWidget {
   const SignupScreen({super.key});
@@ -21,7 +22,12 @@ class SignupScreen extends StatelessWidget {
 
     return Scaffold(
       extendBodyBehindAppBar: true,
-      appBar: AppBar(leading: MyBackIcon()),
+      appBar: MyAppBar(
+        leading: MyBackIcon(),
+        backgroundColor: Colors.transparent,
+        elevation: 0,
+        automaticallyImplyLeading: true,
+      ),
       body: BlocListener<AuthCubit, AuthState>(
         listener: (context, state) {
           if (state.status == AuthStatus.authenticated) {

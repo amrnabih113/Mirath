@@ -14,6 +14,7 @@ import '../../../users/domain/entities/user.dart';
 import '../../../../generated/l10n.dart';
 import '../../../../core/network/network_manager.dart';
 import '../../../../core/ui/widgets/state_views.dart';
+import '../../../../core/ui/widgets/my_app_bar.dart';
 
 class ProfileScreen extends StatelessWidget {
   const ProfileScreen({super.key});
@@ -23,7 +24,7 @@ class ProfileScreen extends StatelessWidget {
     return DefaultTabController(
       length: 2,
       child: Scaffold(
-        appBar: AppBar(
+        appBar: MyAppBar(
           title: Text(S.of(context).profile),
           actions: [
             IconButton(

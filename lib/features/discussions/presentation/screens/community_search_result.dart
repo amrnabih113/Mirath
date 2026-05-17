@@ -18,9 +18,15 @@ import '../cubit/global_search_cubit.dart';
 import '../cubit/global_search_state.dart';
 import '../widgets/discussion_card.dart';
 import '../widgets/researcher_card.dart';
+import '../../../../core/ui/widgets/my_app_bar.dart';
+import '../../../../core/ui/widgets/my_body.dart';
 
 class CommunitySearchResult extends StatefulWidget {
-  const CommunitySearchResult({super.key, this.initialQuery, this.initialScope});
+  const CommunitySearchResult({
+    super.key,
+    this.initialQuery,
+    this.initialScope,
+  });
 
   final String? initialQuery;
   final GlobalSearchScope? initialScope;
@@ -94,11 +100,10 @@ class _CommunitySearchResultState extends State<CommunitySearchResult> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        toolbarHeight: ResponsiveHelper.responsiveValue(context, 72),
+      appBar: MyAppBar(
+        height: ResponsiveHelper.responsiveValue(context, 72),
         leading: const MyBackIcon(),
-        leadingWidth: ResponsiveHelper.responsiveValue(context, 56),
-        titleSpacing: 0,
+
         title: Padding(
           padding: EdgeInsets.only(right: MySizes.spaceSm(context)),
           child: MySearchBar(
@@ -114,35 +119,26 @@ class _CommunitySearchResultState extends State<CommunitySearchResult> {
         ),
       ),
 
-      body: LayoutBuilder(
-        builder: (context, constraints) {
-          return Center(
-            child: ConstrainedBox(
-              constraints: const BoxConstraints(maxWidth: 920),
-              child: Padding(
-                padding: MySizes.paddingMd(context),
-                child: BlocBuilder<GlobalSearchCubit, GlobalSearchState>(
-                  builder: (context, state) {
-                    if (state.status == GlobalSearchStatus.loading) {
-                      return const Center(child: CircularProgressIndicator());
-                    }
+      body: MyBody(
+        padding: MySizes.paddingMd(context),
+        child: BlocBuilder<GlobalSearchCubit, GlobalSearchState>(
+          builder: (context, state) {
+            if (state.status == GlobalSearchStatus.loading) {
+              return const Center(child: CircularProgressIndicator());
+            }
 
-                    final showPrompt =
-                        state.status == GlobalSearchStatus.initial &&
-                        state.query.isEmpty;
+            final showPrompt =
+                state.status == GlobalSearchStatus.initial &&
+                state.query.isEmpty;
 
-                    return AnimatedSwitcher(
-                      duration: const Duration(milliseconds: 200),
-                      child: showPrompt
-                          ? _buildPrompt(context)
-                          : _buildResults(context, state),
-                    );
-                  },
-                ),
-              ),
-            ),
-          );
-        },
+            return AnimatedSwitcher(
+              duration: const Duration(milliseconds: 200),
+              child: showPrompt
+                  ? _buildPrompt(context)
+                  : _buildResults(context, state),
+            );
+          },
+        ),
       ),
     );
   }
@@ -316,10 +312,8 @@ class _CommunitySearchResultState extends State<CommunitySearchResult> {
       onSeeAll: () => _onScopeSelected(GlobalSearchScope.discussions),
       itemBuilder: (d) => DiscussionCard(
         discussion: d,
-        onTap: () => context.push(
-          RouteNames.discussionDetailsRoute(d.id),
-          extra: d,
-        ),
+        onTap: () =>
+            context.push(RouteNames.discussionDetailsRoute(d.id), extra: d),
       ),
     );
   }

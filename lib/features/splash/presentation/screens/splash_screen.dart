@@ -8,6 +8,7 @@ import '../../../../core/utils/my_extenstions.dart';
 import '../../../auth/presentation/cubit/auth_cubit.dart';
 import 'package:go_router/go_router.dart';
 import '../../../../core/constants/route_names.dart';
+import '../../../../core/ui/widgets/my_body.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
@@ -70,7 +71,8 @@ class _SplashScreenState extends State<SplashScreen>
       },
       child: Scaffold(
         backgroundColor: MyColors.light,
-        body: Center(
+        body: MyBody(
+          padding: EdgeInsets.zero,
           child: AnimatedBuilder(
             animation: _controller,
             builder: (context, child) {
@@ -99,7 +101,10 @@ class _SplashScreenState extends State<SplashScreen>
                         'Mirath',
                         style: context.titleLarge.copyWith(
                           fontWeight: FontWeight.bold,
-                          fontSize: ResponsiveHelper.responsiveValue(context, 40),
+                          fontSize: ResponsiveHelper.responsiveValue(
+                            context,
+                            40,
+                          ),
                           color: Color(0xff5C3110),
                           fontFamily: GoogleFonts.anticDidone().fontFamily,
                           letterSpacing: 1.2,

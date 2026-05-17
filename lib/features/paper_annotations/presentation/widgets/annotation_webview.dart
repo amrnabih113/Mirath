@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:flutter/foundation.dart' show kIsWeb;
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -7,6 +8,7 @@ import '../../../../core/utils/my_logger.dart';
 import '../utils/annotation_theme_colors.dart';
 import 'paper_reading_shimmer_loading.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:url_launcher/url_launcher_string.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 import 'package:webview_flutter_wkwebview/webview_flutter_wkwebview.dart';
 
@@ -149,6 +151,7 @@ class AnnotationWebView extends StatefulWidget {
 class AnnotationWebViewState extends State<AnnotationWebView> {
   late final WebViewController _controller;
   bool _isLoaded = false;
+  String? _webHtml;
 
   @override
   void initState() {
@@ -158,6 +161,14 @@ class AnnotationWebViewState extends State<AnnotationWebView> {
 
   void _initializeWebView() {
     debugPrint('[AnnotationWebView] _initializeWebView() called');
+    if (kIsWeb) {
+      // On web, we don't use the native WebView controller. Prepare content
+      // and mark ready after loading HTML so the UI can offer a fallback.
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        _loadContent();
+      });
+      return;
+    }
     late final PlatformWebViewControllerCreationParams params;
     if (WebViewPlatform.instance is WebKitWebViewPlatform) {
       params = WebKitWebViewControllerCreationParams(
@@ -286,6 +297,18 @@ class AnnotationWebViewState extends State<AnnotationWebView> {
 ''';
 
     debugPrint('[AnnotationWebView] 🔥🔥🔥 Calling loadHtmlString...');
+    if (kIsWeb) {
+      // Store generated HTML and notify ready. Opening happens via button
+      // in the web fallback UI which launches a data: URI in a new tab.
+      setState(() {
+        _isLoaded = true;
+        _webHtml = html;
+      });
+      debugPrint('[AnnotationWebView] 🔥🔥🔥 Web fallback prepared');
+      widget.onReady?.call();
+      return;
+    }
+
     await _controller.loadHtmlString(html);
     debugPrint('[AnnotationWebView] 🔥🔥🔥 loadHtmlString completed');
   }
@@ -929,6 +952,53 @@ class AnnotationWebViewState extends State<AnnotationWebView> {
 
   @override
   Widget build(BuildContext context) {
+    if (kIsWeb) {
+      // Web fallback: show a loader until HTML is prepared, then show a
+      // button to open the content in a new tab (avoids relying on a
+      // platform WebView implementation which isn't available on web).
+      if (!_isLoaded || _webHtml == null) {
+        return const PaperReadingShimmerLoading();
+      }
+
+      return Center(
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text(
+                'Open paper in a new tab',
+                style: Theme.of(context).textTheme.titleMedium,
+              ),
+              const SizedBox(height: 12),
+              ElevatedButton.icon(
+                icon: const Icon(Icons.open_in_new),
+                label: const Text('Open'),
+                onPressed: () async {
+                  try {
+                    final uri = Uri.dataFromString(
+                      _webHtml!,
+                      mimeType: 'text/html',
+                      encoding: utf8,
+                    );
+                    await launchUrlString(
+                      uri.toString(),
+                      webOnlyWindowName: '_blank',
+                    );
+                  } catch (e) {
+                    debugPrint('Error opening paper in new tab: $e');
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(content: Text('Unable to open paper')),
+                    );
+                  }
+                },
+              ),
+            ],
+          ),
+        ),
+      );
+    }
+
     return !_isLoaded
         ? const PaperReadingShimmerLoading()
         : WebViewWidget(controller: _controller);

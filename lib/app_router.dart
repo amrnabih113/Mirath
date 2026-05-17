@@ -63,6 +63,8 @@ import 'features/users/presentation/cubit/profile_header_cubit.dart';
 import 'features/users/presentation/screens/set_up_profile_screen.dart';
 import 'generated/l10n.dart';
 import 'injection/injection_container.dart';
+import 'core/ui/widgets/my_app_bar.dart';
+import 'core/ui/widgets/my_body.dart';
 
 // Helper class to make AuthCubit work with GoRouter's refreshListenable
 class _AuthStateNotifier extends ChangeNotifier {
@@ -125,7 +127,7 @@ final appRouter = GoRouter(
     if (authStatus == AuthStatus.authenticated) {
       // Try to use cached result first
       final cached = _setupCheckCache.getIfValid();
-        if (cached != null) {
+      if (cached != null) {
         hasSetupProfile = cached;
       } else {
         try {
@@ -164,7 +166,8 @@ final appRouter = GoRouter(
     // If the app is still on splash after auth has resolved, leave splash here
     // instead of relying on the splash screen widget to navigate.
     if (currentLocation == RouteNames.splash) {
-      if (authStatus == AuthStatus.initial || authStatus == AuthStatus.loading) {
+      if (authStatus == AuthStatus.initial ||
+          authStatus == AuthStatus.loading) {
         return null;
       }
 
@@ -202,7 +205,8 @@ final appRouter = GoRouter(
 
     // While auth status is still resolving, keep protected routes on splash
     // so their screens do not build and trigger unauthorized API calls.
-    if ((authStatus == AuthStatus.initial || authStatus == AuthStatus.loading) &&
+    if ((authStatus == AuthStatus.initial ||
+            authStatus == AuthStatus.loading) &&
         isProtectedPath) {
       return RouteNames.splash;
     }
@@ -509,7 +513,7 @@ final appRouter = GoRouter(
         if (paperId.isEmpty) {
           return PageTransitions.smoothTransition(
             Scaffold(
-              appBar: AppBar(title: Text(S.of(context).error_label)),
+              appBar: MyAppBar(title: Text(S.of(context).error_label)),
               body: const Center(child: Text('Error: No paper data provided')),
             ),
           );
@@ -585,7 +589,7 @@ final appRouter = GoRouter(
         if (discussionId.isEmpty) {
           return PageTransitions.smoothTransition(
             Scaffold(
-              appBar: AppBar(title: Text(S.of(context).error_label)),
+              appBar: MyAppBar(title: Text(S.of(context).error_label)),
               body: const Center(
                 child: Text('Error: No discussion ID provided'),
               ),
@@ -643,9 +647,11 @@ final appRouter = GoRouter(
         if (readingListId.isEmpty) {
           return PageTransitions.smoothTransition(
             Scaffold(
-              appBar: AppBar(title: Text(S.of(context).error_label)),
-              body: const Center(
-                child: Text('Error: No reading list ID provided'),
+              appBar: MyAppBar(title: Text(S.of(context).error_label)),
+              body: const MyBody(
+                child: Center(
+                  child: Text('Error: No reading list ID provided'),
+                ),
               ),
             ),
           );
@@ -714,8 +720,10 @@ final appRouter = GoRouter(
         if (userId.isEmpty) {
           return PageTransitions.smoothTransition(
             Scaffold(
-              appBar: AppBar(title: Text(S.of(context).error_label)),
-              body: const Center(child: Text('Error: No user data provided')),
+              appBar: MyAppBar(title: Text(S.of(context).error_label)),
+              body: const MyBody(
+                child: Center(child: Text('Error: No user data provided')),
+              ),
             ),
           );
         }

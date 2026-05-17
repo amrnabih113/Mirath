@@ -63,13 +63,17 @@ class ImagesPreview extends StatelessWidget {
                 right: 4,
                 child: GestureDetector(
                   onTap: () => onRemoveImage(index),
-                    child: Container(
+                  child: Container(
                     padding: const EdgeInsets.all(4),
                     decoration: BoxDecoration(
                       color: MyColors.black.withValues(alpha: 0.6),
                       shape: BoxShape.circle,
                     ),
-                    child: HugeIcon(icon: HugeIcons.strokeRoundedCancel01, size: 16, color: MyColors.white),
+                    child: HugeIcon(
+                      icon: HugeIcons.strokeRoundedCancel01,
+                      size: 16,
+                      color: MyColors.white,
+                    ),
                   ),
                 ),
               ),

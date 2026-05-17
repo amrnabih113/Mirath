@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:hugeicons/hugeicons.dart';
+import 'package:pointer_interceptor/pointer_interceptor.dart';
 
 import '../../../../core/helpers/responsive_helper.dart';
 import '../../../../core/services/local_storage_service.dart';
@@ -15,7 +16,7 @@ import '../../../home/domain/entities/paper_entity.dart';
 import '../../../paper_annotations/domain/entites/highlight_entity.dart';
 import '../../../paper_annotations/presentation/cubit/paper_reading_cubit.dart';
 import '../../../paper_annotations/presentation/cubit/paper_reading_state.dart';
-import '../../../paper_annotations/presentation/widgets/annotation_webview.dart';
+import '../../../paper_annotations/presentation/widgets/annotation_webview_platform.dart';
 import '../../../paper_annotations/presentation/widgets/font_size_sheet.dart';
 import '../../../paper_annotations/presentation/widgets/highlights_list_sheet.dart';
 import '../../../paper_annotations/presentation/widgets/note_dialog.dart';
@@ -25,6 +26,8 @@ import '../../../paper_annotations/presentation/widgets/reader_action_menu.dart'
 import '../../../paper_annotations/presentation/widgets/reader_scroll_indicator.dart';
 import '../../../paper_annotations/presentation/widgets/selection_overlay.dart';
 import '../../../paper_annotations/presentation/widgets/translation_sheet.dart';
+import '../../../../core/ui/widgets/my_app_bar.dart';
+import '../../../../core/ui/widgets/my_body.dart';
 
 class PaperReadingScreen extends StatefulWidget {
   final PaperEntity? paper;
@@ -844,11 +847,13 @@ class _PaperReadingScreenState extends State<PaperReadingScreen> {
             print('[PaperReadingScreen] Showing error state: ${state.message}');
             return Scaffold(
               backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-              appBar: AppBar(),
-              body: Center(
-                child: Text(
-                  state.message,
-                  style: Theme.of(context).textTheme.bodyLarge,
+              appBar: MyAppBar(),
+              body: MyBody(
+                child: Center(
+                  child: Text(
+                    state.message,
+                    style: Theme.of(context).textTheme.bodyLarge,
+                  ),
                 ),
               ),
             );
@@ -874,254 +879,239 @@ class _PaperReadingScreenState extends State<PaperReadingScreen> {
               padding: EdgeInsets.all(MySizes.spaceMd(context)),
               child: ReaderScrollIndicator(progress: state.scrollProgress),
             ),
-            appBar: PreferredSize(
-              preferredSize: Size.fromHeight(
-                ResponsiveHelper.responsiveValue(context, 56),
-              ),
-              child: Center(
-                child: LayoutBuilder(
-                  builder: (BuildContext context, BoxConstraints constraints) {
-                    return ConstrainedBox(
-                      constraints: const BoxConstraints(maxWidth: 850),
-                      child: AppBar(
-                        leading: state.searchOpen ? null : const MyBackIcon(),
-                        automaticallyImplyLeading: !state.searchOpen,
-                        title: state.searchOpen
-                            ? null
-                            : null, // No title in normal mode
-                        actions: state.searchOpen
-                            ? [
-                                // Search mode: show search field and controls
+            appBar: MyAppBar(
+              height: ResponsiveHelper.responsiveValue(context, 56),
+              leading: state.searchOpen ? null : const MyBackIcon(),
+              automaticallyImplyLeading: !state.searchOpen,
+              title: state.searchOpen ? null : null,
+              actions: state.searchOpen
+                  ? [
+                      // Search mode: show search field and controls
+                      Expanded(
+                        child: PointerInterceptor(
+                          child: Padding(
+                            padding: EdgeInsets.symmetric(
+                              horizontal: MySizes.spaceMd(context),
+                            ),
+                            child: Row(
+                              children: [
                                 Expanded(
-                                  child: Padding(
-                                    padding: EdgeInsets.symmetric(
-                                      horizontal: MySizes.spaceMd(context),
-                                    ),
-                                    child: Row(
-                                      children: [
-                                        Expanded(
-                                          child: TextField(
-                                            controller: _searchController,
-                                            autofocus: true,
-                                            decoration: InputDecoration(
-                                              hintText: S
-                                                  .of(context)
-                                                  .search_in_paper_hint,
-                                              hintStyle: Theme.of(context)
-                                                  .textTheme
-                                                  .bodyMedium
-                                                  ?.copyWith(
-                                                    color: Colors.grey,
-                                                  ),
+                                  child: TextField(
+                                    controller: _searchController,
+                                    autofocus: true,
+                                    decoration: InputDecoration(
+                                      hintText: S
+                                          .of(context)
+                                          .search_in_paper_hint,
+                                      hintStyle: Theme.of(context)
+                                          .textTheme
+                                          .bodyMedium
+                                          ?.copyWith(color: Colors.grey),
 
-                                              isDense: true,
-                                            ),
-                                            style: Theme.of(
-                                              context,
-                                            ).textTheme.bodyMedium,
-                                            onSubmitted: (_) => _searchNow(),
-                                            onChanged: (_) => _searchNow(),
-                                          ),
-                                        ),
-                                        if (state.searchTotal > 0) ...[
-                                          SizedBox(
-                                            width: MySizes.spaceSm(context),
-                                          ),
-                                          Text(
-                                            '${state.searchCurrent}/${state.searchTotal}',
-                                            style: Theme.of(
-                                              context,
-                                            ).textTheme.bodySmall,
-                                          ),
-                                        ],
-                                        IconButton(
-                                          onPressed: state.searchTotal > 0
-                                              ? _searchPrevious
-                                              : null,
-                                          icon: const Icon(
-                                            Icons.keyboard_arrow_up,
-                                          ),
-                                          iconSize: MySizes.iconMedium(context),
-                                          tooltip: S
-                                              .of(context)
-                                              .previous_button,
-                                        ),
-                                        IconButton(
-                                          onPressed: state.searchTotal > 0
-                                              ? _searchNext
-                                              : null,
-                                          icon: const Icon(
-                                            Icons.keyboard_arrow_down,
-                                          ),
-                                          iconSize: MySizes.iconMedium(context),
-                                          tooltip: S.of(context).next,
-                                        ),
-                                        IconButton(
-                                          onPressed: _closeSearch,
-                                          icon: const Icon(Icons.close),
-                                          iconSize: MySizes.iconMedium(context),
-                                          tooltip: S
-                                              .of(context)
-                                              .close_search_button,
-                                        ),
-                                      ],
+                                      isDense: true,
                                     ),
+                                    style: Theme.of(
+                                      context,
+                                    ).textTheme.bodyMedium,
+                                    onSubmitted: (_) => _searchNow(),
+                                    onChanged: (_) => _searchNow(),
                                   ),
                                 ),
-                              ]
-                            : [],
+                                if (state.searchTotal > 0) ...[
+                                  SizedBox(width: MySizes.spaceSm(context)),
+                                  Text(
+                                    '${state.searchCurrent}/${state.searchTotal}',
+                                    style: Theme.of(
+                                      context,
+                                    ).textTheme.bodySmall,
+                                  ),
+                                ],
+                                IconButton(
+                                  onPressed: state.searchTotal > 0
+                                      ? _searchPrevious
+                                      : null,
+                                  icon: const Icon(Icons.keyboard_arrow_up),
+                                  iconSize: MySizes.iconMedium(context),
+                                  tooltip: S.of(context).previous_button,
+                                ),
+                                IconButton(
+                                  onPressed: state.searchTotal > 0
+                                      ? _searchNext
+                                      : null,
+                                  icon: const Icon(Icons.keyboard_arrow_down),
+                                  iconSize: MySizes.iconMedium(context),
+                                  tooltip: S.of(context).next,
+                                ),
+                                IconButton(
+                                  onPressed: _closeSearch,
+                                  icon: const Icon(Icons.close),
+                                  iconSize: MySizes.iconMedium(context),
+                                  tooltip: S.of(context).close_search_button,
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
                       ),
-                    );
-                  },
-                ),
-              ),
+                    ]
+                  : [],
             ),
-            body: SafeArea(
-              child: Stack(
-                children: [
-                  Positioned.fill(
-                    child: AnnotationWebView(
-                      key: _webKey,
-                      content: state.paperHtml,
-                      paperId: state.paper.id,
-                      title: state.paper.title,
-                      authors: state.paper.authors,
-                      onSelectionChanged: (selection) {
-                        if (!mounted) return;
-                        debugPrint(
-                          '[PaperReadingScreen] Text selected: "${selection.text}" at (${selection.x}, ${selection.y})',
-                        );
-                        setState(() {
-                          _currentSelection = selection;
-                          _pendingSelection = selection;
-                          _activeHighlight = null;
-                          _activeHighlightPosition = null;
-                          _showSelectionColorPicker = false;
-                        });
-                      },
-                      onSelectionCleared: () {
-                        if (!mounted) return;
-                        setState(() {
-                          _currentSelection = null;
-                          _activeHighlightPosition = null;
-                          _showSelectionColorPicker = false;
-                        });
-                      },
-                      onHighlightTapped: _onHighlightTapped,
-                      onScrollProgress: (value) {
-                        context.read<PaperReadingCubit>().updateScrollProgress(
-                          value,
-                        );
-                      },
-                      onReady: () async {
-                        _isWebViewReady = true;
-                        await _webKey.currentState?.setFontScale(
-                          state.fontScale,
-                        );
-                        await _syncHighlightsToWebView(state.highlights);
-                      },
-                    ),
-                  ),
 
-                  // Action menu
-                  Positioned(
-                    right: MySizes.paddingMd(context).right,
-                    bottom: ResponsiveHelper.responsiveValue(context, 88),
-                    child: ReaderActionMenu(
-                      isOpen: state.menuOpen,
-                      onToggle: () {
-                        context.read<PaperReadingCubit>().toggleMenu();
-                      },
-                      onSearchTap: () {
-                        context.read<PaperReadingCubit>().openSearch();
-                      },
-                      onNotesTap: () async {
-                        context.read<PaperReadingCubit>().closeMenu();
-                        await _showNotesList();
-                      },
-                      onHighlightsTap: () {
-                        context.read<PaperReadingCubit>().closeMenu();
-                        _showHighlightsList(state.highlights);
-                      },
-                      onThemesTap: () {
-                        context.read<PaperReadingCubit>().closeMenu();
-                        _showFontSizeDialog(state.fontScale);
-                      },
-                      highlightCount: state.highlights.length,
-                      noteCount: noteCount,
-                    ),
-                  ),
-                  // Action menu
-                  Positioned(
-                    right: MySizes.paddingMd(context).right,
-                    bottom: ResponsiveHelper.responsiveValue(context, 20),
-                    child: FloatingActionButton(
-                      heroTag: 'paper-reading-ai-fab',
-                      shape: CircleBorder(),
-                      backgroundColor: MyColors.primaryShade700,
-                      foregroundColor: MyColors.primaryShade50,
-                      onPressed: () {},
-                      child: HugeIcon(
-                        icon: HugeIcons.strokeRoundedStars,
-                        size: MySizes.iconMedium(context),
-                        color: Colors.white,
-                      ),
-                    ),
-                  ),
-                  // Selection context menu - must be last in stack to appear on top
-                  if (_currentSelection != null || _activeHighlight != null)
+            body: MyBody(
+              child: SafeArea(
+                child: Stack(
+                  children: [
                     Positioned.fill(
-                      child: AnnotationSelectionOverlay(
-                        position: _currentSelection != null
-                            ? SelectionPosition(
-                                x: _currentSelection!.x,
-                                y: _currentSelection!.y,
-                                width: _currentSelection!.width,
-                                height: _currentSelection!.height,
-                              )
-                            : (_activeHighlightPosition ??
-                                  SelectionPosition(
-                                    x:
-                                        (MediaQuery.of(context).size.width -
-                                            340) /
-                                        2,
-                                    y: 100,
-                                    width: 340,
-                                    height: 0,
-                                  )),
-                        mode: _activeHighlight != null
-                            ? AnnotationDialogMode.highlightColors
-                            : (_showSelectionColorPicker
-                                  ? AnnotationDialogMode.selectionColors
-                                  : AnnotationDialogMode.selectionActions),
-                        onDismiss: _dismissContextDialogs,
-                        selectedColor: _activeHighlight?.color,
-                        onSelectColor: (color) {
-                          if (_activeHighlight != null) {
-                            _updateActiveHighlightColor(color);
-                            return;
-                          }
-                          _createHighlightFromSelection(color);
-                        },
-                        onHighlightPressed: () {
+                      child: AnnotationWebView(
+                        key: _webKey,
+                        content: state.paperHtml,
+                        paperId: state.paper.id,
+                        title: state.paper.title,
+                        authors: state.paper.authors,
+                        onSelectionChanged: (selection) {
                           if (!mounted) return;
+                          debugPrint(
+                            '[PaperReadingScreen] Text selected: "${selection.text}" at (${selection.x}, ${selection.y})',
+                          );
                           setState(() {
-                            _showSelectionColorPicker = true;
+                            _currentSelection = selection;
+                            _pendingSelection = selection;
+                            _activeHighlight = null;
+                            _activeHighlightPosition = null;
+                            _showSelectionColorPicker = false;
                           });
                         },
-                        onNote: _handleNoteAction,
-                        noteActionLabel:
-                            _activeHighlight?.note?.trim().isNotEmpty == true
-                            ? S.of(context).edit_note_button
-                            : S.of(context).add_note_button,
-                        onExplain: () => _showComingSoonMessage('Explain'),
-                        onTranslate: _openTranslateSheet,
-                        onRemove: _activeHighlight != null
-                            ? _removeActiveHighlight
-                            : null,
+                        onSelectionCleared: () {
+                          if (!mounted) return;
+                          setState(() {
+                            _currentSelection = null;
+                            _activeHighlightPosition = null;
+                            _showSelectionColorPicker = false;
+                          });
+                        },
+                        onHighlightTapped: _onHighlightTapped,
+                        onScrollProgress: (value) {
+                          context
+                              .read<PaperReadingCubit>()
+                              .updateScrollProgress(value);
+                        },
+                        onReady: () async {
+                          _isWebViewReady = true;
+                          await _webKey.currentState?.setFontScale(
+                            state.fontScale,
+                          );
+                          await _syncHighlightsToWebView(state.highlights);
+                        },
                       ),
                     ),
-                ],
+
+                    // Action menu
+                    Positioned(
+                      right: MySizes.paddingMd(context).right,
+                      bottom: ResponsiveHelper.responsiveValue(context, 88),
+                      child: PointerInterceptor(
+                        child: ReaderActionMenu(
+                          isOpen: state.menuOpen,
+                          onToggle: () {
+                            context.read<PaperReadingCubit>().toggleMenu();
+                          },
+                          onSearchTap: () {
+                            context.read<PaperReadingCubit>().openSearch();
+                          },
+                          onNotesTap: () async {
+                            context.read<PaperReadingCubit>().closeMenu();
+                            await _showNotesList();
+                          },
+                          onHighlightsTap: () {
+                            context.read<PaperReadingCubit>().closeMenu();
+                            _showHighlightsList(state.highlights);
+                          },
+                          onThemesTap: () {
+                            context.read<PaperReadingCubit>().closeMenu();
+                            _showFontSizeDialog(state.fontScale);
+                          },
+                          highlightCount: state.highlights.length,
+                          noteCount: noteCount,
+                        ),
+                      ),
+                    ),
+                    // Action menu
+                    Positioned(
+                      right: MySizes.paddingMd(context).right,
+                      bottom: ResponsiveHelper.responsiveValue(context, 20),
+                      child: PointerInterceptor(
+                        child: FloatingActionButton(
+                          heroTag: 'paper-reading-ai-fab',
+                          shape: CircleBorder(),
+                          backgroundColor: MyColors.primaryShade700,
+                          foregroundColor: MyColors.primaryShade50,
+                          onPressed: () {},
+                          child: HugeIcon(
+                            icon: HugeIcons.strokeRoundedStars,
+                            size: MySizes.iconMedium(context),
+                            color: Colors.white,
+                          ),
+                        ),
+                      ),
+                    ),
+                    // Selection context menu - must be last in stack to appear on top
+                    if (_currentSelection != null || _activeHighlight != null)
+                      Positioned.fill(
+                        child: PointerInterceptor(
+                          child: AnnotationSelectionOverlay(
+                            position: _currentSelection != null
+                                ? SelectionPosition(
+                                    x: _currentSelection!.x,
+                                    y: _currentSelection!.y,
+                                    width: _currentSelection!.width,
+                                    height: _currentSelection!.height,
+                                  )
+                                : (_activeHighlightPosition ??
+                                      SelectionPosition(
+                                        x:
+                                            (MediaQuery.of(context).size.width -
+                                                340) /
+                                            2,
+                                        y: 100,
+                                        width: 340,
+                                        height: 0,
+                                      )),
+                            mode: _activeHighlight != null
+                                ? AnnotationDialogMode.highlightColors
+                                : (_showSelectionColorPicker
+                                      ? AnnotationDialogMode.selectionColors
+                                      : AnnotationDialogMode.selectionActions),
+                            onDismiss: _dismissContextDialogs,
+                            selectedColor: _activeHighlight?.color,
+                            onSelectColor: (color) {
+                              if (_activeHighlight != null) {
+                                _updateActiveHighlightColor(color);
+                                return;
+                              }
+                              _createHighlightFromSelection(color);
+                            },
+                            onHighlightPressed: () {
+                              if (!mounted) return;
+                              setState(() {
+                                _showSelectionColorPicker = true;
+                              });
+                            },
+                            onNote: _handleNoteAction,
+                            noteActionLabel:
+                                _activeHighlight?.note?.trim().isNotEmpty ==
+                                    true
+                                ? S.of(context).edit_note_button
+                                : S.of(context).add_note_button,
+                            onExplain: () => _showComingSoonMessage('Explain'),
+                            onTranslate: _openTranslateSheet,
+                            onRemove: _activeHighlight != null
+                                ? _removeActiveHighlight
+                                : null,
+                          ),
+                        ),
+                      ),
+                  ],
+                ),
               ),
             ),
           );

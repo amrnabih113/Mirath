@@ -11,6 +11,8 @@ import '../../../common/widgets/my_back_icon.dart';
 import '../../../common/widgets/tag_chip.dart';
 import '../../../interests/presentation/cubit/interests_cubit.dart';
 import '../../../interests/presentation/cubit/interests_state.dart';
+import '../../../../core/ui/widgets/my_app_bar.dart';
+import '../../../../core/ui/widgets/my_body.dart';
 
 class EditInterstsScreen extends StatefulWidget {
   const EditInterstsScreen({super.key, this.initialSelected = const []});
@@ -120,129 +122,122 @@ class _EditInterstsScreenState extends State<EditInterstsScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
+      appBar: MyAppBar(
         leading: const MyBackIcon(),
         title: const Text('Interests'),
         centerTitle: true,
       ),
-      body: Center(
-        child: ConstrainedBox(
-          constraints: const BoxConstraints(maxWidth: 850),
-          child: Padding(
-            padding: MySizes.paddingSm(context),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  'Edit your interests',
-                  style: context.headlineLarge.copyWith(
-                    fontSize: 24,
-                    fontWeight: FontWeight.w600,
-                  ),
-                ),
-
-                const SizedBox(height: 12),
-
-                // 🔍 Search with overlay anchor
-                CompositedTransformTarget(
-                  link: _layerLink,
-                  child: TextField(
-                    controller: _searchController,
-                    decoration: const InputDecoration(
-                      hintText: 'Search interests',
-                      prefixIcon: Icon(Icons.search),
-                    ),
-                    onChanged: (value) {
-                      setState(() {
-                        _query = value;
-                      });
-                      _showOverlay();
-                    },
-                  ),
-                ),
-
-                const SizedBox(height: 16),
-
-                // 🟢 Selected chips
-                Wrap(
-                  spacing: 8,
-                  runSpacing: 8,
-                  children: _selected.map((e) {
-                    return GestureDetector(
-                      onTap: () => _toggleInterest(e),
-                      child: TagChip(label: e, hasIcon: true),
-                    );
-                  }).toList(),
-                ),
-
-                const SizedBox(height: 16),
-
-                // 📦 Load interests once
-                Expanded(
-                  child: BlocBuilder<InterestsCubit, InterestsState>(
-                    builder: (context, state) {
-                      if (state is InterestsLoading) {
-                        return const Center(child: CircularProgressIndicator());
-                      }
-
-                      if (state is InterestsError) {
-                        final offline =
-                            !NetworkManager.instance.currentConnectionStatus;
-                        return offline
-                            ? OfflineStateView(
-                                title: 'Offline',
-                                message: state.message,
-                                actionLabel: 'Retry',
-                                onAction: () => context
-                                    .read<InterestsCubit>()
-                                    .getAllInterests(),
-                              )
-                            : ErrorStateView(
-                                title: 'Error',
-                                message: state.message,
-                                actionLabel: 'Retry',
-                                onAction: () => context
-                                    .read<InterestsCubit>()
-                                    .getAllInterests(),
-                              );
-                      }
-
-                      if (state is InterestsLoaded) {
-                        _allInterests = state.interests
-                            .map((e) => e.name)
-                            .toList();
-                      }
-
-                      return const SizedBox();
-                    },
-                  ),
-                ),
-
-                SizedBox(
-                  width: double.infinity,
-                  child: ElevatedButton(
-                    onPressed: () {
-                      context.pop(_selected);
-                    },
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: MyColors.primaryShade800,
-                      padding: const EdgeInsets.symmetric(vertical: 14),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(14),
-                      ),
-                    ),
-                    child: const Text(
-                      'Save Changes',
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                  ),
-                ),
-              ],
+      body: MyBody(
+        padding: MySizes.paddingSm(context),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              'Edit your interests',
+              style: context.headlineLarge.copyWith(
+                fontSize: 24,
+                fontWeight: FontWeight.w600,
+              ),
             ),
-          ),
+
+            const SizedBox(height: 12),
+
+            // 🔍 Search with overlay anchor
+            CompositedTransformTarget(
+              link: _layerLink,
+              child: TextField(
+                controller: _searchController,
+                decoration: const InputDecoration(
+                  hintText: 'Search interests',
+                  prefixIcon: Icon(Icons.search),
+                ),
+                onChanged: (value) {
+                  setState(() {
+                    _query = value;
+                  });
+                  _showOverlay();
+                },
+              ),
+            ),
+
+            const SizedBox(height: 16),
+
+            // 🟢 Selected chips
+            Wrap(
+              spacing: 8,
+              runSpacing: 8,
+              children: _selected.map((e) {
+                return GestureDetector(
+                  onTap: () => _toggleInterest(e),
+                  child: TagChip(label: e, hasIcon: true),
+                );
+              }).toList(),
+            ),
+
+            const SizedBox(height: 16),
+
+            // 📦 Load interests once
+            Expanded(
+              child: BlocBuilder<InterestsCubit, InterestsState>(
+                builder: (context, state) {
+                  if (state is InterestsLoading) {
+                    return const Center(child: CircularProgressIndicator());
+                  }
+
+                  if (state is InterestsError) {
+                    final offline =
+                        !NetworkManager.instance.currentConnectionStatus;
+                    return offline
+                        ? OfflineStateView(
+                            title: 'Offline',
+                            message: state.message,
+                            actionLabel: 'Retry',
+                            onAction: () => context
+                                .read<InterestsCubit>()
+                                .getAllInterests(),
+                          )
+                        : ErrorStateView(
+                            title: 'Error',
+                            message: state.message,
+                            actionLabel: 'Retry',
+                            onAction: () => context
+                                .read<InterestsCubit>()
+                                .getAllInterests(),
+                          );
+                  }
+
+                  if (state is InterestsLoaded) {
+                    _allInterests = state.interests.map((e) => e.name).toList();
+                  }
+
+                  return const SizedBox();
+                },
+              ),
+            ),
+
+            SizedBox(
+              width: double.infinity,
+              child: ElevatedButton(
+                onPressed: () {
+                  context.pop(_selected);
+                },
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: MyColors.primaryShade800,
+                  padding: const EdgeInsets.symmetric(vertical: 14),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(14),
+                  ),
+                ),
+                child: const Text(
+                  'Save Changes',
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ),
+            ),
+          ],
         ),
       ),
     );

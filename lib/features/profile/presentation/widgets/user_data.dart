@@ -5,6 +5,7 @@ import 'package:hugeicons/hugeicons.dart';
 import '../../../../core/utils/my_colors.dart';
 import '../../../../core/utils/my_enums.dart';
 import '../../../../core/utils/my_extenstions.dart';
+import '../../../../core/helpers/responsive_helper.dart';
 import '../../../../core/utils/my_sizes.dart';
 import '../../../common/widgets/custum_text_button.dart';
 import '../../../common/widgets/info_row.dart';
@@ -76,7 +77,10 @@ class UserData extends StatelessWidget {
                           '@${user.username}',
                           style: context.bodySmall.copyWith(
                             color: Colors.grey.shade600,
-                            fontSize: 11,
+                            fontSize: ResponsiveHelper.responsiveValue(
+                              context,
+                              11,
+                            ),
                             fontWeight: FontWeight.w500,
                           ),
                         ),
@@ -94,7 +98,11 @@ class UserData extends StatelessWidget {
                                     '${user.followersCount}',
                                     style: context.bodySmall.copyWith(
                                       color: MyColors.primaryShade500,
-                                      fontSize: 11,
+                                      fontSize:
+                                          ResponsiveHelper.responsiveValue(
+                                            context,
+                                            11,
+                                          ),
                                       fontWeight: FontWeight.w700,
                                     ),
                                   ),
@@ -139,7 +147,11 @@ class UserData extends StatelessWidget {
                                     'Following',
                                     style: context.bodySmall.copyWith(
                                       color: Colors.black,
-                                      fontSize: 11,
+                                      fontSize:
+                                          ResponsiveHelper.responsiveValue(
+                                            context,
+                                            11,
+                                          ),
                                       fontWeight: FontWeight.w400,
                                     ),
                                   ),
@@ -169,7 +181,7 @@ class UserData extends StatelessWidget {
               color: user.bio?.isNotEmpty == true
                   ? Colors.black
                   : Colors.grey.shade500,
-              fontSize: 13,
+              fontSize: ResponsiveHelper.responsiveValue(context, 13),
               height: 1.4,
             ),
           ),
@@ -195,7 +207,7 @@ class UserData extends StatelessWidget {
           InfoRow(icon: HugeIcons.strokeRoundedMail01, text: user.email),
           SizedBox(height: MySizes.spaceXs(context)),
           SizedBox(
-            height: MySizes.spaceXl(context),
+            height: ResponsiveHelper.responsiveValue(context, 28),
             child: ListView.separated(
               scrollDirection: Axis.horizontal,
               itemBuilder: (BuildContext context, int index) {

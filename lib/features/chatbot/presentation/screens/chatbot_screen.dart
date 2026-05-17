@@ -14,6 +14,8 @@ import '../cubit/chatbot_state.dart';
 import '../widgets/chat_input_area.dart';
 import '../widgets/chat_input_field.dart';
 import '../widgets/messages_list.dart';
+import '../../../../core/ui/widgets/my_app_bar.dart';
+import '../../../../core/ui/widgets/my_body.dart';
 
 class ChatbotScreen extends StatefulWidget {
   const ChatbotScreen({super.key});
@@ -135,11 +137,14 @@ class _ChatbotScreenState extends State<ChatbotScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
+      appBar: MyAppBar(
         elevation: 0,
-            leading: Builder(
+        leading: Builder(
           builder: (context) => IconButton(
-            icon: HugeIcon(icon: HugeIcons.strokeRoundedMenu01, color: MyColors.textPrimary),
+            icon: HugeIcon(
+              icon: HugeIcons.strokeRoundedMenu01,
+              color: MyColors.textPrimary,
+            ),
             onPressed: () {
               Scaffold.of(context).openDrawer();
             },
@@ -148,57 +153,62 @@ class _ChatbotScreenState extends State<ChatbotScreen> {
 
         actions: [
           IconButton(
-            icon: HugeIcon(icon: HugeIcons.strokeRoundedComment01, color: MyColors.textPrimary),
+            icon: HugeIcon(
+              icon: HugeIcons.strokeRoundedComment01,
+              color: MyColors.textPrimary,
+            ),
             onPressed: () {},
           ),
         ],
       ),
       drawer: const Drawer(),
-      body: BlocConsumer<ChatbotCubit, ChatbotState>(
-        bloc: _chatbotCubit,
-        listener: (context, state) {
-          if (state is ChatbotLoaded || state is ChatbotMessageSending) {
-            _scrollToBottom(followTyping: true);
-          }
-        },
-        builder: (context, state) {
-          return Column(
-            children: [
-              // Offline / sync indicators
-              if (!NetworkManager.instance.currentConnectionStatus)
-                const OfflineBanner(),
-              if (state is ChatbotMessageSending)
-                const Padding(
-                  padding: EdgeInsets.symmetric(
-                    vertical: 6.0,
-                    horizontal: 12.0,
+      body: MyBody(
+        child: BlocConsumer<ChatbotCubit, ChatbotState>(
+          bloc: _chatbotCubit,
+          listener: (context, state) {
+            if (state is ChatbotLoaded || state is ChatbotMessageSending) {
+              _scrollToBottom(followTyping: true);
+            }
+          },
+          builder: (context, state) {
+            return Column(
+              children: [
+                // Offline / sync indicators
+                if (!NetworkManager.instance.currentConnectionStatus)
+                  const OfflineBanner(),
+                if (state is ChatbotMessageSending)
+                  const Padding(
+                    padding: EdgeInsets.symmetric(
+                      vertical: 6.0,
+                      horizontal: 12.0,
+                    ),
+                    child: Align(
+                      alignment: Alignment.centerLeft,
+                      child: SyncIndicator(syncing: true),
+                    ),
                   ),
-                  child: Align(
-                    alignment: Alignment.centerLeft,
-                    child: SyncIndicator(syncing: true),
+                // Messages list
+                Expanded(
+                  child: MessagesList(
+                    state: state,
+                    scrollController: _scrollController,
+                    userName: _userName,
                   ),
                 ),
-              // Messages list
-              Expanded(
-                child: MessagesList(
-                  state: state,
-                  scrollController: _scrollController,
-                  userName: _userName,
-                ),
-              ),
 
-              // Input area
-              ChatInputArea(
-                messageController: _messageController,
-                selectedImages: _selectedImages,
-                onPickAttachment: _pickAttachment,
-                onSendMessage: _sendMessage,
-                onRemoveImage: _removeImage,
-                onTextChanged: () => setState(() {}),
-              ),
-            ],
-          );
-        },
+                // Input area
+                ChatInputArea(
+                  messageController: _messageController,
+                  selectedImages: _selectedImages,
+                  onPickAttachment: _pickAttachment,
+                  onSendMessage: _sendMessage,
+                  onRemoveImage: _removeImage,
+                  onTextChanged: () => setState(() {}),
+                ),
+              ],
+            );
+          },
+        ),
       ),
     );
   }
