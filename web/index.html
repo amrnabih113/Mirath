@@ -19,48 +19,47 @@
 
   <meta charset="UTF-8">
   <meta content="IE=Edge" http-equiv="X-UA-Compatible">
-  <meta name="description" content="Mirath App">
+  <meta name="description" content="A new Flutter project.">
 
   <!-- Google Sign-In client ID for web -->
-  <meta
-    name="google-signin-client_id"
+  <meta name="google-signin-client_id"
     content="551081167484-v7ute4pkh7nvb7v4gu8383cchvc0jd6h.apps.googleusercontent.com">
 
-  <!-- Mobile -->
-  <meta
-    name="viewport"
-    content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-
-  <!-- iOS -->
+  <!-- iOS meta tags & icons -->
   <meta name="mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black">
   <meta name="apple-mobile-web-app-title" content="Mirath">
-
-  <!-- Icons -->
   <link rel="apple-touch-icon" href="icons/Icon-192.png">
+
+  <!-- Favicon -->
   <link rel="icon" type="image/png" href="favicon.png">
 
-  <!-- Manifest -->
+  <title>Mirath</title>
   <link rel="manifest" href="manifest.json">
 
-  <title>Mirath</title>
 
-  <!-- CSP -->
-  <meta
-    http-equiv="Content-Security-Policy"
-    content="
-      default-src 'self';
-      script-src 'self' 'unsafe-inline' 'wasm-unsafe-eval' https://accounts.google.com https://apis.google.com;
-      style-src 'self' 'unsafe-inline' https://fonts.googleapis.com;
-      font-src 'self' https://fonts.gstatic.com data:;
-      img-src 'self' data:;
-      connect-src 'self' https:;
-    ">
+  <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" name="viewport">
 
-  <!-- Splash Screen Style -->
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
   <style id="splash-screen-style">
     html {
-      height: 100%;
+      height: 100%
     }
 
     body {
@@ -75,7 +74,48 @@
       position: absolute;
       top: 50%;
       left: 50%;
+      -ms-transform: translate(-50%, -50%);
       transform: translate(-50%, -50%);
+    }
+
+    .contain {
+      display: block;
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+    }
+
+    .stretch {
+      display: block;
+      width: 100%;
+      height: 100%;
+    }
+
+    .cover {
+      display: block;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .bottom {
+      position: absolute;
+      bottom: 0;
+      left: 50%;
+      -ms-transform: translate(-50%, 0);
+      transform: translate(-50%, 0);
+    }
+
+    .bottomLeft {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+    }
+
+    .bottomRight {
+      position: absolute;
+      bottom: 0;
+      right: 0;
     }
 
     @media (prefers-color-scheme: dark) {
@@ -84,78 +124,37 @@
       }
     }
   </style>
-
-  <!-- Splash Screen Remove Helper -->
   <script id="splash-screen-script">
     function removeSplashFromWeb() {
       document.getElementById("splash")?.remove();
+      document.getElementById("splash-branding")?.remove();
       document.body.style.background = "transparent";
     }
   </script>
 </head>
 
 <body>
-
-  <!-- Splash -->
   <picture id="splash">
     <source
-      srcset="
-        splash/img/light-1x.png 1x,
-        splash/img/light-2x.png 2x,
-        splash/img/light-3x.png 3x,
-        splash/img/light-4x.png 4x"
+      srcset="splash/img/light-1x.png 1x, splash/img/light-2x.png 2x, splash/img/light-3x.png 3x, splash/img/light-4x.png 4x"
       media="(prefers-color-scheme: light)">
-
     <source
-      srcset="
-        splash/img/dark-1x.png 1x,
-        splash/img/dark-2x.png 2x,
-        splash/img/dark-3x.png 3x,
-        splash/img/dark-4x.png 4x"
+      srcset="splash/img/dark-1x.png 1x, splash/img/dark-2x.png 2x, splash/img/dark-3x.png 3x, splash/img/dark-4x.png 4x"
       media="(prefers-color-scheme: dark)">
-
-    <img
-      class="center"
-      aria-hidden="true"
-      src="splash/img/light-1x.png"
-      alt="">
+    <img class="center" aria-hidden="true" src="splash/img/light-1x.png" alt="">
   </picture>
 
-  <!-- Flutter Bootstrap -->
-  <script>
-    // Intercept the bootstrap's buildConfig assignment and force HTML rendering.
-    // This is safer than mutating the generated bootstrap file and avoids CanvasKit
-    // imports without relying on deprecated window.flutterWebRenderer.
-    try {
-      window._flutter = window._flutter || {};
-      let flutterBuildConfig = {
-        builds: [{ compileTarget: 'dart2js', renderer: 'html', mainJsPath: 'main.dart.js' }]
-      };
 
-      Object.defineProperty(window._flutter, 'buildConfig', {
-        configurable: true,
-        get: () => flutterBuildConfig,
-        set: (value) =>{
-          if (value && Array.isArray(value.builds)) {
-            flutterBuildConfig = {
-              ...value,
-              builds: value.builds.map((build) => ({
-                ...build,
-                renderer: 'html',
-              })),
-            };
-          } else {
-            flutterBuildConfig = {
-              builds: [{ compileTarget: 'dart2js', renderer: 'html', mainJsPath: 'main.dart.js' }],
-            };
-          }
-        },
-      });
-    } catch (e) {
-      // ignore
-    }
-  </script>
-  <script src="flutter_bootstrap.js" async></script>
+
+
+
+
+
+
+
+
+  <script src="flutter_bootstrap.js" async=""></script>
+
 
 </body>
 
