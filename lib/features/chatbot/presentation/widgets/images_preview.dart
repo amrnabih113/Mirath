@@ -2,7 +2,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:lucide_icons_flutter/lucide_icons.dart';
+import 'package:hugeicons/hugeicons.dart';
 
 import '../../../../core/helpers/responsive_helper.dart';
 import '../../../../core/utils/my_colors.dart';
@@ -63,13 +63,13 @@ class ImagesPreview extends StatelessWidget {
                 right: 4,
                 child: GestureDetector(
                   onTap: () => onRemoveImage(index),
-                  child: Container(
+                    child: Container(
                     padding: const EdgeInsets.all(4),
                     decoration: BoxDecoration(
                       color: MyColors.black.withValues(alpha: 0.6),
                       shape: BoxShape.circle,
                     ),
-                    child: Icon(LucideIcons.x, size: 16, color: MyColors.white),
+                    child: HugeIcon(icon: HugeIcons.strokeRoundedCancel01, size: 16, color: MyColors.white),
                   ),
                 ),
               ),

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:lucide_icons_flutter/lucide_icons.dart';
+import 'package:hugeicons/hugeicons.dart';
 
 import '../../../../core/helpers/responsive_helper.dart';
 import '../../../../core/utils/my_colors.dart';
@@ -48,8 +48,8 @@ class MessagesList extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(
-              LucideIcons.messageCircle,
+            HugeIcon(
+              icon: HugeIcons.strokeRoundedComment01,
               size: ResponsiveHelper.responsiveValue(context, 64),
               color: MyColors.primaryShade300,
             ),

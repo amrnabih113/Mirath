@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:lucide_icons_flutter/lucide_icons.dart';
+import 'package:hugeicons/hugeicons.dart';
 
 import '../../../../core/helpers/responsive_helper.dart';
 import '../../../../core/utils/my_colors.dart';
@@ -104,12 +104,12 @@ class ChatInputField extends StatelessWidget {
                   color: MyColors.textSecondary,
                 ),
                 prefixIcon: IconButton(
-                  icon: Icon(LucideIcons.plus, color: MyColors.textSecondary),
+                  icon: HugeIcon(icon: HugeIcons.strokeRoundedPlusSign, color: MyColors.textSecondary),
                   onPressed: () => _showAttachmentOptions(context),
                 ),
                 suffixIcon: IconButton(
                   icon: Icon(
-                    LucideIcons.mic,
+                    Icons.mic,
                     color: MyColors.textSecondary,
                     size: ResponsiveHelper.responsiveValue(context, 20),
                   ),
@@ -159,7 +159,7 @@ class ChatInputField extends StatelessWidget {
             ),
             child: IconButton(
               icon: Icon(
-                LucideIcons.send,
+                Icons.send,
                 color: MyColors.white,
                 size: ResponsiveHelper.responsiveValue(context, 20),
               ),

@@ -2,7 +2,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:lucide_icons_flutter/lucide_icons.dart';
+import 'package:hugeicons/hugeicons.dart';
 
 import '../../../../core/utils/my_colors.dart';
 
@@ -86,7 +86,7 @@ class _ImagePreviewOverlayState extends State<ImagePreviewOverlay> {
               top: 16,
               right: 16,
               child: IconButton(
-                icon: Icon(LucideIcons.x, color: MyColors.white, size: 28),
+                icon: HugeIcon(icon: HugeIcons.strokeRoundedCancel01, color: MyColors.white, size: 28),
                 onPressed: () => Navigator.of(context).pop(),
               ),
             ),

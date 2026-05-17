@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:lucide_icons_flutter/lucide_icons.dart';
+import 'package:hugeicons/hugeicons.dart';
 
 import '../../../../core/network/network_manager.dart';
 import '../../../../core/services/user_cache_service.dart';
@@ -137,9 +137,9 @@ class _ChatbotScreenState extends State<ChatbotScreen> {
     return Scaffold(
       appBar: AppBar(
         elevation: 0,
-        leading: Builder(
+            leading: Builder(
           builder: (context) => IconButton(
-            icon: Icon(LucideIcons.menu, color: MyColors.textPrimary),
+            icon: HugeIcon(icon: HugeIcons.strokeRoundedMenu01, color: MyColors.textPrimary),
             onPressed: () {
               Scaffold.of(context).openDrawer();
             },
@@ -148,10 +148,7 @@ class _ChatbotScreenState extends State<ChatbotScreen> {
 
         actions: [
           IconButton(
-            icon: Icon(
-              LucideIcons.messageCircleDashed,
-              color: MyColors.textPrimary,
-            ),
+            icon: HugeIcon(icon: HugeIcons.strokeRoundedComment01, color: MyColors.textPrimary),
             onPressed: () {},
           ),
         ],

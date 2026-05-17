@@ -5,7 +5,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_markdown/flutter_markdown.dart';
 import 'package:hugeicons/hugeicons.dart';
-import 'package:lucide_icons_flutter/lucide_icons.dart';
 
 import '../../../../core/helpers/my_loaders.dart';
 import '../../../../core/helpers/responsive_helper.dart';
@@ -271,13 +270,12 @@ class MessageBubble extends StatelessWidget {
                                         mainAxisSize: MainAxisSize.min,
                                         children: [
                                           IconButton(
-                                            icon: Icon(
-                                              LucideIcons.copy,
-                                              size:
-                                                  ResponsiveHelper.responsiveValue(
-                                                    context,
-                                                    16,
-                                                  ),
+                                            icon: HugeIcon(
+                                              icon: HugeIcons.strokeRoundedCopy01,
+                                              size: ResponsiveHelper.responsiveValue(
+                                                context,
+                                                16,
+                                              ),
                                               color: MyColors.textSecondary,
                                             ),
                                             padding: EdgeInsets.zero,
@@ -295,12 +293,11 @@ class MessageBubble extends StatelessWidget {
                                           ),
                                           IconButton(
                                             icon: Icon(
-                                              LucideIcons.thumbsUp,
-                                              size:
-                                                  ResponsiveHelper.responsiveValue(
-                                                    context,
-                                                    16,
-                                                  ),
+                                              Icons.thumb_up,
+                                              size: ResponsiveHelper.responsiveValue(
+                                                context,
+                                                16,
+                                              ),
                                               color: MyColors.textSecondary,
                                             ),
                                             padding: EdgeInsets.zero,
@@ -308,25 +305,23 @@ class MessageBubble extends StatelessWidget {
                                           ),
                                           IconButton(
                                             icon: Icon(
-                                              LucideIcons.thumbsDown,
-                                              size:
-                                                  ResponsiveHelper.responsiveValue(
-                                                    context,
-                                                    16,
-                                                  ),
+                                              Icons.thumb_down,
+                                              size: ResponsiveHelper.responsiveValue(
+                                                context,
+                                                16,
+                                              ),
                                               color: MyColors.textSecondary,
                                             ),
                                             padding: EdgeInsets.zero,
                                             onPressed: () {},
                                           ),
                                           IconButton(
-                                            icon: Icon(
-                                              LucideIcons.share2,
-                                              size:
-                                                  ResponsiveHelper.responsiveValue(
-                                                    context,
-                                                    16,
-                                                  ),
+                                            icon: HugeIcon(
+                                              icon: HugeIcons.strokeRoundedShare08,
+                                              size: ResponsiveHelper.responsiveValue(
+                                                context,
+                                                16,
+                                              ),
                                               color: MyColors.textSecondary,
                                             ),
                                             padding: EdgeInsets.zero,
