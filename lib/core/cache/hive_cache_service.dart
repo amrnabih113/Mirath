@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:hive/hive.dart';
+import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:path_provider/path_provider.dart';
 
 import 'cache_record.dart';
@@ -19,8 +20,10 @@ class HiveCacheService {
       Hive.registerAdapter(CacheRecordAdapter());
     }
 
-    final directory = await getApplicationDocumentsDirectory();
-    Hive.init(directory.path);
+    if (!kIsWeb) {
+      final directory = await getApplicationDocumentsDirectory();
+      Hive.init(directory.path);
+    }
 
     final service = HiveCacheService._();
     service._box = await Hive.openBox<CacheRecord>(_boxName);
