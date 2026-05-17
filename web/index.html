@@ -1,4 +1,7 @@
-<!DOCTYPE html><html><head>
+<!DOCTYPE html>
+<html>
+
+<head>
   <!--
     If you are serving your web app in a path other than the root, change the
     href value below to reflect the base path you are serving from.
@@ -19,7 +22,8 @@
   <meta name="description" content="A new Flutter project.">
 
   <!-- Google Sign-In client ID for web -->
-  <meta name="google-signin-client_id" content="551081167484-v7ute4pkh7nvb7v4gu8383cchvc0jd6h.apps.googleusercontent.com">
+  <meta name="google-signin-client_id"
+    content="551081167484-v7ute4pkh7nvb7v4gu8383cchvc0jd6h.apps.googleusercontent.com">
 
   <!-- iOS meta tags & icons -->
   <meta name="mobile-web-app-capable" content="yes">
@@ -32,27 +36,29 @@
 
   <title>Mirath</title>
   <link rel="manifest" href="manifest.json">
-  
-  
+
+
   <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" name="viewport">
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
+  <!-- Minimal CSP to allow fonts and Google sign-in; hosting headers may override this -->
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://accounts.google.com https://apis.google.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com data:; img-src 'self' data:; connect-src 'self' https:;">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
   <style id="splash-screen-style">
     html {
       height: 100%
@@ -62,7 +68,7 @@
       margin: 0;
       min-height: 100%;
       background-color: #D5C6B4;
-          background-size: 100% 100%;
+      background-size: 100% 100%;
     }
 
     .center {
@@ -75,19 +81,22 @@
     }
 
     .contain {
-      display:block;
-      width:100%; height:100%;
+      display: block;
+      width: 100%;
+      height: 100%;
       object-fit: contain;
     }
 
     .stretch {
-      display:block;
-      width:100%; height:100%;
+      display: block;
+      width: 100%;
+      height: 100%;
     }
 
     .cover {
-      display:block;
-      width:100%; height:100%;
+      display: block;
+      width: 100%;
+      height: 100%;
       object-fit: cover;
     }
 
@@ -114,7 +123,7 @@
     @media (prefers-color-scheme: dark) {
       body {
         background-color: #D5C6B4;
-          }
+      }
     }
   </style>
   <script id="splash-screen-script">
@@ -128,21 +137,38 @@
 
 <body>
   <picture id="splash">
-      <source srcset="splash/img/light-1x.png 1x, splash/img/light-2x.png 2x, splash/img/light-3x.png 3x, splash/img/light-4x.png 4x" media="(prefers-color-scheme: light)">
-      <source srcset="splash/img/dark-1x.png 1x, splash/img/dark-2x.png 2x, splash/img/dark-3x.png 3x, splash/img/dark-4x.png 4x" media="(prefers-color-scheme: dark)">
-      <img class="center" aria-hidden="true" src="splash/img/light-1x.png" alt="">
+    <source
+      srcset="splash/img/light-1x.png 1x, splash/img/light-2x.png 2x, splash/img/light-3x.png 3x, splash/img/light-4x.png 4x"
+      media="(prefers-color-scheme: light)">
+    <source
+      srcset="splash/img/dark-1x.png 1x, splash/img/dark-2x.png 2x, splash/img/dark-3x.png 3x, splash/img/dark-4x.png 4x"
+      media="(prefers-color-scheme: dark)">
+    <img class="center" aria-hidden="true" src="splash/img/light-1x.png" alt="">
   </picture>
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  <script src="flutter_bootstrap.js" async=""></script>
 
 
-</body></html>
+
+
+
+
+
+
+
+
+  <script>
+    // Force Flutter to use the HTML renderer on hosts that block eval/Function.
+    // This avoids CanvasKit which may trigger CSP 'unsafe-eval' requirements.
+    try {
+      window.flutterWebRenderer = "html";
+      window.flutterConfiguration = window.flutterConfiguration || {};
+      window.flutterConfiguration.canvasKitBaseUrl = window.flutterConfiguration.canvasKitBaseUrl || 'canvaskit/';
+    } catch (e) {
+      /* ignore */
+    }
+  </script>
+  <script src="flutter_bootstrap.js" async></script>
+
+
+</body>
+
+</html>
