@@ -156,14 +156,18 @@
 
 
   <script>
-    // Force Flutter to use the HTML renderer on hosts that block eval/Function.
-    // This avoids CanvasKit which may trigger CSP 'unsafe-eval' requirements.
+    // Use the engine initializer API to configure the web engine (non-deprecated).
+    // This avoids using window.flutterConfiguration / window.flutterWebRenderer.
     try {
-      window.flutterWebRenderer = "html";
-      window.flutterConfiguration = window.flutterConfiguration || {};
-      window.flutterConfiguration.canvasKitBaseUrl = window.flutterConfiguration.canvasKitBaseUrl || 'canvaskit/';
+      if (typeof createEngineInitializer === 'function') {
+        const engineInitializer = createEngineInitializer();
+        engineInitializer.initializeEngine({
+          flutterWebRenderer: 'html',
+          canvasKitBaseUrl: 'canvaskit/'
+        });
+      }
     } catch (e) {
-      /* ignore */
+      /* ignore - fall back to default engine init */
     }
   </script>
   <script src="flutter_bootstrap.js" async></script>
