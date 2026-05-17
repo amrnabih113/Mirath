@@ -50,7 +50,7 @@
     http-equiv="Content-Security-Policy"
     content="
       default-src 'self';
-      script-src 'self' 'unsafe-inline' https://accounts.google.com https://apis.google.com;
+      script-src 'self' 'unsafe-inline' 'wasm-unsafe-eval' https://accounts.google.com https://apis.google.com;
       style-src 'self' 'unsafe-inline' https://fonts.googleapis.com;
       font-src 'self' https://fonts.gstatic.com data:;
       img-src 'self' data:;
@@ -135,7 +135,7 @@
       Object.defineProperty(window._flutter, 'buildConfig', {
         configurable: true,
         get: () => flutterBuildConfig,
-        set: (value) {
+        set: (value) =>{
           if (value && Array.isArray(value.builds)) {
             flutterBuildConfig = {
               ...value,
