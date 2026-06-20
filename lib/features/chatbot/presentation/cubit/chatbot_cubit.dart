@@ -1,186 +1,558 @@
+// ChatbotCubit — in-memory session per app run, no disk caching for messages.
+import 'dart:async';
+import 'dart:convert';
+import 'dart:io';
+
+import 'package:dio/dio.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:uuid/uuid.dart';
-import 'dart:async';
-import '../../../../injection/injection_container.dart';
-import '../../../../core/cache/cache_keys.dart';
-import '../../../../core/cache/hive_cache_service.dart';
-import '../../../../core/cache/cache_notifier.dart';
-import '../../../../core/sync/retry_service.dart';
+import '../../../../core/utils/my_logger.dart';
 
+import '../../../../core/cache/hive_cache_service.dart';
+import '../../../../core/network/network_manager.dart';
+import '../../../../core/sync/retry_service.dart';
+import '../../../../core/usecases/no_params.dart';
 import '../../domain/entities/chat_message.dart';
+import '../../domain/entities/upload_files_params.dart';
+// send_message_params not needed here
+import '../../domain/usecases/create_session_usecase.dart';
+import '../../domain/usecases/create_temporary_session_usecase.dart';
+import '../../domain/entities/session.dart';
+import '../../domain/usecases/get_session_messages_usecase.dart';
+import '../../domain/usecases/send_message_usecase.dart';
+import '../../domain/usecases/stream_messages_usecase.dart';
+import '../../domain/usecases/upload_files_usecase.dart';
 import 'chatbot_state.dart';
 
 class ChatbotCubit extends Cubit<ChatbotState> {
-  ChatbotCubit() : super(const ChatbotInitial());
+  ChatbotCubit({
+    required this.uploadFilesUseCase,
+    required this.createSessionUseCase,
+    required this.createTemporarySessionUseCase,
+    required this.getSessionMessagesUseCase,
+    required this.sendMessageUseCase,
+    required this.streamMessagesUseCase,
+    required this.cacheService,
+    required this.retryService,
+    required this.networkManager,
+  }) : super(const ChatbotInitial());
+
+  final UploadFilesUseCase uploadFilesUseCase;
+  final CreateSessionUseCase createSessionUseCase;
+  final CreateTemporarySessionUseCase createTemporarySessionUseCase;
+  final GetSessionMessagesUseCase getSessionMessagesUseCase;
+  final SendMessageUseCase sendMessageUseCase;
+  final StreamMessagesUseCase streamMessagesUseCase;
+  final HiveCacheService
+  cacheService; // kept for DI compatibility but not used for messages
+  final RetryService retryService;
+  final NetworkManager networkManager;
 
   final List<ChatMessage> _messages = [];
-  StreamSubscription<String>? _cacheSub;
-  int _responseIndex = 0;
+  StreamSubscription<String>? _sseSub;
+  final Map<String, CancelToken> _uploadCancelTokens = {};
+  String? _currentSessionId;
+  bool _isTemporaryChat = false;
+
+  String? get currentSessionId => _currentSessionId;
+  bool get isTemporaryChat => _isTemporaryChat;
+
+  void _emitLoaded() {
+    emit(
+      ChatbotLoaded(
+        messages: List.from(_messages),
+        currentSessionId: _currentSessionId,
+        isTemporaryChat: _isTemporaryChat,
+      ),
+    );
+  }
 
   void initialize() {
-    _loadCachedMessages();
-    // subscribe to cache updates for chatbot conversation
-    _cacheSub = CacheNotifier.instance.stream.listen((key) {
-      if (key == CacheKeys.messages('chatbot')) {
-        _loadCachedMessages();
-      }
-    });
+    // Do not create or cache a session here — we'll create a session
+    // on-demand for each send and use the response directly without
+    // storing it in memory (per user's request).
+    _emitLoaded();
+  }
+
+  void startNewChat() {
+    _isTemporaryChat = false;
+    _currentSessionId = null;
+    clearConversation();
+  }
+
+  Future<void> startTemporaryChat() async {
+    _isTemporaryChat = true;
+    _currentSessionId = null;
+    clearConversation();
+  }
+
+  Future<void> loadSession(Session session) async {
+    _isTemporaryChat = session.isTemporary;
+    _currentSessionId = session.id;
+    _sseSub?.cancel();
+    _sseSub = null;
+    _messages.clear();
+    _emitLoaded();
+
+    final result = await getSessionMessagesUseCase(session.id);
+    result.fold(
+      (failure) {
+        MyLogger.error(
+          '[ChatbotCubit] failed to load session ${session.id}: ${failure.toString()}',
+        );
+        final errMsg = ChatMessage(
+          id: const Uuid().v4(),
+          text: 'Failed to load chat history. Please try again.',
+          isUser: false,
+          timestamp: DateTime.now(),
+          isComplete: true,
+          isPending: false,
+        );
+        _messages.add(errMsg);
+        _emitLoaded();
+      },
+      (history) {
+        _messages.addAll(history);
+        _emitLoaded();
+      },
+    );
+  }
+
+  void clearConversation() {
+    _sseSub?.cancel();
+    _sseSub = null;
+    _messages.clear();
+    for (final token in _uploadCancelTokens.values) {
+      if (!token.isCancelled) token.cancel('conversation_cleared');
+    }
+    _uploadCancelTokens.clear();
+    _emitLoaded();
   }
 
   @override
   Future<void> close() {
-    _cacheSub?.cancel();
+    // cancel uploads
+    for (final token in _uploadCancelTokens.values) {
+      if (!token.isCancelled) token.cancel('cubit_closed');
+    }
+    _uploadCancelTokens.clear();
+    _sseSub?.cancel();
     return super.close();
   }
 
-  Future<void> _loadCachedMessages() async {
-    final convoId = 'chatbot';
-    final cached =
-        await sl<HiveCacheService>().getJsonList(
-          CacheKeys.messages(convoId),
-          allowStale: true,
-        ) ??
-        [];
-    _messages.clear();
-    for (final json in cached.reversed) {
-      final msg = ChatMessage(
-        id: json['id']?.toString() ?? const Uuid().v4(),
-        text: json['text']?.toString() ?? '',
-        isUser: json['senderId']?.toString() == 'me',
-        timestamp:
-            DateTime.tryParse(json['createdAt']?.toString() ?? '') ??
-            DateTime.now(),
-        isComplete: (json['status']?.toString() != 'pending'),
-        isPending: json['status']?.toString() == 'pending',
-      );
-      _messages.add(msg);
+  void cancelUpload(String localPath) {
+    final token = _uploadCancelTokens.remove(localPath);
+    if (token != null && !token.isCancelled) token.cancel('user_cancelled');
+
+    final idx = _messages.indexWhere(
+      (m) => m.imagePaths?.contains(localPath) ?? false,
+    );
+    if (idx >= 0) {
+      final current = _messages[idx];
+      final updated = Map<String, double>.from(current.uploadProgress ?? {});
+      updated.remove(localPath);
+      _messages[idx] = current.copyWith(uploadProgress: updated);
+      _emitLoaded();
     }
-    emit(ChatbotLoaded(messages: List.from(_messages)));
   }
 
-  // void _loadMockMessages() {
-  //   // Chat starts empty but bot sends three initial messages
-  //   _messages.addAll([
-  //     ChatMessage(
-  //       id: const Uuid().v4(),
-  //       text: 'Hello! 👋',
-  //       isUser: false,
-  //       timestamp: DateTime.now(),
-  //     ),
-  //     ChatMessage(
-  //       id: const Uuid().v4(),
-  //       text: 'I\'m Mirath AI, your research assistant.',
-  //       isUser: false,
-  //       timestamp: DateTime.now(),
-  //     ),
-  //     ChatMessage(
-  //       id: const Uuid().v4(),
-  //       text: 'How can I help you with your research today?',
-  //       isUser: false,
-  //       timestamp: DateTime.now(),
-  //     ),
-  //   ]);
-  // }
+  void removeImage(int index, List<String> imagePaths) {
+    imagePaths.removeAt(index);
+    _emitLoaded();
+  }
 
-  void sendMessage(String text, {List<String>? imagePaths}) {
-    if (text.trim().isEmpty && (imagePaths == null || imagePaths.isEmpty)) {
+  Future<void> sendMessage(
+    String text, {
+    List<String>? imagePaths,
+    File? audioFile,
+    int? audioDuration,
+  }) async {
+    if (text.trim().isEmpty && (imagePaths == null || imagePaths.isEmpty))
       return;
-    }
 
-    // Add user message
+    final uploadProgressMap = imagePaths != null
+        ? Map<String, double>.fromEntries(
+            imagePaths.map((p) => MapEntry(p, 0.0)),
+          )
+        : null;
+
     final userMessage = ChatMessage(
       id: const Uuid().v4(),
       text: text.trim(),
       isUser: true,
       timestamp: DateTime.now(),
       imagePaths: imagePaths,
-      isPending: true,
+      uploadProgress: uploadProgressMap,
+      isPending: false,
     );
 
     _messages.add(userMessage);
-    emit(ChatbotMessageSending(messages: List.from(_messages)));
+    MyLogger.info(
+      '[ChatbotCubit] Optimistic user message added id=${userMessage.id} text="${userMessage.text}"',
+    );
+    _emitLoaded();
 
-    // Persist pending message and enqueue for send
     final clientId = userMessage.id;
-    final convoId = 'chatbot';
-    final messageJson = {
-      'id': clientId,
-      'clientId': clientId,
-      'conversationId': convoId,
-      'senderId': 'me',
-      'text': userMessage.text,
-      'status': 'pending',
-      'createdAt': userMessage.timestamp.toIso8601String(),
-      'updatedAt': userMessage.timestamp.toIso8601String(),
-    };
-    // Use conversation-specific key
-    sl<HiveCacheService>().upsertInJsonList(
-      key: CacheKeys.messages(convoId),
-      item: messageJson,
-      idField: 'id',
-    );
-    sl<RetryService>().enqueue('send_message', {
-      'conversationId': convoId,
-      'text': userMessage.text,
-      'clientId': clientId,
-    });
 
-    _streamAiResponse(userMessage.text);
-  }
-
-  Future<void> _streamAiResponse(String prompt) async {
-    // Create typing indicator message
-    final messageId = const Uuid().v4();
-    final initialMessage = ChatMessage(
-      id: messageId,
-      text: 'Loading...',
-      isUser: false,
-      timestamp: DateTime.now(),
-      isComplete: false,
-    );
-    _messages.add(initialMessage);
-    emit(ChatbotLoaded(messages: List.from(_messages)));
-
-    // Show loading effect (typing indicator) for 1 second
-    await Future.delayed(const Duration(milliseconds: 1000));
-
-    // Get mock response
-    String response = _getMockResponse(prompt);
-
-    // Stream the response character by character like ChatGPT
-    for (int i = 0; i < response.length; i++) {
-      await Future.delayed(const Duration(milliseconds: 10));
-
-      final updatedMessage = ChatMessage(
-        id: messageId,
-        text: response.substring(0, i + 1),
-        isUser: false,
-        timestamp: initialMessage.timestamp,
-        isComplete: i == response.length - 1,
+    if (!await networkManager.isConnected) {
+      await retryService.enqueue('send_message', {
+        'conversationId': 'chatbot',
+        'text': userMessage.text,
+        'clientId': clientId,
+      });
+      MyLogger.info(
+        '[ChatbotCubit] Offline — enqueued message clientId=$clientId',
       );
+      return;
+    }
 
-      _messages[_messages.length - 1] = updatedMessage;
-      emit(ChatbotLoaded(messages: List.from(_messages)));
+    final List<String> fileIds = [];
+
+    // upload images sequentially and update progress
+    if (imagePaths != null && imagePaths.isNotEmpty) {
+      for (final path in imagePaths) {
+        final file = File(path);
+        final token = CancelToken();
+        _uploadCancelTokens[path] = token;
+        MyLogger.info('[ChatbotCubit] uploading file $path');
+
+        final uploadResult = await uploadFilesUseCase(
+          UploadFilesParams(
+            files: [file],
+            type: 'IMAGE',
+            onProgress: (sent, total) {
+              final progress = total > 0 ? (sent / total) : 0.0;
+              final idx = _messages.indexWhere((m) => m.id == clientId);
+              if (idx >= 0) {
+                final current = _messages[idx];
+                final updated = Map<String, double>.from(
+                  current.uploadProgress ?? {},
+                );
+                updated[path] = progress.clamp(0.0, 1.0);
+                _messages[idx] = current.copyWith(uploadProgress: updated);
+                _emitLoaded();
+                MyLogger.info(
+                  '[ChatbotCubit] upload progress $path ${(progress * 100).toStringAsFixed(1)}%',
+                );
+              }
+            },
+            cancelToken: token,
+          ),
+        );
+
+        uploadResult.fold(
+          (failure) {
+            MyLogger.error(
+              '[ChatbotCubit] upload failed for $path: ${failure.toString()}',
+            );
+          },
+          (resps) {
+            if (resps.isNotEmpty) fileIds.add(resps.first.id);
+            final idx = _messages.indexWhere((m) => m.id == clientId);
+            if (idx >= 0) {
+              final current = _messages[idx];
+              final updated = Map<String, double>.from(
+                current.uploadProgress ?? {},
+              );
+              updated[path] = 1.0;
+              _messages[idx] = current.copyWith(uploadProgress: updated);
+              _emitLoaded();
+            }
+            _uploadCancelTokens.remove(path);
+          },
+        );
+      }
+    }
+
+    // upload audio if present
+    if (audioFile != null) {
+      final uploadResult = await uploadFilesUseCase(
+        UploadFilesParams(
+          files: [audioFile],
+          type: 'AUDIO',
+          durationSeconds: audioDuration,
+        ),
+      );
+      uploadResult.fold((_) {}, (resps) {
+        if (resps.isNotEmpty) fileIds.add(resps.first.id);
+      });
+    }
+
+    // Reuse the currently loaded session when available; otherwise create
+    // a new one for this conversation.
+    String sessionId = _currentSessionId ?? '';
+    if (sessionId.isEmpty) {
+      final res = _isTemporaryChat
+          ? await createTemporarySessionUseCase(const NoParams())
+          : await createSessionUseCase(const NoParams());
+      final created = res.fold((_) => null, (Session? s) => s);
+      if (created == null) {
+        final idx = _messages.indexWhere((m) => m.id == clientId);
+        if (idx >= 0) {
+          final current = _messages[idx];
+          _messages[idx] = current.copyWith(isPending: false);
+          _emitLoaded();
+        }
+        final errMsg = ChatMessage(
+          id: const Uuid().v4(),
+          text: 'Failed to create chat session. Please try again.',
+          isUser: false,
+          timestamp: DateTime.now(),
+          isComplete: true,
+          isPending: false,
+        );
+        _messages.add(errMsg);
+        _emitLoaded();
+        return;
+      }
+      MyLogger.info('[ChatbotCubit] createSession response: ${created.id}');
+      sessionId = created.id;
+      _currentSessionId = sessionId;
+      _emitLoaded();
+    } else {
+      MyLogger.info('[ChatbotCubit] reusing existing session: $sessionId');
+    }
+
+    final trimmedText = text.trim();
+    final body = <String, dynamic>{
+      if (trimmedText.isNotEmpty) 'content': trimmedText,
+      if (fileIds.isNotEmpty) 'fileId': fileIds.first,
+    };
+
+    MyLogger.info(
+      '[ChatbotCubit] starting streaming POST to session=$sessionId body=${body.toString()}',
+    );
+    try {
+      // Start streaming by POSTing the message body and listening to the
+      // streaming response. This avoids making a separate GET which some
+      // backends do not expose for SSE.
+      emit(
+        ChatbotMessageSending(
+          messages: List.from(_messages),
+          currentSessionId: _currentSessionId,
+          isTemporaryChat: _isTemporaryChat,
+        ),
+      );
+      _startSseListening(sessionId, body: body);
+    } catch (e) {
+      await retryService.enqueue('send_message', {
+        'conversationId': 'chatbot',
+        'text': userMessage.text,
+        'clientId': clientId,
+      });
+      MyLogger.error(
+        '[ChatbotCubit] sendMessage failed: ${e.toString()} — queued for retry',
+      );
+      final idx = _messages.indexWhere((m) => m.id == clientId);
+      if (idx >= 0) {
+        final current = _messages[idx];
+        _messages[idx] = current.copyWith(isPending: false);
+        _emitLoaded();
+      }
+      final errMsg = ChatMessage(
+        id: const Uuid().v4(),
+        text: 'Failed to send message. It was queued for retry.',
+        isUser: false,
+        timestamp: DateTime.now(),
+        isComplete: true,
+        isPending: false,
+      );
+      _messages.add(errMsg);
+      _emitLoaded();
     }
   }
 
-  String _getMockResponse(String prompt) {
-    // List of predefined responses in order
-    final responses = [
-      "Hello Amr, it's a pleasure to meet you. How can I assist you with your research today?",
-      'Amr, the research world is currently experiencing dynamic shifts, driven by technological advancements, evolving societal needs, and a growing emphasis on interdisciplinary approaches. Key trends include:\n\n1. **AI & ML**: Foundational and rapidly expanding field transforming all disciplines.\n2. **Cybersecurity**: Critical for protecting digital assets and personal data.\n3. **Healthcare**: Integration of AI for personalized medicine and diagnostics.\n4. **Sustainable Development**: Addressing climate change and environmental challenges.\n\nThese trends intersect to create opportunities for groundbreaking research that tackles complex problems from multiple perspectives.',
-      "What is your research level? (Undergraduate, Master's Student, PhD Researcher, Professor)\nHow much time do you want to dedicate to this roadmap?",
-      "thank you for the valuable feedback. You are absolutely right, providing the exact original publication details and a direct link to seminal papers is crucial for a Master's level research roadmap. My apologies for the oversight regarding Feynman's paper. I have corrected the citation for \"Simulating Physics with Computers\" to ensure you have direct access to the original work.\n\nHere is the revised \"Narrative Research Roadmap\" for Quantum Computing:\n\n---\n\n### *Narrative Research Roadmap: Quantum Computing (3 Weeks)\n\nIntroduction: The Quantum Leap in Computation\n\nFor centuries, computation has been rooted in classical physics, where information is stored and processed as bits representing either 0 or 1. However, as our understanding of the universe deepened, particularly with the advent of quantum mechanics, scientists began to ponder if computation itself could harness these peculiar quantum phenomena. This roadmap will trace the journey from a theoretical musing to the development of powerful algorithms and the ongoing quest for fault-tolerant quantum computers.\n\n---\n\n### **Phase 1: The Genesis – Simulating Physics with Quantum Systems (Week 1)\n\nThe idea of quantum computing didn't emerge from a desire to build faster classical computers, but rather from a fundamental challenge in physics itself: simulating quantum systems. Classical computers struggle immensely with this task due to the exponential growth of complexity with the number of quantum particles. This limitation sparked the initial conceptual leap.\n\nThe seminal idea that laid the groundwork for quantum computing came from **Richard Feynman.\n\n   *Paper:* \"Simulating Physics with Computers\"\n*   *Original Publication Details:* International Journal of Theoretical Physics, Vol. 21, pp. 467–488, 1982.\n*   *Direct Link:* [ACM Digital Library Link](https://dl.acm.org/doi/10.5555/304763.305688)\n*   *Context:* In the early 1980s, physicists were grappling with the computational intractability of simulating quantum mechanical systems. Feynman observed that if you wanted to simulate a quantum system, a classical computer would require an exponential amount of resources. He proposed a radical solution: why not build a computer that itself operates on quantum mechanical principles? This would allow for a direct, efficient simulation of other quantum systems.\n*   *Problem Statement:* Classical computers are inherently inefficient at simulating quantum phenomena due to the nature of quantum superposition and entanglement, which leads to an exponential increase in computational resources required.\n*   *Contribution:* Feynman's paper didn't present a blueprint for a quantum computer, but rather a profound conceptual argument. He suggested that a \"quantum computer\" could efficiently simulate any other quantum system, thereby overcoming the limitations of classical computers for such tasks. This vision ignited the field, shifting the focus from merely faster classical computation to a fundamentally new paradigm of computation. It laid the philosophical foundation for what a quantum computer could be and why it would be necessary.\n\nWhile Feynman's paper provided the conceptual spark, it was the subsequent work of others that began to formalize what a quantum computer would look like and what it could actually do. This led to the development of quantum logic gates and circuits, paving the way for the first quantum algorithms.\n\n---\n\n### *Phase 2: The Promise – Quantum Algorithms and Computational Power (Week 2)\n\nFollowing Feynman's conceptualization, the next crucial step was to demonstrate that a quantum computer could perform tasks that are intractable for classical computers, not just for simulating physics, but for general computational problems. This phase saw the development of the first truly impactful quantum algorithms.\n\nThe most famous and arguably the most influential breakthrough in this regard was **Peter Shor's* algorithm.\n\n*   *Paper:* \"Polynomial-Time Algorithms for Prime Factorization and Discrete Logarithms on a Quantum Computer\"\n*   *ArXiv ID:* quant-ph/9508027\n*   *Original Publication Date:* 1996-01-25 (This paper was presented at the 35th Annual Symposium on Foundations of Computer Science in 1994, but the arXiv version is widely cited and accessible.)\n*   *Authors:* Peter W. Shor\n*   *Summary:* \"A digital computer is generally believed to be an efficient universal computing device; that is, it is believed able to simulate any physical computing device with an increase in computation time of at most a polynomial factor. This may not be true when quantum mechanics is taken into consideration. This paper considers factoring integers and finding discrete logarithms, two problems which are generally thought to be hard on a classical computer and have been used as the basis of several proposed cryptosystems. Efficient randomized algorithms are given for these two problems on a hypothetical quantum computer. These algorithms take a number of steps polynomial in the input size, e.g., the number of digits of the integer to be factored.\"\n*   *Context:* Before Shor's work, quantum algorithms were primarily focused on problems like database searching (Grover's algorithm offered a quadratic speedup). However, these didn't challenge the fundamental assumptions of classical computational complexity in the same way. Shor's algorithm emerged as a monumental leap, demonstrating that a quantum computer could solve problems considered \"hard\" for even the best classical computers in polynomial time.\n*   *Problem Statement:* The security of widely used cryptographic systems, such as RSA, relies on the computational difficulty of factoring large numbers into their prime components. Classically, this problem becomes exponentially harder as the number size increases, making it practically impossible for sufficiently large numbers.\n*   *Contribution:* Shor's algorithm provided a quantum algorithm that could factor large integers exponentially faster than any known classical algorithm. This was a game-changer because it directly threatened the security of modern public-key cryptography. It moved quantum computing from a theoretical curiosity to a field with immense practical implications, spurring significant investment and research into building actual quantum computers. The paper rigorously demonstrated the potential of quantum mechanics to offer a computational advantage for a problem of profound real-world importance.\n\nThe discovery of Shor's algorithm solidified the belief that quantum computers could offer unprecedented computational power, but it also highlighted a critical challenge: quantum systems are inherently fragile and prone to errors. This led to the next major phase of research.\n\n---\n\n### *Phase 3: The Challenge – Towards Fault-Tolerant Quantum Computing (Week 3)\n\nThe power of quantum algorithms like Shor's is undeniable, but the physical realization of quantum computers faces a formidable obstacle: quantum systems are extremely sensitive to environmental noise. This noise causes \"decoherence,\" leading to errors that can quickly corrupt quantum information. To build practical, large-scale quantum computers, these errors must be managed. This led to the development of quantum error correction.\n\nA foundational concept in addressing this challenge is **Quantum Error Correction (QEC).\n\n   *Paper:* \"Quantum Error Correction: An Introductory Guide\"\n*   *ArXiv ID:* 1907.11157\n*   *Published:* 2019-07-24\n*   *Authors:* Joschka Roffe\n*   *Summary:* \"Quantum error correction protocols will play a central role in the realisation of quantum computing; the choice of error correction code will influence the full quantum computing stack, from the layout of qubits at the physical level to gate compilation strategies at the software level. In this review, we provide an introductory guide to the theory and implementation of quantum error correction codes. Finally, we discuss issues that arise in the practical implementation of the surface code and other quantum error correction codes.\"\n*   *Context:* Classical computers achieve reliability through redundancy and error-correcting codes. However, quantum errors are more complex; they can be continuous, and the act of measuring a quantum state to detect an error can destroy the very information you're trying to protect. The need for QEC became acutely apparent in the mid-1990s, following Shor's algorithm, with seminal works by Peter Shor and Andrew Steane in 1995-1996. This introductory guide synthesizes those initial breakthroughs and provides a comprehensive overview suitable for a Master's student.\n*   *Problem Statement:* Quantum bits (qubits) are highly susceptible to noise from their environment, leading to errors that accumulate rapidly and destroy the quantum information, making long, complex quantum computations impossible.\n*   *Contribution:* The development of quantum error correction codes, starting with Shor's 9-qubit code and Steane's 7-qubit code in 1995-1996, demonstrated that it is theoretically possible to protect quantum information from noise. These codes encode a single logical qubit into multiple physical qubits, allowing for the detection and correction of errors without directly measuring the encoded information. This breakthrough was critical because it showed a path towards building fault-tolerant quantum computers, where errors could be actively managed, making large-scale quantum computation a realistic, albeit challenging, goal. The field has since evolved significantly, with codes like the surface code becoming a leading candidate for practical implementations.\n\n---\n\n*Conclusion and Future Directions:\n\nThis three-week roadmap has taken you from the conceptual birth of quantum computing with Feynman's vision, through the algorithmic power demonstrated by Shor, to the crucial challenge of error correction. As a Master's student, understanding this narrative flow is essential. The field continues to evolve rapidly, with ongoing research in:\n\n   *New Quantum Algorithms:* Discovering more algorithms that offer quantum advantage for various problems (e.g., in chemistry, materials science, optimization).\n*   *Hardware Development:* Building more stable and scalable quantum computers using different physical platforms (superconducting qubits, trapped ions, photonic qubits, etc.).\n*   *Fault-Tolerant Architectures:* Developing more efficient and robust quantum error correction schemes and architectures.\n*   *Quantum Machine Learning:* Exploring the intersection of quantum computing and artificial intelligence.\n\nBy grasping these foundational papers and the problems they addressed, you'll be well-equipped to delve into current research and contribute to the exciting future of quantum computing. Good luck, Fathia!",
-    ];
-    // Get the response based on current index, cycling through if needed
-    final response = responses[_responseIndex % responses.length];
-    _responseIndex++;
+  void _startSseListening(String sessionId, {Map<String, dynamic>? body}) {
+    _sseSub?.cancel();
+    _sseSub = streamMessagesUseCase(sessionId, body: body).listen(
+      (data) {
+        MyLogger.info('[ChatbotCubit] SSE raw: $data');
+        String chunk = data;
+        try {
+          final parsed = jsonDecode(data);
+          if (parsed is Map<String, dynamic>) {
+            if (parsed.containsKey('transcription')) {
+              final text = parsed['transcription']?.toString() ?? '';
+              if (text.isNotEmpty) {
+                final messageId = const Uuid().v4();
+                final tMsg = ChatMessage(
+                  id: messageId,
+                  text: 'Transcription: $text',
+                  isUser: false,
+                  timestamp: DateTime.now(),
+                  isComplete: true,
+                );
+                _messages.add(tMsg);
+                _emitLoaded();
+              }
+              return;
+            }
 
-    return response;
-  }
+            if (parsed.containsKey('error')) {
+              final err = parsed['error']?.toString() ?? 'An error occurred';
+              final pendingIdx = _messages.indexWhere(
+                (m) => m.isUser && m.isPending,
+              );
+              if (pendingIdx >= 0) {
+                final pending = _messages[pendingIdx];
+                _messages[pendingIdx] = pending.copyWith(isPending: false);
+              }
+              final messageId = const Uuid().v4();
+              final errMsg = ChatMessage(
+                id: messageId,
+                text: err,
+                isUser: false,
+                timestamp: DateTime.now(),
+                isComplete: true,
+                isError: true,
+              );
+              _messages.add(errMsg);
+              _emitLoaded();
+              return;
+            }
 
-  void removeImage(int index, List<String> imagePaths) {
-    imagePaths.removeAt(index);
-    emit(ChatbotLoaded(messages: List.from(_messages)));
+            // Handle status events (loading states)
+            if (parsed.containsKey('status')) {
+              final status = parsed['status']?.toString() ?? '';
+              if (status.isNotEmpty) {
+                if (_messages.isEmpty || _messages.last.isUser) {
+                  final messageId = const Uuid().v4();
+                  final botMsg = ChatMessage(
+                    id: messageId,
+                    text: '',
+                    isUser: false,
+                    timestamp: DateTime.now(),
+                    isComplete: false,
+                    loadingStatus: status,
+                  );
+                  _messages.add(botMsg);
+                } else {
+                  final last = _messages.last;
+                  _messages[_messages.length - 1] = last.copyWith(
+                    loadingStatus: status,
+                  );
+                }
+                _emitLoaded();
+              }
+              return;
+            }
+
+            // Handle delta events (response chunks)
+            if (parsed.containsKey('delta')) {
+              chunk = parsed['delta']?.toString() ?? '';
+              // When we receive the first delta, clear the loading status
+              if (chunk.isNotEmpty) {
+                if (_messages.isEmpty || _messages.last.isUser) {
+                  final messageId = const Uuid().v4();
+                  final botMsg = ChatMessage(
+                    id: messageId,
+                    text: chunk,
+                    isUser: false,
+                    timestamp: DateTime.now(),
+                    isComplete: false,
+                  );
+                  _messages.add(botMsg);
+                } else {
+                  final last = _messages.last;
+                  _messages[_messages.length - 1] = last.copyWith(
+                    text: (last.text.isEmpty ? '' : last.text) + chunk,
+                    loadingStatus: null,
+                  );
+                }
+                _emitLoaded();
+              }
+              return;
+            }
+
+            // Fallback: try other content fields
+            if (parsed.containsKey('content')) {
+              chunk = parsed['content']?.toString() ?? '';
+            } else if (parsed.containsKey('text')) {
+              chunk = parsed['text']?.toString() ?? '';
+            }
+          }
+        } catch (_) {
+          // not JSON — treat as raw chunk
+        }
+
+        final lower = chunk.toLowerCase();
+        if (lower.contains('bad request') ||
+            lower.contains('exception') ||
+            lower.startsWith('error')) {
+          final pendingIdx = _messages.indexWhere(
+            (m) => m.isUser && m.isPending,
+          );
+          if (pendingIdx >= 0) {
+            final pending = _messages[pendingIdx];
+            _messages[pendingIdx] = pending.copyWith(isPending: false);
+          }
+          final errText = chunk.trim();
+          final messageId = const Uuid().v4();
+          final errMsg = ChatMessage(
+            id: messageId,
+            text: errText.isNotEmpty
+                ? errText
+                : 'An error occurred while streaming the response.',
+            isUser: false,
+            timestamp: DateTime.now(),
+            isComplete: true,
+            isError: true,
+          );
+          _messages.add(errMsg);
+          _emitLoaded();
+          return;
+        }
+
+        if (chunk.trim() == '[DONE]') {
+          final pendingIdx = _messages.indexWhere(
+            (m) => m.isUser && m.isPending,
+          );
+          if (pendingIdx >= 0) {
+            final pending = _messages[pendingIdx];
+            _messages[pendingIdx] = pending.copyWith(isPending: false);
+          }
+          if (_messages.isNotEmpty) {
+            final last = _messages.last;
+            _messages[_messages.length - 1] = last.copyWith(
+              isComplete: true,
+              isPending: false,
+              loadingStatus: null,
+            );
+            _emitLoaded();
+          }
+          return;
+        }
+
+        if (chunk.isNotEmpty) {
+          if (_messages.isEmpty || _messages.last.isUser) {
+            final messageId = const Uuid().v4();
+            final botMsg = ChatMessage(
+              id: messageId,
+              text: chunk,
+              isUser: false,
+              timestamp: DateTime.now(),
+              isComplete: false,
+            );
+            _messages.add(botMsg);
+          } else {
+            final last = _messages.last;
+            _messages[_messages.length - 1] = last.copyWith(
+              text: last.text + chunk,
+              loadingStatus: null,
+            );
+          }
+          _emitLoaded();
+        }
+      },
+      onError: (e) {
+        final pendingIdx = _messages.indexWhere((m) => m.isUser && m.isPending);
+        if (pendingIdx >= 0) {
+          final pending = _messages[pendingIdx];
+          _messages[pendingIdx] = pending.copyWith(isPending: false);
+        }
+        _emitLoaded();
+        emit(ChatbotError(message: e.toString()));
+      },
+    );
   }
 }
