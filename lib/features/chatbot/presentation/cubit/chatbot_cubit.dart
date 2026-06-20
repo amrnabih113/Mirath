@@ -1,4 +1,3 @@
-// ChatbotCubit — in-memory session per app run, no disk caching for messages.
 import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
@@ -14,7 +13,7 @@ import '../../../../core/sync/retry_service.dart';
 import '../../../../core/usecases/no_params.dart';
 import '../../domain/entities/chat_message.dart';
 import '../../domain/entities/upload_files_params.dart';
-// send_message_params not needed here
+
 import '../../domain/usecases/create_session_usecase.dart';
 import '../../domain/usecases/create_temporary_session_usecase.dart';
 import '../../domain/entities/session.dart';
@@ -44,7 +43,7 @@ class ChatbotCubit extends Cubit<ChatbotState> {
   final SendMessageUseCase sendMessageUseCase;
   final StreamMessagesUseCase streamMessagesUseCase;
   final HiveCacheService
-  cacheService; // kept for DI compatibility but not used for messages
+  cacheService; 
   final RetryService retryService;
   final NetworkManager networkManager;
 
@@ -65,13 +64,6 @@ class ChatbotCubit extends Cubit<ChatbotState> {
         isTemporaryChat: _isTemporaryChat,
       ),
     );
-  }
-
-  void initialize() {
-    // Do not create or cache a session here — we'll create a session
-    // on-demand for each send and use the response directly without
-    // storing it in memory (per user's request).
-    _emitLoaded();
   }
 
   void startNewChat() {
@@ -191,7 +183,18 @@ class ChatbotCubit extends Cubit<ChatbotState> {
       '[ChatbotCubit] Optimistic user message added id=${userMessage.id} text="${userMessage.text}"',
     );
     _emitLoaded();
+    final assistantPlaceholder = ChatMessage(
+      id: const Uuid().v4(),
+      text: '',
+      isUser: false,
+      timestamp: DateTime.now(),
+      loadingStatus: 'Sending...',
+      isComplete: false,
+    );
 
+    _messages.add(assistantPlaceholder);
+
+    _emitLoaded();
     final clientId = userMessage.id;
 
     if (!await networkManager.isConnected) {
@@ -208,7 +211,6 @@ class ChatbotCubit extends Cubit<ChatbotState> {
 
     final List<String> fileIds = [];
 
-    // upload images sequentially and update progress
     if (imagePaths != null && imagePaths.isNotEmpty) {
       for (final path in imagePaths) {
         final file = File(path);
@@ -326,13 +328,6 @@ class ChatbotCubit extends Cubit<ChatbotState> {
       // Start streaming by POSTing the message body and listening to the
       // streaming response. This avoids making a separate GET which some
       // backends do not expose for SSE.
-      emit(
-        ChatbotMessageSending(
-          messages: List.from(_messages),
-          currentSessionId: _currentSessionId,
-          isTemporaryChat: _isTemporaryChat,
-        ),
-      );
       _startSseListening(sessionId, body: body);
     } catch (e) {
       await retryService.enqueue('send_message', {
@@ -364,8 +359,6 @@ class ChatbotCubit extends Cubit<ChatbotState> {
 
   void _startSseListening(String sessionId, {Map<String, dynamic>? body}) {
     _sseSub?.cancel();
-    bool hasReceivedFirstDelta = false;
-    
     _sseSub = streamMessagesUseCase(sessionId, body: body).listen(
       (data) {
         MyLogger.info('[ChatbotCubit] SSE raw: $data');
@@ -373,7 +366,6 @@ class ChatbotCubit extends Cubit<ChatbotState> {
         try {
           final parsed = jsonDecode(data);
           if (parsed is Map<String, dynamic>) {
-            // Handle transcription responses
             if (parsed.containsKey('transcription')) {
               final text = parsed['transcription']?.toString() ?? '';
               if (text.isNotEmpty) {
@@ -391,7 +383,6 @@ class ChatbotCubit extends Cubit<ChatbotState> {
               return;
             }
 
-            // Handle error events
             if (parsed.containsKey('error')) {
               final err = parsed['error']?.toString() ?? 'An error occurred';
               final pendingIdx = _messages.indexWhere(
@@ -401,34 +392,21 @@ class ChatbotCubit extends Cubit<ChatbotState> {
                 final pending = _messages[pendingIdx];
                 _messages[pendingIdx] = pending.copyWith(isPending: false);
               }
-              
-              // Replace loading message with error if it exists
-              if (_messages.isNotEmpty && 
-                  !_messages.last.isUser && 
-                  _messages.last.loadingStatus != null) {
-                _messages[_messages.length - 1] = _messages.last.copyWith(
-                  text: err,
-                  loadingStatus: null,
-                  isError: true,
-                  isComplete: true,
-                );
-              } else {
-                final messageId = const Uuid().v4();
-                final errMsg = ChatMessage(
-                  id: messageId,
-                  text: err,
-                  isUser: false,
-                  timestamp: DateTime.now(),
-                  isComplete: true,
-                  isError: true,
-                );
-                _messages.add(errMsg);
-              }
+              final messageId = const Uuid().v4();
+              final errMsg = ChatMessage(
+                id: messageId,
+                text: err,
+                isUser: false,
+                timestamp: DateTime.now(),
+                isComplete: true,
+                isError: true,
+              );
+              _messages.add(errMsg);
               _emitLoaded();
               return;
             }
 
-            // Handle status events (loading states) - replace previous status
+            // Handle status events (loading states)
             if (parsed.containsKey('status')) {
               final status = parsed['status']?.toString() ?? '';
               if (status.isNotEmpty) {
@@ -445,12 +423,9 @@ class ChatbotCubit extends Cubit<ChatbotState> {
                   _messages.add(botMsg);
                 } else {
                   final last = _messages.last;
-                  // Only update if it's still a loading status (no content yet)
-                  if (last.loadingStatus != null && last.text.isEmpty) {
-                    _messages[_messages.length - 1] = last.copyWith(
-                      loadingStatus: status,
-                    );
-                  }
+                  _messages[_messages.length - 1] = last.copyWith(
+                    loadingStatus: status,
+                  );
                 }
                 _emitLoaded();
               }
@@ -460,9 +435,8 @@ class ChatbotCubit extends Cubit<ChatbotState> {
             // Handle delta events (response chunks)
             if (parsed.containsKey('delta')) {
               chunk = parsed['delta']?.toString() ?? '';
+              // When we receive the first delta, clear the loading status
               if (chunk.isNotEmpty) {
-                hasReceivedFirstDelta = true;
-                // Clear loading status on first delta
                 if (_messages.isEmpty || _messages.last.isUser) {
                   final messageId = const Uuid().v4();
                   final botMsg = ChatMessage(
@@ -524,7 +498,6 @@ class ChatbotCubit extends Cubit<ChatbotState> {
           return;
         }
 
-        // Handle stream completion
         if (chunk.trim() == '[DONE]') {
           final pendingIdx = _messages.indexWhere(
             (m) => m.isUser && m.isPending,
@@ -533,7 +506,7 @@ class ChatbotCubit extends Cubit<ChatbotState> {
             final pending = _messages[pendingIdx];
             _messages[pendingIdx] = pending.copyWith(isPending: false);
           }
-          if (_messages.isNotEmpty && !_messages.last.isUser) {
+          if (_messages.isNotEmpty) {
             final last = _messages.last;
             _messages[_messages.length - 1] = last.copyWith(
               isComplete: true,
@@ -567,45 +540,13 @@ class ChatbotCubit extends Cubit<ChatbotState> {
         }
       },
       onError: (e) {
-        MyLogger.error('[ChatbotCubit] SSE error: ${e.toString()}');
         final pendingIdx = _messages.indexWhere((m) => m.isUser && m.isPending);
         if (pendingIdx >= 0) {
           final pending = _messages[pendingIdx];
           _messages[pendingIdx] = pending.copyWith(isPending: false);
         }
-        
-        // Replace loading message with error if exists
-        if (_messages.isNotEmpty && 
-            !_messages.last.isUser && 
-            _messages.last.loadingStatus != null) {
-          final errorMsg = e.toString();
-          _messages[_messages.length - 1] = _messages.last.copyWith(
-            text: errorMsg,
-            loadingStatus: null,
-            isError: true,
-            isComplete: true,
-          );
-        }
-        
         _emitLoaded();
         emit(ChatbotError(message: e.toString()));
-      },
-      onDone: () {
-        MyLogger.info('[ChatbotCubit] SSE stream completed');
-        final pendingIdx = _messages.indexWhere((m) => m.isUser && m.isPending);
-        if (pendingIdx >= 0) {
-          final pending = _messages[pendingIdx];
-          _messages[pendingIdx] = pending.copyWith(isPending: false);
-        }
-        // Mark last bot message as complete if streaming
-        if (_messages.isNotEmpty && !_messages.last.isUser && !_messages.last.isComplete) {
-          final last = _messages.last;
-          _messages[_messages.length - 1] = last.copyWith(
-            isComplete: true,
-            loadingStatus: null,
-          );
-        }
-        _emitLoaded();
       },
     );
   }

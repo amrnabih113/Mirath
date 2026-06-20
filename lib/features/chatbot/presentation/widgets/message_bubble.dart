@@ -26,19 +26,20 @@ class MessageBubble extends StatelessWidget {
   void _showImagePreview(
     BuildContext context,
     List<String> imagePaths,
-    int initialIndex,
+    int index,
   ) {
     showDialog(
       context: context,
-      builder: (context) => ImagePreviewOverlay(
-        imagePaths: imagePaths,
-        initialIndex: initialIndex,
-      ),
+      builder: (_) =>
+          ImagePreviewOverlay(imagePaths: imagePaths, initialIndex: index),
     );
   }
 
   @override
   Widget build(BuildContext context) {
+    final hasImages =
+        message.imagePaths != null && message.imagePaths!.isNotEmpty;
+
     return Padding(
       padding: EdgeInsets.only(
         bottom: MySizes.spaceSm(context),
@@ -50,279 +51,53 @@ class MessageBubble extends StatelessWidget {
             ? CrossAxisAlignment.end
             : CrossAxisAlignment.start,
         children: [
-          if (message.imagePaths != null && message.imagePaths!.isNotEmpty)
+          // ================= IMAGES =================
+          if (hasImages)
             Padding(
               padding: EdgeInsets.only(bottom: MySizes.spaceXs(context)),
               child: Wrap(
                 spacing: MySizes.spaceXs(context),
                 runSpacing: MySizes.spaceXs(context),
-                children: List.generate(
-                  message.imagePaths!.length,
-                  (index) => GestureDetector(
+                children: List.generate(message.imagePaths!.length, (i) {
+                  final path = message.imagePaths![i];
+
+                  return GestureDetector(
                     onTap: () =>
-                        _showImagePreview(context, message.imagePaths!, index),
-                    child: Container(
-                      decoration: BoxDecoration(
-                        border: Border.all(
-                          color: MyColors.primaryShade300,
-                          width: 1,
-                        ),
-                        borderRadius: BorderRadius.circular(
-                          ResponsiveHelper.responsiveValue(context, 8),
-                        ),
-                      ),
-                      child: ClipRRect(
-                        borderRadius: BorderRadius.circular(
-                          ResponsiveHelper.responsiveValue(context, 7),
-                        ),
-                        child: Column(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            Image.file(
-                              File(message.imagePaths![index]),
-                              width: ResponsiveHelper.responsiveValue(
-                                context,
-                                93,
-                              ),
-                              height: ResponsiveHelper.responsiveValue(
-                                context,
-                                93,
-                              ),
-                              fit: BoxFit.cover,
-                            ),
-                            if (message.isUser &&
-                                message.uploadProgress != null)
-                              Builder(
-                                builder: (ctx) {
-                                  final path = message.imagePaths![index];
-                                  final prog =
-                                      message.uploadProgress![path] ?? 0.0;
-                                  if (prog <= 0.0 || prog >= 1.0)
-                                    return const SizedBox.shrink();
-                                  return Padding(
-                                    padding: const EdgeInsets.only(top: 6.0),
-                                    child: Column(
-                                      children: [
-                                        SizedBox(
-                                          width:
-                                              ResponsiveHelper.responsiveValue(
-                                                context,
-                                                93,
-                                              ),
-                                          child: Row(
-                                            children: [
-                                              Expanded(
-                                                child: LinearProgressIndicator(
-                                                  value: prog,
-                                                ),
-                                              ),
-                                              const SizedBox(width: 8),
-                                              Text(
-                                                '${(prog * 100).toStringAsFixed(0)}%',
-                                                style: Theme.of(
-                                                  context,
-                                                ).textTheme.bodySmall,
-                                              ),
-                                              const SizedBox(width: 6),
-                                              GestureDetector(
-                                                onTap: () {
-                                                  // cancel upload for this file
-                                                  try {
-                                                    // use Bloc to cancel
-                                                    // ignore: avoid_dynamic_calls
-                                                    final cubit = ctx
-                                                        .read<ChatbotCubit>();
-                                                    cubit.cancelUpload(path);
-                                                  } catch (_) {}
-                                                },
-                                                child: Icon(
-                                                  Icons.cancel_outlined,
-                                                  size:
-                                                      ResponsiveHelper.responsiveValue(
-                                                        context,
-                                                        16,
-                                                      ),
-                                                  color: MyColors.textSecondary,
-                                                ),
-                                              ),
-                                            ],
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  );
-                                },
-                              ),
-                          ],
-                        ),
+                        _showImagePreview(context, message.imagePaths!, i),
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(8),
+                      child: Image.file(
+                        File(path),
+                        width: 93,
+                        height: 93,
+                        fit: BoxFit.cover,
                       ),
                     ),
-                  ),
-                ),
+                  );
+                }),
               ),
             ),
 
+          // ================= CHAT ROW =================
           Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
             mainAxisAlignment: message.isUser
                 ? MainAxisAlignment.end
                 : MainAxisAlignment.start,
-            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              if (message.isUser) ...[
-                Flexible(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.end,
-                    children: [
-                      if (message.text.isNotEmpty)
-                        ConstrainedBox(
-                          constraints: BoxConstraints(
-                            maxWidth: MediaQuery.of(context).size.width * 0.75,
-                          ),
-                          child: Container(
-                            padding: EdgeInsets.symmetric(
-                              horizontal: MySizes.spaceMd(context),
-                              vertical: MySizes.spaceSm(context),
-                            ),
-                            decoration: BoxDecoration(
-                              color: MyColors.primaryShade100,
-                              borderRadius: BorderRadius.only(
-                                topLeft: Radius.circular(
-                                  ResponsiveHelper.responsiveValue(context, 18),
-                                ),
-                                topRight: Radius.circular(
-                                  ResponsiveHelper.responsiveValue(context, 18),
-                                ),
-                                bottomLeft: Radius.circular(
-                                  ResponsiveHelper.responsiveValue(context, 18),
-                                ),
-                                bottomRight: Radius.circular(
-                                  ResponsiveHelper.responsiveValue(context, 4),
-                                ),
-                              ),
-                            ),
-                            child: Text(
-                              message.text,
-                              style: context.bodyMedium.copyWith(
-                                color: MyColors.textPrimary,
-                                height: 1.5,
-                                fontSize: ResponsiveHelper.responsiveValue(
-                                  context,
-                                  15,
-                                ),
-                              ),
-                            ),
-                          ),
-                        ),
-                    ],
-                  ),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: message.isUser
+                      ? CrossAxisAlignment.end
+                      : CrossAxisAlignment.start,
+                  children: [
+                    if (message.isUser)
+                      _UserBubble(message: message)
+                    else
+                      _BotBubble(message: message),
+                  ],
                 ),
-              ] else ...[
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      if (message.isError)
-                        _ErrorBubble(message: message, context: context)
-                      else if (message.loadingStatus != null &&
-                          message.loadingStatus!.isNotEmpty &&
-                          message.text.isEmpty)
-                        _LoadingStatusBubble(
-                          status: message.loadingStatus!,
-                          context: context,
-                        )
-                      else if (message.text.isNotEmpty)
-                        _TypewriterText(
-                          text: message.text,
-                          isStreaming: !message.isComplete,
-                          charactersPerSecond: 36,
-                          style: context.bodyMedium.copyWith(
-                            color: MyColors.textPrimary,
-                            height: 1.5,
-                            fontSize: ResponsiveHelper.responsiveValue(
-                              context,
-                              15,
-                            ),
-                          ),
-                        ),
-                      if (message.isComplete && message.text.isNotEmpty)
-                        Row(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            IconButton(
-                              icon: HugeIcon(
-                                icon: HugeIcons.strokeRoundedCopy01,
-                                size: ResponsiveHelper.responsiveValue(
-                                  context,
-                                  16,
-                                ),
-                                color: MyColors.textSecondary,
-                              ),
-                              padding: EdgeInsets.zero,
-                              onPressed: () {
-                                Clipboard.setData(
-                                  ClipboardData(text: message.text),
-                                );
-                                MyLoaders.customToast(
-                                  context: context,
-                                  message: 'Copied to clipboard',
-                                );
-                              },
-                            ),
-                            IconButton(
-                              icon: Icon(
-                                Icons.thumb_up,
-                                size: ResponsiveHelper.responsiveValue(
-                                  context,
-                                  16,
-                                ),
-                                color: MyColors.textSecondary,
-                              ),
-                              padding: EdgeInsets.zero,
-                              onPressed: () {},
-                            ),
-                            IconButton(
-                              icon: Icon(
-                                Icons.thumb_down,
-                                size: ResponsiveHelper.responsiveValue(
-                                  context,
-                                  16,
-                                ),
-                                color: MyColors.textSecondary,
-                              ),
-                              padding: EdgeInsets.zero,
-                              onPressed: () {},
-                            ),
-                            IconButton(
-                              icon: HugeIcon(
-                                icon: HugeIcons.strokeRoundedShare08,
-                                size: ResponsiveHelper.responsiveValue(
-                                  context,
-                                  16,
-                                ),
-                                color: MyColors.textSecondary,
-                              ),
-                              padding: EdgeInsets.zero,
-                              onPressed: () {},
-                            ),
-                            IconButton(
-                              icon: HugeIcon(
-                                icon: HugeIcons
-                                    .strokeRoundedMoreHorizontalCircle01,
-                                size: ResponsiveHelper.responsiveValue(
-                                  context,
-                                  16,
-                                ),
-                                color: MyColors.textSecondary,
-                              ),
-                              padding: EdgeInsets.zero,
-                              onPressed: () {},
-                            ),
-                          ],
-                        ),
-                    ],
-                  ),
-                ),
-              ],
+              ),
             ],
           ),
         ],
@@ -331,15 +106,158 @@ class MessageBubble extends StatelessWidget {
   }
 }
 
+/* ================= USER ================= */
+class _UserBubble extends StatelessWidget {
+  final ChatMessage message;
+  final VoidCallback? onRetry;
+  final VoidCallback? onEdit;
+
+  const _UserBubble({required this.message, this.onRetry, this.onEdit});
+
+  @override
+  Widget build(BuildContext context) {
+    if (message.text.isEmpty) return const SizedBox();
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.end,
+      children: [
+        // ================= MESSAGE =================
+        Container(
+          padding: const EdgeInsets.all(12),
+          decoration: BoxDecoration(
+            color: MyColors.primaryShade100,
+            borderRadius: BorderRadius.circular(16),
+          ),
+          child: Text(
+            message.text,
+            style: context.bodyMedium.copyWith(
+              color: MyColors.textPrimary,
+              height: 1.4,
+            ),
+          ),
+        ),
+
+        const SizedBox(height: 4),
+
+        // ================= ACTIONS =================
+        Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            // COPY
+            IconButton(
+              icon: const Icon(Icons.copy, size: 16),
+              onPressed: () {
+                Clipboard.setData(ClipboardData(text: message.text));
+                MyLoaders.customToast(context: context, message: "Copied");
+              },
+            ),
+
+            // EDIT
+            IconButton(
+              icon: const Icon(Icons.edit, size: 16),
+              onPressed:
+                  onEdit ??
+                  () {
+                    MyLoaders.customToast(
+                      context: context,
+                      message: "Edit not connected",
+                    );
+                  },
+            ),
+
+            // RETRY
+            IconButton(
+              icon: const Icon(Icons.refresh, size: 16),
+              onPressed:
+                  onRetry ??
+                  () {
+                    MyLoaders.customToast(
+                      context: context,
+                      message: "Retry not connected",
+                    );
+                  },
+            ),
+          ],
+        ),
+      ],
+    );
+  }
+}
+/* ================= BOT ================= */
+
+class _BotBubble extends StatelessWidget {
+  final ChatMessage message;
+
+  const _BotBubble({required this.message});
+
+  @override
+  Widget build(BuildContext context) {
+    final isStreaming = !message.isComplete && message.text.isNotEmpty;
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        // ERROR
+        if (message.isError)
+          _ErrorBubble(message: message, context: context)
+        // LOADING STATUS
+        else if (message.loadingStatus != null && message.text.isEmpty)
+          _LoadingStatusBubble(status: message.loadingStatus!, context: context)
+        // TYPEWRITER STREAM
+        else if (isStreaming)
+          _TypewriterText(
+            key: ValueKey(message.id),
+            text: message.text,
+            charactersPerSecond: 40,
+            style: context.bodyMedium.copyWith(
+              color: MyColors.textPrimary,
+              height: 1.5,
+              fontSize: 15,
+            ),
+          )
+        // FINAL TEXT
+        else if (message.text.isNotEmpty)
+          MarkdownBody(data: message.text),
+
+        // ================= ACTION ROW =================
+        if (message.isComplete && message.text.isNotEmpty)
+          Padding(
+            padding: const EdgeInsets.only(top: 6),
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                IconButton(
+                  icon: const Icon(Icons.copy, size: 16),
+                  onPressed: () {
+                    Clipboard.setData(ClipboardData(text: message.text));
+                    MyLoaders.customToast(context: context, message: "Copied");
+                  },
+                ),
+                IconButton(
+                  icon: const Icon(Icons.thumb_up, size: 16),
+                  onPressed: () {},
+                ),
+                IconButton(
+                  icon: const Icon(Icons.thumb_down, size: 16),
+                  onPressed: () {},
+                ),
+              ],
+            ),
+          ),
+      ],
+    );
+  }
+}
+
+/* ================= TYPEWRITER ================= */
 class _TypewriterText extends StatefulWidget {
   final String text;
-  final bool isStreaming;
   final int charactersPerSecond;
   final TextStyle style;
 
   const _TypewriterText({
+    super.key,
     required this.text,
-    required this.isStreaming,
     required this.charactersPerSecond,
     required this.style,
   });
@@ -350,76 +268,66 @@ class _TypewriterText extends StatefulWidget {
 
 class _TypewriterTextState extends State<_TypewriterText> {
   Timer? _timer;
-  int _visibleCharacters = 0;
-  String _lastTarget = '';
-  late final int _intervalMs;
+
+  int _index = 0;
+  String _buffer = '';
+
+  late final int _interval;
 
   @override
   void initState() {
     super.initState();
-    _intervalMs = (1000 / widget.charactersPerSecond).round().clamp(16, 120);
-    _syncTarget(force: true);
+
+    _interval = (1000 / widget.charactersPerSecond).clamp(16, 50).toInt();
+
+    _buffer = widget.text;
+    _startTyping();
   }
 
   @override
   void didUpdateWidget(covariant _TypewriterText oldWidget) {
     super.didUpdateWidget(oldWidget);
-    _syncTarget();
+
+    // ONLY append new characters, don’t restart
+    if (widget.text.length > _buffer.length) {
+      final newPart = widget.text.substring(_buffer.length);
+      _buffer = widget.text;
+
+      _queueTyping(newPart);
+    }
   }
 
-  void _syncTarget({bool force = false}) {
-    final target = widget.text;
-    final targetLength = target.length;
-
-    // If target hasn't changed and we've shown all characters, no need to update
-    if (!force && target == _lastTarget && _visibleCharacters >= targetLength) {
-      return;
-    }
-
-    _lastTarget = target;
-
-    if (widget.isStreaming) {
-      // If timer is already running and text has new content, keep it running
-      if (_timer != null && _timer!.isActive) {
-        // Already streaming, just ensure visible characters don't exceed target
-        if (_visibleCharacters > targetLength) {
-          setState(() {
-            _visibleCharacters = targetLength;
-          });
-        }
+  void _startTyping() {
+    _timer?.cancel();
+    _timer = Timer.periodic(Duration(milliseconds: _interval), (timer) {
+      if (!mounted) {
+        timer.cancel();
         return;
       }
 
-      // Start or restart the typewriter animation
-      _timer?.cancel();
-      _timer = Timer.periodic(Duration(milliseconds: _intervalMs), (timer) {
-        if (!mounted) {
-          timer.cancel();
-          return;
-        }
-        if (_visibleCharacters < widget.text.length) {
-          setState(() {
-            _visibleCharacters = (_visibleCharacters + 1).clamp(
-              0,
-              widget.text.length,
-            );
-          });
-        } else {
-          // All characters visible, keep timer running in case more arrive
-          // (timer continues but won't update since _visibleCharacters is clamped)
-        }
-      });
+      if (_index < _buffer.length) {
+        setState(() => _index++);
+      } else {
+        timer.cancel();
+      }
+    });
+  }
 
-      return;
-    }
-
-    // Not streaming - show all text immediately
+  void _queueTyping(String newText) {
     _timer?.cancel();
-    if (_visibleCharacters != targetLength) {
-      setState(() {
-        _visibleCharacters = targetLength;
-      });
-    }
+
+    _timer = Timer.periodic(Duration(milliseconds: _interval), (timer) {
+      if (!mounted) {
+        timer.cancel();
+        return;
+      }
+
+      if (_index < _buffer.length) {
+        setState(() => _index++);
+      } else {
+        timer.cancel();
+      }
+    });
   }
 
   @override
@@ -430,19 +338,17 @@ class _TypewriterTextState extends State<_TypewriterText> {
 
   @override
   Widget build(BuildContext context) {
-    final visibleText = widget.text.substring(
-      0,
-      _visibleCharacters.clamp(0, widget.text.length),
-    );
+    final visible = _buffer.substring(0, _index.clamp(0, _buffer.length));
 
     return MarkdownBody(
-      data: visibleText,
+      data: visible,
       styleSheet: MarkdownStyleSheet.fromTheme(
         Theme.of(context),
       ).copyWith(p: widget.style),
     );
   }
 }
+/* ================= LOADING ================= */
 
 class _LoadingStatusBubble extends StatelessWidget {
   final String status;
@@ -454,14 +360,12 @@ class _LoadingStatusBubble extends StatelessWidget {
   Widget build(BuildContext context) {
     return AnimatedLoadingStatus(
       status: status,
-      style: context.bodyMedium.copyWith(
-        color: MyColors.primaryButton,
-        height: 1.5,
-        fontSize: ResponsiveHelper.responsiveValue(context, 15),
-      ),
+      style: context.bodyMedium.copyWith(color: MyColors.primaryButton),
     );
   }
 }
+
+/* ================= ERROR ================= */
 
 class _ErrorBubble extends StatelessWidget {
   final ChatMessage message;
@@ -472,53 +376,13 @@ class _ErrorBubble extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: EdgeInsets.symmetric(
-        horizontal: MySizes.spaceMd(context),
-        vertical: MySizes.spaceSm(context),
-      ),
+      padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(
         color: const Color(0xFFFFEBEE),
-        borderRadius: BorderRadius.circular(
-          ResponsiveHelper.responsiveValue(context, 18),
-        ),
-        border: Border.all(
-          color: const Color(0xFFEF5350).withValues(alpha: 0.3),
-          width: 1,
-        ),
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(color: Colors.red.withOpacity(0.3)),
       ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Icon(
-                Icons.warning_rounded,
-                size: ResponsiveHelper.responsiveValue(context, 18),
-                color: const Color(0xFFEF5350),
-              ),
-              SizedBox(width: MySizes.spaceXs(context)),
-              Text(
-                'Error',
-                style: context.bodyMedium.copyWith(
-                  color: const Color(0xFFEF5350),
-                  fontWeight: FontWeight.w600,
-                  fontSize: ResponsiveHelper.responsiveValue(context, 14),
-                ),
-              ),
-            ],
-          ),
-          SizedBox(height: MySizes.spaceXs(context)),
-          Text(
-            message.text,
-            style: context.bodyMedium.copyWith(
-              color: const Color(0xFFC62828),
-              height: 1.5,
-              fontSize: ResponsiveHelper.responsiveValue(context, 14),
-            ),
-          ),
-        ],
-      ),
+      child: Text(message.text, style: const TextStyle(color: Colors.red)),
     );
   }
 }

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'dart:io';
 
 import '../../../../core/utils/my_colors.dart';
 import 'chat_input_field.dart';
@@ -12,6 +13,7 @@ class ChatInputArea extends StatelessWidget {
   final VoidCallback onSendMessage;
   final Function(int) onRemoveImage;
   final VoidCallback onTextChanged;
+  final Function(File, int)? onVoiceRecorded;
 
   const ChatInputArea({
     super.key,
@@ -21,6 +23,7 @@ class ChatInputArea extends StatelessWidget {
     required this.onSendMessage,
     required this.onRemoveImage,
     required this.onTextChanged,
+    this.onVoiceRecorded,
   });
 
   @override
@@ -53,6 +56,7 @@ class ChatInputArea extends StatelessWidget {
             onPickAttachment: onPickAttachment,
             onSendMessage: onSendMessage,
             onTextChanged: onTextChanged,
+            onVoiceRecorded: onVoiceRecorded,
           ),
         ],
       ),

@@ -148,34 +148,19 @@ class _PaperScreenState extends State<PaperScreen> {
         ),
       ),
       body: MyBody(
-        child: Center(
-          child: LayoutBuilder(
-            builder: (context, constraints) {
-              return ConstrainedBox(
-                constraints: const BoxConstraints(maxWidth: 850),
-                child: Padding(
-                  padding: MySizes.paddingMd(context),
-                  child: SingleChildScrollView(
-                    child: Column(
-                      children: [
-                        PaperInfo(
-                          paper: currentPaper,
-                          onSavePressed: _onSavePressed,
-                        ),
-                        SizedBox(height: MySizes.spaceMd(context)),
-                        AbstractSection(
-                          abstractText: currentPaper.abstract,
-                          onStartDiscussion: _onStartDiscussion,
-                          onViewDiscussions: _onViewDiscussions,
-                        ),
-                        SizedBox(height: MySizes.spaceMd(context)),
-                        ExpainsionTileWidget(),
-                      ],
-                    ),
-                  ),
-                ),
-              );
-            },
+        child: SingleChildScrollView(
+          child: Column(
+            children: [
+              PaperInfo(paper: currentPaper, onSavePressed: _onSavePressed),
+              SizedBox(height: MySizes.spaceMd(context)),
+              AbstractSection(
+                abstractText: currentPaper.abstract,
+                onStartDiscussion: _onStartDiscussion,
+                onViewDiscussions: _onViewDiscussions,
+              ),
+              SizedBox(height: MySizes.spaceMd(context)),
+              ExpainsionTileWidget(),
+            ],
           ),
         ),
       ),

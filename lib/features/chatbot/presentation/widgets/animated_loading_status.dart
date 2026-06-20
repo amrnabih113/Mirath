@@ -51,14 +51,7 @@ class _AnimatedLoadingStatusState extends State<AnimatedLoadingStatus>
         opacity: _opacityAnimation,
         child: Container(
           decoration: BoxDecoration(
-            boxShadow: [
-              BoxShadow(
-                color: MyColors.primaryButton.withValues(alpha: 0.3),
-                blurRadius: 12,
-                spreadRadius: 2,
-                offset: const Offset(0, 0),
-              ),
-            ],
+           
           ),
           child: Text(
             widget.status,

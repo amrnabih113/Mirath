@@ -797,5 +797,17 @@ final appRouter = GoRouter(
         );
       },
     ),
+
+    // GoRoute(
+    //   path: RouteNames.chatbotSessions,
+    //   pageBuilder: (context, state) {
+    //     return PageTransitions.smoothTransition(
+    //       BlocProvider(
+    //         create: (_) => sl<SessionsCubit>(),
+    //         child: const SessionsScreen(),
+    //       ),
+    //     );
+    //   },
+    // ),
   ],
 );

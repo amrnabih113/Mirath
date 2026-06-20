@@ -7,13 +7,18 @@ import '../../../../core/utils/my_colors.dart';
 import '../../../../core/utils/my_extenstions.dart';
 import '../../../../core/utils/my_sizes.dart';
 import '../../../../generated/l10n.dart';
+import '../../../../injection/injection_container.dart';
+import '../../../../core/services/audio_recorder_service.dart';
+import 'dart:async';
+import 'dart:io';
 
-class ChatInputField extends StatelessWidget {
+class ChatInputField extends StatefulWidget {
   final TextEditingController messageController;
   final List<XFile> selectedImages;
   final Function(AttachmentType) onPickAttachment;
   final VoidCallback onSendMessage;
   final VoidCallback onTextChanged;
+  final Function(File, int)? onVoiceRecorded;
 
   const ChatInputField({
     super.key,
@@ -22,7 +27,19 @@ class ChatInputField extends StatelessWidget {
     required this.onPickAttachment,
     required this.onSendMessage,
     required this.onTextChanged,
+    this.onVoiceRecorded,
   });
+
+  @override
+  State<ChatInputField> createState() => _ChatInputFieldState();
+}
+
+class _ChatInputFieldState extends State<ChatInputField> {
+  bool _isRecording = false;
+  int _recordSeconds = 0;
+  Timer? _timer;
+
+  final _recorder = sl<AudioRecorderService>();
 
   void _showAttachmentOptions(BuildContext context) {
     showModalBottomSheet(
@@ -56,7 +73,7 @@ class ChatInputField extends StatelessWidget {
                   label: S.of(context).attachment_camera,
                   onTap: () {
                     Navigator.pop(context);
-                    onPickAttachment(AttachmentType.camera);
+                    widget.onPickAttachment(AttachmentType.camera);
                   },
                 ),
                 _AttachmentOption(
@@ -64,7 +81,7 @@ class ChatInputField extends StatelessWidget {
                   label: S.of(context).attachment_photos,
                   onTap: () {
                     Navigator.pop(context);
-                    onPickAttachment(AttachmentType.gallery);
+                    widget.onPickAttachment(AttachmentType.gallery);
                   },
                 ),
                 _AttachmentOption(
@@ -72,7 +89,7 @@ class ChatInputField extends StatelessWidget {
                   label: S.of(context).attachment_files,
                   onTap: () {
                     Navigator.pop(context);
-                    onPickAttachment(AttachmentType.document);
+                    widget.onPickAttachment(AttachmentType.document);
                   },
                 ),
               ],
@@ -85,9 +102,43 @@ class ChatInputField extends StatelessWidget {
   }
 
   @override
+  void dispose() {
+    _timer?.cancel();
+    super.dispose();
+  }
+
+  void _startRecording() async {
+    final ok = await _recorder.hasPermission();
+    if (!ok) return;
+    final filename = 'chat_audio_${DateTime.now().millisecondsSinceEpoch}.wav';
+    await _recorder.startRecording(filename);
+    setState(() {
+      _isRecording = true;
+      _recordSeconds = 0;
+    });
+    _timer = Timer.periodic(const Duration(seconds: 1), (_) {
+      setState(() => _recordSeconds++);
+    });
+  }
+
+  void _stopRecording() async {
+    _timer?.cancel();
+    final result = await _recorder.stopRecording();
+    setState(() {
+      _isRecording = false;
+    });
+    if (result != null && widget.onVoiceRecorded != null) {
+      final file = result['file'] as File;
+      final duration = result['duration'] as int;
+      widget.onVoiceRecorded!(file, duration);
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
     final bool hasContent =
-        selectedImages.isNotEmpty || messageController.text.trim().isNotEmpty;
+        widget.selectedImages.isNotEmpty ||
+        widget.messageController.text.trim().isNotEmpty;
 
     return Padding(
       padding: MySizes.paddingSm(context),
@@ -95,7 +146,7 @@ class ChatInputField extends StatelessWidget {
         children: [
           Expanded(
             child: TextField(
-              controller: messageController,
+              controller: widget.messageController,
               maxLines: null,
               textInputAction: TextInputAction.newline,
               decoration: InputDecoration(
@@ -111,13 +162,19 @@ class ChatInputField extends StatelessWidget {
                   onPressed: () => _showAttachmentOptions(context),
                 ),
                 suffixIcon: IconButton(
-                  icon: Icon(
-                    Icons.mic,
-                    color: MyColors.textSecondary,
-                    size: ResponsiveHelper.responsiveValue(context, 20),
-                  ),
+                  icon: _isRecording
+                      ? Icon(Icons.stop, color: Colors.red)
+                      : Icon(
+                          Icons.mic,
+                          color: MyColors.textSecondary,
+                          size: ResponsiveHelper.responsiveValue(context, 20),
+                        ),
                   onPressed: () {
-                    // Voice input functionality
+                    if (_isRecording) {
+                      _stopRecording();
+                    } else {
+                      _startRecording();
+                    }
                   },
                 ),
                 border: OutlineInputBorder(
@@ -146,8 +203,8 @@ class ChatInputField extends StatelessWidget {
                   vertical: ResponsiveHelper.responsiveValue(context, 8),
                 ),
               ),
-              onSubmitted: hasContent ? (_) => onSendMessage() : null,
-              onChanged: (_) => onTextChanged(),
+              onSubmitted: hasContent ? (_) => widget.onSendMessage() : null,
+              onChanged: (_) => widget.onTextChanged(),
             ),
           ),
           SizedBox(width: MySizes.spaceXs(context)),
@@ -166,7 +223,7 @@ class ChatInputField extends StatelessWidget {
                 color: MyColors.white,
                 size: ResponsiveHelper.responsiveValue(context, 20),
               ),
-              onPressed: hasContent ? onSendMessage : null,
+              onPressed: hasContent ? widget.onSendMessage : null,
             ),
           ),
         ],
@@ -178,7 +235,7 @@ class ChatInputField extends StatelessWidget {
 enum AttachmentType { gallery, camera, document }
 
 class _AttachmentOption extends StatelessWidget {
-  final List<List<dynamic>> icon;
+  final dynamic icon;
   final String label;
   final VoidCallback onTap;
 
@@ -210,7 +267,13 @@ class _AttachmentOption extends StatelessWidget {
               size: MySizes.iconMedium(context),
             ),
             SizedBox(height: MySizes.spaceXs(context)),
-            Text(label, style: context.bodyMedium),
+            Text(
+              label,
+              style: context.bodySmall.copyWith(
+                color: MyColors.textPrimary,
+                fontWeight: FontWeight.w300,
+              ),
+            ),
           ],
         ),
       ),

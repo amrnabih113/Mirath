@@ -1,19 +1,27 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:image_picker/image_picker.dart';
+import 'package:flutter_svg/svg.dart';
+import 'package:hugeicons/styles/stroke_rounded.dart';
 import 'package:hugeicons/hugeicons.dart';
+import 'package:image_picker/image_picker.dart';
+import 'dart:io';
+import 'package:go_router/go_router.dart';
+import 'package:mirath/core/utils/my_extenstions.dart';
 
+import '../../../../core/helpers/responsive_helper.dart';
 import '../../../../core/network/network_manager.dart';
+import '../../../../core/constants/route_names.dart';
 import '../../../../core/services/user_cache_service.dart';
 import '../../../../core/ui/widgets/offline_banner.dart';
-import '../../../../core/ui/widgets/sync_indicator.dart';
 import '../../../../core/utils/my_colors.dart';
 import '../../../../injection/injection_container.dart';
-import '../cubit/chatbot_cubit.dart';
-import '../cubit/chatbot_state.dart';
+import '../../domain/entities/session.dart';
 import '../widgets/chat_input_area.dart';
 import '../widgets/chat_input_field.dart';
+import '../widgets/chatbot_sidebar_drawer.dart';
 import '../widgets/messages_list.dart';
+import '../cubit/chatbot_cubit.dart';
+import '../cubit/chatbot_state.dart';
 import '../../../../core/ui/widgets/my_app_bar.dart';
 import '../../../../core/ui/widgets/my_body.dart';
 
@@ -36,7 +44,6 @@ class _ChatbotScreenState extends State<ChatbotScreen> {
   void initState() {
     super.initState();
     _chatbotCubit = sl<ChatbotCubit>();
-    _chatbotCubit.initialize();
     _loadUserName();
 
     // Scroll to bottom after initial load
@@ -117,6 +124,28 @@ class _ChatbotScreenState extends State<ChatbotScreen> {
     _scrollToBottom();
   }
 
+  void _onVoiceRecorded(File file, int duration) {
+    // validate size (25 MB) and duration (120s)
+    final maxBytes = 25 * 1024 * 1024;
+    if (!file.existsSync()) return;
+    final bytes = file.lengthSync();
+    if (bytes > maxBytes) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Audio file too large (max 25MB)')),
+      );
+      return;
+    }
+    if (duration > 120) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Audio too long (max 120s)')),
+      );
+      return;
+    }
+
+    // send audio as message
+    _chatbotCubit.sendMessage('', audioFile: file, audioDuration: duration);
+  }
+
   void _scrollToBottom({bool followTyping = false}) {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (_scrollController.hasClients) {
@@ -134,82 +163,161 @@ class _ChatbotScreenState extends State<ChatbotScreen> {
     });
   }
 
+  void _dismissKeyboard() {
+    FocusManager.instance.primaryFocus?.unfocus();
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: MyAppBar(
-        elevation: 0,
-        leading: Builder(
-          builder: (context) => IconButton(
-            icon: HugeIcon(
-              icon: HugeIcons.strokeRoundedMenu01,
-              color: MyColors.textPrimary,
-            ),
-            onPressed: () {
-              Scaffold.of(context).openDrawer();
-            },
-          ),
-        ),
+    return BlocConsumer<ChatbotCubit, ChatbotState>(
+      bloc: _chatbotCubit,
+      listener: (context, state) {
+        if (state is ChatbotLoaded) {
+          _scrollToBottom(followTyping: true);
+        }
+      },
+      builder: (context, state) {
+        final isTemporaryChat = switch (state) {
+          ChatbotLoaded(:final isTemporaryChat) => isTemporaryChat,
+          ChatbotMessageSending(:final isTemporaryChat) => isTemporaryChat,
+          _ => false,
+        };
+        final currentSessionId = switch (state) {
+          ChatbotLoaded(:final currentSessionId) => currentSessionId,
+          ChatbotMessageSending(:final currentSessionId) => currentSessionId,
+          _ => null,
+        };
 
-        actions: [
-          IconButton(
-            icon: HugeIcon(
-              icon: HugeIcons.strokeRoundedComment01,
-              color: MyColors.textPrimary,
-            ),
-            onPressed: () {},
-          ),
-        ],
-      ),
-      drawer: const Drawer(),
-      body: MyBody(
-        child: BlocConsumer<ChatbotCubit, ChatbotState>(
-          bloc: _chatbotCubit,
-          listener: (context, state) {
-            if (state is ChatbotLoaded || state is ChatbotMessageSending) {
-              _scrollToBottom(followTyping: true);
-            }
-          },
-          builder: (context, state) {
-            return Column(
-              children: [
-                // Offline / sync indicators
-                if (!NetworkManager.instance.currentConnectionStatus)
-                  const OfflineBanner(),
-                if (state is ChatbotMessageSending)
-                  const Padding(
-                    padding: EdgeInsets.symmetric(
-                      vertical: 6.0,
-                      horizontal: 12.0,
-                    ),
-                    child: Align(
-                      alignment: Alignment.centerLeft,
-                      child: SyncIndicator(syncing: true),
-                    ),
+        return GestureDetector(
+          behavior: HitTestBehavior.translucent,
+          onTap: _dismissKeyboard,
+          child: Scaffold(
+            appBar: MyAppBar(
+              elevation: 0,
+              leading: Builder(
+                builder: (context) => IconButton(
+                  icon: HugeIcon(
+                    icon: HugeIcons.strokeRoundedMenu01,
+                    color: MyColors.textPrimary,
                   ),
-                // Messages list
-                Expanded(
-                  child: MessagesList(
-                    state: state,
-                    scrollController: _scrollController,
-                    userName: _userName,
-                  ),
+                  onPressed: () {
+                    Scaffold.of(context).openDrawer();
+                  },
+                ),
+              ),
+              title: Text('Chat', style: context.titleMedium),
+              actions: [
+                AnimatedSwitcher(
+                  duration: const Duration(milliseconds: 220),
+                  child: isTemporaryChat
+                      ? Padding(
+                          padding: const EdgeInsets.only(right: 8),
+                          child: Container(
+                            key: const ValueKey('temp-badge'),
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 10,
+                              vertical: 8,
+                            ),
+                            decoration: BoxDecoration(
+                              color: MyColors.primaryButton.withValues(
+                                alpha: 0.12,
+                              ),
+                              borderRadius: BorderRadius.circular(999),
+                              border: Border.all(
+                                color: MyColors.primaryButton.withValues(
+                                  alpha: 0.18,
+                                ),
+                              ),
+                            ),
+                            child: Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                const Icon(
+                                  Icons.visibility_off_outlined,
+                                  size: 16,
+                                  color: MyColors.primaryButton,
+                                ),
+                                const SizedBox(width: 6),
+                                Text(
+                                  'Temporary',
+                                  style: context.labelMedium.copyWith(
+                                    fontWeight: FontWeight.w700,
+                                    color: MyColors.primaryButton,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        )
+                      : const SizedBox.shrink(
+                          key: ValueKey('temp-badge-empty'),
+                        ),
                 ),
 
-                // Input area
-                ChatInputArea(
-                  messageController: _messageController,
-                  selectedImages: _selectedImages,
-                  onPickAttachment: _pickAttachment,
-                  onSendMessage: _sendMessage,
-                  onRemoveImage: _removeImage,
-                  onTextChanged: () => setState(() {}),
+                Padding(
+                  padding: EdgeInsets.symmetric(
+                    horizontal: ResponsiveHelper.responsiveValue(context, 20),
+                  ),
+                  child: InkWell(
+                    onTap: () {
+                      _chatbotCubit.isTemporaryChat
+                          ? _chatbotCubit.startNewChat()
+                          : _chatbotCubit.startTemporaryChat();
+                    },
+                    borderRadius: BorderRadius.circular(8),
+                    child: SvgPicture.asset(
+                      'assets/images/bubble-chat-temporary-stroke-rounded.svg',
+                      width: 30,
+                      height: 30,
+                    ),
+                  ),
                 ),
               ],
-            );
-          },
-        ),
-      ),
+            ),
+            drawer: ChatbotSidebarDrawer(
+              activeSessionId: currentSessionId,
+              isTemporaryChat: isTemporaryChat,
+              onNewChat: _chatbotCubit.startNewChat,
+              onTemporaryChat: _chatbotCubit.startTemporaryChat,
+              onSessionSelected: (Session session) async {
+                FocusScope.of(context).unfocus();
+                _messageController.clear();
+                setState(() {
+                  _selectedImages.clear();
+                });
+                await _chatbotCubit.loadSession(session);
+                _scrollToBottom(followTyping: true);
+              },
+              userName: _userName,
+            ),
+            body: MyBody(
+              padding: EdgeInsets.zero,
+              child: Column(
+                children: [
+                  if (!NetworkManager.instance.currentConnectionStatus)
+                    const OfflineBanner(),
+                  Expanded(
+                    child: MessagesList(
+                      state: state,
+                      scrollController: _scrollController,
+                      userName: _userName,
+                    ),
+                  ),
+                  ChatInputArea(
+                    messageController: _messageController,
+                    selectedImages: _selectedImages,
+                    onPickAttachment: _pickAttachment,
+                    onSendMessage: _sendMessage,
+                    onRemoveImage: _removeImage,
+                    onTextChanged: () => setState(() {}),
+                    onVoiceRecorded: _onVoiceRecorded,
+                  ),
+                ],
+              ),
+            ),
+          ),
+        );
+      },
     );
   }
 }

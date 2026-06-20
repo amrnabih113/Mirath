@@ -7,7 +7,7 @@ class MyConstants {
   static const String appName = "Mirath";
 
   static const String googleServerClientId =
-      "551081167484-bruuovdj7oal5gsej29vbja5803a3520.apps.googleusercontent.com";
+      "551081167484-v7ute4pkh7nvb7v4gu8383cchvc0jd6h.apps.googleusercontent.com";
 
   // storage keys
   static const String onboardingKey = 'has_seen_onboarding';
@@ -27,9 +27,34 @@ class MyConstants {
       'API_BASE_URL',
       defaultValue: '',
     );
-    return definedBaseUrl.isNotEmpty ? definedBaseUrl : "http://localhost:3000/";
-    //    : 'http://192.168.1.5:3000/';
+    return definedBaseUrl.isNotEmpty
+        ? definedBaseUrl
+        // : "http://localhost:3000/";
+        : 'http://192.168.1.5:3000/';
   }
+
+  // ***Chatbot endpoints***
+  // post multipart/form-data
+  static const String chatbotUploadFile = "api/v1/chatbot/files";
+  // post -> stream SSE
+  static const String chatbotSendMessage =
+      "api/v1/chatbot/sessions/{id}/messages";
+  // get messages history
+  static const String chatbotGetHistory =
+      "api/v1/chatbot/sessions/{id}/history";
+  // temporary session create/delete
+  static const String chatbotCreateTemporarySession =
+      "api/v1/chatbot/sessions/temporary";
+  static const String chatbotDeleteTemporarySession =
+      "api/v1/chatbot/sessions/temporary/{id}";
+  // sessions CRUD
+  static const String chatbotCreateSession = "api/v1/chatbot/sessions";
+  static const String chatbotGetSessions = "api/v1/chatbot/sessions";
+  static const String chatbotGetSessionById = "api/v1/chatbot/sessions/{id}";
+  static const String chatbotDeleteSession = "api/v1/chatbot/sessions/{id}";
+  // feedback
+  static const String chatbotSubmitFeedback =
+      "api/v1/chatbot/sessions/{sessionId}/messages/{messageId}/feedback";
 
   // When building the web app, use an HTTPS backend URL if the site is served
   // over HTTPS. Browsers block HTTPS pages from calling HTTP APIs.
