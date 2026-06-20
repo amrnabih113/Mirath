@@ -1,10 +1,14 @@
 import 'dart:io';
-import 'dart:math' as math;
+import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_markdown/flutter_markdown.dart';
 import 'package:hugeicons/hugeicons.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+
+import '../cubit/chatbot_cubit.dart';
+import 'animated_loading_status.dart';
 
 import '../../../../core/helpers/my_loaders.dart';
 import '../../../../core/helpers/responsive_helper.dart';
@@ -35,8 +39,6 @@ class MessageBubble extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final isTyping = message.id == 'typing';
-
     return Padding(
       padding: EdgeInsets.only(
         bottom: MySizes.spaceSm(context),
@@ -73,11 +75,85 @@ class MessageBubble extends StatelessWidget {
                         borderRadius: BorderRadius.circular(
                           ResponsiveHelper.responsiveValue(context, 7),
                         ),
-                        child: Image.file(
-                          File(message.imagePaths![index]),
-                          width: ResponsiveHelper.responsiveValue(context, 93),
-                          height: ResponsiveHelper.responsiveValue(context, 93),
-                          fit: BoxFit.cover,
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Image.file(
+                              File(message.imagePaths![index]),
+                              width: ResponsiveHelper.responsiveValue(
+                                context,
+                                93,
+                              ),
+                              height: ResponsiveHelper.responsiveValue(
+                                context,
+                                93,
+                              ),
+                              fit: BoxFit.cover,
+                            ),
+                            if (message.isUser &&
+                                message.uploadProgress != null)
+                              Builder(
+                                builder: (ctx) {
+                                  final path = message.imagePaths![index];
+                                  final prog =
+                                      message.uploadProgress![path] ?? 0.0;
+                                  if (prog <= 0.0 || prog >= 1.0)
+                                    return const SizedBox.shrink();
+                                  return Padding(
+                                    padding: const EdgeInsets.only(top: 6.0),
+                                    child: Column(
+                                      children: [
+                                        SizedBox(
+                                          width:
+                                              ResponsiveHelper.responsiveValue(
+                                                context,
+                                                93,
+                                              ),
+                                          child: Row(
+                                            children: [
+                                              Expanded(
+                                                child: LinearProgressIndicator(
+                                                  value: prog,
+                                                ),
+                                              ),
+                                              const SizedBox(width: 8),
+                                              Text(
+                                                '${(prog * 100).toStringAsFixed(0)}%',
+                                                style: Theme.of(
+                                                  context,
+                                                ).textTheme.bodySmall,
+                                              ),
+                                              const SizedBox(width: 6),
+                                              GestureDetector(
+                                                onTap: () {
+                                                  // cancel upload for this file
+                                                  try {
+                                                    // use Bloc to cancel
+                                                    // ignore: avoid_dynamic_calls
+                                                    final cubit = ctx
+                                                        .read<ChatbotCubit>();
+                                                    cubit.cancelUpload(path);
+                                                  } catch (_) {}
+                                                },
+                                                child: Icon(
+                                                  Icons.cancel_outlined,
+                                                  size:
+                                                      ResponsiveHelper.responsiveValue(
+                                                        context,
+                                                        16,
+                                                      ),
+                                                  color: MyColors.textSecondary,
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  );
+                                },
+                              ),
+                          ],
                         ),
                       ),
                     ),
@@ -85,277 +161,168 @@ class MessageBubble extends StatelessWidget {
                 ),
               ),
             ),
+
           Row(
             mainAxisAlignment: message.isUser
                 ? MainAxisAlignment.end
                 : MainAxisAlignment.start,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              message.isUser
-                  ? Flexible(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.end,
-                        children: [
-                          if (message.text.isNotEmpty)
-                            ConstrainedBox(
-                              constraints: BoxConstraints(
-                                maxWidth:
-                                    MediaQuery.of(context).size.width * 0.75,
-                              ),
-                              child: Container(
-                                padding: EdgeInsets.symmetric(
-                                  horizontal: MySizes.spaceMd(context),
-                                  vertical: MySizes.spaceSm(context),
+              if (message.isUser) ...[
+                Flexible(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.end,
+                    children: [
+                      if (message.text.isNotEmpty)
+                        ConstrainedBox(
+                          constraints: BoxConstraints(
+                            maxWidth: MediaQuery.of(context).size.width * 0.75,
+                          ),
+                          child: Container(
+                            padding: EdgeInsets.symmetric(
+                              horizontal: MySizes.spaceMd(context),
+                              vertical: MySizes.spaceSm(context),
+                            ),
+                            decoration: BoxDecoration(
+                              color: MyColors.primaryShade100,
+                              borderRadius: BorderRadius.only(
+                                topLeft: Radius.circular(
+                                  ResponsiveHelper.responsiveValue(context, 18),
                                 ),
-                                decoration: BoxDecoration(
-                                  color: MyColors.primaryShade100,
-                                  borderRadius: BorderRadius.only(
-                                    topLeft: Radius.circular(
-                                      ResponsiveHelper.responsiveValue(
-                                        context,
-                                        18,
-                                      ),
-                                    ),
-                                    topRight: Radius.circular(
-                                      ResponsiveHelper.responsiveValue(
-                                        context,
-                                        18,
-                                      ),
-                                    ),
-                                    bottomLeft: Radius.circular(
-                                      ResponsiveHelper.responsiveValue(
-                                        context,
-                                        18,
-                                      ),
-                                    ),
-                                    bottomRight: Radius.circular(
-                                      ResponsiveHelper.responsiveValue(
-                                        context,
-                                        4,
-                                      ),
-                                    ),
-                                  ),
+                                topRight: Radius.circular(
+                                  ResponsiveHelper.responsiveValue(context, 18),
                                 ),
-                                child: Text(
-                                  message.text,
-                                  style: context.bodyMedium.copyWith(
-                                    color: MyColors.textPrimary,
-                                    height: 1.5,
-                                    fontSize: ResponsiveHelper.responsiveValue(
-                                      context,
-                                      15,
-                                    ),
-                                  ),
+                                bottomLeft: Radius.circular(
+                                  ResponsiveHelper.responsiveValue(context, 18),
+                                ),
+                                bottomRight: Radius.circular(
+                                  ResponsiveHelper.responsiveValue(context, 4),
                                 ),
                               ),
                             ),
-                          if (message.text.isNotEmpty)
-                            Align(
-                              alignment: Alignment.centerRight,
-                              child: Transform.translate(
-                                offset: Offset(
-                                  0,
-                                  ResponsiveHelper.responsiveValue(
-                                    context,
-                                    -10,
-                                  ),
-                                ),
-                                child: CustomPaint(
-                                  painter: _BubbleTailPainter(
-                                    color: MyColors.primaryShade100,
-                                  ),
-                                  size: Size(
-                                    ResponsiveHelper.responsiveValue(
-                                      context,
-                                      10,
-                                    ),
-                                    ResponsiveHelper.responsiveValue(
-                                      context,
-                                      10,
-                                    ),
-                                  ),
+                            child: Text(
+                              message.text,
+                              style: context.bodyMedium.copyWith(
+                                color: MyColors.textPrimary,
+                                height: 1.5,
+                                fontSize: ResponsiveHelper.responsiveValue(
+                                  context,
+                                  15,
                                 ),
                               ),
                             ),
-                          // Pending indicator for user's outgoing messages
-                          if (message.isUser && message.isPending)
-                            Padding(
-                              padding: const EdgeInsets.only(top: 6.0),
-                              child: Row(
-                                mainAxisSize: MainAxisSize.min,
-                                children: [
-                                  SizedBox(
-                                    width: 12,
-                                    height: 12,
-                                    child: CircularProgressIndicator(
-                                      strokeWidth: 2,
-                                    ),
-                                  ),
-                                  const SizedBox(width: 8),
-                                  Text(
-                                    'Sending...',
-                                    style: Theme.of(
-                                      context,
-                                    ).textTheme.bodySmall,
-                                  ),
-                                ],
-                              ),
+                          ),
+                        ),
+                    ],
+                  ),
+                ),
+              ] else ...[
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      if (message.isError)
+                        _ErrorBubble(message: message, context: context)
+                      else if (message.loadingStatus != null &&
+                          message.loadingStatus!.isNotEmpty &&
+                          message.text.isEmpty)
+                        _LoadingStatusBubble(
+                          status: message.loadingStatus!,
+                          context: context,
+                        )
+                      else if (message.text.isNotEmpty)
+                        _TypewriterText(
+                          text: message.text,
+                          isStreaming: !message.isComplete,
+                          charactersPerSecond: 36,
+                          style: context.bodyMedium.copyWith(
+                            color: MyColors.textPrimary,
+                            height: 1.5,
+                            fontSize: ResponsiveHelper.responsiveValue(
+                              context,
+                              15,
                             ),
-                        ],
-                      ),
-                    )
-                  : Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          if (message.text.isNotEmpty || isTyping)
-                            Container(
-                              padding: EdgeInsets.symmetric(
-                                vertical: MySizes.spaceSm(context),
+                          ),
+                        ),
+                      if (message.isComplete && message.text.isNotEmpty)
+                        Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            IconButton(
+                              icon: HugeIcon(
+                                icon: HugeIcons.strokeRoundedCopy01,
+                                size: ResponsiveHelper.responsiveValue(
+                                  context,
+                                  16,
+                                ),
+                                color: MyColors.textSecondary,
                               ),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  if (isTyping)
-                                    const _TypingIndicator()
-                                  else ...[
-                                    MarkdownBody(
-                                      data: message.text,
-                                      styleSheet:
-                                          MarkdownStyleSheet.fromTheme(
-                                            Theme.of(context),
-                                          ).copyWith(
-                                            p: context.bodyMedium.copyWith(
-                                              color: MyColors.textPrimary,
-                                              height: 1.5,
-                                              fontSize:
-                                                  ResponsiveHelper.responsiveValue(
-                                                    context,
-                                                    15,
-                                                  ),
-                                            ),
-                                            h1: context.headlineSmall.copyWith(
-                                              color: MyColors.textPrimary,
-                                            ),
-                                            h2: context.titleLarge.copyWith(
-                                              color: MyColors.textPrimary,
-                                            ),
-                                            h3: context.titleMedium.copyWith(
-                                              color: MyColors.textPrimary,
-                                            ),
-                                            strong: context.bodyMedium.copyWith(
-                                              fontWeight: FontWeight.w700,
-                                              color: MyColors.textPrimary,
-                                            ),
-                                            em: context.bodyMedium.copyWith(
-                                              fontStyle: FontStyle.italic,
-                                              color: MyColors.textPrimary,
-                                            ),
-                                            blockquote: context.bodyMedium
-                                                .copyWith(
-                                                  color: MyColors.textSecondary,
-                                                ),
-                                            code: context.bodyMedium.copyWith(
-                                              fontFamily: 'monospace',
-                                              color: MyColors.textPrimary,
-                                            ),
-                                            listBullet: context.bodyMedium
-                                                .copyWith(
-                                                  color: MyColors.textPrimary,
-                                                ),
-                                          ),
-                                    ),
-                                    if (message.isComplete)
-                                      Row(
-                                        mainAxisSize: MainAxisSize.min,
-                                        children: [
-                                          IconButton(
-                                            icon: HugeIcon(
-                                              icon:
-                                                  HugeIcons.strokeRoundedCopy01,
-                                              size:
-                                                  ResponsiveHelper.responsiveValue(
-                                                    context,
-                                                    16,
-                                                  ),
-                                              color: MyColors.textSecondary,
-                                            ),
-                                            padding: EdgeInsets.zero,
-                                            onPressed: () {
-                                              Clipboard.setData(
-                                                ClipboardData(
-                                                  text: message.text,
-                                                ),
-                                              );
-                                              MyLoaders.customToast(
-                                                context: context,
-                                                message: 'Copied to clipboard',
-                                              );
-                                            },
-                                          ),
-                                          IconButton(
-                                            icon: Icon(
-                                              Icons.thumb_up,
-                                              size:
-                                                  ResponsiveHelper.responsiveValue(
-                                                    context,
-                                                    16,
-                                                  ),
-                                              color: MyColors.textSecondary,
-                                            ),
-                                            padding: EdgeInsets.zero,
-                                            onPressed: () {},
-                                          ),
-                                          IconButton(
-                                            icon: Icon(
-                                              Icons.thumb_down,
-                                              size:
-                                                  ResponsiveHelper.responsiveValue(
-                                                    context,
-                                                    16,
-                                                  ),
-                                              color: MyColors.textSecondary,
-                                            ),
-                                            padding: EdgeInsets.zero,
-                                            onPressed: () {},
-                                          ),
-                                          IconButton(
-                                            icon: HugeIcon(
-                                              icon: HugeIcons
-                                                  .strokeRoundedShare08,
-                                              size:
-                                                  ResponsiveHelper.responsiveValue(
-                                                    context,
-                                                    16,
-                                                  ),
-                                              color: MyColors.textSecondary,
-                                            ),
-                                            padding: EdgeInsets.zero,
-                                            onPressed: () {},
-                                          ),
-                                          IconButton(
-                                            icon: HugeIcon(
-                                              icon: HugeIcons
-                                                  .strokeRoundedMoreHorizontalCircle01,
-                                              size:
-                                                  ResponsiveHelper.responsiveValue(
-                                                    context,
-                                                    16,
-                                                  ),
-                                              color: MyColors.textSecondary,
-                                            ),
-                                            padding: EdgeInsets.zero,
-                                            onPressed: () {},
-                                          ),
-                                        ],
-                                      ),
-                                  ],
-                                ],
-                              ),
+                              padding: EdgeInsets.zero,
+                              onPressed: () {
+                                Clipboard.setData(
+                                  ClipboardData(text: message.text),
+                                );
+                                MyLoaders.customToast(
+                                  context: context,
+                                  message: 'Copied to clipboard',
+                                );
+                              },
                             ),
-                        ],
-                      ),
-                    ),
+                            IconButton(
+                              icon: Icon(
+                                Icons.thumb_up,
+                                size: ResponsiveHelper.responsiveValue(
+                                  context,
+                                  16,
+                                ),
+                                color: MyColors.textSecondary,
+                              ),
+                              padding: EdgeInsets.zero,
+                              onPressed: () {},
+                            ),
+                            IconButton(
+                              icon: Icon(
+                                Icons.thumb_down,
+                                size: ResponsiveHelper.responsiveValue(
+                                  context,
+                                  16,
+                                ),
+                                color: MyColors.textSecondary,
+                              ),
+                              padding: EdgeInsets.zero,
+                              onPressed: () {},
+                            ),
+                            IconButton(
+                              icon: HugeIcon(
+                                icon: HugeIcons.strokeRoundedShare08,
+                                size: ResponsiveHelper.responsiveValue(
+                                  context,
+                                  16,
+                                ),
+                                color: MyColors.textSecondary,
+                              ),
+                              padding: EdgeInsets.zero,
+                              onPressed: () {},
+                            ),
+                            IconButton(
+                              icon: HugeIcon(
+                                icon: HugeIcons
+                                    .strokeRoundedMoreHorizontalCircle01,
+                                size: ResponsiveHelper.responsiveValue(
+                                  context,
+                                  16,
+                                ),
+                                color: MyColors.textSecondary,
+                              ),
+                              padding: EdgeInsets.zero,
+                              onPressed: () {},
+                            ),
+                          ],
+                        ),
+                    ],
+                  ),
+                ),
+              ],
             ],
           ),
         ],
@@ -364,86 +331,194 @@ class MessageBubble extends StatelessWidget {
   }
 }
 
-class _BubbleTailPainter extends CustomPainter {
-  final Color color;
+class _TypewriterText extends StatefulWidget {
+  final String text;
+  final bool isStreaming;
+  final int charactersPerSecond;
+  final TextStyle style;
 
-  _BubbleTailPainter({required this.color});
-
-  @override
-  void paint(Canvas canvas, Size size) {
-    final paint = Paint()
-      ..color = color
-      ..style = PaintingStyle.fill;
-
-    final path = Path()
-      ..moveTo(0, 0)
-      ..lineTo(size.width, 0)
-      ..lineTo(size.width, size.height)
-      ..close();
-
-    canvas.drawPath(path, paint);
-  }
+  const _TypewriterText({
+    required this.text,
+    required this.isStreaming,
+    required this.charactersPerSecond,
+    required this.style,
+  });
 
   @override
-  bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
+  State<_TypewriterText> createState() => _TypewriterTextState();
 }
 
-class _TypingIndicator extends StatefulWidget {
-  const _TypingIndicator();
-
-  @override
-  State<_TypingIndicator> createState() => _TypingIndicatorState();
-}
-
-class _TypingIndicatorState extends State<_TypingIndicator>
-    with SingleTickerProviderStateMixin {
-  late final AnimationController _controller;
+class _TypewriterTextState extends State<_TypewriterText> {
+  Timer? _timer;
+  int _visibleCharacters = 0;
+  String _lastTarget = '';
+  late final int _intervalMs;
 
   @override
   void initState() {
     super.initState();
-    _controller = AnimationController(
-      vsync: this,
-      duration: const Duration(milliseconds: 900),
-    )..repeat();
+    _intervalMs = (1000 / widget.charactersPerSecond).round().clamp(16, 120);
+    _syncTarget(force: true);
+  }
+
+  @override
+  void didUpdateWidget(covariant _TypewriterText oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    _syncTarget();
+  }
+
+  void _syncTarget({bool force = false}) {
+    final target = widget.text;
+    final targetLength = target.length;
+
+    // If target hasn't changed and we've shown all characters, no need to update
+    if (!force && target == _lastTarget && _visibleCharacters >= targetLength) {
+      return;
+    }
+
+    _lastTarget = target;
+
+    if (widget.isStreaming) {
+      // If timer is already running and text has new content, keep it running
+      if (_timer != null && _timer!.isActive) {
+        // Already streaming, just ensure visible characters don't exceed target
+        if (_visibleCharacters > targetLength) {
+          setState(() {
+            _visibleCharacters = targetLength;
+          });
+        }
+        return;
+      }
+
+      // Start or restart the typewriter animation
+      _timer?.cancel();
+      _timer = Timer.periodic(Duration(milliseconds: _intervalMs), (timer) {
+        if (!mounted) {
+          timer.cancel();
+          return;
+        }
+        if (_visibleCharacters < widget.text.length) {
+          setState(() {
+            _visibleCharacters = (_visibleCharacters + 1).clamp(
+              0,
+              widget.text.length,
+            );
+          });
+        } else {
+          // All characters visible, keep timer running in case more arrive
+          // (timer continues but won't update since _visibleCharacters is clamped)
+        }
+      });
+
+      return;
+    }
+
+    // Not streaming - show all text immediately
+    _timer?.cancel();
+    if (_visibleCharacters != targetLength) {
+      setState(() {
+        _visibleCharacters = targetLength;
+      });
+    }
   }
 
   @override
   void dispose() {
-    _controller.dispose();
+    _timer?.cancel();
     super.dispose();
-  }
-
-  double _dotOpacity(int index) {
-    final phase = (_controller.value + (index * 0.2)) % 1.0;
-    return 0.3 + 0.7 * (0.5 + 0.5 * math.sin(2 * math.pi * phase));
   }
 
   @override
   Widget build(BuildContext context) {
-    return AnimatedBuilder(
-      animation: _controller,
-      builder: (context, child) {
-        return Row(
-          mainAxisSize: MainAxisSize.min,
-          children: List.generate(3, (index) {
-            return Padding(
-              padding: const EdgeInsets.only(right: 4),
-              child: Opacity(
-                opacity: _dotOpacity(index),
-                child: Container(
-                  width: 6,
-                  height: 6,
-                  decoration: BoxDecoration(
-                    color: MyColors.textSecondary,
-                    shape: BoxShape.circle,
-                  ),
+    final visibleText = widget.text.substring(
+      0,
+      _visibleCharacters.clamp(0, widget.text.length),
+    );
+
+    return MarkdownBody(
+      data: visibleText,
+      styleSheet: MarkdownStyleSheet.fromTheme(
+        Theme.of(context),
+      ).copyWith(p: widget.style),
+    );
+  }
+}
+
+class _LoadingStatusBubble extends StatelessWidget {
+  final String status;
+  final BuildContext context;
+
+  const _LoadingStatusBubble({required this.status, required this.context});
+
+  @override
+  Widget build(BuildContext context) {
+    return AnimatedLoadingStatus(
+      status: status,
+      style: context.bodyMedium.copyWith(
+        color: MyColors.primaryButton,
+        height: 1.5,
+        fontSize: ResponsiveHelper.responsiveValue(context, 15),
+      ),
+    );
+  }
+}
+
+class _ErrorBubble extends StatelessWidget {
+  final ChatMessage message;
+  final BuildContext context;
+
+  const _ErrorBubble({required this.message, required this.context});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: EdgeInsets.symmetric(
+        horizontal: MySizes.spaceMd(context),
+        vertical: MySizes.spaceSm(context),
+      ),
+      decoration: BoxDecoration(
+        color: const Color(0xFFFFEBEE),
+        borderRadius: BorderRadius.circular(
+          ResponsiveHelper.responsiveValue(context, 18),
+        ),
+        border: Border.all(
+          color: const Color(0xFFEF5350).withValues(alpha: 0.3),
+          width: 1,
+        ),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Icon(
+                Icons.warning_rounded,
+                size: ResponsiveHelper.responsiveValue(context, 18),
+                color: const Color(0xFFEF5350),
+              ),
+              SizedBox(width: MySizes.spaceXs(context)),
+              Text(
+                'Error',
+                style: context.bodyMedium.copyWith(
+                  color: const Color(0xFFEF5350),
+                  fontWeight: FontWeight.w600,
+                  fontSize: ResponsiveHelper.responsiveValue(context, 14),
                 ),
               ),
-            );
-          }),
-        );
-      },
+            ],
+          ),
+          SizedBox(height: MySizes.spaceXs(context)),
+          Text(
+            message.text,
+            style: context.bodyMedium.copyWith(
+              color: const Color(0xFFC62828),
+              height: 1.5,
+              fontSize: ResponsiveHelper.responsiveValue(context, 14),
+            ),
+          ),
+        ],
+      ),
     );
   }
 }
