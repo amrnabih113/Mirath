@@ -27,8 +27,10 @@ class MyConstants {
       'API_BASE_URL',
       defaultValue: '',
     );
-    return definedBaseUrl.isNotEmpty ? definedBaseUrl : "http://localhost:3000/";
-    //    : 'http://192.168.1.5:3000/';
+    return definedBaseUrl.isNotEmpty
+        ? definedBaseUrl
+        : // "http://localhost:3000/";
+          'http://10.0.2.2:3000/';
   }
 
   // When building the web app, use an HTTPS backend URL if the site is served
