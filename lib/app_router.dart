@@ -1,17 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
-import 'package:mirath/features/settings/presentation/screens/Privacy_Data_Control.dart';
 import 'package:mirath/features/settings/presentation/screens/account_management.dart';
 import 'package:mirath/features/settings/presentation/screens/account_security.dart';
 import 'package:mirath/features/settings/presentation/screens/change_email.dart';
 import 'package:mirath/features/settings/presentation/screens/change_username.dart';
 import 'package:mirath/features/settings/presentation/screens/feed_AI_preferences.dart';
 import 'package:mirath/features/settings/presentation/screens/notifications.dart';
+import 'package:mirath/features/settings/presentation/screens/privacy_data_control.dart';
 import 'package:mirath/features/settings/presentation/screens/reading_appearance.dart';
 import 'package:mirath/features/settings/presentation/screens/support_legal.dart';
 import 'package:mirath/features/settings/presentation/screens/update_password.dart';
-
 import 'core/constants/route_names.dart';
 import 'core/services/local_storage_service.dart';
 import 'core/utils/my_logger.dart';
@@ -838,7 +837,7 @@ final appRouter = GoRouter(
         return PageTransitions.smoothTransition(const AccountManagement());
       },
     ),
-     GoRoute(
+    GoRoute(
       path: RouteNames.changeUsername,
       pageBuilder: (context, state) {
         return PageTransitions.smoothTransition(const ChangeUsername());
