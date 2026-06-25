@@ -1,33 +1,46 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hugeicons/hugeicons.dart';
 import 'package:mirath/core/constants/route_names.dart';
 import 'package:mirath/core/utils/my_colors.dart';
 import 'package:mirath/core/utils/my_extenstions.dart';
-import 'package:mirath/features/auth/presentation/cubit/auth_cubit.dart';
-import 'package:mirath/generated/l10n.dart';
 
 //logout dialog
-void showLogoutDialog(BuildContext context) {
+void showLogoutDialog(
+  BuildContext context, {
+  required String title,
+  required String content,
+  required String fTextBtn,
+  required String sTextBtn,
+  required VoidCallback ontap,
+}) {
   showDialog(
     context: context,
-    builder: (dialogContext) => AlertDialog(
-      title: Text(S.of(context).sign_out),
-      content: Text(S.of(context).are_you_sure_you_want_to_sign_out),
-      actions: [
-        TextButton(
-          onPressed: () => Navigator.pop(dialogContext),
-          child: Text(S.of(context).cancel),
-        ),
-        TextButton(
-          onPressed: () {
-            Navigator.pop(dialogContext);
-            context.read<AuthCubit>().signOut();
-          },
-          child: Text(S.of(context).sign_out),
-        ),
-      ],
+    builder: (dialogContext) => Center(
+      child: AlertDialog(
+        actionsPadding: EdgeInsets.zero,
+        title: Text(title, textAlign: TextAlign.center),
+        content: Text(content, textAlign: TextAlign.center),
+        actions: [
+          const Divider(color: MyColors.grey, thickness: 1),
+          Center(
+            child: TextButton(
+              onPressed: ontap,
+              child: Text(
+                fTextBtn,
+                style: context.bodyLarge.copyWith(color: MyColors.error),
+              ),
+            ),
+          ),
+          const Divider(color: MyColors.grey, thickness: 1),
+          Center(
+            child: TextButton(
+              onPressed: () => Navigator.pop(dialogContext),
+              child: Text(sTextBtn),
+            ),
+          ),
+        ],
+      ),
     ),
   );
 }

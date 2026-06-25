@@ -8,6 +8,7 @@ import 'package:mirath/core/utils/my_extenstions.dart';
 import 'package:mirath/core/utils/my_sizes.dart';
 import 'package:mirath/features/common/widgets/my_back_icon.dart';
 import 'package:mirath/features/settings/presentation/widgets/account_tiles.dart';
+import 'package:mirath/features/settings/presentation/widgets/dialogs.dart';
 
 class AccountSecurity extends StatelessWidget {
   const AccountSecurity({super.key});
@@ -124,20 +125,21 @@ class AccountSecurity extends StatelessWidget {
                   addText: 'Current',
                   backColor: MyColors.success.withAlpha((255 * .7).toInt()),
                 ),
-                subtitle: 'Cairo, EG • 3 days ago', onTap: () {  },
+                subtitle: 'Cairo, EG • 3 days ago',
+                onTap: () {},
               ),
               Divider(color: MyColors.grey, thickness: 2),
               AccountTiles(
                 title: 'iPad mini',
                 subtitle: 'Cairo, EG • 3 months ago',
                 onTap: () {
-                  _showLogoutDialog(
+                  showLogoutDialog(
                     context,
                     title: 'Log out of device?',
                     content:
                         'Are you sure you want to log out of your iPad mini session in Cairo, EG?',
                     fTextBtn: 'Log out',
-                    sTextBtn: 'Cancel',
+                    sTextBtn: 'Cancel', ontap: () {  },
                   );
                 },
                 btnName: 'Log out',
@@ -148,13 +150,13 @@ class AccountSecurity extends StatelessWidget {
                 title: 'Log out of all other sessions',
                 subtitle: 'Log out of all session except current one',
                 onTap: () {
-                  _showLogoutDialog(
+                  showLogoutDialog(
                     context,
                     title: 'Log out all other sessions?',
                     content:
                         'You will remain logged in on this device, but will be securely signed out everywhere else.',
                     fTextBtn: 'Log out all',
-                    sTextBtn: 'Cancel',
+                    sTextBtn: 'Cancel', ontap: () {  },
                   );
                 },
                 btnName: 'Log out all',
@@ -162,44 +164,6 @@ class AccountSecurity extends StatelessWidget {
               ),
             ],
           ),
-        ),
-      ),
-    );
-  }
-
-  void _showLogoutDialog(
-    BuildContext context, {
-    required String title,
-    required String content,
-    required String fTextBtn,
-    required String sTextBtn,
-  }) {
-    showDialog(
-      context: context,
-      builder: (dialogContext) => Center(
-        child: AlertDialog(
-          actionsPadding: EdgeInsets.zero,
-          title: Text(title, textAlign: TextAlign.center),
-          content: Text(content, textAlign: TextAlign.center),
-          actions: [
-            const Divider(color: MyColors.grey, thickness: 1),
-            Center(
-              child: TextButton(
-                onPressed: () {},
-                child: Text(
-                  fTextBtn,
-                  style: context.bodyLarge.copyWith(color: MyColors.error),
-                ),
-              ),
-            ),
-            const Divider(color: MyColors.grey, thickness: 1),
-            Center(
-              child: TextButton(
-                onPressed: () => Navigator.pop(dialogContext),
-                child: Text(sTextBtn),
-              ),
-            ),
-          ],
         ),
       ),
     );

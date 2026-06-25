@@ -114,7 +114,17 @@ class SettingScreen extends StatelessWidget {
             Divider(color: MyColors.grey, thickness: 2),
             TextButton.icon(
               onPressed: () {
-                showLogoutDialog(context);
+                showLogoutDialog(
+                  context,
+                  title: S.of(context).sign_out,
+                  content: S.of(context).are_you_sure_you_want_to_sign_out,
+                  fTextBtn: S.of(context).sign_out,
+                  sTextBtn: S.of(context).cancel,
+                  ontap: () {
+                    Navigator.pop(context);
+                    context.read<AuthCubit>().signOut();
+                  },
+                );
               },
               icon: HugeIcon(
                 icon: HugeIcons.strokeRoundedLogout02,
