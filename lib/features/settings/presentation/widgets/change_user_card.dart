@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:mirath/core/utils/my_colors.dart';
 import 'package:mirath/core/utils/my_extenstions.dart';
 import 'package:mirath/core/utils/my_sizes.dart';
+import 'package:mirath/features/settings/presentation/widgets/setting_text_field.dart';
 
 class ChangeUserCard extends StatelessWidget {
   const ChangeUserCard({
@@ -27,22 +28,7 @@ class ChangeUserCard extends StatelessWidget {
         children: [
           Text(label, style: context.bodyLarge.copyWith(fontSize: 24)),
           SizedBox(height: MySizes.spaceXl(context)),
-          TextField(
-            cursorColor: MyColors.primaryColor,
-            controller: controller,
-            decoration: InputDecoration(
-              hintText: hintText,
-              enabledBorder: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(12),
-                borderSide: BorderSide(color: MyColors.primaryShade800),
-              ),
-              focusedBorder: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(12),
-                borderSide: BorderSide(color: MyColors.primaryShade800),
-              ),
-            ),
-          ),
-
+          SettingsTextField(controller: controller, hintText: hintText),
           SizedBox(height: MySizes.spaceXl(context)),
           TextButton(
             onPressed: controller.text.isEmpty ? null : onPressed,

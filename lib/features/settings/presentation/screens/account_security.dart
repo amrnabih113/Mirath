@@ -124,7 +124,7 @@ class AccountSecurity extends StatelessWidget {
                   addText: 'Current',
                   backColor: MyColors.success.withAlpha((255 * .7).toInt()),
                 ),
-                subtitle: 'Cairo, EG • 3 days ago',
+                subtitle: 'Cairo, EG • 3 days ago', onTap: () {  },
               ),
               Divider(color: MyColors.grey, thickness: 2),
               AccountTiles(

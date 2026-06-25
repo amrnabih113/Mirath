@@ -10,11 +10,11 @@ class ChangeUsername extends StatefulWidget {
 }
 
 class _ChangeUsernameState extends State<ChangeUsername> {
-  TextEditingController usernameController = TextEditingController();
+  final TextEditingController _usernameController = TextEditingController();
   @override
   void initState() {
     super.initState();
-    usernameController.addListener(() {
+    _usernameController.addListener(() {
       setState(() {});
     });
   }
@@ -26,7 +26,7 @@ class _ChangeUsernameState extends State<ChangeUsername> {
       body: ChangeUserCard(
         label: 'Change Username',
         hintText: 'Enter your new username',
-        controller: usernameController,
+        controller: _usernameController,
         onPressed: () {},
         btnName: 'Change Username',
       ),

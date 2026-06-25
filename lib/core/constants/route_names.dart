@@ -13,6 +13,9 @@ class RouteNames {
   static const String verifyResetOtp = '/verify-reset-otp';
   static const String resetPassword = '/reset-password';
   static const String updatePassword = '/update-password';
+  static const String verifyIdentity = '/verify-identity';
+  static const String deleteAccount = '/delete-account';
+  static const String deactiveAccount = '/deactive-account';
 
   // ===================== PROFILE SETUP =====================
   static const String setupProfile = '/set-up-profile';

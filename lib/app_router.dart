@@ -5,6 +5,9 @@ import 'package:mirath/features/settings/presentation/screens/account_management
 import 'package:mirath/features/settings/presentation/screens/account_security.dart';
 import 'package:mirath/features/settings/presentation/screens/change_email.dart';
 import 'package:mirath/features/settings/presentation/screens/change_username.dart';
+import 'package:mirath/features/settings/presentation/screens/deactive_account.dart';
+import 'package:mirath/features/settings/presentation/screens/verify_identity.dart';
+import 'package:mirath/features/settings/presentation/screens/delete_account.dart';
 import 'package:mirath/features/settings/presentation/screens/feed_AI_preferences.dart';
 import 'package:mirath/features/settings/presentation/screens/notifications.dart';
 import 'package:mirath/features/settings/presentation/screens/privacy_data_control.dart';
@@ -853,6 +856,29 @@ final appRouter = GoRouter(
       path: RouteNames.updatePassword,
       pageBuilder: (context, state) {
         return PageTransitions.smoothTransition(const UpdatePassword());
+      },
+    ),
+    GoRoute(
+      path: RouteNames.verifyIdentity,
+      pageBuilder: (context, state) {
+        final nextRoute =
+            state.extra as String? ?? RouteNames.privacyDataControl;
+
+        return PageTransitions.smoothTransition(
+          VerifyIdentity(nextRoute: nextRoute),
+        );
+      },
+    ),
+    GoRoute(
+      path: RouteNames.deleteAccount,
+      pageBuilder: (context, state) {
+        return PageTransitions.smoothTransition(const DeleteAccount());
+      },
+    ),
+    GoRoute(
+      path: RouteNames.deactiveAccount,
+      pageBuilder: (context, state) {
+        return PageTransitions.smoothTransition(const DeactiveAccount());
       },
     ),
 

@@ -5,6 +5,7 @@ import 'package:hugeicons/hugeicons.dart';
 import 'package:mirath/core/constants/route_names.dart';
 import 'package:mirath/core/utils/my_colors.dart';
 import 'package:mirath/features/auth/presentation/cubit/auth_cubit.dart';
+import 'package:mirath/features/settings/presentation/widgets/dialogs.dart';
 import '../../../../core/utils/my_extenstions.dart';
 import '../../../../core/utils/my_sizes.dart';
 import '../../../common/widgets/my_back_icon.dart';
@@ -113,7 +114,7 @@ class SettingScreen extends StatelessWidget {
             Divider(color: MyColors.grey, thickness: 2),
             TextButton.icon(
               onPressed: () {
-                _showLogoutDialog(context);
+                showLogoutDialog(context);
               },
               icon: HugeIcon(
                 icon: HugeIcons.strokeRoundedLogout02,
@@ -127,29 +128,6 @@ class SettingScreen extends StatelessWidget {
             ),
           ],
         ),
-      ),
-    );
-  }
-
-  void _showLogoutDialog(BuildContext context) {
-    showDialog(
-      context: context,
-      builder: (dialogContext) => AlertDialog(
-        title: Text(S.of(context).sign_out),
-        content: Text(S.of(context).are_you_sure_you_want_to_sign_out),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(dialogContext),
-            child: Text(S.of(context).cancel),
-          ),
-          TextButton(
-            onPressed: () {
-              Navigator.pop(dialogContext);
-              context.read<AuthCubit>().signOut();
-            },
-            child: Text(S.of(context).sign_out),
-          ),
-        ],
       ),
     );
   }

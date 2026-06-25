@@ -3,6 +3,7 @@ import 'package:mirath/core/utils/my_colors.dart';
 import 'package:mirath/core/utils/my_extenstions.dart';
 import 'package:mirath/core/utils/my_sizes.dart';
 import 'package:mirath/features/common/widgets/my_back_icon.dart';
+import 'package:mirath/features/settings/presentation/widgets/setting_text_field.dart';
 
 class UpdatePassword extends StatefulWidget {
   const UpdatePassword({super.key});
@@ -12,18 +13,28 @@ class UpdatePassword extends StatefulWidget {
 }
 
 class _UpdatePasswordState extends State<UpdatePassword> {
-  TextEditingController currentPasswordController = TextEditingController();
-  TextEditingController newPasswordController = TextEditingController();
-  TextEditingController confirmPasswordController = TextEditingController();
+  final TextEditingController _currentPasswordController =
+      TextEditingController();
+  final TextEditingController _newPasswordController = TextEditingController();
+  final TextEditingController _confirmPasswordController =
+      TextEditingController();
   @override
   void initState() {
     super.initState();
-    newPasswordController.addListener(() {
+    _newPasswordController.addListener(() {
       setState(() {});
     });
-    confirmPasswordController.addListener(() {
+    _confirmPasswordController.addListener(() {
       setState(() {});
     });
+  }
+
+  @override
+  void dispose() {
+    _currentPasswordController.dispose();
+    _newPasswordController.dispose();
+    _confirmPasswordController.dispose();
+    super.dispose();
   }
 
   @override
@@ -40,55 +51,19 @@ class _UpdatePasswordState extends State<UpdatePassword> {
               style: context.bodyLarge.copyWith(fontSize: 24),
             ),
             SizedBox(height: MySizes.spaceXl(context)),
-            TextField(
-              cursorColor: MyColors.primaryColor,
-              controller: currentPasswordController,
-              obscureText: true,
-              decoration: InputDecoration(
-                hintText: 'your current password',
-                enabledBorder: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(12),
-                  borderSide: BorderSide(color: MyColors.primaryShade800),
-                ),
-                focusedBorder: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(12),
-                  borderSide: BorderSide(color: MyColors.primaryShade800),
-                ),
-              ),
+            SettingsTextField(
+              controller: _currentPasswordController,
+              hintText: 'your current password',
             ),
             SizedBox(height: MySizes.spaceMd(context)),
-            TextField(
-              cursorColor: MyColors.primaryColor,
-              controller: newPasswordController,
-              obscureText: true,
-              decoration: InputDecoration(
-                hintText: 'your new password',
-                enabledBorder: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(12),
-                  borderSide: BorderSide(color: MyColors.primaryShade800),
-                ),
-                focusedBorder: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(12),
-                  borderSide: BorderSide(color: MyColors.primaryShade800),
-                ),
-              ),
+            SettingsTextField(
+              controller: _newPasswordController,
+              hintText: 'your new password',
             ),
             SizedBox(height: MySizes.spaceMd(context)),
-            TextField(
-              cursorColor: MyColors.primaryColor,
-              controller: confirmPasswordController,
-              obscureText: true,
-              decoration: InputDecoration(
-                hintText: 'Confirm password',
-                enabledBorder: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(12),
-                  borderSide: BorderSide(color: MyColors.primaryShade800),
-                ),
-                focusedBorder: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(12),
-                  borderSide: BorderSide(color: MyColors.primaryShade800),
-                ),
-              ),
+            SettingsTextField(
+              controller: _confirmPasswordController,
+              hintText: 'Confirm password',
             ),
             SizedBox(height: MySizes.spaceMd(context)),
             Align(
@@ -108,18 +83,18 @@ class _UpdatePasswordState extends State<UpdatePassword> {
 
             TextButton(
               onPressed:
-                  newPasswordController.text !=
-                          confirmPasswordController.text ||
-                      newPasswordController.text.isEmpty
+                  _newPasswordController.text !=
+                          _confirmPasswordController.text ||
+                      _newPasswordController.text.isEmpty
                   ? null
                   : () {
                       // Handle password update logic here
                     },
               style: TextButton.styleFrom(
                 backgroundColor:
-                    newPasswordController.text ==
-                            confirmPasswordController.text &&
-                        newPasswordController.text.isNotEmpty
+                    _newPasswordController.text ==
+                            _confirmPasswordController.text &&
+                        _newPasswordController.text.isNotEmpty
                     ? MyColors.primaryShade800
                     : MyColors.primaryShade800.withAlpha((255 * 0.5).toInt()),
               ),

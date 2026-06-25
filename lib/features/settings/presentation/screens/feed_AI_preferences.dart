@@ -6,6 +6,7 @@ import 'package:mirath/core/utils/my_sizes.dart';
 import 'package:mirath/features/common/widgets/my_back_icon.dart';
 import 'package:mirath/features/common/widgets/tag_chip.dart';
 import 'package:mirath/features/settings/presentation/widgets/account_tiles.dart';
+import 'package:mirath/features/settings/presentation/widgets/dialogs.dart';
 import 'package:mirath/features/settings/presentation/widgets/feed_tiles.dart';
 
 class FeedAiPreferences extends StatefulWidget {
@@ -176,8 +177,9 @@ class _FeedAiPreferencesState extends State<FeedAiPreferences> {
                 title: 'Clear search history',
                 subtitle: 'Removes all past searches from your account',
                 onTap: () {
-                  _showLogoutDialog(
+                  showMyDialog(
                     context,
+                    onConfirm: () {},
                     title: 'Clear history?',
                     content:
                         'This will delete all past searches from your account. You won’t be able to get them back.',
@@ -191,44 +193,6 @@ class _FeedAiPreferencesState extends State<FeedAiPreferences> {
               Divider(color: MyColors.grey, thickness: 2),
             ],
           ),
-        ),
-      ),
-    );
-  }
-
-  void _showLogoutDialog(
-    BuildContext context, {
-    required String title,
-    required String content,
-    required String fTextBtn,
-    required String sTextBtn,
-  }) {
-    showDialog(
-      context: context,
-      builder: (dialogContext) => Center(
-        child: AlertDialog(
-          actionsPadding: EdgeInsets.zero,
-          title: Text(title, textAlign: TextAlign.center),
-          content: Text(content, textAlign: TextAlign.center),
-          actions: [
-            const Divider(color: MyColors.grey, thickness: 1),
-            Center(
-              child: TextButton(
-                onPressed: () {},
-                child: Text(
-                  fTextBtn,
-                  style: context.bodyLarge.copyWith(color: MyColors.error),
-                ),
-              ),
-            ),
-            const Divider(color: MyColors.grey, thickness: 1),
-            Center(
-              child: TextButton(
-                onPressed: () => Navigator.pop(dialogContext),
-                child: Text(sTextBtn),
-              ),
-            ),
-          ],
         ),
       ),
     );

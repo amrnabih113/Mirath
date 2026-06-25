@@ -16,8 +16,10 @@ class AccountTiles extends StatelessWidget {
     this.textColor,
     this.titleWidget,
     this.isClicked = false,
+    this.buttonIcon,
   });
   final List<List<dynamic>>? icon;
+  final List<List<dynamic>>? buttonIcon;
   final String? title;
   final Widget? titleWidget;
   final String? subtitle;
@@ -57,7 +59,7 @@ class AccountTiles extends StatelessWidget {
                   ),
                 )
               : null),
-      trailing: btnName != null || onTap != null
+      trailing: btnName != null
           ? TextButton(
               style: TextButton.styleFrom(
                 backgroundColor: isClicked
@@ -67,18 +69,30 @@ class AccountTiles extends StatelessWidget {
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(35),
                 ),
-                // backgroundColor: MyColors.primaryShade900,
               ),
               onPressed: onTap,
-              child: Text(
-                btnName ?? '',
-                style: context.bodyLarge.copyWith(
-                  fontSize: 14,
-                  fontWeight: FontWeight.w400,
-                  color: isClicked
-                      ? MyColors.primaryShade200
-                      : textColor ?? MyColors.primaryShade900,
-                ),
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text(
+                    btnName ?? '',
+                    style: context.bodyLarge.copyWith(
+                      fontSize: 14,
+                      fontWeight: FontWeight.w400,
+                      color: isClicked
+                          ? MyColors.primaryShade200
+                          : textColor ?? MyColors.primaryShade900,
+                    ),
+                  ),
+
+                  if (buttonIcon != null) ...[
+                    const SizedBox(width: 4),
+                    HugeIcon(
+                      icon: buttonIcon!,
+                      size: MySizes.iconSmall(context),
+                    ),
+                  ],
+                ],
               ),
             )
           : null,

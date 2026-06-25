@@ -10,13 +10,19 @@ class ChangeEmail extends StatefulWidget {
 }
 
 class _ChangeEmailState extends State<ChangeEmail> {
-  TextEditingController emailController = TextEditingController();
+   final TextEditingController _emailController = TextEditingController();
   @override
   void initState() {
     super.initState();
-    emailController.addListener(() {
+    _emailController.addListener(() {
       setState(() {});
     });
+  }
+
+  @override
+  void dispose() {
+    _emailController.dispose();
+    super.dispose();
   }
 
   @override
@@ -26,7 +32,7 @@ class _ChangeEmailState extends State<ChangeEmail> {
       body: ChangeUserCard(
         label: 'Change Email',
         hintText: 'Enter your new email',
-        controller: emailController,
+        controller: _emailController,
         onPressed: () {},
         btnName: 'Change Email',
       ),

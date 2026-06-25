@@ -14,7 +14,12 @@ class Notifications extends StatefulWidget {
 }
 
 class _NotificationsState extends State<Notifications> {
-  bool _enable = true;
+  bool newPaper = true;
+  bool readingList = true;
+  bool newFollower = true;
+  bool discusReplie = true;
+  bool comment = true;
+  bool votes = true;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -47,10 +52,10 @@ class _NotificationsState extends State<Notifications> {
                 subtitle:
                     'Weekly digest of new publications matching your interests',
                 trailing: Switch(
-                  value: _enable,
+                  value: newPaper,
                   onChanged: (value) {
                     setState(() {
-                      _enable = value;
+                      newPaper = value;
                     });
                   },
                 ),
@@ -60,10 +65,10 @@ class _NotificationsState extends State<Notifications> {
                 title: 'Reading list activity',
                 subtitle: 'When someone saves your public reading lists',
                 trailing: Switch(
-                  value: _enable,
+                  value: readingList,
                   onChanged: (value) {
                     setState(() {
-                      _enable = value;
+                      readingList = value;
                     });
                   },
                 ),
@@ -80,10 +85,10 @@ class _NotificationsState extends State<Notifications> {
                 title: 'New followers',
                 subtitle: 'When someone follows you',
                 trailing: Switch(
-                  value: _enable,
+                  value: newFollower,
                   onChanged: (value) {
                     setState(() {
-                      _enable = value;
+                      newFollower = value;
                     });
                   },
                 ),
@@ -93,10 +98,10 @@ class _NotificationsState extends State<Notifications> {
                 title: 'Discussion replies',
                 subtitle: 'When someone replies to your discussions',
                 trailing: Switch(
-                  value: _enable,
+                  value: discusReplie,
                   onChanged: (value) {
                     setState(() {
-                      _enable = value;
+                      discusReplie = value;
                     });
                   },
                 ),
@@ -106,10 +111,10 @@ class _NotificationsState extends State<Notifications> {
                 title: 'Comment mentions',
                 subtitle: 'When someone mentions you in comments',
                 trailing: Switch(
-                  value: _enable,
+                  value: comment,
                   onChanged: (value) {
                     setState(() {
-                      _enable = value;
+                      comment = value;
                     });
                   },
                 ),
@@ -119,10 +124,10 @@ class _NotificationsState extends State<Notifications> {
                 title: 'Votes on your content',
                 subtitle: 'Upvotes on your discussions and comments',
                 trailing: Switch(
-                  value: _enable,
+                  value: votes,
                   onChanged: (value) {
                     setState(() {
-                      _enable = value;
+                      votes = value;
                     });
                   },
                 ),
