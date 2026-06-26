@@ -13,7 +13,7 @@ final class ProfileLoading extends ProfileState {}
 
 final class ProfileLoadSuccess extends ProfileState {
   final User user;
-  ProfileLoadSuccess({required this.user});
+  const ProfileLoadSuccess({required this.user});
 
   @override
   List<Object?> get props => [user];
@@ -23,7 +23,7 @@ final class ProfileUpdating extends ProfileState {}
 
 final class ProfileUpdateSuccess extends ProfileState {
   final User user;
-  ProfileUpdateSuccess({required this.user});
+  const ProfileUpdateSuccess({required this.user});
 
   @override
   List<Object?> get props => [user];
@@ -31,7 +31,7 @@ final class ProfileUpdateSuccess extends ProfileState {
 
 final class ProfileFailure extends ProfileState {
   final String message;
-  ProfileFailure({required this.message});
+  const ProfileFailure({required this.message});
 
   @override
   List<Object?> get props => [message];

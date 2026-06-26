@@ -9,6 +9,7 @@ import 'package:mirath/core/utils/my_sizes.dart';
 import 'package:mirath/features/common/widgets/my_back_icon.dart';
 import 'package:mirath/features/settings/presentation/widgets/account_tiles.dart';
 import 'package:mirath/features/settings/presentation/widgets/dialogs.dart';
+import 'package:mirath/features/settings/presentation/widgets/special_text.dart';
 
 class AccountSecurity extends StatelessWidget {
   const AccountSecurity({super.key});
@@ -83,7 +84,6 @@ class AccountSecurity extends StatelessWidget {
                 subtitle: 'Sign in with your Google account',
                 onTap: () {},
                 btnName: 'Disconnect',
-                isClicked: true,
               ),
               Divider(color: MyColors.grey, thickness: 2),
               AccountTiles(
@@ -92,6 +92,7 @@ class AccountSecurity extends StatelessWidget {
                 subtitle: 'Sign in with your Apple account',
                 onTap: () {},
                 btnName: 'connect',
+                isClicked: true,
               ),
               Divider(color: MyColors.grey, thickness: 2),
               Text(
@@ -103,9 +104,14 @@ class AccountSecurity extends StatelessWidget {
               ),
               AccountTiles(
                 title: 'Two-factor authentication',
-                subtitleWidget: const SpecialText(
+                subtitleWidget: SpecialText(
                   text: 'Add a second verification step',
                   addText: 'Recommended',
+                  style: context.bodyLarge.copyWith(
+                    fontSize: 14,
+                    color: const Color(0xff333333),
+                    fontWeight: FontWeight.w400,
+                  ),
                 ),
                 onTap: () {},
                 btnName: 'Enable',
@@ -115,7 +121,7 @@ class AccountSecurity extends StatelessWidget {
               Text(
                 'Active sessions',
                 style: context.bodyLarge.copyWith(
-                  fontSize: 20,
+                  fontSize: 16,
                   fontWeight: FontWeight.w400,
                 ),
               ),
@@ -124,14 +130,21 @@ class AccountSecurity extends StatelessWidget {
                   text: 'iPhone 13',
                   addText: 'Current',
                   backColor: MyColors.success.withAlpha((255 * .7).toInt()),
+                  style: context.bodyLarge.copyWith(
+                    fontSize: 16,
+                    fontWeight: FontWeight.w500,
+                  ),
                 ),
-                subtitle: 'Cairo, EG • 3 days ago',
+                subtitleWidget: DeviceLocation(title: 'Cairo, EG • 3 days ago'),
+
                 onTap: () {},
               ),
               Divider(color: MyColors.grey, thickness: 2),
               AccountTiles(
                 title: 'iPad mini',
-                subtitle: 'Cairo, EG • 3 months ago',
+                subtitleWidget: DeviceLocation(
+                  title: 'Cairo, EG • 3 months ago',
+                ),
                 onTap: () {
                   showLogoutDialog(
                     context,
@@ -139,7 +152,8 @@ class AccountSecurity extends StatelessWidget {
                     content:
                         'Are you sure you want to log out of your iPad mini session in Cairo, EG?',
                     fTextBtn: 'Log out',
-                    sTextBtn: 'Cancel', ontap: () {  },
+                    sTextBtn: 'Cancel',
+                    ontap: () {},
                   );
                 },
                 btnName: 'Log out',
@@ -156,7 +170,8 @@ class AccountSecurity extends StatelessWidget {
                     content:
                         'You will remain logged in on this device, but will be securely signed out everywhere else.',
                     fTextBtn: 'Log out all',
-                    sTextBtn: 'Cancel', ontap: () {  },
+                    sTextBtn: 'Cancel',
+                    ontap: () {},
                   );
                 },
                 btnName: 'Log out all',
@@ -170,45 +185,27 @@ class AccountSecurity extends StatelessWidget {
   }
 }
 
-class SpecialText extends StatelessWidget {
-  const SpecialText({
-    super.key,
-    required this.text,
-    required this.addText,
-    this.backColor,
-  });
-  final String text;
-  final String addText;
-  final Color? backColor;
+class DeviceLocation extends StatelessWidget {
+  const DeviceLocation({super.key, required this.title});
+  final String title;
   @override
   Widget build(BuildContext context) {
-    return RichText(
-      text: TextSpan(
-        style: Theme.of(context).textTheme.bodySmall,
-        children: [
-          TextSpan(text: text, style: context.bodyLarge.copyWith(fontSize: 14)),
-
-          WidgetSpan(
-            alignment: PlaceholderAlignment.middle,
-            child: Container(
-              padding: MySizes.paddingSm(context) * .5,
-              margin: const EdgeInsets.only(left: 4),
-              decoration: BoxDecoration(
-                color: backColor ?? MyColors.primaryShade200,
-                borderRadius: BorderRadius.circular(8),
-              ),
-              child: Text(
-                addText,
-                style: TextStyle(
-                  color: MyColors.primaryShade900,
-                  fontSize: 11,
-                  fontWeight: FontWeight.w600,
-                ),
-              ),
-            ),
+    return Row(
+      children: [
+        HugeIcon(
+          icon: HugeIcons.strokeRoundedLocation01,
+          size: MySizes.iconSmall(context) * .8,
+        ),
+        SizedBox(width: 4),
+        Text(
+          title,
+          style: context.bodyLarge.copyWith(
+            fontSize: 14,
+            fontWeight: FontWeight.w400,
+            color: const Color(0xff333333),
           ),
-        ],
-      ),
+        ),
+      ],
     );
   }
 }

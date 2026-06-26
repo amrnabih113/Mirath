@@ -5,7 +5,7 @@ import 'package:mirath/core/utils/my_colors.dart';
 import 'package:mirath/core/utils/my_extenstions.dart';
 import 'package:mirath/core/utils/my_sizes.dart';
 import 'package:mirath/features/common/widgets/my_back_icon.dart';
-import 'package:mirath/features/settings/presentation/widgets/color_picker.dart';
+import 'package:mirath/features/settings/presentation/widgets/color_palette.dart';
 import 'package:mirath/features/settings/presentation/widgets/reading_tile.dart';
 
 class ReadingAppearance extends StatefulWidget {

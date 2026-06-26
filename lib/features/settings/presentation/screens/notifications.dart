@@ -5,6 +5,7 @@ import 'package:mirath/core/utils/my_extenstions.dart';
 import 'package:mirath/core/utils/my_sizes.dart';
 import 'package:mirath/features/common/widgets/my_back_icon.dart';
 import 'package:mirath/features/settings/presentation/widgets/feed_tiles.dart';
+import 'package:mirath/features/settings/presentation/widgets/special_text.dart';
 
 class Notifications extends StatefulWidget {
   const Notifications({super.key});
@@ -143,14 +144,9 @@ class _NotificationsState extends State<Notifications> {
               FeedTiles(
                 title: 'Security alerts',
                 subtitle: 'New logins and suspicious activity',
-                trailing: Container(
-                  padding: EdgeInsets.symmetric(horizontal: 8),
-
-                  decoration: BoxDecoration(
-                    color: Colors.orange[300],
-                    borderRadius: BorderRadius.circular(16),
-                  ),
-                  child: Text('Always on', style: context.bodyMedium),
+                trailing: SpecialText(
+                  addText: 'Always on',
+                  backColor: Color(0xffFFC966),
                 ),
               ),
             ],

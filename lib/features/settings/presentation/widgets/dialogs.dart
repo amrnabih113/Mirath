@@ -158,10 +158,7 @@ void showButtonDialog(
             children: [
               ListTile(
                 onTap: () {
-                  context.push(
-                    RouteNames.verifyIdentity,
-                    extra: RouteNames.privacyDataControl,
-                  );
+                  context.push(RouteNames.verifyIdentity);
                 },
                 title: Text(tilesName[index]),
                 trailing: const HugeIcon(

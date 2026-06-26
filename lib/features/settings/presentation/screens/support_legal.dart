@@ -5,7 +5,6 @@ import 'package:mirath/core/utils/my_colors.dart';
 import 'package:mirath/core/utils/my_extenstions.dart';
 import 'package:mirath/core/utils/my_sizes.dart';
 import 'package:mirath/features/common/widgets/my_back_icon.dart';
-import 'package:mirath/features/settings/presentation/screens/account_security.dart';
 import 'package:mirath/features/settings/presentation/widgets/account_tiles.dart';
 
 class SupportLegal extends StatelessWidget {

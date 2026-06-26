@@ -62,6 +62,7 @@ class AccountTiles extends StatelessWidget {
       trailing: btnName != null
           ? TextButton(
               style: TextButton.styleFrom(
+                minimumSize: Size(64, 28),
                 backgroundColor: isClicked
                     ? MyColors.primaryShade900
                     : Colors.transparent,
