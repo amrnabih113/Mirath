@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:mirath/core/ui/widgets/my_app_bar.dart';
 import 'package:mirath/core/utils/my_colors.dart';
+import 'package:mirath/core/utils/my_enums.dart';
 import 'package:mirath/core/utils/my_extenstions.dart';
 import 'package:mirath/core/utils/my_sizes.dart';
 import 'package:mirath/features/common/widgets/my_back_icon.dart';
@@ -135,7 +136,15 @@ class _PrivacyDataControlState extends State<PrivacyDataControl> {
                   showButtonDialog(
                     context,
                     title: 'Export your reading lists as',
-                    tilesName: ['BibTex', 'JSON', 'CSV'],
+                    tilesName: ExportListFormate.values
+                        .map(
+                          (formate) => switch (formate) {
+                            ExportListFormate.bibtex => 'BibTex',
+                            ExportListFormate.json => 'json',
+                            ExportListFormate.csv => 'CSV',
+                          },
+                        )
+                        .toList(),
                   );
                 },
               ),
@@ -149,7 +158,14 @@ class _PrivacyDataControlState extends State<PrivacyDataControl> {
                   showButtonDialog(
                     context,
                     title: 'Export your annotations & notes as',
-                    tilesName: ['Markdown', 'JSON'],
+                    tilesName: ExportAnnotationsFormate.values
+                        .map(
+                          (formate) => switch (formate) {
+                            ExportAnnotationsFormate.markdown => 'Markdown',
+                            ExportAnnotationsFormate.json => 'json',
+                          },
+                        )
+                        .toList(),
                   );
                 },
               ),

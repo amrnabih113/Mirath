@@ -1,6 +1,34 @@
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:get_it/get_it.dart';
 import 'package:dio/dio.dart';
+import 'package:mirath/features/settings/data/data-sources/settings__remote_data_source_impl.dart';
+import 'package:mirath/features/settings/data/data-sources/settings_remote_data_source.dart';
+import 'package:mirath/features/settings/data/repositories/settings_repository_impl.dart';
+import 'package:mirath/features/settings/domain/repositories/setting_repository.dart';
+import 'package:mirath/features/settings/domain/usecases/change_email_usecase.dart';
+import 'package:mirath/features/settings/domain/usecases/change_username_usecase.dart';
+import 'package:mirath/features/settings/domain/usecases/confirn_email_usecase.dart';
+import 'package:mirath/features/settings/domain/usecases/deactive_account_usecase.dart';
+import 'package:mirath/features/settings/domain/usecases/delete_account_usecase.dart';
+import 'package:mirath/features/settings/domain/usecases/disconnect_google_account_usecase.dart';
+import 'package:mirath/features/settings/domain/usecases/export_annotations_and_notes_usecase.dart';
+import 'package:mirath/features/settings/domain/usecases/export_reading_list_as_file_usecase.dart';
+import 'package:mirath/features/settings/domain/usecases/get_all_active_session_usecase.dart';
+import 'package:mirath/features/settings/domain/usecases/get_feed_ai_preference_usecase.dart';
+import 'package:mirath/features/settings/domain/usecases/get_notification_preference_usecase.dart';
+import 'package:mirath/features/settings/domain/usecases/get_privacy_settings_usecase.dart';
+import 'package:mirath/features/settings/domain/usecases/get_reading_and_appearance_usecase.dart';
+import 'package:mirath/features/settings/domain/usecases/get_research_interest_usecase.dart';
+import 'package:mirath/features/settings/domain/usecases/initiate_full_account_data_export_usecase.dart';
+import 'package:mirath/features/settings/domain/usecases/replace_research_interest_usecase.dart';
+import 'package:mirath/features/settings/domain/usecases/revoke_all_active_session_except_current_usecase.dart';
+import 'package:mirath/features/settings/domain/usecases/update_feed_ai_preference_usecase.dart';
+import 'package:mirath/features/settings/domain/usecases/update_notification_preference_usecase.dart';
+import 'package:mirath/features/settings/domain/usecases/update_password_usecase.dart';
+import 'package:mirath/features/settings/domain/usecases/update_privacy_settings_usecase.dart';
+import 'package:mirath/features/settings/domain/usecases/update_theme_font_display_preference_usecase.dart';
+import 'package:mirath/features/settings/domain/usecases/update_visibility_and_annotation_usecase.dart';
+import 'package:mirath/features/settings/presentation/cubit/settings_cubit.dart';
 import '../features/library/data/data_sources/library_data_sources.dart';
 import '../features/library/data/data_sources/library_data_sources_impl.dart';
 import '../features/library/data/repositories/library_repository_impl.dart';
@@ -806,6 +834,73 @@ class DI {
         addHighlightNoteUseCase: sl(),
         updateHighlightNoteUseCase: sl(),
         deleteHighlightNoteUseCase: sl(),
+      ),
+    );
+    //================ User Settings =======================
+    //// Data Sources
+    sl.registerLazySingleton<SettingsRemoteDataSource>(
+      () => SettingsRemoteDataSourceImpl(dioClient: sl()),
+    );
+    // Repository
+    sl.registerLazySingleton<SettingsRepository>(
+      () => SettingsRepositoryImpl(remoteDataSource: sl(), cacheService: sl()),
+    );
+    // Use Cases
+    sl.registerLazySingleton(() => ChangeEmailUsecase(sl()));
+    sl.registerLazySingleton(() => ChangeUsernameUsecase(sl()));
+    sl.registerLazySingleton(() => ConfirmEmailUsecase(sl()));
+    sl.registerLazySingleton(() => UpdatePasswordUsecase(sl()));
+    sl.registerLazySingleton(() => DisconnectGoogleAccountUsecase(sl()));
+    sl.registerLazySingleton(() => GetAllActiveSessionUsecase(sl()));
+    sl.registerLazySingleton(
+      () => RevokeAllActiveSessionExceptCurrentUsecase(sl()),
+    );
+    sl.registerLazySingleton(() => GetFeedAiPreferenceUsecase(sl()));
+    sl.registerLazySingleton(() => UpdateFeedAiPreferenceUsecase(sl()));
+    sl.registerLazySingleton(() => GetNotificationPreferenceUsecase(sl()));
+    sl.registerLazySingleton(() => UpdateNotificationPreferenceUsecase(sl()));
+    sl.registerLazySingleton(() => GetReadingAndAppearanceUsecase(sl()));
+    sl.registerLazySingleton(
+      () => UpdateThemeFontDisplayPreferenceUsecase(sl()),
+    );
+    sl.registerLazySingleton(() => UpdateVisibilityAndAnnotationUsecase(sl()));
+    sl.registerLazySingleton(() => GetPrivacySettingsUsecase(sl()));
+    sl.registerLazySingleton(() => UpdatePrivacySettingsUsecase(sl()));
+    sl.registerLazySingleton(() => GetResearchInterestUsecase(sl()));
+    sl.registerLazySingleton(() => ReplaceResearchInterestUsecase(sl()));
+    sl.registerLazySingleton(() => InitiateFullAccountDataExportUsecase(sl()));
+    sl.registerLazySingleton(() => ExportAnnotationsAndNotesUsecase(sl()));
+    sl.registerLazySingleton(() => ExportReadingListAsFileUsecase(sl()));
+    sl.registerLazySingleton(() => DeleteAccountUsecase(sl()));
+    sl.registerLazySingleton(() => DeactiveAccountUsecase(sl()));
+
+    // Cubit
+    sl.registerFactory(
+      () => SettingsCubit(
+        changeEmailUsecase: sl(),
+        confirmEmailUsecase: sl(),
+        changeUserNameUsecase: sl(),
+        updatePasswordUsecase: sl(),
+        disconnectGoogleAccountUsecase: sl(),
+        getAllActiveSessionUsecase: sl(),
+        revokeAllActiveSessionExceptCurrentUsecase: sl(),
+        getFeedAiPreferenceUsecase: sl(),
+        updateFeedAiPreferenceUsecase: sl(),
+        getResearchInterestsUsecase: sl(),
+        replaceResearchInterestUsecase: sl(),
+        getReadingAndAppearanceUsecase: sl(),
+        updateThemeFontDisplayPreferenceUsecase: sl(),
+        updateVisibilityAndAnnotationUsecase: sl(),
+        getNotificationPreferenceUsecase: sl(),
+        updateNotificationPreferenceUsecase: sl(),
+        getPrivacySettingsUsecase: sl(),
+        updatePrivacySettingsUsecase: sl(),
+        initiateFullAccountDataExportUsecase: sl(),
+        exportReadingListAsFileUsecase: sl(),
+        exportAnnotationsAndNotesUsecase: sl(),
+        deactiveAccountUsecase: sl(),
+        deleteAccountUsecase: sl(),
+        cacheService: sl(),
       ),
     );
   }

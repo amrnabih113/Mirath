@@ -5,6 +5,7 @@ import 'package:hugeicons/hugeicons.dart';
 import 'package:mirath/core/constants/route_names.dart';
 import 'package:mirath/core/utils/my_colors.dart';
 import 'package:mirath/features/auth/presentation/cubit/auth_cubit.dart';
+import 'package:mirath/features/settings/presentation/screens/test_api.dart';
 import 'package:mirath/features/settings/presentation/widgets/dialogs.dart';
 import '../../../../core/utils/my_extenstions.dart';
 import '../../../../core/utils/my_sizes.dart';
@@ -136,6 +137,15 @@ class SettingScreen extends StatelessWidget {
                   'Log out',
                   style: context.bodyLarge.copyWith(color: Colors.red),
                 ),
+              ),
+              ListTile(
+                title: const Text('API Test'),
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (_) => const ApiTestScreen()),
+                  );
+                },
               ),
             ],
           ),

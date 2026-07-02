@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import 'package:mirath/core/ui/widgets/my_app_bar.dart';
 import 'package:mirath/core/utils/my_colors.dart';
+import 'package:mirath/core/utils/my_enums.dart';
 import 'package:mirath/core/utils/my_extenstions.dart';
 import 'package:mirath/core/utils/my_sizes.dart';
 import 'package:mirath/features/common/widgets/my_back_icon.dart';
@@ -45,12 +46,29 @@ class _ReadingAppearanceState extends State<ReadingAppearance> {
               ),
               ReadingTile(
                 title: 'Color mode',
-                items: ['Light mode', 'Dark mode'],
+                items: ColorMode.values
+                    .map(
+                      (mode) => switch (mode) {
+                        ColorMode.light => 'Light mode',
+                        ColorMode.dark => 'Dark mode',
+                        ColorMode.system => 'System',
+                      },
+                    )
+                    .toList(),
               ),
               Divider(color: MyColors.darkGrey, thickness: 1),
               ReadingTile(
                 title: 'Default paper font size',
-                items: ['Small', 'Medium', 'Large'],
+                items: FontSize.values
+                    .map(
+                      (size) => switch (size) {
+                        FontSize.small => 'Small',
+                        FontSize.medium => 'Medium',
+                        FontSize.large => 'Large',
+                        FontSize.extraLarge => 'Extra Large',
+                      },
+                    )
+                    .toList(),
               ),
               Divider(color: MyColors.darkGrey, thickness: 1),
               Text(
@@ -62,7 +80,14 @@ class _ReadingAppearanceState extends State<ReadingAppearance> {
               ),
               ReadingTile(
                 title: 'Default reading list visibility',
-                items: ['Public', 'Privet'],
+                items: Visible.values
+                    .map(
+                      (mode) => switch (mode) {
+                        Visible.privet => 'Privet',
+                        Visible.puplic => 'Public',
+                      },
+                    )
+                    .toList(),
               ),
               Divider(color: MyColors.darkGrey, thickness: 1),
               Text(
