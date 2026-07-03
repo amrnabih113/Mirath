@@ -56,6 +56,21 @@ class _ApiTestScreenState extends State<ApiTestScreen> {
         (data) => 'Interests Count: ${data.length}',
       );
     });
+    await _runOne('Notification', () async {
+      final result = await repository.getNotificationPreferences();
+      return result.fold(
+        (failure) => throw Exception(failure.message),
+        (data) => {
+          'commentMentions': data.commentMentions,
+          'discussionReplies': data.discussionReplies,
+          'newFollowers': data.newFollowers,
+          'newPapersInField': data.newPapersInField,
+          'readingListActivity': data.readingListActivity,
+          'securityAlerts': data.securityAlerts,
+          'votesOnContent': data.votesOnContent,
+        }.toString(),
+      );
+    });
 
     await _runOne('Feed & AI Preferences', () async {
       final result = await repository.getFeedAndAiPreference();
@@ -65,6 +80,16 @@ class _ApiTestScreenState extends State<ApiTestScreen> {
             'showRecommendedPapers: ${data.showRecommendedPapers}\n'
             'hideAlreadyReadPapers: ${data.hideAlreadyReadPapers}\n'
             'saveSearchHistory: ${data.saveSearchHistory}',
+      );
+    });
+    await _runOne('privacy', () async {
+      final result = await repository.getPrivacySettings();
+      return result.fold(
+        (failure) => throw Exception(failure.message),
+        (data) =>
+            'allowProfileSearch: ${data.allowProfileSearch}\n'
+            'hideAlreadyReadPapers: ${data.allowPublicComments}\n'
+            'saveSearchHistory: ${data.blockedAccounts}',
       );
     });
 

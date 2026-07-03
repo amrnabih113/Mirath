@@ -1,5 +1,3 @@
-import 'dart:ui';
-
 import 'package:mirath/core/utils/my_enums.dart';
 import 'package:mirath/features/settings/data/models/all_active_session_model.dart';
 import 'package:mirath/features/settings/data/models/feed_and_ai_preference_model.dart';
@@ -42,7 +40,7 @@ abstract class SettingsRemoteDataSource {
   Future<ReadingAndAppearanceModel>
   updateReadingListVisibilityandAnnotationColorPalette({
     required Visible defaultReadingListVisibility,
-     required List<String> annotationHighlightColors,
+    required List<String> annotationHighlightColors,
   });
   //Notifications
   Future<NotificationPreferencesModel> getNotificationPreferences();

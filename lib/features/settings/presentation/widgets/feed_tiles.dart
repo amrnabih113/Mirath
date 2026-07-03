@@ -11,16 +11,19 @@ class FeedTiles extends StatelessWidget {
     required this.title,
     required this.subtitle,
     this.trailing,
+    this.onTap,
   });
 
   final List<List<dynamic>>? icon;
   final String title;
   final String subtitle;
   final Widget? trailing;
+  final void Function()? onTap;
 
   @override
   Widget build(BuildContext context) {
     return ListTile(
+      onTap: onTap,
       leading: icon != null
           ? HugeIcon(icon: icon!, size: MySizes.iconMedium(context))
           : null,

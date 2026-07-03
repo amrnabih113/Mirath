@@ -1,5 +1,3 @@
-import 'dart:ui';
-
 import 'package:mirath/core/network/dio_client.dart';
 import 'package:mirath/core/utils/my_constants.dart';
 import 'package:mirath/core/utils/my_enums.dart';
@@ -102,6 +100,7 @@ class SettingsRemoteDataSourceImpl extends SettingsRemoteDataSource {
     final response = await _dioClient.get(
       MyConstants.retrieveNotificationPreferences,
     );
+
     return NotificationPreferencesModel.fromJson(response.data);
   }
 
@@ -165,7 +164,7 @@ class SettingsRemoteDataSourceImpl extends SettingsRemoteDataSource {
       MyConstants.updateFeedAndAiPreferences,
       data: preferences.toJson(),
     );
-    return FeedAndAiPreferenceModel.fromJson(response.data['data']);
+    return FeedAndAiPreferenceModel.fromJson(response.data);
   }
 
   @override

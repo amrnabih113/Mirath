@@ -1,7 +1,7 @@
 import 'package:mirath/features/settings/domain/entities/notification_preferences_entity.dart';
 
 class NotificationPreferencesModel extends NotificationPreferencesEntity {
-  NotificationPreferencesModel({
+  const NotificationPreferencesModel({
     required super.newPapersInField,
     required super.readingListActivity,
     required super.newFollowers,
@@ -23,21 +23,32 @@ class NotificationPreferencesModel extends NotificationPreferencesEntity {
       readingListActivity: research['readingListActivity'] ?? false,
       newFollowers: social['newFollowers'] ?? false,
       discussionReplies: social['discussionReplies'] ?? false,
-      commentMentions: social['commentMentions']?? false,
+      commentMentions: social['commentMentions'] ?? false,
       votesOnContent: social['votesOnContent'] ?? false,
-      securityAlerts: system['securityAlerts'] ?? false, 
+      securityAlerts: system['securityAlerts'] ?? false,
     );
   }
-  Map<String, dynamic> toJson() => {
-    'research': {
+  factory NotificationPreferencesModel.fromEntity(
+    NotificationPreferencesEntity entity,
+  ) {
+    return NotificationPreferencesModel(
+      newPapersInField: entity.newPapersInField,
+      readingListActivity: entity.readingListActivity,
+      newFollowers: entity.newFollowers,
+      discussionReplies: entity.discussionReplies,
+      commentMentions: entity.commentMentions,
+      votesOnContent: entity.votesOnContent,
+      securityAlerts: entity.securityAlerts,
+    );
+  }
+  Map<String, dynamic> toJson() {
+    return {
       'newPapersInField': newPapersInField,
       'readingListActivity': readingListActivity,
-    },
-    'social': {
       'newFollowers': newFollowers,
       'discussionReplies': discussionReplies,
+      'commentMentions': commentMentions,
       'votesOnContent': votesOnContent,
-    },
-    'system': {'securityAlerts': securityAlerts},
-  };
+    };
+  }
 }

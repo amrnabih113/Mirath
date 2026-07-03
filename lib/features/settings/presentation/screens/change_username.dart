@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:mirath/core/utils/my_validators.dart';
 import 'package:mirath/features/common/widgets/my_back_icon.dart';
 import 'package:mirath/features/settings/presentation/widgets/change_user_card.dart';
 
@@ -29,6 +30,7 @@ class _ChangeUsernameState extends State<ChangeUsername> {
         controller: _usernameController,
         onPressed: () {},
         btnName: 'Change Username',
+        validator: (value) => MyValidator.usernameValidator(context, value),
       ),
     );
   }

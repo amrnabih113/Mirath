@@ -1,4 +1,6 @@
-class NotificationPreferencesEntity {
+import 'package:equatable/equatable.dart';
+
+class NotificationPreferencesEntity extends Equatable {
   final bool newPapersInField;
   final bool readingListActivity;
   final bool newFollowers;
@@ -7,7 +9,7 @@ class NotificationPreferencesEntity {
   final bool votesOnContent;
   final bool securityAlerts;
 
-  NotificationPreferencesEntity({
+  const NotificationPreferencesEntity({
     required this.newPapersInField,
     required this.readingListActivity,
     required this.newFollowers,
@@ -16,4 +18,34 @@ class NotificationPreferencesEntity {
     required this.securityAlerts,
     required this.commentMentions,
   });
+  NotificationPreferencesEntity copyWith({
+    bool? newPapersInField,
+    bool? readingListActivity,
+    bool? newFollowers,
+    bool? discussionReplies,
+    bool? commentMentions,
+    bool? votesOnContent,
+    bool? securityAlerts,
+  }) {
+    return NotificationPreferencesEntity(
+      newPapersInField: newPapersInField ?? this.newPapersInField,
+      readingListActivity: readingListActivity ?? this.readingListActivity,
+      newFollowers: newFollowers ?? this.newFollowers,
+      discussionReplies: discussionReplies ?? this.discussionReplies,
+      commentMentions: commentMentions ?? this.commentMentions,
+      votesOnContent: votesOnContent ?? this.votesOnContent,
+      securityAlerts: securityAlerts ?? this.securityAlerts,
+    );
+  }
+
+  @override
+  List<Object?> get props => [
+    newPapersInField,
+    readingListActivity,
+    newFollowers,
+    discussionReplies,
+    commentMentions,
+    votesOnContent,
+    securityAlerts,
+  ];
 }

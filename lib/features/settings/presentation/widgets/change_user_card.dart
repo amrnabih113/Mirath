@@ -12,11 +12,13 @@ class ChangeUserCard extends StatelessWidget {
     required this.btnName,
     required this.controller,
     required this.onPressed,
+    required this.validator,
   });
   final String label;
   final String hintText;
   final String btnName;
   final TextEditingController controller;
+  final String? Function(String?)? validator;
   final VoidCallback onPressed;
 
   @override
@@ -28,7 +30,11 @@ class ChangeUserCard extends StatelessWidget {
         children: [
           Text(label, style: context.bodyLarge.copyWith(fontSize: 24)),
           SizedBox(height: MySizes.spaceXl(context)),
-          SettingsTextField(controller: controller, hintText: hintText),
+          SettingsTextField(
+            controller: controller,
+            hintText: hintText,
+            validator: validator,
+          ),
           SizedBox(height: MySizes.spaceXl(context)),
           TextButton(
             onPressed: controller.text.isEmpty ? null : onPressed,

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:mirath/core/utils/my_colors.dart';
 import 'package:mirath/core/utils/my_extenstions.dart';
 import 'package:mirath/core/utils/my_sizes.dart';
+import 'package:mirath/core/utils/my_validators.dart';
 import 'package:mirath/features/common/widgets/my_back_icon.dart';
 import 'package:mirath/features/settings/presentation/widgets/setting_text_field.dart';
 
@@ -54,16 +55,26 @@ class _UpdatePasswordState extends State<UpdatePassword> {
             SettingsTextField(
               controller: _currentPasswordController,
               hintText: 'your current password',
+              validator: (value) =>
+                  MyValidator.validatePassword(context, value),
             ),
             SizedBox(height: MySizes.spaceMd(context)),
             SettingsTextField(
               controller: _newPasswordController,
               hintText: 'your new password',
+              validator: (value) =>
+                  MyValidator.validatePassword(context, value),
             ),
             SizedBox(height: MySizes.spaceMd(context)),
+
             SettingsTextField(
               controller: _confirmPasswordController,
               hintText: 'Confirm password',
+              validator:(value)=> MyValidator.validateConfirmPassword(
+                context,
+                _newPasswordController.text,
+                _confirmPasswordController.text,
+              ),
             ),
             SizedBox(height: MySizes.spaceMd(context)),
             Align(

@@ -1,5 +1,7 @@
 import 'package:bloc/bloc.dart';
 import 'package:dartz/dartz.dart';
+import 'package:equatable/equatable.dart';
+import 'package:flutter/foundation.dart';
 import 'package:mirath/core/cache/cache_keys.dart';
 import 'package:mirath/core/cache/hive_cache_service.dart';
 import 'package:mirath/core/usecases/no_params.dart';
@@ -206,12 +208,21 @@ class SettingsCubit extends Cubit<SettingsState> {
   Future<void> updateFeedAipreference({
     required FeedAndAiPreferenceEntity preference,
   }) async {
-    emit(SettingsLoading());
-    var result = await updateFeedAiPreferenceUsecase.call(preference);
-    result.fold(
-      (failure) => emit(SettingsFailure(errormessage: failure.message)),
-      (data) => emit(SettingsSuccess<FeedAndAiPreferenceEntity>(data: data)),
-    );
+    final previousState = state;
+    if (state is SettingsSuccess) {
+      final currentSuccessState = state as SettingsSuccess;
+      emit(currentSuccessState.copyWith(data: preference, isUpdating: true));
+      var result = await updateFeedAiPreferenceUsecase.call(preference);
+      result.fold(
+        (failure) {
+          debugPrint('Update Feed AI Preference failed: ${failure.message}');
+          emit(previousState);
+        },
+        (_) {
+          emit(SettingsSuccess(data: preference, isUpdating: false));
+        },
+      );
+    }
   }
 
   // get research interests
@@ -292,13 +303,23 @@ class SettingsCubit extends Cubit<SettingsState> {
   Future<void> updateNotificationPreferences({
     required NotificationPreferencesEntity preference,
   }) async {
-    emit(SettingsLoading());
-    var result = await updateNotificationPreferenceUsecase.call(preference);
-    result.fold(
-      (failure) => emit(SettingsFailure(errormessage: failure.message)),
-      (data) =>
-          emit(SettingsSuccess<NotificationPreferencesEntity>(data: data)),
-    );
+    final previousState = state;
+    if (state is SettingsSuccess) {
+      final currentSuccessState = state as SettingsSuccess;
+
+      emit(currentSuccessState.copyWith(data: preference, isUpdating: true));
+
+      var result = await updateNotificationPreferenceUsecase.call(preference);
+
+      result.fold(
+        (failure) {
+          emit(previousState);
+        },
+        (_) {
+          emit(SettingsSuccess(data: preference, isUpdating: false));
+        },
+      );
+    }
   }
 
   // get privacy settings
@@ -315,12 +336,20 @@ class SettingsCubit extends Cubit<SettingsState> {
   Future<void> updatePrivacySettings({
     required PrivacySettingsEntitiy preference,
   }) async {
-    emit(SettingsLoading());
-    var result = await updatePrivacySettingsUsecase.call(preference);
-    result.fold(
-      (failure) => emit(SettingsFailure(errormessage: failure.message)),
-      (data) => emit(SettingsSuccess<PrivacySettingsEntitiy>(data: data)),
-    );
+    final previousState = state;
+    if (state is SettingsSuccess) {
+      final currentSuccessState = state as SettingsSuccess;
+      emit(currentSuccessState.copyWith(data: preference, isUpdating: true));
+      var result = await updatePrivacySettingsUsecase.call(preference);
+      result.fold(
+        (failure) {
+          emit(previousState);
+        },
+        (_) {
+          emit(SettingsSuccess(data: preference, isUpdating: false));
+        },
+      );
+    }
   }
 
   // initiate full account data export
@@ -365,11 +394,11 @@ class SettingsCubit extends Cubit<SettingsState> {
   Future<void> deactiveAccount({required String password}) async {
     emit(SettingsLoading());
     var result = await deactiveAccountUsecase.call(password);
- 
+
     if (result.isRight()) {
       await cacheService.clearPrefix(CacheKeys.settingsPrefix);
     }
- 
+
     result.fold(
       (failure) => emit(SettingsFailure(errormessage: failure.message)),
       (_) => emit(
@@ -382,14 +411,14 @@ class SettingsCubit extends Cubit<SettingsState> {
   }
 
   // delete account
-   Future<void> deleteAccount({required String password}) async {
+  Future<void> deleteAccount({required String password}) async {
     emit(SettingsLoading());
     var result = await deleteAccountUsecase.call(password);
- 
+
     if (result.isRight()) {
       await cacheService.clearPrefix(CacheKeys.settingsPrefix);
     }
- 
+
     result.fold(
       (failure) => emit(SettingsFailure(errormessage: failure.message)),
       (_) => emit(

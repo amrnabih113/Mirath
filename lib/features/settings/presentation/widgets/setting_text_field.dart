@@ -6,13 +6,16 @@ class SettingsTextField extends StatelessWidget {
     super.key,
     required this.controller,
     required this.hintText,
+    required this.validator,
   });
   final TextEditingController controller;
+  final String? Function(String?)? validator;
   final String hintText;
 
   @override
   Widget build(BuildContext context) {
-    return TextField(
+    return TextFormField(
+      validator: validator,
       cursorColor: MyColors.primaryColor,
       controller: controller,
       obscureText: true,

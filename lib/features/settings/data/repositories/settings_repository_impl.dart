@@ -185,31 +185,17 @@ class SettingsRepositoryImpl extends SettingsRepository {
   @override
   Future<Either<Failure, FeedAndAiPreferenceEntity>>
   getFeedAndAiPreference() async {
-    // 1) جرب الكاش الأول
-    final cached = await cacheService.getJson(CacheKeys.kFeedAndAi);
-    if (cached != null) {
-      return right(FeedAndAiPreferenceModel.fromJson(cached));
-    }
-
-    // 2) لو مفيش كاش (أو منتهي) روح للسيرفر
     try {
       final result = await remoteDataSource.getFeedAndAiPreference();
       await cacheService.putJson(CacheKeys.kFeedAndAi, (result).toJson());
       return right(result);
     } on ServerException catch (e) {
-      // fallback: لو فيه اتصال اتقطع، جرب كاش قديم (stale) بدل ما ترجع فشل
-      final stale = await cacheService.getJson(
-        CacheKeys.kFeedAndAi,
-        allowStale: true,
-      );
-      if (stale != null) return right(FeedAndAiPreferenceModel.fromJson(stale));
       return Left(ServerFailure(e.message!));
     } on NetworkException catch (e) {
-      final stale = await cacheService.getJson(
-        CacheKeys.kFeedAndAi,
-        allowStale: true,
-      );
-      if (stale != null) return right(FeedAndAiPreferenceModel.fromJson(stale));
+      final cached = await cacheService.getJson(CacheKeys.kPrivacy);
+      if (cached != null) {
+        return right(FeedAndAiPreferenceModel.fromJson(cached));
+      }
       return Left(NetworkFailure(e.message!));
     } catch (e) {
       return Left(ServerFailure('Failed to get Feed and AI Preferences'));
@@ -219,32 +205,25 @@ class SettingsRepositoryImpl extends SettingsRepository {
   @override
   Future<Either<Failure, NotificationPreferencesEntity>>
   getNotificationPreferences() async {
-    final cached = await cacheService.getJson(CacheKeys.kNotificationPrefs);
-    if (cached != null) {
-      return right(NotificationPreferencesModel.fromJson(cached));
-    }
     try {
       final result = await remoteDataSource.getNotificationPreferences();
-      await cacheService.putJson(
-        CacheKeys.kNotificationPrefs,
-        (result).toJson(),
-      );
+      await cacheService.putJson(CacheKeys.kNotificationPrefs, result.toJson());
       return right(result);
     } on ServerException catch (e) {
       return Left(ServerFailure(e.message!));
     } on NetworkException catch (e) {
+      final cached = await cacheService.getJson(CacheKeys.kNotificationPrefs);
+      if (cached != null) {
+        return right(NotificationPreferencesModel.fromJson(cached));
+      }
       return Left(NetworkFailure(e.message!));
     } catch (e) {
-      return Left(ServerFailure('Failed to get notification preferences'));
+      return Left(ServerFailure('User not logged in'));
     }
   }
 
   @override
   Future<Either<Failure, PrivacySettingsEntitiy>> getPrivacySettings() async {
-    final cached = await cacheService.getJson(CacheKeys.kPrivacy);
-    if (cached != null) {
-      return right(PrivacySettingsModel.fromJson(cached));
-    }
     try {
       final result = await remoteDataSource.getPrivacySettings();
       await cacheService.putJson(CacheKeys.kPrivacy, (result).toJson());
@@ -252,6 +231,10 @@ class SettingsRepositoryImpl extends SettingsRepository {
     } on ServerException catch (e) {
       return Left(ServerFailure(e.message!));
     } on NetworkException catch (e) {
+      final cached = await cacheService.getJson(CacheKeys.kNotificationPrefs);
+      if (cached != null) {
+        return right(PrivacySettingsModel.fromJson(cached));
+      }
       return Left(NetworkFailure(e.message!));
     } catch (e) {
       return Left(ServerFailure('Failed to get privacy settings'));
@@ -336,7 +319,7 @@ class SettingsRepositoryImpl extends SettingsRepository {
   }) async {
     try {
       final result = await remoteDataSource.updateFeedAndAiPreference(
-        preferences: preferences as FeedAndAiPreferenceModel,
+        preferences: FeedAndAiPreferenceModel.fromEntity(preferences),
       );
       await cacheService.putJson(CacheKeys.kFeedAndAi, result.toJson());
       return right(result);
@@ -356,7 +339,7 @@ class SettingsRepositoryImpl extends SettingsRepository {
   }) async {
     try {
       final result = await remoteDataSource.updateNotificationPreferences(
-        preferences: preferences as NotificationPreferencesModel,
+        preferences: NotificationPreferencesModel.fromEntity(preferences),
       );
       await cacheService.putJson(CacheKeys.kNotificationPrefs, result.toJson());
       return right(result);
@@ -365,7 +348,7 @@ class SettingsRepositoryImpl extends SettingsRepository {
     } on NetworkException catch (e) {
       return Left(NetworkFailure(e.message!));
     } catch (e) {
-      return Left(ServerFailure('Failed to update notification preferences'));
+      return Left(ServerFailure('User not logged in'));
     }
   }
 
@@ -375,7 +358,7 @@ class SettingsRepositoryImpl extends SettingsRepository {
   }) async {
     try {
       final result = await remoteDataSource.updatePrivacySettings(
-        settings: settings as PrivacySettingsModel,
+        settings: PrivacySettingsModel.fromEntity(settings),
       );
       await cacheService.putJson(CacheKeys.kPrivacy, result.toJson());
       return right(result);

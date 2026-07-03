@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'package:mirath/features/settings/presentation/cubit/settings_cubit.dart';
 import 'package:mirath/features/settings/presentation/screens/account_management.dart';
 import 'package:mirath/features/settings/presentation/screens/account_security.dart';
 import 'package:mirath/features/settings/presentation/screens/change_email.dart';
@@ -776,13 +777,6 @@ final appRouter = GoRouter(
       },
     ),
 
-    GoRoute(
-      path: RouteNames.settingsScreen,
-      pageBuilder: (context, state) {
-        return PageTransitions.smoothTransition(const SettingScreen());
-      },
-    ),
-
     // ===================== OTHER ROUTES =====================
     GoRoute(
       path: RouteNames.projects,
@@ -797,65 +791,127 @@ final appRouter = GoRouter(
         return PageTransitions.smoothTransition(const OtherUserReadingList());
       },
     ),
+    // ===================== Settings ROUTES =====================
+    GoRoute(
+      path: RouteNames.settingsScreen,
+      pageBuilder: (context, state) {
+        return PageTransitions.smoothTransition(
+          BlocProvider(
+            create: (context) => sl<SettingsCubit>(),
+            child: const SettingScreen(),
+          ),
+        );
+      },
+    ),
     GoRoute(
       path: RouteNames.accountSecurity,
       pageBuilder: (context, state) {
-        return PageTransitions.smoothTransition(const AccountSecurity());
+        return PageTransitions.smoothTransition(
+          BlocProvider.value(
+            value: sl<SettingsCubit>(),
+            child: const AccountSecurity(),
+          ),
+        );
       },
     ),
     GoRoute(
       path: RouteNames.feedAiPreferences,
       pageBuilder: (context, state) {
-        return PageTransitions.smoothTransition(const FeedAiPreferences());
+        return PageTransitions.smoothTransition(
+          BlocProvider.value(
+            value: sl<SettingsCubit>()..getFeedAipreference(),
+            child: const FeedAiPreferences(),
+          ),
+        );
       },
     ),
     GoRoute(
       path: RouteNames.readingAppearance,
       pageBuilder: (context, state) {
-        return PageTransitions.smoothTransition(const ReadingAppearance());
+        return PageTransitions.smoothTransition(
+          BlocProvider.value(
+            value: sl<SettingsCubit>(),
+            child: const ReadingAppearance(),
+          ),
+        );
       },
     ),
 
     GoRoute(
       path: RouteNames.notifications,
       pageBuilder: (context, state) {
-        return PageTransitions.smoothTransition(const Notifications());
+        return PageTransitions.smoothTransition(
+          BlocProvider.value(
+            value: sl<SettingsCubit>()..getNotificationPreferences(),
+            child: const Notifications(),
+          ),
+        );
       },
     ),
     GoRoute(
       path: RouteNames.privacyDataControl,
       pageBuilder: (context, state) {
-        return PageTransitions.smoothTransition(const PrivacyDataControl());
+        return PageTransitions.smoothTransition(
+          BlocProvider.value(
+            value: sl<SettingsCubit>()..getPrivacySettings(),
+            child: const PrivacyDataControl(),
+          ),
+        );
       },
     ),
     GoRoute(
       path: RouteNames.supportLegal,
       pageBuilder: (context, state) {
-        return PageTransitions.smoothTransition(const SupportLegal());
+        return PageTransitions.smoothTransition(
+          BlocProvider.value(
+            value: sl<SettingsCubit>(),
+            child: const SupportLegal(),
+          ),
+        );
       },
     ),
     GoRoute(
       path: RouteNames.accountManagement,
       pageBuilder: (context, state) {
-        return PageTransitions.smoothTransition(const AccountManagement());
+        return PageTransitions.smoothTransition(
+          BlocProvider.value(
+            value: sl<SettingsCubit>(),
+            child: const AccountManagement(),
+          ),
+        );
       },
     ),
     GoRoute(
       path: RouteNames.changeUsername,
       pageBuilder: (context, state) {
-        return PageTransitions.smoothTransition(const ChangeUsername());
+        return PageTransitions.smoothTransition(
+          BlocProvider.value(
+            value: sl<SettingsCubit>(),
+            child: const ChangeUsername(),
+          ),
+        );
       },
     ),
     GoRoute(
       path: RouteNames.changeEmail,
       pageBuilder: (context, state) {
-        return PageTransitions.smoothTransition(const ChangeEmail());
+        return PageTransitions.smoothTransition(
+          BlocProvider.value(
+            value: sl<SettingsCubit>(),
+            child: const ChangeEmail(),
+          ),
+        );
       },
     ),
     GoRoute(
       path: RouteNames.updatePassword,
       pageBuilder: (context, state) {
-        return PageTransitions.smoothTransition(const UpdatePassword());
+        return PageTransitions.smoothTransition(
+          BlocProvider.value(
+            value: sl<SettingsCubit>(),
+            child: const UpdatePassword(),
+          ),
+        );
       },
     ),
     GoRoute(
@@ -865,20 +921,33 @@ final appRouter = GoRouter(
             state.extra as String? ?? RouteNames.privacyDataControl;
 
         return PageTransitions.smoothTransition(
-          VerifyIdentity(nextRoute: nextRoute),
+          BlocProvider.value(
+            value: sl<SettingsCubit>(),
+            child: VerifyIdentity(nextRoute: nextRoute),
+          ),
         );
       },
     ),
     GoRoute(
       path: RouteNames.deleteAccount,
       pageBuilder: (context, state) {
-        return PageTransitions.smoothTransition(const DeleteAccount());
+        return PageTransitions.smoothTransition(
+          BlocProvider.value(
+            value: sl<SettingsCubit>(),
+            child: const DeleteAccount(),
+          ),
+        );
       },
     ),
     GoRoute(
       path: RouteNames.deactiveAccount,
       pageBuilder: (context, state) {
-        return PageTransitions.smoothTransition(const DeactiveAccount());
+        return PageTransitions.smoothTransition(
+          BlocProvider.value(
+            value: sl<SettingsCubit>(),
+            child: const DeactiveAccount(),
+          ),
+        );
       },
     ),
 

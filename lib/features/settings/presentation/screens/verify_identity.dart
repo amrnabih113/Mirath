@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:mirath/core/constants/route_names.dart';
 import 'package:mirath/core/utils/my_colors.dart';
 import 'package:mirath/core/utils/my_extenstions.dart';
 import 'package:mirath/core/utils/my_sizes.dart';
+import 'package:mirath/core/utils/my_validators.dart';
 import 'package:mirath/features/common/widgets/my_back_icon.dart';
+import 'package:mirath/features/settings/presentation/cubit/settings_cubit.dart';
 
 class VerifyIdentity extends StatefulWidget {
   const VerifyIdentity({super.key, required this.nextRoute});
@@ -17,6 +20,34 @@ class VerifyIdentity extends StatefulWidget {
 
 class _DeleDeactivAccountState extends State<VerifyIdentity> {
   TextEditingController passwordController = TextEditingController();
+  final _formKey = GlobalKey<FormState>();
+  AutovalidateMode _autovalidateMode = AutovalidateMode.disabled;
+
+  bool isButtonEnabled = false;
+
+  void _handleResetPassword() {
+    setState(() {
+      _autovalidateMode = AutovalidateMode.onUserInteraction;
+    });
+    if (_formKey.currentState!.validate()) {
+      isButtonEnabled = true;
+      context.read<SettingsCubit>().deleteAccount(
+        password: passwordController.text.trim(),
+      );
+      context.read<SettingsCubit>().deactiveAccount(
+        password: passwordController.text.trim(),
+      );
+    }
+  }
+
+  void _validateForm() {
+    final isValid = _formKey.currentState?.validate() ?? false;
+
+    setState(() {
+      isButtonEnabled = isValid;
+    });
+  }
+
   @override
   void initState() {
     super.initState();
@@ -45,8 +76,11 @@ class _DeleDeactivAccountState extends State<VerifyIdentity> {
               style: context.bodyLarge.copyWith(fontSize: 24),
             ),
             SizedBox(height: MySizes.spaceXl(context)),
-            TextField(
+            TextFormField(
+              key: _formKey,
               cursorColor: MyColors.primaryColor,
+              validator: (value) =>
+                  MyValidator.validatePassword(context, value),
               controller: passwordController,
               obscureText: true,
               decoration: InputDecoration(

@@ -1,13 +1,16 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:mirath/core/ui/widgets/my_app_bar.dart';
 import 'package:mirath/core/utils/my_colors.dart';
 import 'package:mirath/core/utils/my_extenstions.dart';
 import 'package:mirath/core/utils/my_sizes.dart';
 import 'package:mirath/features/common/widgets/my_back_icon.dart';
-import 'package:mirath/features/common/widgets/tag_chip.dart';
+import 'package:mirath/features/settings/domain/entities/feed_and_ai_preference_entity.dart';
+import 'package:mirath/features/settings/presentation/cubit/settings_cubit.dart';
 import 'package:mirath/features/settings/presentation/widgets/account_tiles.dart';
 import 'package:mirath/features/settings/presentation/widgets/dialogs.dart';
 import 'package:mirath/features/settings/presentation/widgets/feed_tiles.dart';
+import 'package:mirath/features/settings/presentation/widgets/my_research_intrests.dart';
 
 class FeedAiPreferences extends StatefulWidget {
   const FeedAiPreferences({super.key});
@@ -17,19 +20,12 @@ class FeedAiPreferences extends StatefulWidget {
 }
 
 class _FeedAiPreferencesState extends State<FeedAiPreferences> {
-  final List<String> _selected = [
-    'AI',
-    'Flutter',
-    'Dart',
-    'Mobile Development',
-  ];
-  void _toggleInterest(String name) {
-    setState(() {
-      _selected.contains(name) ? _selected.remove(name) : _selected.add(name);
-    });
+  @override
+  void initState() {
+    super.initState();
+    context.read<SettingsCubit>().getFeedAipreference();
   }
 
-  bool _enable = true;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -65,113 +61,88 @@ class _FeedAiPreferencesState extends State<FeedAiPreferences> {
                 ),
               ),
               const SizedBox(height: 8),
-              Container(
-                padding: EdgeInsets.symmetric(horizontal: 8, vertical: 8),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      'My research interests',
-                      style: context.labelLarge.copyWith(
-                        fontSize: 16,
-                        fontWeight: FontWeight.w600,
-                      ),
-                    ),
-                    Text('Can be different from interests on the profiles'),
-
-                    const SizedBox(height: 8),
-                    Wrap(
-                      spacing: 8,
-                      runSpacing: 8,
-                      crossAxisAlignment: WrapCrossAlignment.center,
+              MyResearchIntrests(),
+              Divider(color: MyColors.grey, thickness: 2),
+              BlocBuilder<SettingsCubit, SettingsState>(
+                builder: (context, state) {
+                  if (state is SettingsLoading) {
+                    return Center(child: CircularProgressIndicator());
+                  }
+                  if (state is SettingsSuccess<FeedAndAiPreferenceEntity>) {
+                    final preference = state.data;
+                    return Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        ..._selected.map(
-                          (e) => GestureDetector(
-                            onTap: () => _toggleInterest(e),
-                            child: TagChip(label: e, hasIcon: true),
+                        FeedTiles(
+                          title: 'Show recommended papers',
+                          subtitle: 'AI-matched papers based on your interests',
+                          trailing: Switch(
+                            value: preference.showRecommendedPapers,
+                            onChanged: (value) {
+                              final updatedPreference = preference.copyWith(
+                                showRecommendedPapers: value,
+                              );
+                              context
+                                  .read<SettingsCubit>()
+                                  .updateFeedAipreference(
+                                    preference: updatedPreference,
+                                  );
+                            },
                           ),
                         ),
-
-                        TextButton.icon(
-                          onPressed: () {},
-                          style: TextButton.styleFrom(
-                            padding: const EdgeInsets.symmetric(
-                              horizontal: 8,
-                              vertical: 4,
-                            ),
-                            backgroundColor: MyColors.primaryShade200,
-                            minimumSize: const Size(0, 28),
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(6),
-                            ),
-                            side: const BorderSide(color: Colors.black),
+                        Divider(color: MyColors.grey, thickness: 2),
+                        FeedTiles(
+                          title: 'Hide already-read papers',
+                          subtitle: 'Exclude papers you have opened already',
+                          trailing: Switch(
+                            value: preference.hideAlreadyReadPapers,
+                            onChanged: (value) {
+                              final updatedPreference = preference.copyWith(
+                                hideAlreadyReadPapers: value,
+                              );
+                              context
+                                  .read<SettingsCubit>()
+                                  .updateFeedAipreference(
+                                    preference: updatedPreference,
+                                  );
+                            },
                           ),
-                          icon: const Icon(
-                            Icons.add,
-                            color: MyColors.black,
-                            size: 25,
+                        ),
+                        Divider(color: MyColors.grey, thickness: 2),
+                        Text(
+                          'Search History',
+                          style: context.bodyLarge.copyWith(
+                            fontSize: 20,
+                            fontWeight: FontWeight.w400,
                           ),
-                          label: Text(
-                            'Add interest',
-                            style: context.labelLarge.copyWith(
-                              fontSize: 16,
-                              fontWeight: FontWeight.w600,
-                              color: MyColors.black,
-                            ),
+                        ),
+                        FeedTiles(
+                          title: 'Save search history',
+                          subtitle: 'Used to improve recommendations',
+                          trailing: Switch(
+                            value: preference.saveSearchHistory,
+                            onChanged: (value) {
+                              final updatedPreference = preference.copyWith(
+                                saveSearchHistory: value,
+                              );
+                              context
+                                  .read<SettingsCubit>()
+                                  .updateFeedAipreference(
+                                    preference: updatedPreference,
+                                  );
+                            },
                           ),
                         ),
                       ],
-                    ),
-                  ],
-                ),
+                    );
+                  }
+                  if (state is SettingsFailure) {
+                    return Center(child: Text(state.errormessage));
+                  }
+                  return SizedBox.shrink();
+                },
               ),
 
-              Divider(color: MyColors.grey, thickness: 2),
-              FeedTiles(
-                title: 'Show recommended papers',
-                subtitle: 'AI-matched papers based on your interests',
-                trailing: Switch(
-                  value: _enable,
-                  onChanged: (value) {
-                    setState(() {
-                      _enable = value;
-                    });
-                  },
-                ),
-              ),
-              Divider(color: MyColors.grey, thickness: 2),
-              FeedTiles(
-                title: 'Hide already-read papers',
-                subtitle: 'Exclude papers you have opened already',
-                trailing: Switch(
-                  value: _enable,
-                  onChanged: (value) {
-                    setState(() {
-                      _enable = value;
-                    });
-                  },
-                ),
-              ),
-              Divider(color: MyColors.grey, thickness: 2),
-              Text(
-                'Search History',
-                style: context.bodyLarge.copyWith(
-                  fontSize: 20,
-                  fontWeight: FontWeight.w400,
-                ),
-              ),
-              FeedTiles(
-                title: 'Save search history',
-                subtitle: 'Used to improve recommendations',
-                trailing: Switch(
-                  value: _enable,
-                  onChanged: (value) {
-                    setState(() {
-                      _enable = value;
-                    });
-                  },
-                ),
-              ),
               Divider(color: MyColors.grey, thickness: 2),
               AccountTiles(
                 title: 'Clear search history',
