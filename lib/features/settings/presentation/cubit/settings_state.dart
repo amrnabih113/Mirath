@@ -15,6 +15,7 @@ class SettingsLoading extends SettingsState {
 class SettingsSuccess<T> extends SettingsState {
   final T data;
   final bool isUpdating;
+  
 
   SettingsSuccess({required this.data, this.isUpdating = false});
 

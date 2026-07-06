@@ -807,8 +807,11 @@ final appRouter = GoRouter(
       path: RouteNames.accountSecurity,
       pageBuilder: (context, state) {
         return PageTransitions.smoothTransition(
-          BlocProvider.value(
-            value: sl<SettingsCubit>(),
+          MultiBlocProvider(
+            providers: [
+              BlocProvider.value(value: sl<SettingsCubit>()),
+              BlocProvider.value(value: sl<AuthCubit>()),
+            ],
             child: const AccountSecurity(),
           ),
         );

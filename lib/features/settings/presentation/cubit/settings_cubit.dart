@@ -94,6 +94,7 @@ class SettingsCubit extends Cubit<SettingsState> {
   final DeactiveAccountUsecase deactiveAccountUsecase;
   final DeleteAccountUsecase deleteAccountUsecase;
   final HiveCacheService cacheService;
+  bool isGoogleConnected = false;
   // Account & Security
   Future<void> changeUsername({required String newUsername}) async {
     emit(SettingsLoading());
@@ -156,10 +157,18 @@ class SettingsCubit extends Cubit<SettingsState> {
     var result = await disconnectGoogleAccountUsecase.call(NoParams());
     result.fold(
       (failure) => emit(SettingsFailure(errormessage: failure.message)),
-      (_) => emit(
-        SettingsSuccess<String>(data: 'Google account unlinked successfully'),
-      ),
+      (_) {
+        isGoogleConnected = false;
+        emit(
+          SettingsSuccess<String>(data: 'Google account unlinked successfully'),
+        );
+      },
     );
+  }
+
+  void updateGoogleConnectionStatus(bool value) {
+    isGoogleConnected = value;
+    emit(SettingsInitial()); // أو State مخصصة
   }
 
   Future<void> getAllActiveSessions() async {

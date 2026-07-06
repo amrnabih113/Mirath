@@ -7,6 +7,7 @@ import 'package:mirath/core/ui/widgets/my_app_bar.dart';
 import 'package:mirath/core/utils/my_colors.dart';
 import 'package:mirath/core/utils/my_extenstions.dart';
 import 'package:mirath/core/utils/my_sizes.dart';
+import 'package:mirath/features/auth/presentation/cubit/auth_cubit.dart';
 import 'package:mirath/features/common/widgets/my_back_icon.dart';
 import 'package:mirath/features/settings/presentation/cubit/settings_cubit.dart';
 import 'package:mirath/features/settings/presentation/widgets/account_tiles.dart';
@@ -59,7 +60,6 @@ class AccountSecurity extends StatelessWidget {
                 subtitle: 'johndoe@gmail.com',
                 onTap: () {
                   context.push(RouteNames.changeEmail);
-                  
                 },
                 btnName: 'change',
               ),
@@ -88,18 +88,24 @@ class AccountSecurity extends StatelessWidget {
                       context,
                     ).showSnackBar(SnackBar(content: Text(state.data)));
                   }
+                  
                 },
                 builder: (context, state) {
-                  bool isClicked = state is SettingsSuccess<String>;
+                  final cubit = context.watch<SettingsCubit>();
                   return AccountTiles(
                     icon: HugeIcons.strokeRoundedGoogle,
                     title: 'Google',
                     subtitle: 'Sign in with your Google account',
-                    onTap: () {
-                      context.read<SettingsCubit>().disconnectGoogleAccount();
+                    onTap: () async{
+                      if (cubit.isGoogleConnected) {
+                        await cubit.disconnectGoogleAccount();
+                      } else {
+                       await context.read<AuthCubit>().signInWithGoogle();
+                        cubit.updateGoogleConnectionStatus(true);
+                      }
                     },
-                    btnName: isClicked ? 'Connect' : 'Disconnect',
-                    isClicked: isClicked,
+                    btnName: cubit.isGoogleConnected ? 'Disconnect' : 'Connect',
+                    isClicked: !cubit.isGoogleConnected,
                   );
                 },
               ),
