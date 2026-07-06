@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
+import 'package:mirath/core/constants/route_names.dart';
 import 'package:mirath/core/ui/widgets/my_app_bar.dart';
 import 'package:mirath/core/utils/my_colors.dart';
 import 'package:mirath/core/utils/my_enums.dart';
@@ -20,11 +22,6 @@ class PrivacyDataControl extends StatefulWidget {
 }
 
 class _PrivacyDataControlState extends State<PrivacyDataControl> {
-  // bool privateAccount = true;
-  // bool allowProfileSearch = true;
-  // bool allowComments = true;
-  // bool improveRecommendations = true;
-  // bool allowReading = true;
   @override
   void initState() {
     super.initState();
@@ -50,8 +47,10 @@ class _PrivacyDataControlState extends State<PrivacyDataControl> {
           if (state is SettingsLoading) {
             return const Center(child: CircularProgressIndicator());
           }
-          if (state is SettingsSuccess<PrivacySettingsEntitiy>) {
-            final preference = state.data;
+          if (state is SettingsSuccess) {
+            final currentState =
+                state as SettingsSuccess<PrivacySettingsEntitiy>;
+            final preference = currentState.data;
             return Padding(
               padding: MySizes.paddingMd(context),
               child: SingleChildScrollView(
@@ -91,8 +90,6 @@ class _PrivacyDataControlState extends State<PrivacyDataControl> {
                           final updatedPreference = preference.copyWith(
                             allowProfileSearch: value,
                           );
-                          print('old: ${preference.allowProfileSearch}');
-                          print('new: ${updatedPreference.allowProfileSearch}');
                           context.read<SettingsCubit>().updatePrivacySettings(
                             preference: updatedPreference,
                           );
@@ -157,6 +154,9 @@ class _PrivacyDataControlState extends State<PrivacyDataControl> {
                       btnName: 'Request',
                       onTap: () {
                         dataArchiveDialog(context);
+                        context
+                            .read<SettingsCubit>()
+                            .initiateFullAccountDataExport();
                       },
                     ),
                     Divider(color: MyColors.darkGrey, thickness: 1),
@@ -177,6 +177,14 @@ class _PrivacyDataControlState extends State<PrivacyDataControl> {
                                 },
                               )
                               .toList(),
+                          onselect: (index) {
+                            final selectedFormate =
+                                ExportListFormate.values[index];
+                            context.read<SettingsCubit>().exportReadingLists(
+                              formate: selectedFormate,
+                            );
+                            context.push(RouteNames.verifyIdentity);
+                          },
                         );
                       },
                     ),
@@ -199,6 +207,16 @@ class _PrivacyDataControlState extends State<PrivacyDataControl> {
                                 },
                               )
                               .toList(),
+                          onselect: (index) {
+                            final selectedFormate =
+                                ExportAnnotationsFormate.values[index];
+                            context
+                                .read<SettingsCubit>()
+                                .exportAnnotationsAndNotes(
+                                  formate: selectedFormate,
+                                );
+                            context.push(RouteNames.verifyIdentity);
+                          },
                         );
                       },
                     ),

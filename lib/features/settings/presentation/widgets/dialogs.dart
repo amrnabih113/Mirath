@@ -144,6 +144,7 @@ void showButtonDialog(
   BuildContext context, {
   required String title,
   required List<String> tilesName,
+  required void Function(int index) onselect,
 }) {
   showDialog(
     context: context,
@@ -158,7 +159,7 @@ void showButtonDialog(
             children: [
               ListTile(
                 onTap: () {
-                  context.push(RouteNames.verifyIdentity);
+                  onselect(index);
                 },
                 title: Text(tilesName[index]),
                 trailing: const HugeIcon(

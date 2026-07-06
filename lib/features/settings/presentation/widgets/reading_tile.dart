@@ -3,17 +3,20 @@ import 'package:mirath/core/utils/my_colors.dart';
 import 'package:mirath/core/utils/my_extenstions.dart';
 import 'package:mirath/core/utils/my_sizes.dart';
 
-class ReadingTile extends StatefulWidget {
-  const ReadingTile({super.key, required this.title, required this.items});
+class ReadingTile<T> extends StatelessWidget {
+  const ReadingTile({
+    super.key,
+    required this.title,
+    required this.items,
+    required this.selectedValue,
+    this.onChanged,
+    required this.itemLabel,
+  });
   final String title;
-  final List<String> items;
-
-  @override
-  State<ReadingTile> createState() => _ReadingTileState();
-}
-
-class _ReadingTileState extends State<ReadingTile> {
-  String? selectedValue;
+  final List<T> items;
+  final T selectedValue;
+   final String Function(T item) itemLabel;
+  final void Function(T?)? onChanged;
 
   @override
   Widget build(BuildContext context) {
@@ -23,7 +26,7 @@ class _ReadingTileState extends State<ReadingTile> {
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           Text(
-            widget.title,
+            title,
             softWrap: true,
             style: context.bodyLarge.copyWith(
               fontSize: 16,
@@ -42,9 +45,9 @@ class _ReadingTileState extends State<ReadingTile> {
                 borderRadius: BorderRadius.circular(16),
                 color: MyColors.primaryShade50,
               ),
-              child: DropdownButton<String>(
+              child: DropdownButton<T>(
                 isExpanded: true,
-                hint: Text(widget.items.first),
+                hint: Text(items.first.toString()),
                 value: selectedValue,
                 underline: const SizedBox(),
                 icon: const Icon(
@@ -55,11 +58,11 @@ class _ReadingTileState extends State<ReadingTile> {
 
                 dropdownColor: MyColors.primaryShade50,
 
-                items: widget.items.map((item) {
-                  return DropdownMenuItem<String>(
+                items: items.map((item) {
+                  return DropdownMenuItem<T>(
                     value: item,
                     child: Text(
-                      item,
+                      itemLabel(item),
                       style: context.labelSmall.copyWith(
                         color: MyColors.black,
                         fontSize: 16,
@@ -67,11 +70,7 @@ class _ReadingTileState extends State<ReadingTile> {
                     ),
                   );
                 }).toList(),
-                onChanged: (value) {
-                  setState(() {
-                    selectedValue = value;
-                  });
-                },
+                onChanged: onChanged,
               ),
             ),
           ),

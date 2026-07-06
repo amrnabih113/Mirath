@@ -2,6 +2,7 @@ import 'package:bloc/bloc.dart';
 import 'package:dartz/dartz.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
 import 'package:mirath/core/cache/cache_keys.dart';
 import 'package:mirath/core/cache/hive_cache_service.dart';
 import 'package:mirath/core/usecases/no_params.dart';
@@ -264,13 +265,29 @@ class SettingsCubit extends Cubit<SettingsState> {
     required ColorMode mode,
     required FontSize size,
   }) async {
-    emit(SettingsLoading());
+    final previousState = state;
+
+    final currentSuccessState =
+        state as SettingsSuccess<ReadingAndAppearanceEntitiy>;
+    final updatedData = currentSuccessState.data.copyWith(
+      colorMode: mode,
+      defaultFontSize: size,
+    );
+    emit(currentSuccessState.copyWith(data: updatedData, isUpdating: true));
     var result = await updateThemeFontDisplayPreferenceUsecase.call(
       tuple2(mode, size),
     );
     result.fold(
-      (failure) => emit(SettingsFailure(errormessage: failure.message)),
-      (data) => emit(SettingsSuccess<ReadingAndAppearanceEntitiy>(data: data)),
+      (failure) {
+        emit(previousState);
+      },
+      (entity) {
+        final merged = currentSuccessState.data.copyWith(
+          colorMode: entity.colorMode,
+          defaultFontSize: entity.defaultFontSize,
+        );
+        emit(currentSuccessState.copyWith(data: merged, isUpdating: false));
+      },
     );
   }
 
@@ -278,13 +295,31 @@ class SettingsCubit extends Cubit<SettingsState> {
     required Visible visMode,
     required List<String> annotationColors,
   }) async {
-    emit(SettingsLoading());
-    var result = await updateVisibilityAndAnnotationUsecase.call(
-      Tuple2(visMode, annotationColors),
+    final previousState = state;
+
+    final currentSuccessState =
+        state as SettingsSuccess<ReadingAndAppearanceEntitiy>;
+    final updatedData = currentSuccessState.data.copyWith(
+      defaultReadingListVisibility: visMode,
+      annotationHighlightColors: annotationColors,
     );
+    emit(currentSuccessState.copyWith(data: updatedData, isUpdating: true));
+
+    var result = await updateVisibilityAndAnnotationUsecase.call(
+      tuple2(visMode, annotationColors),
+    );
+
     result.fold(
-      (failure) => emit(SettingsFailure(errormessage: failure.message)),
-      (data) => emit(SettingsSuccess<ReadingAndAppearanceEntitiy>(data: data)),
+      (failure) {
+        emit(previousState);
+      },
+      (entity) {
+        final merged = currentSuccessState.data.copyWith(
+          defaultReadingListVisibility: entity.defaultReadingListVisibility,
+          annotationHighlightColors: entity.annotationHighlightColors,
+        );
+        emit(currentSuccessState.copyWith(data: merged, isUpdating: false));
+      },
     );
   }
 
@@ -354,25 +389,23 @@ class SettingsCubit extends Cubit<SettingsState> {
 
   // initiate full account data export
   Future<void> initiateFullAccountDataExport() async {
-    emit(SettingsLoading());
     var result = await initiateFullAccountDataExportUsecase.call(NoParams());
     result.fold(
       (failure) => emit(SettingsFailure(errormessage: failure.message)),
-      (_) => emit(
-        SettingsSuccess<String>(data: 'Data export requested successfully'),
-      ),
+      (_) async {
+        await getPrivacySettings();
+      },
     );
   }
 
   // export reading lists
   Future<void> exportReadingLists({required ExportListFormate formate}) async {
-    emit(SettingsLoading());
     var result = await exportReadingListAsFileUsecase.call(formate);
     result.fold(
       (failure) => emit(SettingsFailure(errormessage: failure.message)),
-      (_) => emit(
-        SettingsSuccess<String>(data: 'Reading list exported successfully'),
-      ),
+      (_) async {
+        await getPrivacySettings();
+      },
     );
   }
 
@@ -380,13 +413,12 @@ class SettingsCubit extends Cubit<SettingsState> {
   Future<void> exportAnnotationsAndNotes({
     required ExportAnnotationsFormate formate,
   }) async {
-    emit(SettingsLoading());
     var result = await exportAnnotationsAndNotesUsecase.call(formate);
     result.fold(
       (failure) => emit(SettingsFailure(errormessage: failure.message)),
-      (_) => emit(
-        SettingsSuccess<String>(data: 'Annotations exported successfully'),
-      ),
+      (_) async {
+        await getPrivacySettings();
+      },
     );
   }
 
@@ -422,7 +454,7 @@ class SettingsCubit extends Cubit<SettingsState> {
     result.fold(
       (failure) => emit(SettingsFailure(errormessage: failure.message)),
       (_) => emit(
-        SettingsSuccess<String>(
+        SettingsSuccess(
           data:
               'Account will be deleted permanently in 30 days. You can log in anytime before to reactivate.',
         ),

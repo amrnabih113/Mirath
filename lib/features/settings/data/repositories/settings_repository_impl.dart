@@ -244,10 +244,6 @@ class SettingsRepositoryImpl extends SettingsRepository {
   @override
   Future<Either<Failure, ReadingAndAppearanceEntitiy>>
   getReadingAndAppearance() async {
-    final cached = await cacheService.getJson(CacheKeys.kReadingAppearance);
-    if (cached != null) {
-      return right(ReadingAndAppearanceModel.fromJson(cached));
-    }
     try {
       final result = await remoteDataSource.getReadingAndAppearance();
       await cacheService.putJson(
@@ -258,6 +254,10 @@ class SettingsRepositoryImpl extends SettingsRepository {
     } on ServerException catch (e) {
       return Left(ServerFailure(e.message!));
     } on NetworkException catch (e) {
+      final cached = await cacheService.getJson(CacheKeys.kReadingAppearance);
+      if (cached != null) {
+        return right(ReadingAndAppearanceModel.fromJson(cached));
+      }
       return Left(NetworkFailure(e.message!));
     } catch (e) {
       return Left(

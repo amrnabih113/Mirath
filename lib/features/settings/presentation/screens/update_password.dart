@@ -53,6 +53,7 @@ class _UpdatePasswordState extends State<UpdatePassword> {
             ),
             SizedBox(height: MySizes.spaceXl(context)),
             SettingsTextField(
+              obscureText: true,
               controller: _currentPasswordController,
               hintText: 'your current password',
               validator: (value) =>
@@ -70,7 +71,7 @@ class _UpdatePasswordState extends State<UpdatePassword> {
             SettingsTextField(
               controller: _confirmPasswordController,
               hintText: 'Confirm password',
-              validator:(value)=> MyValidator.validateConfirmPassword(
+              validator: (value) => MyValidator.validateConfirmPassword(
                 context,
                 _newPasswordController.text,
                 _confirmPasswordController.text,

@@ -818,8 +818,17 @@ final appRouter = GoRouter(
       path: RouteNames.feedAiPreferences,
       pageBuilder: (context, state) {
         return PageTransitions.smoothTransition(
-          BlocProvider.value(
-            value: sl<SettingsCubit>()..getFeedAipreference(),
+          MultiBlocProvider(
+            providers: [
+              BlocProvider.value(
+                value: sl<SettingsCubit>()
+                  ..getFeedAipreference()
+                  ..getResearchInterests(),
+              ),
+              BlocProvider.value(
+                value: sl<SearchCubit>()..clearSearchHistory(),
+              ),
+            ],
             child: const FeedAiPreferences(),
           ),
         );
@@ -830,7 +839,7 @@ final appRouter = GoRouter(
       pageBuilder: (context, state) {
         return PageTransitions.smoothTransition(
           BlocProvider.value(
-            value: sl<SettingsCubit>(),
+            value: sl<SettingsCubit>()..getReadingAndAppearanceSettings(),
             child: const ReadingAppearance(),
           ),
         );
@@ -853,7 +862,9 @@ final appRouter = GoRouter(
       pageBuilder: (context, state) {
         return PageTransitions.smoothTransition(
           BlocProvider.value(
-            value: sl<SettingsCubit>()..getPrivacySettings(),
+            value: sl<SettingsCubit>()
+              ..getPrivacySettings()
+              ..initiateFullAccountDataExport(),
             child: const PrivacyDataControl(),
           ),
         );
@@ -875,7 +886,10 @@ final appRouter = GoRouter(
       pageBuilder: (context, state) {
         return PageTransitions.smoothTransition(
           BlocProvider.value(
-            value: sl<SettingsCubit>(),
+            value: sl<SettingsCubit>()
+              ..getAllActiveSessions()
+              ..revokeAllActiveSessionsExceptCurrent()
+              ..disconnectGoogleAccount(),
             child: const AccountManagement(),
           ),
         );

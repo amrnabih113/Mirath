@@ -213,11 +213,11 @@ class SettingsRemoteDataSourceImpl extends SettingsRemoteDataSource {
     final response = await _dioClient.patch(
       MyConstants.updateThemeAndFontDisplayPreferences,
       data: {
-        'colorMode': colorMode.name,
-        'defaultFontSize': defaultFontSize.name,
+        'colorMode': colorMode.name.toUpperCase(),
+        'defaultFontSize': defaultFontSize.name.toUpperCase(),
       },
     );
-    return ReadingAndAppearanceModel.fromJson(response.data['data']);
+    return ReadingAndAppearanceModel.partial(response.data);
   }
 
   @override
@@ -229,10 +229,11 @@ class SettingsRemoteDataSourceImpl extends SettingsRemoteDataSource {
     final response = await _dioClient.patch(
       MyConstants.updateReadingListVisibilityAndAnnotationColorPalette,
       data: {
-        'defaultReadingListVisibility': defaultReadingListVisibility.name,
+        'defaultReadingListVisibility': defaultReadingListVisibility.name
+            .toUpperCase(),
         'annotationHighlightColors': annotationHighlightColors,
       },
     );
-    return ReadingAndAppearanceModel.fromJson(response.data['data']);
+    return ReadingAndAppearanceModel.partialVisibility(response.data);
   }
 }

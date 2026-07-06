@@ -1,3 +1,4 @@
+import 'package:flutter/widgets.dart';
 import 'package:mirath/features/settings/domain/entities/privacy_settings_entitiy.dart';
 
 class PrivacySettingsModel extends PrivacySettingsEntitiy {
@@ -11,6 +12,7 @@ class PrivacySettingsModel extends PrivacySettingsEntitiy {
 
   factory PrivacySettingsModel.fromJson(Map<String, dynamic> json) {
     final data = json['data'] as Map<String, dynamic>? ?? {};
+    print(data['allowProfileSearch']);
     return PrivacySettingsModel(
       isPrivateAccount: data['isPrivateAccount'] ?? false,
       allowProfileSearch: data['allowProfileSearch'] ?? false,

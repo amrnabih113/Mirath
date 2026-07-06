@@ -1,10 +1,34 @@
 enum DeviceType { mobile, tablet, web }
 
-enum ColorMode { light, dark, system }
+enum ColorMode { LIGHT, DARK, SYSTEM }
 
-enum FontSize { small, medium, large, extraLarge }
+extension ColorModeX on ColorMode {
+  String get label => switch (this) {
+    ColorMode.LIGHT => 'Light mode',
+    ColorMode.DARK => 'Dark mode',
+    ColorMode.SYSTEM => 'System',
+  };
+}
 
-enum Visible { puplic, privet }
+enum FontSize { SMALL, MEDIUM, LARGE, EXTRA_LARG }
+
+extension FontSizeX on FontSize {
+  String get label => switch (this) {
+    FontSize.SMALL => 'Small',
+    FontSize.MEDIUM => 'Medium',
+    FontSize.LARGE => 'Large',
+    FontSize.EXTRA_LARG => 'Extra Large',
+  };
+}
+
+enum Visible { PUBLIC, PRIVATE }
+
+extension VisibleModeX on Visible {
+  String get label => switch (this) {
+    Visible.PRIVATE => 'Privet',
+    Visible.PUBLIC => 'Public',
+  };
+}
 
 enum ExportListFormate { json, bibtex, csv }
 

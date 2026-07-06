@@ -5,6 +5,7 @@ import 'package:mirath/core/utils/my_colors.dart';
 import 'package:mirath/core/utils/my_extenstions.dart';
 import 'package:mirath/core/utils/my_sizes.dart';
 import 'package:mirath/features/common/widgets/my_back_icon.dart';
+import 'package:mirath/features/home/presentation/cubit/search_cubit.dart';
 import 'package:mirath/features/settings/domain/entities/feed_and_ai_preference_entity.dart';
 import 'package:mirath/features/settings/presentation/cubit/settings_cubit.dart';
 import 'package:mirath/features/settings/presentation/widgets/account_tiles.dart';
@@ -150,7 +151,9 @@ class _FeedAiPreferencesState extends State<FeedAiPreferences> {
                 onTap: () {
                   showMyDialog(
                     context,
-                    onConfirm: () {},
+                    onConfirm: () {
+                      context.read<SearchCubit>().clearSearchHistory();
+                    },
                     title: 'Clear history?',
                     content:
                         'This will delete all past searches from your account. You won’t be able to get them back.',

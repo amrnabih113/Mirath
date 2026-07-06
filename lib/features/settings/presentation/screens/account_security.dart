@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hugeicons/hugeicons.dart';
 import 'package:mirath/core/constants/route_names.dart';
@@ -7,6 +8,7 @@ import 'package:mirath/core/utils/my_colors.dart';
 import 'package:mirath/core/utils/my_extenstions.dart';
 import 'package:mirath/core/utils/my_sizes.dart';
 import 'package:mirath/features/common/widgets/my_back_icon.dart';
+import 'package:mirath/features/settings/presentation/cubit/settings_cubit.dart';
 import 'package:mirath/features/settings/presentation/widgets/account_tiles.dart';
 import 'package:mirath/features/settings/presentation/widgets/dialogs.dart';
 import 'package:mirath/features/settings/presentation/widgets/special_text.dart';
@@ -57,6 +59,7 @@ class AccountSecurity extends StatelessWidget {
                 subtitle: 'johndoe@gmail.com',
                 onTap: () {
                   context.push(RouteNames.changeEmail);
+                  
                 },
                 btnName: 'change',
               ),
@@ -78,22 +81,39 @@ class AccountSecurity extends StatelessWidget {
                   fontWeight: FontWeight.w400,
                 ),
               ),
-              AccountTiles(
-                icon: HugeIcons.strokeRoundedGoogle,
-                title: 'Google',
-                subtitle: 'Sign in with your Google account',
-                onTap: () {},
-                btnName: 'Disconnect',
+              BlocConsumer<SettingsCubit, SettingsState>(
+                listener: (context, state) {
+                  if (state is SettingsSuccess<String>) {
+                    ScaffoldMessenger.of(
+                      context,
+                    ).showSnackBar(SnackBar(content: Text(state.data)));
+                  }
+                },
+                builder: (context, state) {
+                  bool isClicked = state is SettingsSuccess<String>;
+                  return AccountTiles(
+                    icon: HugeIcons.strokeRoundedGoogle,
+                    title: 'Google',
+                    subtitle: 'Sign in with your Google account',
+                    onTap: () {
+                      context.read<SettingsCubit>().disconnectGoogleAccount();
+                    },
+                    btnName: isClicked ? 'Connect' : 'Disconnect',
+                    isClicked: isClicked,
+                  );
+                },
               ),
               Divider(color: MyColors.grey, thickness: 2),
+
               AccountTiles(
                 icon: HugeIcons.strokeRoundedApple,
                 title: 'Apple',
                 subtitle: 'Sign in with your Apple account',
                 onTap: () {},
-                btnName: 'connect',
+                btnName: 'Connect',
                 isClicked: true,
               ),
+
               Divider(color: MyColors.grey, thickness: 2),
               Text(
                 'Security & Login',
@@ -153,7 +173,11 @@ class AccountSecurity extends StatelessWidget {
                         'Are you sure you want to log out of your iPad mini session in Cairo, EG?',
                     fTextBtn: 'Log out',
                     sTextBtn: 'Cancel',
-                    ontap: () {},
+                    ontap: () {
+                      context
+                          .read<SettingsCubit>()
+                          .revokeAllActiveSessionsExceptCurrent();
+                    },
                   );
                 },
                 btnName: 'Log out',
@@ -171,7 +195,11 @@ class AccountSecurity extends StatelessWidget {
                         'You will remain logged in on this device, but will be securely signed out everywhere else.',
                     fTextBtn: 'Log out all',
                     sTextBtn: 'Cancel',
-                    ontap: () {},
+                    ontap: () {
+                      context
+                          .read<SettingsCubit>()
+                          .revokeAllActiveSessionsExceptCurrent();
+                    },
                   );
                 },
                 btnName: 'Log out all',

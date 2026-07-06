@@ -7,10 +7,12 @@ class SettingsTextField extends StatelessWidget {
     required this.controller,
     required this.hintText,
     required this.validator,
+    this.obscureText = false,
   });
   final TextEditingController controller;
   final String? Function(String?)? validator;
   final String hintText;
+  final bool? obscureText;
 
   @override
   Widget build(BuildContext context) {
@@ -18,7 +20,7 @@ class SettingsTextField extends StatelessWidget {
       validator: validator,
       cursorColor: MyColors.primaryColor,
       controller: controller,
-      obscureText: true,
+      obscureText: obscureText!,
       decoration: InputDecoration(
         hintText: hintText,
         enabledBorder: OutlineInputBorder(
