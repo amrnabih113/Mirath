@@ -13,6 +13,7 @@ import '../../../../core/sync/retry_service.dart';
 import '../../../../core/usecases/no_params.dart';
 import '../../domain/entities/chat_message.dart';
 import '../../domain/entities/upload_files_params.dart';
+import '../../domain/entities/submit_feedback_params.dart';
 
 import '../../domain/usecases/create_session_usecase.dart';
 import '../../domain/usecases/create_temporary_session_usecase.dart';
@@ -21,6 +22,7 @@ import '../../domain/usecases/get_session_messages_usecase.dart';
 import '../../domain/usecases/send_message_usecase.dart';
 import '../../domain/usecases/stream_messages_usecase.dart';
 import '../../domain/usecases/upload_files_usecase.dart';
+import '../../domain/usecases/submit_feedback_usecase.dart';
 import 'chatbot_state.dart';
 
 class ChatbotCubit extends Cubit<ChatbotState> {
@@ -31,6 +33,7 @@ class ChatbotCubit extends Cubit<ChatbotState> {
     required this.getSessionMessagesUseCase,
     required this.sendMessageUseCase,
     required this.streamMessagesUseCase,
+    required this.submitFeedbackUseCase,
     required this.cacheService,
     required this.retryService,
     required this.networkManager,
@@ -42,6 +45,7 @@ class ChatbotCubit extends Cubit<ChatbotState> {
   final GetSessionMessagesUseCase getSessionMessagesUseCase;
   final SendMessageUseCase sendMessageUseCase;
   final StreamMessagesUseCase streamMessagesUseCase;
+  final SubmitFeedbackUseCase submitFeedbackUseCase;
   final HiveCacheService
   cacheService; 
   final RetryService retryService;
@@ -549,5 +553,74 @@ class ChatbotCubit extends Cubit<ChatbotState> {
         emit(ChatbotError(message: e.toString()));
       },
     );
+  }
+
+  Future<void> submitFeedback(
+    String messageId,
+    String feedbackType,
+  ) async {
+    if (_currentSessionId == null || _currentSessionId!.isEmpty) {
+      MyLogger.error('[ChatbotCubit] submitFeedback: no session ID available');
+      return;
+    }
+
+    try {
+      // Update UI to show loading state
+      final idx = _messages.indexWhere((m) => m.id == messageId);
+      if (idx >= 0) {
+        final current = _messages[idx];
+        _messages[idx] = current.copyWith(isFeedbackSubmitting: true);
+        _emitLoaded();
+      }
+
+      MyLogger.info(
+        '[ChatbotCubit] submitFeedback: messageId=$messageId, feedbackType=$feedbackType',
+      );
+
+      final params = SubmitFeedbackParams(
+        sessionId: _currentSessionId!,
+        messageId: messageId,
+        feedbackType: feedbackType,
+      );
+
+      final result = await submitFeedbackUseCase(params);
+
+      result.fold(
+        (failure) {
+          MyLogger.error(
+            '[ChatbotCubit] submitFeedback failed: ${failure.toString()}',
+          );
+          // Update UI to show error state
+          if (idx >= 0) {
+            final current = _messages[idx];
+            _messages[idx] = current.copyWith(isFeedbackSubmitting: false);
+            _emitLoaded();
+          }
+        },
+        (feedback) {
+          MyLogger.info(
+            '[ChatbotCubit] feedback submitted successfully: ${feedback.type}',
+          );
+          // Update UI to show success state
+          if (idx >= 0) {
+            final current = _messages[idx];
+            _messages[idx] = current.copyWith(
+              userFeedback: feedback.type,
+              isFeedbackSubmitting: false,
+            );
+            _emitLoaded();
+          }
+        },
+      );
+    } catch (e) {
+      MyLogger.error('[ChatbotCubit] submitFeedback error: ${e.toString()}');
+      // Update UI to reset loading state
+      final idx = _messages.indexWhere((m) => m.id == messageId);
+      if (idx >= 0) {
+        final current = _messages[idx];
+        _messages[idx] = current.copyWith(isFeedbackSubmitting: false);
+        _emitLoaded();
+      }
+    }
   }
 }

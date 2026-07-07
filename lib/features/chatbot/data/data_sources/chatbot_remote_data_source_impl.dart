@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:dio/dio.dart';
+import 'package:mirath/features/chatbot/data/models/feedback_model.dart';
 
 import '../../../../core/network/dio_client.dart';
 import '../../../../core/utils/my_logger.dart';
@@ -260,5 +261,28 @@ class ChatbotRemoteDataSourceImpl implements ChatbotRemoteDataSource {
     }
 
     if (remoteClosed) return;
+  }
+
+  @override
+  Future<FeedbackModel> submitFeedback(
+    String sessionId,
+    String messageId,
+    String feedbackType,
+  ) async {
+    final path = MyConstants.chatbotSubmitFeedback
+        .replaceAll('{sessionId}', sessionId)
+        .replaceAll('{messageId}', messageId);
+    
+    final body = {'feedbackType': feedbackType};
+    final resp = await dioClient.post(path, data: body);
+    
+    final data = resp.data as Map<String, dynamic>;
+    final feedbackData = data['data'] as Map<String, dynamic>?;
+    
+    if (feedbackData == null) {
+      throw StateError('Invalid feedback response: no data field');
+    }
+    
+    return FeedbackModel.fromJson(feedbackData);
   }
 }

@@ -70,9 +70,9 @@ class _ChatbotScreenState extends State<ChatbotScreen> {
     }
   }
 
-  Future<void> _pickAttachment(AttachmentType type) async {
+  Future<void> _pickAttachment(InputAttachmentType type) async {
     switch (type) {
-      case AttachmentType.gallery:
+      case InputAttachmentType.gallery:
         final List<XFile> images = await _imagePicker.pickMultiImage();
         if (images.isNotEmpty) {
           setState(() {
@@ -80,7 +80,7 @@ class _ChatbotScreenState extends State<ChatbotScreen> {
           });
         }
         break;
-      case AttachmentType.camera:
+      case InputAttachmentType.camera:
         final XFile? image = await _imagePicker.pickImage(
           source: ImageSource.camera,
         );
@@ -90,7 +90,7 @@ class _ChatbotScreenState extends State<ChatbotScreen> {
           });
         }
         break;
-      case AttachmentType.document:
+      case InputAttachmentType.document:
         // TODO: Implement document picker
         break;
     }

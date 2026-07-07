@@ -15,7 +15,7 @@ import 'dart:io';
 class ChatInputField extends StatefulWidget {
   final TextEditingController messageController;
   final List<XFile> selectedImages;
-  final Function(AttachmentType) onPickAttachment;
+  final Function(InputAttachmentType) onPickAttachment;
   final VoidCallback onSendMessage;
   final VoidCallback onTextChanged;
   final Function(File, int)? onVoiceRecorded;
@@ -73,7 +73,7 @@ class _ChatInputFieldState extends State<ChatInputField> {
                   label: S.of(context).attachment_camera,
                   onTap: () {
                     Navigator.pop(context);
-                    widget.onPickAttachment(AttachmentType.camera);
+                    widget.onPickAttachment(InputAttachmentType.camera);
                   },
                 ),
                 _AttachmentOption(
@@ -81,7 +81,7 @@ class _ChatInputFieldState extends State<ChatInputField> {
                   label: S.of(context).attachment_photos,
                   onTap: () {
                     Navigator.pop(context);
-                    widget.onPickAttachment(AttachmentType.gallery);
+                    widget.onPickAttachment(InputAttachmentType.gallery);
                   },
                 ),
                 _AttachmentOption(
@@ -89,7 +89,7 @@ class _ChatInputFieldState extends State<ChatInputField> {
                   label: S.of(context).attachment_files,
                   onTap: () {
                     Navigator.pop(context);
-                    widget.onPickAttachment(AttachmentType.document);
+                    widget.onPickAttachment(InputAttachmentType.document);
                   },
                 ),
               ],
@@ -232,7 +232,7 @@ class _ChatInputFieldState extends State<ChatInputField> {
   }
 }
 
-enum AttachmentType { gallery, camera, document }
+enum InputAttachmentType { gallery, camera, document }
 
 class _AttachmentOption extends StatelessWidget {
   final dynamic icon;

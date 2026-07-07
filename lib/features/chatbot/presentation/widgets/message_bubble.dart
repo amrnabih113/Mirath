@@ -6,6 +6,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_markdown/flutter_markdown.dart';
 import 'package:hugeicons/hugeicons.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:hugeicons/styles/stroke_rounded.dart';
 
 import '../cubit/chatbot_cubit.dart';
 import 'animated_loading_status.dart';
@@ -145,7 +146,7 @@ class _UserBubble extends StatelessWidget {
           children: [
             // COPY
             IconButton(
-              icon: const Icon(Icons.copy, size: 16),
+              icon: HugeIcon(icon: HugeIconsStrokeRounded.copy01, size: 16),
               onPressed: () {
                 Clipboard.setData(ClipboardData(text: message.text));
                 MyLoaders.customToast(context: context, message: "Copied");
@@ -153,30 +154,30 @@ class _UserBubble extends StatelessWidget {
             ),
 
             // EDIT
-            IconButton(
-              icon: const Icon(Icons.edit, size: 16),
-              onPressed:
-                  onEdit ??
-                  () {
-                    MyLoaders.customToast(
-                      context: context,
-                      message: "Edit not connected",
-                    );
-                  },
-            ),
+            // IconButton(
+            //   icon: const Icon(Icons.edit, size: 16),
+            //   onPressed:
+            //       onEdit ??
+            //       () {
+            //         MyLoaders.customToast(
+            //           context: context,
+            //           message: "Edit not connected",
+            //         );
+            //       },
+            // ),
 
-            // RETRY
-            IconButton(
-              icon: const Icon(Icons.refresh, size: 16),
-              onPressed:
-                  onRetry ??
-                  () {
-                    MyLoaders.customToast(
-                      context: context,
-                      message: "Retry not connected",
-                    );
-                  },
-            ),
+            // // RETRY
+            // IconButton(
+            //   icon: const Icon(Icons.refresh, size: 16),
+            //   onPressed:
+            //       onRetry ??
+            //       () {
+            //         MyLoaders.customToast(
+            //           context: context,
+            //           message: "Retry not connected",
+            //         );
+            //       },
+            // ),
           ],
         ),
       ],
@@ -208,7 +209,7 @@ class _BotBubble extends StatelessWidget {
           _TypewriterText(
             key: ValueKey(message.id),
             text: message.text,
-            charactersPerSecond: 40,
+            charactersPerSecond: 20,
             style: context.bodyMedium.copyWith(
               color: MyColors.textPrimary,
               height: 1.5,
@@ -227,19 +228,69 @@ class _BotBubble extends StatelessWidget {
               mainAxisSize: MainAxisSize.min,
               children: [
                 IconButton(
-                  icon: const Icon(Icons.copy, size: 16),
+                  icon: HugeIcon(icon: HugeIconsStrokeRounded.copy01, size: 16),
                   onPressed: () {
                     Clipboard.setData(ClipboardData(text: message.text));
                     MyLoaders.customToast(context: context, message: "Copied");
                   },
                 ),
+                // Thumbs Up Button
                 IconButton(
-                  icon: const Icon(Icons.thumb_up, size: 16),
-                  onPressed: () {},
+                  icon: HugeIcon(
+                    icon: HugeIconsStrokeRounded.thumbsUp,
+                    size: 16,
+                    color: message.userFeedback == 'THUMBS_UP'
+                        ? MyColors.primaryButton
+                        : MyColors.textSecondary,
+                  ),
+                  onPressed: message.isFeedbackSubmitting
+                      ? null
+                      : () {
+                          if (message.userFeedback != 'THUMBS_UP') {
+                            MyLoaders.customToast(
+                              context: context,
+                              message: "Submitting feedback...",
+                            );
+                            context.read<ChatbotCubit>().submitFeedback(
+                              message.id,
+                              'THUMBS_UP',
+                            );
+                          } else {
+                            MyLoaders.customToast(
+                              context: context,
+                              message: "Feedback already submitted",
+                            );
+                          }
+                        },
                 ),
+                // Thumbs Down Button
                 IconButton(
-                  icon: const Icon(Icons.thumb_down, size: 16),
-                  onPressed: () {},
+                  icon: HugeIcon(
+                    icon: HugeIconsStrokeRounded.thumbsDown,
+                    size: 16,
+                    color: message.userFeedback == 'THUMBS_DOWN'
+                        ? MyColors.primaryButton
+                        : MyColors.textSecondary,
+                  ),
+                  onPressed: message.isFeedbackSubmitting
+                      ? null
+                      : () {
+                          if (message.userFeedback != 'THUMBS_DOWN') {
+                            MyLoaders.customToast(
+                              context: context,
+                              message: "Submitting feedback...",
+                            );
+                            context.read<ChatbotCubit>().submitFeedback(
+                              message.id,
+                              'THUMBS_DOWN',
+                            );
+                          } else {
+                            MyLoaders.customToast(
+                              context: context,
+                              message: "Feedback already submitted",
+                            );
+                          }
+                        },
                 ),
               ],
             ),

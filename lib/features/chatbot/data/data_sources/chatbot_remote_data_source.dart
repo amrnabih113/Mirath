@@ -1,10 +1,12 @@
 import 'dart:io';
 
 import 'package:dio/dio.dart';
+import 'package:mirath/features/chatbot/data/models/chatbot_message_attachment.dart';
 
 import '../models/file_upload_response.dart';
 import '../models/chatbot_message_model.dart';
 import '../models/session_model.dart';
+import '../models/feedback_model.dart';
 
 abstract class ChatbotRemoteDataSource {
   Future<FileUploadResponse> uploadFile(
@@ -52,4 +54,11 @@ abstract class ChatbotRemoteDataSource {
     Map<String, String>? extraHeaders,
     Map<String, dynamic>? body,
   });
+
+  /// Submit feedback for a message (thumbs up/down).
+  Future<FeedbackModel> submitFeedback(
+    String sessionId,
+    String messageId,
+    String feedbackType,
+  );
 }

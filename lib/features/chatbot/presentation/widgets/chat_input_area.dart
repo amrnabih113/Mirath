@@ -9,7 +9,7 @@ import 'images_preview.dart';
 class ChatInputArea extends StatelessWidget {
   final TextEditingController messageController;
   final List<XFile> selectedImages;
-  final Function(AttachmentType) onPickAttachment;
+  final Function(InputAttachmentType) onPickAttachment;
   final VoidCallback onSendMessage;
   final Function(int) onRemoveImage;
   final VoidCallback onTextChanged;

@@ -107,6 +107,7 @@ import '../features/chatbot/domain/usecases/upload_files_usecase.dart';
 import '../features/chatbot/domain/usecases/create_session_usecase.dart';
 import '../features/chatbot/domain/usecases/send_message_usecase.dart';
 import '../features/chatbot/domain/usecases/stream_messages_usecase.dart';
+import '../features/chatbot/domain/usecases/submit_feedback_usecase.dart';
 
 import '../core/network/dio_client.dart';
 import '../core/network/network_manager.dart';
@@ -782,6 +783,7 @@ class DI {
     sl.registerLazySingleton(() => CreateTemporarySessionUseCase(sl()));
     sl.registerLazySingleton(() => DeleteTemporarySessionUseCase(sl()));
     sl.registerLazySingleton(() => GetSessionByIdUseCase(sl()));
+    sl.registerLazySingleton(() => SubmitFeedbackUseCase(sl()));
 
     sl.registerFactory(
       () => ChatbotCubit(
@@ -791,6 +793,7 @@ class DI {
         getSessionMessagesUseCase: sl(),
         sendMessageUseCase: sl(),
         streamMessagesUseCase: sl(),
+        submitFeedbackUseCase: sl(),
         cacheService: sl(),
         retryService: sl(),
         networkManager: sl(),

@@ -10,7 +10,10 @@ import '../../../../core/utils/my_logger.dart';
 import '../../domain/repositories/chatbot_repository.dart';
 import '../../domain/entities/chat_message.dart';
 import '../../domain/entities/session.dart';
+import '../../domain/entities/feedback.dart';
+import '../../domain/entities/submit_feedback_params.dart';
 import '../data_sources/chatbot_remote_data_source.dart';
+import '../models/chatbot_message_attachment.dart';
 import '../models/file_upload_response.dart';
 import '../../../../core/cache/cache_keys.dart';
 
@@ -28,7 +31,7 @@ class ChatbotRepositoryImpl implements ChatbotRepository {
   @override
   Future<Either<Failure, FileUploadResponse>> uploadFile(
     File file,
-    String type, {
+    AttachmentType type, {
     int? durationSeconds,
     void Function(int, int)? onProgress,
     CancelToken? cancelToken,
@@ -40,7 +43,7 @@ class ChatbotRepositoryImpl implements ChatbotRepository {
         );
         final resp = await remoteDataSource.uploadFile(
           file,
-          type,
+          type.apiValue,
           durationSeconds: durationSeconds,
           onProgress: onProgress,
           cancelToken: cancelToken,
@@ -56,7 +59,7 @@ class ChatbotRepositoryImpl implements ChatbotRepository {
   @override
   Future<Either<Failure, List<FileUploadResponse>>> uploadFiles(
     List<File> files,
-    String type, {
+    AttachmentType type, {
     int? durationSeconds,
     void Function(int, int)? onProgress,
     CancelToken? cancelToken,
@@ -68,7 +71,7 @@ class ChatbotRepositoryImpl implements ChatbotRepository {
         );
         final resp = await remoteDataSource.uploadFiles(
           files,
-          type,
+          type.apiValue,
           durationSeconds: durationSeconds,
           onProgress: onProgress,
           cancelToken: cancelToken,
@@ -222,6 +225,28 @@ class ChatbotRepositoryImpl implements ChatbotRepository {
       );
     } catch (e) {
       return Stream.error(mapExceptionToFailure(e));
+    }
+  }
+
+  @override
+  Future<Either<Failure, Feedback>> submitFeedback(
+    SubmitFeedbackParams params,
+  ) async {
+    try {
+      if (await networkManager.isConnected) {
+        MyLogger.info(
+          '[ChatbotRepository] submitFeedback -> messageId=${params.messageId}, feedbackType=${params.feedbackType}',
+        );
+        final resp = await remoteDataSource.submitFeedback(
+          params.sessionId,
+          params.messageId,
+          params.feedbackType,
+        );
+        return Right(resp);
+      }
+      return const Left(NetworkFailure());
+    } catch (e) {
+      return Left(mapExceptionToFailure(e));
     }
   }
 }

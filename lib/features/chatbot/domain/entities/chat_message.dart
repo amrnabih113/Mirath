@@ -1,3 +1,5 @@
+import '../../data/models/chatbot_message_attachment.dart';
+
 enum MessageStatus {
   draft,
   sending,
@@ -9,33 +11,41 @@ enum MessageStatus {
   failed,
   retrying,
 }
-
 class ChatMessage {
   final String id;
   final String text;
   final bool isUser;
   final DateTime timestamp;
+
+  /// Legacy (will remove later)
   final List<String>? imagePaths;
+
+  /// New
+  final List<MessageAttachment> attachments;
+
   final Map<String, double>? uploadProgress;
   final bool isComplete;
   final bool isPending;
   final String? loadingStatus;
   final bool isError;
 
-  // New fields for enhanced streaming UX
   final MessageStatus messageStatus;
-  final String? actualResponse; // Full text from backend
-  final String? displayedResponse; // Text currently shown (for animation)
-  final String? streamError; // Error details if failed
+  final String? actualResponse;
+  final String? displayedResponse;
+  final String? streamError;
   final bool canRegenerate;
   final bool canStop;
 
-  ChatMessage({
+  final String? userFeedback;
+  final bool isFeedbackSubmitting;
+
+  const ChatMessage({
     required this.id,
     required this.text,
     required this.isUser,
     required this.timestamp,
     this.imagePaths,
+    this.attachments = const [],
     this.uploadProgress,
     this.isComplete = true,
     this.isPending = false,
@@ -47,6 +57,8 @@ class ChatMessage {
     this.streamError,
     this.canRegenerate = false,
     this.canStop = false,
+    this.userFeedback,
+    this.isFeedbackSubmitting = false,
   });
 
   ChatMessage copyWith({
@@ -55,6 +67,7 @@ class ChatMessage {
     bool? isUser,
     DateTime? timestamp,
     List<String>? imagePaths,
+    List<MessageAttachment>? attachments,
     Map<String, double>? uploadProgress,
     bool? isComplete,
     bool? isPending,
@@ -66,6 +79,8 @@ class ChatMessage {
     String? streamError,
     bool? canRegenerate,
     bool? canStop,
+    String? userFeedback,
+    bool? isFeedbackSubmitting,
   }) {
     return ChatMessage(
       id: id ?? this.id,
@@ -73,6 +88,7 @@ class ChatMessage {
       isUser: isUser ?? this.isUser,
       timestamp: timestamp ?? this.timestamp,
       imagePaths: imagePaths ?? this.imagePaths,
+      attachments: attachments ?? this.attachments,
       uploadProgress: uploadProgress ?? this.uploadProgress,
       isComplete: isComplete ?? this.isComplete,
       isPending: isPending ?? this.isPending,
@@ -84,6 +100,9 @@ class ChatMessage {
       streamError: streamError ?? this.streamError,
       canRegenerate: canRegenerate ?? this.canRegenerate,
       canStop: canStop ?? this.canStop,
+      userFeedback: userFeedback ?? this.userFeedback,
+      isFeedbackSubmitting:
+          isFeedbackSubmitting ?? this.isFeedbackSubmitting,
     );
   }
 }

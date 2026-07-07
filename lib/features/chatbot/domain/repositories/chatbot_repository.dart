@@ -2,8 +2,11 @@ import 'dart:io';
 
 import 'package:dartz/dartz.dart';
 import 'package:dio/dio.dart';
+import '../../data/models/chatbot_message_attachment.dart';
 import '../entities/session.dart';
 import '../entities/chat_message.dart';
+import '../entities/feedback.dart';
+import '../entities/submit_feedback_params.dart';
 
 import '../../../../core/error/failuors.dart';
 import '../../data/models/file_upload_response.dart';
@@ -11,7 +14,7 @@ import '../../data/models/file_upload_response.dart';
 abstract class ChatbotRepository {
   Future<Either<Failure, FileUploadResponse>> uploadFile(
     File file,
-    String type, {
+    AttachmentType type, {
     int? durationSeconds,
     void Function(int, int)? onProgress,
     CancelToken? cancelToken,
@@ -19,7 +22,7 @@ abstract class ChatbotRepository {
 
   Future<Either<Failure, List<FileUploadResponse>>> uploadFiles(
     List<File> files,
-    String type, {
+    AttachmentType type, {
     int? durationSeconds,
     void Function(int, int)? onProgress,
     CancelToken? cancelToken,
@@ -57,4 +60,9 @@ abstract class ChatbotRepository {
     Map<String, String>? extraHeaders,
     Map<String, dynamic>? body,
   });
+
+  /// Submit feedback for a message (thumbs up/down).
+  Future<Either<Failure, Feedback>> submitFeedback(
+    SubmitFeedbackParams params,
+  );
 }
