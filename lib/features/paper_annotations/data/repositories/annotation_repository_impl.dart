@@ -271,4 +271,57 @@ class AnnotationRepositoryImpl implements AnnotationRepository {
     }
     return highlight;
   }
+
+  @override
+  Future<Either<Failure, String>> explainText({
+    required String paperId,
+    required String text,
+  }) async {
+    try {
+      final explanation = await remoteDataSource.explainText(
+        paperId: paperId,
+        text: text,
+      );
+      return Right(explanation);
+    } catch (e) {
+      MyLogger.error('[AnnotationRepository] Error explaining text: $e');
+      return Left(ServerFailure());
+    }
+  }
+
+  @override
+  Future<Either<Failure, String>> summarizeText({
+    required String paperId,
+    required String text,
+  }) async {
+    try {
+      final summary = await remoteDataSource.summarizeText(
+        paperId: paperId,
+        text: text,
+      );
+      return Right(summary);
+    } catch (e) {
+      MyLogger.error('[AnnotationRepository] Error summarizing text: $e');
+      return Left(ServerFailure());
+    }
+  }
+
+  @override
+  Future<Either<Failure, String>> translateText({
+    required String paperId,
+    required String text,
+    required String targetLanguage,
+  }) async {
+    try {
+      final translation = await remoteDataSource.translateText(
+        paperId: paperId,
+        text: text,
+        targetLanguage: targetLanguage,
+      );
+      return Right(translation);
+    } catch (e) {
+      MyLogger.error('[AnnotationRepository] Error translating text: $e');
+      return Left(ServerFailure());
+    }
+  }
 }

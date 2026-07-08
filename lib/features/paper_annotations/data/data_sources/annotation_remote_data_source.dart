@@ -44,4 +44,24 @@ abstract class AnnotationRemoteDataSource {
     required String paperId,
     required String highlightId,
   });
+
+  // Summeriza a  text 
+  Future<String> summarizeText({
+    required String paperId,
+    required String text,
+  });
+
+  // Explain a  text
+  Future<String> explainText({
+    required String paperId,
+    required String text,
+  });
+  
+  // Translate a  text
+  Future<String> translateText({
+    required String paperId,
+    required String text,
+    required String targetLanguage,
+  });
+  
 }

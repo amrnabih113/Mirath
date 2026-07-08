@@ -35,4 +35,23 @@ abstract class AnnotationRepository {
 
   /// Delete a note from a highlight
   Future<Either<Failure, void>> deleteHighlightNote(HighlightNoteParams params);
+
+  /// Summarize a text
+  Future<Either<Failure, String>> summarizeText({
+    required String paperId,
+    required String text,
+  });
+
+  /// Explain a text
+  Future<Either<Failure, String>> explainText({
+    required String paperId,
+    required String text,
+  });
+
+  /// Translate a text
+  Future<Either<Failure, String>> translateText({
+    required String paperId,
+    required String text,
+    required String targetLanguage,
+  });
 }

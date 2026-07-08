@@ -190,6 +190,17 @@ class MyConstants {
   static const String paperHighlightsNotes =
       "api/v1/papers/{id}/highlights/notes";
 
+  // ***API endpoints for paper annotation actions: summarization, explanation, and translation***
+  // post
+  static const String paperAnnotationSummarization =
+      "api/v1/papers/{id}/highlights/summarize";
+  // post
+  static const String paperAnnotationExplanation =
+      "api/v1/papers/{id}/highlights/explain";
+  // post
+  static const String paperAnnotationTranslation =
+      "api/v1/papers/{id}/highlights/translate";
+
   // ***search endpoints***
   static const String searchPapers = "api/v1/papers/search";
   static const String searchGlobal = "api/v1/search/global";
