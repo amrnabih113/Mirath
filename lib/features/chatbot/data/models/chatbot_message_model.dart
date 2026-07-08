@@ -1,4 +1,3 @@
-
 import '../../domain/entities/chat_message.dart';
 import 'chatbot_message_attachment.dart';
 
@@ -30,10 +29,17 @@ class ChatbotMessageModel {
       feedbackType = data['feedback']['type']?.toString();
     }
 
-    final attachments =
-        (data['attachments'] as List<dynamic>? ?? [])
-            .map((e) => MessageAttachment.fromJson(e))
-            .toList();
+    final rawAttachments = data['attachments'];
+    final attachments = rawAttachments is List
+        ? rawAttachments
+              .whereType<Map>()
+              .map(
+                (e) => MessageAttachment.fromJson(
+                  Map<String, dynamic>.from(e.cast<String, dynamic>()),
+                ),
+              )
+              .toList()
+        : const <MessageAttachment>[];
 
     return ChatbotMessageModel(
       id: data['id']?.toString() ?? '',
@@ -41,9 +47,7 @@ class ChatbotMessageModel {
       type: data['type']?.toString() ?? 'TEXT',
       content: data['content']?.toString() ?? '',
       attachments: attachments,
-      createdAt: data['createdAt'] != null
-          ? DateTime.tryParse(data['createdAt'])
-          : null,
+      createdAt: DateTime.tryParse(data['createdAt']?.toString() ?? ''),
       feedbackType: feedbackType,
     );
   }

@@ -33,20 +33,20 @@ class MessageAttachment {
   });
 
   factory MessageAttachment.fromJson(Map<String, dynamic> json) {
+    final rawType = json['type']?.toString().toUpperCase();
+
     return MessageAttachment(
       id: json['id']?.toString() ?? '',
-      type: switch (json['type']) {
-        'IMAGE' => AttachmentType.image,
+      type: switch (rawType) {
         'AUDIO' => AttachmentType.audio,
-        _ => throw Exception('Unknown attachment type: ${json["type"]}'),
+        'IMAGE' => AttachmentType.image,
+        _ => AttachmentType.image,
       },
       url: json['url']?.toString() ?? '',
       mimeType: json['mimeType']?.toString(),
       sizeBytes: json['sizeBytes'],
       durationSeconds: json['durationSeconds'],
-      createdAt: json['createdAt'] != null
-          ? DateTime.tryParse(json['createdAt'])
-          : null,
+      createdAt: DateTime.tryParse(json['createdAt']?.toString() ?? ''),
     );
   }
 

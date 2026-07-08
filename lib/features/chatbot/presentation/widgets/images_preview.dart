@@ -10,12 +10,12 @@ import '../../../../core/utils/my_sizes.dart';
 import 'image_preview_overlay.dart';
 
 class ImagesPreview extends StatelessWidget {
-  final List<XFile> selectedImages;
+final List<File> selectedFiles;
   final Function(int) onRemoveImage;
 
   const ImagesPreview({
     super.key,
-    required this.selectedImages,
+    required this.selectedFiles,
     required this.onRemoveImage,
   });
 
@@ -23,7 +23,7 @@ class ImagesPreview extends StatelessWidget {
     showDialog(
       context: context,
       builder: (context) => ImagePreviewOverlay(
-        images: selectedImages,
+        images: selectedFiles.map((file) => XFile(file.path)).toList(),
         initialIndex: initialIndex,
       ),
     );
@@ -39,7 +39,7 @@ class ImagesPreview extends StatelessWidget {
       ),
       child: ListView.separated(
         scrollDirection: Axis.horizontal,
-        itemCount: selectedImages.length,
+        itemCount: selectedFiles.length,
         separatorBuilder: (_, __) => SizedBox(width: MySizes.spaceSm(context)),
         itemBuilder: (context, index) {
           return Stack(
@@ -51,7 +51,7 @@ class ImagesPreview extends StatelessWidget {
                     ResponsiveHelper.responsiveValue(context, 8),
                   ),
                   child: Image.file(
-                    File(selectedImages[index].path),
+                    selectedFiles[index],
                     width: ResponsiveHelper.responsiveValue(context, 60),
                     height: ResponsiveHelper.responsiveValue(context, 60),
                     fit: BoxFit.cover,

@@ -1,16 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:hugeicons/styles/stroke_rounded.dart';
 import 'package:hugeicons/hugeicons.dart';
 import 'package:image_picker/image_picker.dart';
 import 'dart:io';
-import 'package:go_router/go_router.dart';
 import 'package:mirath/core/utils/my_extenstions.dart';
 
 import '../../../../core/helpers/responsive_helper.dart';
 import '../../../../core/network/network_manager.dart';
-import '../../../../core/constants/route_names.dart';
 import '../../../../core/services/user_cache_service.dart';
 import '../../../../core/ui/widgets/offline_banner.dart';
 import '../../../../core/utils/my_colors.dart';
@@ -37,8 +34,10 @@ class _ChatbotScreenState extends State<ChatbotScreen> {
   final TextEditingController _messageController = TextEditingController();
   final ScrollController _scrollController = ScrollController();
   final ImagePicker _imagePicker = ImagePicker();
-  final List<XFile> _selectedImages = [];
+  final List<File> _selectedFiles = [];
   String? _userName;
+  File? _selectedAudioFile;
+  int? _selectedAudioDuration;
 
   @override
   void initState() {
@@ -73,68 +72,77 @@ class _ChatbotScreenState extends State<ChatbotScreen> {
   Future<void> _pickAttachment(InputAttachmentType type) async {
     switch (type) {
       case InputAttachmentType.gallery:
-        final List<XFile> images = await _imagePicker.pickMultiImage();
+        final images = await _imagePicker.pickMultiImage();
+
         if (images.isNotEmpty) {
           setState(() {
-            _selectedImages.addAll(images);
+            _selectedFiles.addAll(images.map((e) => File(e.path)));
           });
         }
         break;
+
       case InputAttachmentType.camera:
-        final XFile? image = await _imagePicker.pickImage(
-          source: ImageSource.camera,
-        );
+        final image = await _imagePicker.pickImage(source: ImageSource.camera);
+
         if (image != null) {
           setState(() {
-            _selectedImages.add(image);
+            _selectedFiles.add(File(image.path));
           });
         }
         break;
+
       case InputAttachmentType.document:
-        // TODO: Implement document picker
         break;
     }
   }
 
   void _removeImage(int index) {
     setState(() {
-      _selectedImages.removeAt(index);
+      _selectedFiles.removeAt(index);
     });
   }
 
   void _sendMessage() {
-    if (_messageController.text.trim().isEmpty && _selectedImages.isEmpty) {
+    final hasText = _messageController.text.trim().isNotEmpty;
+    final hasImages = _selectedFiles.isNotEmpty;
+    final hasAudio = _selectedAudioFile != null;
+
+    if (!hasText && !hasImages && !hasAudio) {
       return;
     }
 
-    // Unfocus the text field
     FocusScope.of(context).unfocus();
 
-    final imagePaths = _selectedImages.map((e) => e.path).toList();
     _chatbotCubit.sendMessage(
       _messageController.text.trim(),
-      imagePaths: imagePaths,
+      imagePaths: _selectedFiles.map((e) => e.path).toList(),
+      audioFile: _selectedAudioFile,
+      audioDuration: _selectedAudioDuration,
     );
 
     _messageController.clear();
+
     setState(() {
-      _selectedImages.clear();
+      _selectedFiles.clear();
+      _selectedAudioFile = null;
+      _selectedAudioDuration = null;
     });
 
     _scrollToBottom();
   }
 
-  void _onVoiceRecorded(File file, int duration) {
-    // validate size (25 MB) and duration (120s)
+  Future<void> _onVoiceRecorded(File file, int duration) async {
     final maxBytes = 25 * 1024 * 1024;
+
     if (!file.existsSync()) return;
-    final bytes = file.lengthSync();
-    if (bytes > maxBytes) {
+
+    if (file.lengthSync() > maxBytes) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Audio file too large (max 25MB)')),
       );
       return;
     }
+
     if (duration > 120) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Audio too long (max 120s)')),
@@ -142,8 +150,15 @@ class _ChatbotScreenState extends State<ChatbotScreen> {
       return;
     }
 
-    // send audio as message
-    _chatbotCubit.sendMessage('', audioFile: file, audioDuration: duration);
+    setState(() {
+      _selectedAudioFile = file;
+      _selectedAudioDuration = duration;
+    });
+
+    // Wait one frame so the state is updated.
+    await Future.delayed(Duration.zero);
+
+    _sendMessage();
   }
 
   void _scrollToBottom({bool followTyping = false}) {
@@ -283,7 +298,7 @@ class _ChatbotScreenState extends State<ChatbotScreen> {
                 FocusScope.of(context).unfocus();
                 _messageController.clear();
                 setState(() {
-                  _selectedImages.clear();
+                  _selectedFiles.clear();
                 });
                 await _chatbotCubit.loadSession(session);
                 _scrollToBottom(followTyping: true);
@@ -305,7 +320,7 @@ class _ChatbotScreenState extends State<ChatbotScreen> {
                   ),
                   ChatInputArea(
                     messageController: _messageController,
-                    selectedImages: _selectedImages,
+                    selectedFiles: _selectedFiles,
                     onPickAttachment: _pickAttachment,
                     onSendMessage: _sendMessage,
                     onRemoveImage: _removeImage,

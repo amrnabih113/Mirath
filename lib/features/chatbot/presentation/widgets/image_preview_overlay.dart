@@ -55,10 +55,25 @@ class _ImagePreviewOverlayState extends State<ImagePreviewOverlay> {
       path = widget.images![index].path;
     }
 
+    final uri = Uri.tryParse(path);
+    final isRemote = uri != null && uri.hasScheme && uri.host.isNotEmpty;
+
     return InteractiveViewer(
       minScale: 0.5,
       maxScale: 4.0,
-      child: Center(child: Image.file(File(path), fit: BoxFit.contain)),
+      child: Center(
+        child: isRemote
+            ? Image.network(
+                path,
+                fit: BoxFit.contain,
+                errorBuilder: (_, __, ___) => const Icon(
+                  Icons.broken_image_outlined,
+                  color: Colors.white,
+                  size: 42,
+                ),
+              )
+            : Image.file(File(path), fit: BoxFit.contain),
+      ),
     );
   }
 

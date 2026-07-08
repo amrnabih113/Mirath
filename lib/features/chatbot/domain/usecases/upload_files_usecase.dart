@@ -21,6 +21,7 @@ class UploadFilesUseCase
       params.type,
       durationSeconds: params.durationSeconds,
       onProgress: params.onProgress,
+      cancelToken: params.cancelToken,
     );
   }
 }

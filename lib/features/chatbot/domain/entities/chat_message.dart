@@ -11,14 +11,12 @@ enum MessageStatus {
   failed,
   retrying,
 }
+
 class ChatMessage {
   final String id;
   final String text;
   final bool isUser;
   final DateTime timestamp;
-
-  /// Legacy (will remove later)
-  final List<String>? imagePaths;
 
   /// New
   final List<MessageAttachment> attachments;
@@ -28,6 +26,7 @@ class ChatMessage {
   final bool isPending;
   final String? loadingStatus;
   final bool isError;
+  final bool? isNow; // to animate
 
   final MessageStatus messageStatus;
   final String? actualResponse;
@@ -44,13 +43,13 @@ class ChatMessage {
     required this.text,
     required this.isUser,
     required this.timestamp,
-    this.imagePaths,
     this.attachments = const [],
     this.uploadProgress,
     this.isComplete = true,
     this.isPending = false,
     this.loadingStatus,
     this.isError = false,
+    this.isNow = false,
     this.messageStatus = MessageStatus.completed,
     this.actualResponse,
     this.displayedResponse,
@@ -66,7 +65,7 @@ class ChatMessage {
     String? text,
     bool? isUser,
     DateTime? timestamp,
-    List<String>? imagePaths,
+    bool? isNow,
     List<MessageAttachment>? attachments,
     Map<String, double>? uploadProgress,
     bool? isComplete,
@@ -86,8 +85,8 @@ class ChatMessage {
       id: id ?? this.id,
       text: text ?? this.text,
       isUser: isUser ?? this.isUser,
+      isNow: isNow ?? this.isNow,
       timestamp: timestamp ?? this.timestamp,
-      imagePaths: imagePaths ?? this.imagePaths,
       attachments: attachments ?? this.attachments,
       uploadProgress: uploadProgress ?? this.uploadProgress,
       isComplete: isComplete ?? this.isComplete,
@@ -101,8 +100,7 @@ class ChatMessage {
       canRegenerate: canRegenerate ?? this.canRegenerate,
       canStop: canStop ?? this.canStop,
       userFeedback: userFeedback ?? this.userFeedback,
-      isFeedbackSubmitting:
-          isFeedbackSubmitting ?? this.isFeedbackSubmitting,
+      isFeedbackSubmitting: isFeedbackSubmitting ?? this.isFeedbackSubmitting,
     );
   }
 }

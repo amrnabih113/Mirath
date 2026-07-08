@@ -12,6 +12,7 @@ import '../../../../core/network/network_manager.dart';
 import '../../../../core/sync/retry_service.dart';
 import '../../../../core/usecases/no_params.dart';
 import '../../domain/entities/chat_message.dart';
+import '../../data/models/chatbot_message_attachment.dart';
 import '../../domain/entities/upload_files_params.dart';
 import '../../domain/entities/submit_feedback_params.dart';
 
@@ -46,8 +47,7 @@ class ChatbotCubit extends Cubit<ChatbotState> {
   final SendMessageUseCase sendMessageUseCase;
   final StreamMessagesUseCase streamMessagesUseCase;
   final SubmitFeedbackUseCase submitFeedbackUseCase;
-  final HiveCacheService
-  cacheService; 
+  final HiveCacheService cacheService;
   final RetryService retryService;
   final NetworkManager networkManager;
 
@@ -141,19 +141,60 @@ class ChatbotCubit extends Cubit<ChatbotState> {
     if (token != null && !token.isCancelled) token.cancel('user_cancelled');
 
     final idx = _messages.indexWhere(
-      (m) => m.imagePaths?.contains(localPath) ?? false,
+      (m) => m.attachments.any((a) => a.localPath == localPath),
     );
     if (idx >= 0) {
       final current = _messages[idx];
-      final updated = Map<String, double>.from(current.uploadProgress ?? {});
-      updated.remove(localPath);
-      _messages[idx] = current.copyWith(uploadProgress: updated);
+      final updated = current.attachments
+          .where((a) => a.localPath != localPath)
+          .toList();
+      _messages[idx] = current.copyWith(attachments: updated);
       _emitLoaded();
     }
   }
 
-  void removeImage(int index, List<String> imagePaths) {
-    imagePaths.removeAt(index);
+  void removeAttachment(String attachmentId) {
+    final msgIdx = _messages.indexWhere(
+      (m) => m.attachments.any((a) => a.id == attachmentId),
+    );
+    if (msgIdx >= 0) {
+      final current = _messages[msgIdx];
+      final updated = current.attachments
+          .where((a) => a.id != attachmentId)
+          .toList();
+      _messages[msgIdx] = current.copyWith(attachments: updated);
+      _emitLoaded();
+    }
+  }
+
+  void _failAssistantPlaceholder(String message) {
+    final index = _messages.lastIndexWhere((m) => !m.isUser && !m.isComplete);
+
+    if (index != -1) {
+      _messages[index] = _messages[index].copyWith(
+        text: message,
+        loadingStatus: null,
+        isComplete: true,
+        isError: true,
+      );
+    } else {
+      _messages.add(
+        ChatMessage(
+          id: const Uuid().v4(),
+          text: message,
+          isUser: false,
+          timestamp: DateTime.now(),
+          isComplete: true,
+          isError: true,
+        ),
+      );
+    }
+
+    _emitLoaded();
+  }
+
+  void _removePlaceholder() {
+    _messages.removeWhere((m) => m.id == "temp");
     _emitLoaded();
   }
 
@@ -163,32 +204,44 @@ class ChatbotCubit extends Cubit<ChatbotState> {
     File? audioFile,
     int? audioDuration,
   }) async {
-    if (text.trim().isEmpty && (imagePaths == null || imagePaths.isEmpty))
+    final hasImages = imagePaths != null && imagePaths.isNotEmpty;
+    final hasAudio = audioFile != null;
+    if (text.trim().isEmpty && !hasImages && !hasAudio) {
       return;
+    }
 
-    final uploadProgressMap = imagePaths != null
-        ? Map<String, double>.fromEntries(
-            imagePaths.map((p) => MapEntry(p, 0.0)),
-          )
-        : null;
+    // Convert image paths to attachment objects
+    final List<MessageAttachment> attachments = [];
+    if (hasImages) {
+      for (final path in imagePaths) {
+        attachments.add(
+          MessageAttachment(
+            id: const Uuid().v4(),
+            type: AttachmentType.image,
+            localPath: path,
+            uploadProgress: 0.0,
+          ),
+        );
+      }
+    }
 
     final userMessage = ChatMessage(
       id: const Uuid().v4(),
       text: text.trim(),
       isUser: true,
       timestamp: DateTime.now(),
-      imagePaths: imagePaths,
-      uploadProgress: uploadProgressMap,
+      attachments: attachments,
       isPending: false,
     );
 
     _messages.add(userMessage);
     MyLogger.info(
-      '[ChatbotCubit] Optimistic user message added id=${userMessage.id} text="${userMessage.text}"',
+      '[ChatbotCubit] Optimistic user message added id=${userMessage.id} text="${userMessage.text}" attachments=${attachments.length}',
     );
     _emitLoaded();
+
     final assistantPlaceholder = ChatMessage(
-      id: const Uuid().v4(),
+      id: "temp",
       text: '',
       isUser: false,
       timestamp: DateTime.now(),
@@ -210,35 +263,41 @@ class ChatbotCubit extends Cubit<ChatbotState> {
       MyLogger.info(
         '[ChatbotCubit] Offline — enqueued message clientId=$clientId',
       );
+      _failAssistantPlaceholder('You are offline. Message queued for retry.');
+      _removePlaceholder();
       return;
     }
 
     final List<String> fileIds = [];
 
-    if (imagePaths != null && imagePaths.isNotEmpty) {
-      for (final path in imagePaths) {
-        final file = File(path);
+    if (attachments.isNotEmpty) {
+      for (final attachment in attachments) {
+        final file = File(attachment.localPath!);
         final token = CancelToken();
-        _uploadCancelTokens[path] = token;
-        MyLogger.info('[ChatbotCubit] uploading file $path');
+        _uploadCancelTokens[attachment.localPath!] = token;
+        MyLogger.info('[ChatbotCubit] uploading file ${attachment.localPath}');
 
         final uploadResult = await uploadFilesUseCase(
           UploadFilesParams(
             files: [file],
-            type: 'IMAGE',
+            type: AttachmentType.image,
             onProgress: (sent, total) {
               final progress = total > 0 ? (sent / total) : 0.0;
               final idx = _messages.indexWhere((m) => m.id == clientId);
               if (idx >= 0) {
                 final current = _messages[idx];
-                final updated = Map<String, double>.from(
-                  current.uploadProgress ?? {},
+                final updatedAttachments = current.attachments.map((a) {
+                  if (a.localPath == attachment.localPath) {
+                    return a.copyWith(uploadProgress: progress.clamp(0.0, 1.0));
+                  }
+                  return a;
+                }).toList();
+                _messages[idx] = current.copyWith(
+                  attachments: updatedAttachments,
                 );
-                updated[path] = progress.clamp(0.0, 1.0);
-                _messages[idx] = current.copyWith(uploadProgress: updated);
                 _emitLoaded();
                 MyLogger.info(
-                  '[ChatbotCubit] upload progress $path ${(progress * 100).toStringAsFixed(1)}%',
+                  '[ChatbotCubit] upload progress ${attachment.localPath} ${(progress * 100).toStringAsFixed(1)}%',
                 );
               }
             },
@@ -248,23 +307,28 @@ class ChatbotCubit extends Cubit<ChatbotState> {
 
         uploadResult.fold(
           (failure) {
-            MyLogger.error(
-              '[ChatbotCubit] upload failed for $path: ${failure.toString()}',
-            );
+            _removePlaceholder();
+
+            _failAssistantPlaceholder('Failed to upload image.');
+            return;
           },
           (resps) {
             if (resps.isNotEmpty) fileIds.add(resps.first.id);
             final idx = _messages.indexWhere((m) => m.id == clientId);
             if (idx >= 0) {
               final current = _messages[idx];
-              final updated = Map<String, double>.from(
-                current.uploadProgress ?? {},
+              final updatedAttachments = current.attachments.map((a) {
+                if (a.localPath == attachment.localPath) {
+                  return a.copyWith(uploadProgress: 1.0);
+                }
+                return a;
+              }).toList();
+              _messages[idx] = current.copyWith(
+                attachments: updatedAttachments,
               );
-              updated[path] = 1.0;
-              _messages[idx] = current.copyWith(uploadProgress: updated);
               _emitLoaded();
             }
-            _uploadCancelTokens.remove(path);
+            _uploadCancelTokens.remove(attachment.localPath);
           },
         );
       }
@@ -272,16 +336,50 @@ class ChatbotCubit extends Cubit<ChatbotState> {
 
     // upload audio if present
     if (audioFile != null) {
+      final audioAttachment = MessageAttachment(
+        id: const Uuid().v4(),
+        type: AttachmentType.audio,
+        localPath: audioFile.path,
+        durationSeconds: audioDuration,
+        uploadProgress: 0.0,
+      );
+
       final uploadResult = await uploadFilesUseCase(
         UploadFilesParams(
           files: [audioFile],
-          type: 'AUDIO',
+          type: AttachmentType.audio,
           durationSeconds: audioDuration,
+          cancelToken: CancelToken(),
         ),
       );
-      uploadResult.fold((_) {}, (resps) {
-        if (resps.isNotEmpty) fileIds.add(resps.first.id);
-      });
+
+      uploadResult.fold(
+        (failure) {
+          _removePlaceholder();
+          MyLogger.error(
+            '[ChatbotCubit] audio upload failed: ${failure.toString()}',
+          );
+
+          _failAssistantPlaceholder('Failed to upload audio.');
+        },
+        (resps) {
+          if (resps.isNotEmpty) {
+            fileIds.add(resps.first.id);
+            final idx = _messages.indexWhere((m) => m.id == clientId);
+            if (idx >= 0) {
+              final current = _messages[idx];
+              final updatedAttachments = [
+                ...current.attachments,
+                audioAttachment.copyWith(uploadProgress: 1.0),
+              ];
+              _messages[idx] = current.copyWith(
+                attachments: updatedAttachments,
+              );
+              _emitLoaded();
+            }
+          }
+        },
+      );
     }
 
     // Reuse the currently loaded session when available; otherwise create
@@ -293,22 +391,16 @@ class ChatbotCubit extends Cubit<ChatbotState> {
           : await createSessionUseCase(const NoParams());
       final created = res.fold((_) => null, (Session? s) => s);
       if (created == null) {
+        _removePlaceholder();
         final idx = _messages.indexWhere((m) => m.id == clientId);
         if (idx >= 0) {
           final current = _messages[idx];
           _messages[idx] = current.copyWith(isPending: false);
           _emitLoaded();
         }
-        final errMsg = ChatMessage(
-          id: const Uuid().v4(),
-          text: 'Failed to create chat session. Please try again.',
-          isUser: false,
-          timestamp: DateTime.now(),
-          isComplete: true,
-          isPending: false,
+        _failAssistantPlaceholder(
+          'Failed to create chat session. Please try again.',
         );
-        _messages.add(errMsg);
-        _emitLoaded();
         return;
       }
       MyLogger.info('[ChatbotCubit] createSession response: ${created.id}');
@@ -322,7 +414,8 @@ class ChatbotCubit extends Cubit<ChatbotState> {
     final trimmedText = text.trim();
     final body = <String, dynamic>{
       if (trimmedText.isNotEmpty) 'content': trimmedText,
-      if (fileIds.isNotEmpty) 'fileId': fileIds.first,
+      if (fileIds.length == 1) 'fileId': fileIds.first,
+      if (fileIds.length > 1) 'fileIds': fileIds,
     };
 
     MyLogger.info(
@@ -348,16 +441,13 @@ class ChatbotCubit extends Cubit<ChatbotState> {
         _messages[idx] = current.copyWith(isPending: false);
         _emitLoaded();
       }
-      final errMsg = ChatMessage(
-        id: const Uuid().v4(),
-        text: 'Failed to send message. It was queued for retry.',
-        isUser: false,
-        timestamp: DateTime.now(),
-        isComplete: true,
-        isPending: false,
+      _removePlaceholder();
+
+      _failAssistantPlaceholder(
+        'Failed to send message. It was queued for retry.',
       );
-      _messages.add(errMsg);
-      _emitLoaded();
+    } finally {
+      _uploadCancelTokens.clear();
     }
   }
 
@@ -380,6 +470,7 @@ class ChatbotCubit extends Cubit<ChatbotState> {
                   isUser: false,
                   timestamp: DateTime.now(),
                   isComplete: true,
+                  isNow: true,
                 );
                 _messages.add(tMsg);
                 _emitLoaded();
@@ -388,6 +479,7 @@ class ChatbotCubit extends Cubit<ChatbotState> {
             }
 
             if (parsed.containsKey('error')) {
+              _removePlaceholder();
               final err = parsed['error']?.toString() ?? 'An error occurred';
               final pendingIdx = _messages.indexWhere(
                 (m) => m.isUser && m.isPending,
@@ -514,6 +606,7 @@ class ChatbotCubit extends Cubit<ChatbotState> {
             final last = _messages.last;
             _messages[_messages.length - 1] = last.copyWith(
               isComplete: true,
+              isNow: true,
               isPending: false,
               loadingStatus: null,
             );
@@ -555,10 +648,7 @@ class ChatbotCubit extends Cubit<ChatbotState> {
     );
   }
 
-  Future<void> submitFeedback(
-    String messageId,
-    String feedbackType,
-  ) async {
+  Future<void> submitFeedback(String messageId, String feedbackType) async {
     if (_currentSessionId == null || _currentSessionId!.isEmpty) {
       MyLogger.error('[ChatbotCubit] submitFeedback: no session ID available');
       return;
@@ -587,6 +677,7 @@ class ChatbotCubit extends Cubit<ChatbotState> {
 
       result.fold(
         (failure) {
+          _removePlaceholder();
           MyLogger.error(
             '[ChatbotCubit] submitFeedback failed: ${failure.toString()}',
           );
