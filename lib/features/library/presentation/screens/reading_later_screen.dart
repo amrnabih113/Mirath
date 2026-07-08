@@ -113,87 +113,84 @@ class _ReadingLaterScreenState extends State<ReadingLaterScreen>
                   ? '0'
                   : MyFormaters.relativeTime(savedPapersList.first.createdAt);
 
-              return Padding(
-                padding: MySizes.paddingMd(context),
-                child: CustomScrollView(
-                  slivers: [
-                    // HEADER
-                    SliverToBoxAdapter(
-                      child: Container(
-                        height: ResponsiveHelper.responsiveValue(context, 100),
-                        width: MySizes.screenWidth(context),
+              return CustomScrollView(
+                slivers: [
+                  // HEADER
+                  SliverToBoxAdapter(
+                    child: Container(
+                      height: ResponsiveHelper.responsiveValue(context, 100),
+                      width: MySizes.screenWidth(context),
 
-                        decoration: BoxDecoration(
-                          border: Border(
-                            bottom: BorderSide(
-                              width: 1,
-                              color: MyColors.primaryShade100,
-                            ),
+                      decoration: BoxDecoration(
+                        border: Border(
+                          bottom: BorderSide(
+                            width: 1,
+                            color: MyColors.primaryShade100,
                           ),
                         ),
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              'Read Later',
-                              style: context.headlineSmall.copyWith(
-                                color: MyColors.primaryShade900,
-                                fontWeight: FontWeight.w700,
-                              ),
+                      ),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            'Read Later',
+                            style: context.headlineSmall.copyWith(
+                              color: MyColors.primaryShade900,
+                              fontWeight: FontWeight.w700,
                             ),
-                            SizedBox(height: MySizes.spaceSm(context) * 0.5),
+                          ),
+                          SizedBox(height: MySizes.spaceSm(context) * 0.5),
 
-                            Text(
-                              '${savedPapersList.length} papers • Updated $formattedDate',
-                            ),
-                          ],
-                        ),
+                          Text(
+                            '${savedPapersList.length} papers • Updated $formattedDate',
+                          ),
+                        ],
                       ),
                     ),
+                  ),
 
+                  SliverToBoxAdapter(
+                    child: SizedBox(height: MySizes.spaceMd(context)),
+                  ),
+
+                  // EMPTY STATE
+                  if (savedPapersList.isEmpty)
                     SliverToBoxAdapter(
-                      child: SizedBox(height: MySizes.spaceMd(context)),
-                    ),
-
-                    // EMPTY STATE
-                    if (savedPapersList.isEmpty)
-                      SliverToBoxAdapter(
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            const Text('You haven’t added any research papers'),
-                            TextButton(
-                              onPressed: () {},
-                              child: Text(
-                                'Explore',
-                                style: context.bodyLarge.copyWith(
-                                  decoration: TextDecoration.underline,
-                                ),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          const Text('You haven’t added any research papers'),
+                          TextButton(
+                            onPressed: () {},
+                            child: Text(
+                              'Explore',
+                              style: context.bodyLarge.copyWith(
+                                decoration: TextDecoration.underline,
                               ),
                             ),
-                          ],
-                        ),
-                      )
-                    else
-                      // LIST
-                      SliverList.separated(
-                        itemCount: savedPapersList.length,
-                        separatorBuilder: (_, __) =>
-                            SizedBox(height: MySizes.spaceSm(context)),
-                        itemBuilder: (context, index) {
-                          final paper = savedPapersList[index].paper;
-
-                          return PaperCard(
-                            paper: paper,
-                            onTap: () {
-                              context.push('/paper-screen', extra: paper);
-                            },
-                          );
-                        },
+                          ),
+                        ],
                       ),
-                  ],
-                ),
+                    )
+                  else
+                    // LIST
+                    SliverList.separated(
+                      itemCount: savedPapersList.length,
+                      separatorBuilder: (_, __) =>
+                          SizedBox(height: MySizes.spaceSm(context)),
+                      itemBuilder: (context, index) {
+                        final paper = savedPapersList[index].paper;
+
+                        return PaperCard(
+                          paper: paper,
+                          onTap: () {
+                            context.push('/paper-screen', extra: paper);
+                          },
+                        );
+                      },
+                    ),
+                ],
               );
             }
 

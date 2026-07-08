@@ -4,12 +4,10 @@ import 'package:go_router/go_router.dart';
 import 'package:hugeicons/hugeicons.dart';
 import 'package:hugeicons/styles/stroke_rounded.dart';
 
-import '../../../../core/helpers/my_loaders.dart';
 import '../../../../core/helpers/responsive_helper.dart';
 import '../../../../core/ui/widgets/sync_indicator.dart';
 import '../../../../core/utils/my_colors.dart';
 import '../../../../core/utils/my_extenstions.dart';
-import '../../../../core/utils/my_images.dart';
 import '../../../../core/utils/my_sizes.dart';
 import '../../../../injection/injection_container.dart';
 import '../../domain/entities/session.dart';

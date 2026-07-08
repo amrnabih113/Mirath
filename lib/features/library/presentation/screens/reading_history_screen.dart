@@ -159,7 +159,6 @@ class _ReadingHistoryScreenState extends State<ReadingHistoryScreen> {
 
               return ListView.separated(
                 controller: _scrollController,
-                padding: MySizes.paddingSm(context),
                 itemCount:
                     state.readingHistory.length + (state.isLoadingMore ? 1 : 0),
                 itemBuilder: (context, index) {

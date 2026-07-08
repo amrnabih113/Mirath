@@ -4,9 +4,7 @@ import 'dart:io';
 import 'package:audio_waveforms/audio_waveforms.dart';
 import 'package:flutter/material.dart';
 import 'package:hugeicons/hugeicons.dart';
-import 'package:hugeicons/styles/stroke_rounded.dart';
 import 'package:hugeicons_pro/hugeicons.dart';
-import 'package:image_picker/image_picker.dart';
 
 import '../../../../core/helpers/responsive_helper.dart';
 import '../../../../core/services/audio_recorder_service.dart';
@@ -44,8 +42,6 @@ class _ChatInputFieldState extends State<ChatInputField> {
   int _recordSeconds = 0;
   Timer? _timer;
   late final RecorderController _waveController;
-
-  bool _isLocked = false;
 
   @override
   void initState() {
@@ -319,7 +315,7 @@ class _ChatInputFieldState extends State<ChatInputField> {
                   icon: AnimatedSwitcher(
                     duration: const Duration(milliseconds: 200),
                     child: Icon(
-                      _isRecording ? HugeIconsStroke.stop : HugeIconsSolid.sent,
+                      _isRecording ? HugeIconsSolid.stop : HugeIconsSolid.sent,
                       key: ValueKey(_isRecording),
                       color: MyColors.white,
                       size: ResponsiveHelper.responsiveValue(context, 20),
