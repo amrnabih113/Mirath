@@ -27,6 +27,14 @@ class PaperReadingLoaded extends PaperReadingState {
   final double scrollProgress;
   final double fontScale;
 
+  final String? translatedText;
+  final String? summarizedText;
+  final String? explainedText;
+
+  final bool translationLoading;
+  final bool summarizationLoading;
+  final bool explanationLoading;
+
   // Search state
   final bool searchOpen;
   final String searchQuery;
@@ -56,6 +64,12 @@ class PaperReadingLoaded extends PaperReadingState {
     this.annotatedHighlightPage = 1,
     this.annotatedHighlightHasMore = true,
     this.annotatedHighlightLoading = false,
+    this.translatedText = null,
+    this.summarizedText = null,
+    this.translationLoading = false,
+    this.summarizationLoading = false,
+    this.explanationLoading = false,
+    this.explainedText = null,
   });
 
   PaperReadingLoaded copyWith({
@@ -74,6 +88,12 @@ class PaperReadingLoaded extends PaperReadingState {
     int? annotatedHighlightPage,
     bool? annotatedHighlightHasMore,
     bool? annotatedHighlightLoading,
+    String? translatedText,
+    String? summarizedText,
+    String? explainedText,
+    bool? translationLoading,
+    bool? summarizationLoading,
+    bool? explanationLoading,
   }) {
     return PaperReadingLoaded(
       paper: paper ?? this.paper,
@@ -95,6 +115,12 @@ class PaperReadingLoaded extends PaperReadingState {
           annotatedHighlightHasMore ?? this.annotatedHighlightHasMore,
       annotatedHighlightLoading:
           annotatedHighlightLoading ?? this.annotatedHighlightLoading,
+      translatedText: translatedText ?? this.translatedText,
+      summarizedText: summarizedText ?? this.summarizedText,
+      explainedText: explainedText ?? this.explainedText,
+      translationLoading: translationLoading ?? this.translationLoading,
+      summarizationLoading: summarizationLoading ?? this.summarizationLoading,
+      explanationLoading: explanationLoading ?? this.explanationLoading,
     );
   }
 
@@ -114,6 +140,12 @@ class PaperReadingLoaded extends PaperReadingState {
     annotatedHighlightPage,
     annotatedHighlightHasMore,
     annotatedHighlightLoading,
+    translatedText,
+    summarizedText,
+    explainedText,
+    translationLoading,
+    summarizationLoading,
+    explanationLoading,
   ];
 }
 

@@ -20,6 +20,9 @@ import '../features/library/domain/usecases/remove_paper_from_reading_history.da
 import '../features/library/domain/usecases/update_reading_history.dart';
 import '../features/library/presentation/cubit/library_cubit.dart';
 import '../features/Layout/presentation/cubit/layout_cubit.dart';
+import '../features/paper_annotations/domain/usecases/explain_text_usecase.dart';
+import '../features/paper_annotations/domain/usecases/summarize_text_usecase.dart';
+import '../features/paper_annotations/domain/usecases/translate_text_use_case.dart';
 import '../features/reading_lists/domain/usecases/delete_reading_list_usecase.dart';
 import '../features/reading_lists/domain/usecases/reading_list_cache_usecases.dart';
 import '../features/reading_lists/domain/usecases/save_reading_list_usecase.dart';
@@ -859,6 +862,9 @@ class DI {
     sl.registerLazySingleton(() => AddHighlightNoteUseCase(sl()));
     sl.registerLazySingleton(() => UpdateHighlightNoteUseCase(sl()));
     sl.registerLazySingleton(() => DeleteHighlightNoteUseCase(sl()));
+    sl.registerLazySingleton(() => TranslateTextUseCase(sl()));
+    sl.registerLazySingleton(() => ExplainTextUseCase(sl()));
+    sl.registerLazySingleton(() => SummarizeTextUseCase(sl()));
 
     // Cubit
     sl.registerFactory(
@@ -872,6 +878,9 @@ class DI {
         addHighlightNoteUseCase: sl(),
         updateHighlightNoteUseCase: sl(),
         deleteHighlightNoteUseCase: sl(),
+        translateTextUseCase: sl(),
+        explainTextUseCase: sl(),
+        summarizeTextUseCase: sl(),
       ),
     );
   }

@@ -1,4 +1,5 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:mirath/features/paper_annotations/domain/entites/explain_text_params.dart';
 import 'package:uuid/uuid.dart';
 
 import '../../../../core/utils/my_logger.dart';
@@ -7,12 +8,17 @@ import '../../../papers/domain/usecases/get_paper_by_id_usecase.dart';
 import '../../domain/entites/highlight_entity.dart';
 import '../../domain/entites/highlight_note_params.dart';
 import '../../domain/entites/paper_highlights_params.dart';
+import '../../domain/entites/summarize_text_params.dart';
+import '../../domain/entites/translate_text_params.dart';
 import '../../domain/usecases/add_highlight_note_usecase.dart';
 import '../../domain/usecases/delete_highlight_note_usecase.dart';
 import '../../domain/usecases/delete_highlight_usecase.dart';
+import '../../domain/usecases/explain_text_usecase.dart';
 import '../../domain/usecases/get_annotated_highlights_usecase.dart';
 import '../../domain/usecases/get_highlights_usecase.dart';
 import '../../domain/usecases/save_highlight_usecase.dart';
+import '../../domain/usecases/summarize_text_usecase.dart';
+import '../../domain/usecases/translate_text_use_case.dart';
 import '../../domain/usecases/update_highlight_note_usecase.dart';
 import '../../domain/usecases/update_highlight_usecase.dart';
 import '../widgets/annotation_webview_platform.dart';
@@ -28,6 +34,9 @@ class PaperReadingCubit extends Cubit<PaperReadingState> {
   final AddHighlightNoteUseCase addHighlightNoteUseCase;
   final UpdateHighlightNoteUseCase updateHighlightNoteUseCase;
   final DeleteHighlightNoteUseCase deleteHighlightNoteUseCase;
+  final TranslateTextUseCase translateTextUseCase;
+  final ExplainTextUseCase explainTextUseCase;
+  final SummarizeTextUseCase summarizeTextUseCase;
 
   static const _uuid = Uuid();
 
@@ -52,6 +61,9 @@ class PaperReadingCubit extends Cubit<PaperReadingState> {
     required this.addHighlightNoteUseCase,
     required this.updateHighlightNoteUseCase,
     required this.deleteHighlightNoteUseCase,
+    required this.translateTextUseCase,
+    required this.explainTextUseCase,
+    required this.summarizeTextUseCase,
   }) : super(const PaperReadingInitial());
 
   Future<void> loadPaper(PaperEntity paper) async {
@@ -465,6 +477,117 @@ class PaperReadingCubit extends Cubit<PaperReadingState> {
         MyLogger.info('[PaperReadingCubit] Highlight deleted: $highlightId');
       },
     );
+  }
+
+  Future<void> translateSelectedText(String targetLanguage) async {
+    final currentState = state;
+    if (currentState is! PaperReadingLoaded) return;
+
+    final selection = currentState.currentSelection;
+    if (selection == null) return;
+
+    emit(currentState.copyWith(translationLoading: true, translatedText: null));
+
+    final result = await translateTextUseCase(
+      TranslateTextParams(
+        paperId: currentState.paper.id,
+        text: selection.text,
+        targetLanguage: targetLanguage,
+      ),
+    );
+
+    result.fold(
+      (failure) {
+        emit(currentState.copyWith(translationLoading: false));
+      },
+      (translatedText) {
+        emit(
+          currentState.copyWith(
+            translationLoading: false,
+            translatedText: translatedText,
+          ),
+        );
+      },
+    );
+  }
+
+  Future<void> summarizeSelectedText() async {
+    final currentState = state;
+    if (currentState is! PaperReadingLoaded) return;
+
+    final selection = currentState.currentSelection;
+    if (selection == null) return;
+
+    emit(
+      currentState.copyWith(summarizationLoading: true, summarizedText: null),
+    );
+
+    final result = await summarizeTextUseCase(
+      SummarizeTextParams(paperId: currentState.paper.id, text: selection.text),
+    );
+
+    result.fold(
+      (failure) {
+        emit(currentState.copyWith(summarizationLoading: false));
+      },
+      (summary) {
+        emit(
+          currentState.copyWith(
+            summarizationLoading: false,
+            summarizedText: summary,
+          ),
+        );
+      },
+    );
+  }
+
+  Future<void> explainSelectedText() async {
+    final currentState = state;
+    if (currentState is! PaperReadingLoaded) return;
+
+    final selection = currentState.currentSelection;
+    if (selection == null) return;
+
+    emit(currentState.copyWith(explanationLoading: true, explainedText: null));
+
+    final result = await explainTextUseCase(
+      ExplainTextParams(paperId: currentState.paper.id, text: selection.text),
+    );
+
+    result.fold(
+      (failure) {
+        emit(currentState.copyWith(explanationLoading: false));
+      },
+      (explanation) {
+        emit(
+          currentState.copyWith(
+            explanationLoading: false,
+            explainedText: explanation,
+          ),
+        );
+      },
+    );
+  }
+
+  void clearTranslation() {
+    final currentState = state;
+    if (currentState is! PaperReadingLoaded) return;
+
+    emit(currentState.copyWith(translatedText: null));
+  }
+
+  void clearSummary() {
+    final currentState = state;
+    if (currentState is! PaperReadingLoaded) return;
+
+    emit(currentState.copyWith(summarizedText: null));
+  }
+
+  void clearExplanation() {
+    final currentState = state;
+    if (currentState is! PaperReadingLoaded) return;
+
+    emit(currentState.copyWith(explainedText: null));
   }
 
   void updateScrollProgress(double progress) {

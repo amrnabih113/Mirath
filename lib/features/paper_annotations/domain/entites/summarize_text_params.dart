@@ -1,9 +1,9 @@
 
-class SummrizeTextParams {
+class SummarizeTextParams {
   final String paperId;
   final String text;
 
-  SummrizeTextParams({
+  SummarizeTextParams({
     required this.paperId,
     required this.text,
   });
