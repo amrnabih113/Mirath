@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 import 'package:hugeicons/hugeicons.dart';
 import 'package:pointer_interceptor/pointer_interceptor.dart';
 
+import '../../../../core/constants/route_names.dart';
 import '../../../../core/helpers/responsive_helper.dart';
 import '../../../../core/services/local_storage_service.dart';
 import '../../../../core/utils/my_colors.dart';
@@ -17,6 +19,7 @@ import '../../../paper_annotations/domain/entites/highlight_entity.dart';
 import '../../../paper_annotations/presentation/cubit/paper_reading_cubit.dart';
 import '../../../paper_annotations/presentation/cubit/paper_reading_state.dart';
 import '../../../paper_annotations/presentation/widgets/annotation_webview_platform.dart';
+import '../../../paper_annotations/presentation/widgets/explain_sheet.dart';
 import '../../../paper_annotations/presentation/widgets/font_size_sheet.dart';
 import '../../../paper_annotations/presentation/widgets/highlights_list_sheet.dart';
 import '../../../paper_annotations/presentation/widgets/note_dialog.dart';
@@ -25,6 +28,7 @@ import '../../../paper_annotations/presentation/widgets/paper_reading_shimmer_lo
 import '../../../paper_annotations/presentation/widgets/reader_action_menu.dart';
 import '../../../paper_annotations/presentation/widgets/reader_scroll_indicator.dart';
 import '../../../paper_annotations/presentation/widgets/selection_overlay.dart';
+import '../../../paper_annotations/presentation/widgets/summrize_sheet.dart';
 import '../../../paper_annotations/presentation/widgets/translation_sheet.dart';
 import '../../../../core/ui/widgets/my_app_bar.dart';
 import '../../../../core/ui/widgets/my_body.dart';
@@ -232,13 +236,79 @@ class _PaperReadingScreenState extends State<PaperReadingScreen> {
     });
   }
 
-  void _showComingSoonMessage(String action) {
+  Future<void> _openExplainSheet() async {
+    final text = _currentTranslatableText();
+
+    if (text == null || text.isEmpty) {
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(S.of(context).error_select_text_translate)),
+      );
+      return;
+    }
+    await _webKey.currentState?.clearSelection();
+
     if (!mounted) return;
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text('$action ${S.of(context).coming_soon_message}'),
-        duration: const Duration(seconds: 2),
-      ),
+
+    setState(() {
+      _currentSelection = null;
+      _pendingSelection = null;
+      _showSelectionColorPicker = false;
+    });
+    context.read<PaperReadingCubit>().explainSelectedText(text);
+
+    await showModalBottomSheet<void>(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      builder: (_) {
+        return BlocProvider.value(
+          value: context.read<PaperReadingCubit>(),
+          child: FractionallySizedBox(
+            heightFactor: 0.92,
+            child: ExplainSheet(selectedText: text),
+          ),
+        );
+      },
+    );
+  }
+
+  Future<void> _openSummarizationSheet() async {
+    final text = _currentTranslatableText();
+
+    if (text == null || text.isEmpty) {
+      if (!mounted) return;
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(S.of(context).error_select_text_translate)),
+      );
+      return;
+    }
+    await _webKey.currentState?.clearSelection();
+
+    if (!mounted) return;
+
+    setState(() {
+      _currentSelection = null;
+      _pendingSelection = null;
+      _showSelectionColorPicker = false;
+    });
+
+    context.read<PaperReadingCubit>().summarizeSelectedText(text);
+
+    await showModalBottomSheet<void>(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      builder: (_) {
+        return BlocProvider.value(
+          value: context.read<PaperReadingCubit>(),
+          child: FractionallySizedBox(
+            heightFactor: 0.92,
+            child: SummarizationSheet(selectedText: text),
+          ),
+        );
+      },
     );
   }
 
@@ -265,7 +335,15 @@ class _PaperReadingScreenState extends State<PaperReadingScreen> {
       );
       return;
     }
+    await _webKey.currentState?.clearSelection();
 
+    if (!mounted) return;
+
+    setState(() {
+      _currentSelection = null;
+      _pendingSelection = null;
+      _showSelectionColorPicker = false;
+    });
     final storage = sl<LocalStorageService>();
     final savedLanguageCode = storage.getData(
       MyConstants.annotationTranslationLanguageKey,
@@ -1045,7 +1123,9 @@ class _PaperReadingScreenState extends State<PaperReadingScreen> {
                           shape: CircleBorder(),
                           backgroundColor: MyColors.primaryShade700,
                           foregroundColor: MyColors.primaryShade50,
-                          onPressed: () {},
+                          onPressed: () {
+                            context.push(RouteNames.chatbot);
+                          },
                           child: HugeIcon(
                             icon: HugeIcons.strokeRoundedStars,
                             size: MySizes.iconMedium(context),
@@ -1102,7 +1182,8 @@ class _PaperReadingScreenState extends State<PaperReadingScreen> {
                                     true
                                 ? S.of(context).edit_note_button
                                 : S.of(context).add_note_button,
-                            onExplain: () => _showComingSoonMessage('Explain'),
+                            onExplain: () => _openExplainSheet(),
+                            onSummarize: () => _openSummarizationSheet(),
                             onTranslate: _openTranslateSheet,
                             onRemove: _activeHighlight != null
                                 ? _removeActiveHighlight

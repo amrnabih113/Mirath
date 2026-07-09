@@ -102,8 +102,10 @@ class PaperReadingCubit extends Cubit<PaperReadingState> {
       },
     );
   }
-
-  Future<void> _loadHighlights(String paperId) async {
+  
+  
+  
+   Future<void> _loadHighlights(String paperId) async {
     MyLogger.info('[PaperReadingCubit] Loading highlights for paper: $paperId');
 
     final highlightsResult = await getHighlightsUseCase(paperId);
@@ -511,19 +513,16 @@ class PaperReadingCubit extends Cubit<PaperReadingState> {
     );
   }
 
-  Future<void> summarizeSelectedText() async {
+  Future<void> summarizeSelectedText(String text) async {
     final currentState = state;
     if (currentState is! PaperReadingLoaded) return;
-
-    final selection = currentState.currentSelection;
-    if (selection == null) return;
 
     emit(
       currentState.copyWith(summarizationLoading: true, summarizedText: null),
     );
 
     final result = await summarizeTextUseCase(
-      SummarizeTextParams(paperId: currentState.paper.id, text: selection.text),
+      SummarizeTextParams(paperId: currentState.paper.id, text: text),
     );
 
     result.fold(
@@ -541,17 +540,14 @@ class PaperReadingCubit extends Cubit<PaperReadingState> {
     );
   }
 
-  Future<void> explainSelectedText() async {
+  Future<void> explainSelectedText(String text) async {
     final currentState = state;
     if (currentState is! PaperReadingLoaded) return;
-
-    final selection = currentState.currentSelection;
-    if (selection == null) return;
 
     emit(currentState.copyWith(explanationLoading: true, explainedText: null));
 
     final result = await explainTextUseCase(
-      ExplainTextParams(paperId: currentState.paper.id, text: selection.text),
+      ExplainTextParams(paperId: currentState.paper.id, text: text),
     );
 
     result.fold(
