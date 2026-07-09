@@ -36,16 +36,6 @@ class SettingScreen extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // Padding(
-              //   padding: EdgeInsetsGeometry.only(left: MySizes.spaceMd(context)),
-              //   child: Text(
-              //     S.of(context).account,
-              //     style: context.bodyLarge.copyWith(
-              //       fontSize: 16,
-              //       fontWeight: FontWeight.w500,
-              //     ),
-              //   ),
-              // ),
               SettingTiles(
                 icon: HugeIcons.strokeRoundedUser03,
                 title: 'Account & Security',
@@ -86,16 +76,6 @@ class SettingScreen extends StatelessWidget {
                   context.push(RouteNames.privacyDataControl);
                 },
               ),
-              // Padding(
-              //   padding: EdgeInsetsGeometry.only(left: MySizes.spaceMd(context)),
-              //   child: Text(
-              //     S.of(context).support_and_about,
-              //     style: context.bodyLarge.copyWith(
-              //       fontSize: 16,
-              //       fontWeight: FontWeight.w500,
-              //     ),
-              //   ),
-              // ),
               SettingTiles(
                 icon: HugeIcons.strokeRoundedHelpCircle,
                 title: 'Support & Legal',

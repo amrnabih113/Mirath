@@ -401,9 +401,8 @@ class SettingsCubit extends Cubit<SettingsState> {
     var result = await initiateFullAccountDataExportUsecase.call(NoParams());
     result.fold(
       (failure) => emit(SettingsFailure(errormessage: failure.message)),
-      (_) async {
-        await getPrivacySettings();
-      },
+      (message) =>
+          SettingsSuccess<String>(data: 'Data export requested successfully'),
     );
   }
 
@@ -412,9 +411,8 @@ class SettingsCubit extends Cubit<SettingsState> {
     var result = await exportReadingListAsFileUsecase.call(formate);
     result.fold(
       (failure) => emit(SettingsFailure(errormessage: failure.message)),
-      (_) async {
-        await getPrivacySettings();
-      },
+      (_) =>
+          SettingsSuccess<String>(data: 'Reading lists exported successfully'),
     );
   }
 
@@ -425,9 +423,7 @@ class SettingsCubit extends Cubit<SettingsState> {
     var result = await exportAnnotationsAndNotesUsecase.call(formate);
     result.fold(
       (failure) => emit(SettingsFailure(errormessage: failure.message)),
-      (_) async {
-        await getPrivacySettings();
-      },
+      (_) => SettingsSuccess<String>(data: 'Annotations exported successfully'),
     );
   }
 

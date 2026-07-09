@@ -6,6 +6,7 @@ import 'package:mirath/features/settings/presentation/screens/account_management
 import 'package:mirath/features/settings/presentation/screens/account_security.dart';
 import 'package:mirath/features/settings/presentation/screens/change_email.dart';
 import 'package:mirath/features/settings/presentation/screens/change_username.dart';
+import 'package:mirath/features/settings/presentation/screens/confirm_email.dart';
 import 'package:mirath/features/settings/presentation/screens/deactive_account.dart';
 import 'package:mirath/features/settings/presentation/screens/verify_identity.dart';
 import 'package:mirath/features/settings/presentation/screens/delete_account.dart';
@@ -809,8 +810,11 @@ final appRouter = GoRouter(
         return PageTransitions.smoothTransition(
           MultiBlocProvider(
             providers: [
-              BlocProvider.value(value: sl<SettingsCubit>()),
+              BlocProvider.value(
+                value: sl<SettingsCubit>()..getAllActiveSessions(),
+              ),
               BlocProvider.value(value: sl<AuthCubit>()),
+              BlocProvider.value(value: sl<ProfileCubit>()),
             ],
             child: const AccountSecurity(),
           ),
@@ -901,10 +905,14 @@ final appRouter = GoRouter(
     GoRoute(
       path: RouteNames.changeUsername,
       pageBuilder: (context, state) {
+        final oldUsername = state.extra as String? ?? '';
         return PageTransitions.smoothTransition(
-          BlocProvider.value(
-            value: sl<SettingsCubit>(),
-            child: const ChangeUsername(),
+          MultiBlocProvider(
+            providers: [
+              BlocProvider.value(value: sl<SettingsCubit>()),
+              BlocProvider.value(value: sl<ProfileCubit>()),
+            ],
+            child: ChangeUsername(oldUserName: oldUsername),
           ),
         );
       },
@@ -912,10 +920,29 @@ final appRouter = GoRouter(
     GoRoute(
       path: RouteNames.changeEmail,
       pageBuilder: (context, state) {
+        final oldEmail = state.extra as String? ?? '';
         return PageTransitions.smoothTransition(
-          BlocProvider.value(
-            value: sl<SettingsCubit>(),
-            child: const ChangeEmail(),
+          MultiBlocProvider(
+            providers: [
+              BlocProvider.value(value: sl<SettingsCubit>()),
+              BlocProvider.value(value: sl<ProfileCubit>()),
+            ],
+            child: ChangeEmail(oldEmail: oldEmail),
+          ),
+        );
+      },
+    ),
+    GoRoute(
+      path: RouteNames.confirmEmail,
+      pageBuilder: (context, state) {
+        final newEmail = state.extra as String? ?? '';
+        return PageTransitions.smoothTransition(
+          MultiBlocProvider(
+            providers: [
+              BlocProvider.value(value: sl<SettingsCubit>()),
+              BlocProvider.value(value: sl<ProfileCubit>()),
+            ],
+            child: ConfirmEmail(newEmail: newEmail),
           ),
         );
       },
@@ -948,10 +975,11 @@ final appRouter = GoRouter(
     GoRoute(
       path: RouteNames.deleteAccount,
       pageBuilder: (context, state) {
+        final password = state.extra as String? ?? '';
         return PageTransitions.smoothTransition(
           BlocProvider.value(
             value: sl<SettingsCubit>(),
-            child: const DeleteAccount(),
+            child: DeleteAccount(pass: password),
           ),
         );
       },
@@ -959,10 +987,11 @@ final appRouter = GoRouter(
     GoRoute(
       path: RouteNames.deactiveAccount,
       pageBuilder: (context, state) {
+        final password = state.extra as String? ?? '';
         return PageTransitions.smoothTransition(
           BlocProvider.value(
             value: sl<SettingsCubit>(),
-            child: const DeactiveAccount(),
+            child: DeactiveAccount(pass: password),
           ),
         );
       },

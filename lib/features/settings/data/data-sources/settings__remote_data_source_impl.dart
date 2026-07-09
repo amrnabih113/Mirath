@@ -17,14 +17,9 @@ class SettingsRemoteDataSourceImpl extends SettingsRemoteDataSource {
 
   @override
   Future<void> changeEmail({required String newEmail}) async {
-    await _dioClient.patch(MyConstants.changeEmail, data: {'email': newEmail});
-  }
-
-  @override
-  Future<void> changeUsername({required String newUsername}) async {
     await _dioClient.post(
-      MyConstants.changeUsername,
-      data: {'username': newUsername},
+      MyConstants.changeEmail,
+      data: {'newEmail': newEmail},
     );
   }
 
@@ -36,6 +31,30 @@ class SettingsRemoteDataSourceImpl extends SettingsRemoteDataSource {
     await _dioClient.post(
       MyConstants.confirmEmail,
       data: {'newEmail': newEmail, 'otp': otpCode},
+    );
+  }
+
+  @override
+  Future<void> changeUsername({required String newUsername}) async {
+    await _dioClient.patch(
+      MyConstants.changeUsername,
+      data: {'newUsername': newUsername},
+    );
+  }
+
+  @override
+  Future<void> updatePassword({
+    required String currentPassword,
+    required String newPassword,
+    required String confirmNewPassword,
+  }) async {
+    await _dioClient.patch(
+      MyConstants.updateAccountPassword,
+      data: {
+        'currentPassword': currentPassword,
+        'newPassword': newPassword,
+        'confirmNewPassword': confirmNewPassword,
+      },
     );
   }
 
@@ -176,22 +195,6 @@ class SettingsRemoteDataSourceImpl extends SettingsRemoteDataSource {
       data: preferences.toJson(),
     );
     return NotificationPreferencesModel.fromJson(response.data['data']);
-  }
-
-  @override
-  Future<void> updatePassword({
-    required String currentPassword,
-    required String newPassword,
-    required String confirmNewPassword,
-  }) async {
-    await _dioClient.patch(
-      MyConstants.updateAccountPassword,
-      data: {
-        'currentPassword': currentPassword,
-        'newPassword': newPassword,
-        'confirmNewPassword': confirmNewPassword,
-      },
-    );
   }
 
   @override

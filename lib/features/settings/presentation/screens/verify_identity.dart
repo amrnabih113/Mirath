@@ -8,6 +8,7 @@ import 'package:mirath/core/utils/my_sizes.dart';
 import 'package:mirath/core/utils/my_validators.dart';
 import 'package:mirath/features/common/widgets/my_back_icon.dart';
 import 'package:mirath/features/settings/presentation/cubit/settings_cubit.dart';
+import 'package:mirath/generated/l10n.dart';
 
 class VerifyIdentity extends StatefulWidget {
   const VerifyIdentity({super.key, required this.nextRoute});
@@ -19,46 +20,34 @@ class VerifyIdentity extends StatefulWidget {
 }
 
 class _DeleDeactivAccountState extends State<VerifyIdentity> {
-  TextEditingController passwordController = TextEditingController();
+  final TextEditingController _passwordController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
-  AutovalidateMode _autovalidateMode = AutovalidateMode.disabled;
 
-  bool isButtonEnabled = false;
-
-  void _handleResetPassword() {
-    setState(() {
-      _autovalidateMode = AutovalidateMode.onUserInteraction;
-    });
-    if (_formKey.currentState!.validate()) {
-      isButtonEnabled = true;
-      context.read<SettingsCubit>().deleteAccount(
-        password: passwordController.text.trim(),
-      );
-      context.read<SettingsCubit>().deactiveAccount(
-        password: passwordController.text.trim(),
-      );
-    }
-  }
-
-  void _validateForm() {
-    final isValid = _formKey.currentState?.validate() ?? false;
-
-    setState(() {
-      isButtonEnabled = isValid;
-    });
-  }
-
+  bool isValid = false;
   @override
   void initState() {
     super.initState();
-    passwordController.addListener(() {
+    _passwordController.addListener(_validateForm);
+  }
+
+  void _validateForm() {
+    final valid = _formKey.currentState?.validate() ?? false;
+
+    if (valid != isValid) {
+      setState(() {
+        isValid = valid;
+      });
+    } else {
+      // عشان الـ TextButton التاني (Update Password) يعمل rebuild
+      // كل مرة النص يتغير حتى لو الـ form validity متغيرتش
       setState(() {});
-    });
+    }
   }
 
   @override
   void dispose() {
-    passwordController.dispose();
+    _passwordController.dispose();
+    _passwordController.removeListener(_validateForm);
     super.dispose();
   }
 
@@ -66,75 +55,102 @@ class _DeleDeactivAccountState extends State<VerifyIdentity> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(leading: MyBackIcon()),
-      body: Padding(
-        padding: MySizes.paddingLg(context),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            Text(
-              'Enter your password',
-              style: context.bodyLarge.copyWith(fontSize: 24),
-            ),
-            SizedBox(height: MySizes.spaceXl(context)),
-            TextFormField(
-              key: _formKey,
-              cursorColor: MyColors.primaryColor,
-              validator: (value) =>
-                  MyValidator.validatePassword(context, value),
-              controller: passwordController,
-              obscureText: true,
-              decoration: InputDecoration(
-                hintText: 'password',
-                enabledBorder: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(12),
-                  borderSide: BorderSide(color: MyColors.primaryShade800),
+      body: BlocConsumer<SettingsCubit, SettingsState>(
+        listener: (context, state) {
+          if (state is SettingsSuccess<String>) {
+            context.pop();
+          } else if (state is SettingsFailure) {
+            ScaffoldMessenger.of(
+              context,
+            ).showSnackBar(SnackBar(content: Text(state.errormessage)));
+          }
+        },
+        builder: (context, state) {
+          final isLoading = state is SettingsLoading;
+          return Padding(
+            padding: MySizes.paddingLg(context),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Text(
+                  'Enter your password',
+                  style: context.bodyLarge.copyWith(fontSize: 24),
                 ),
-                focusedBorder: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(12),
-                  borderSide: BorderSide(color: MyColors.primaryShade800),
-                ),
-              ),
-            ),
-
-            SizedBox(height: MySizes.spaceMd(context)),
-            Align(
-              alignment: Alignment.centerRight,
-              child: TextButton(
-                onPressed: () {},
-                child: Text(
-                  'Forgot Password?',
-                  style: context.bodyLarge.copyWith(
-                    fontSize: 16,
-                    color: MyColors.primaryShade900,
-                    decoration: TextDecoration.underline,
+                SizedBox(height: MySizes.spaceXl(context)),
+                TextFormField(
+                  key: _formKey,
+                  cursorColor: MyColors.primaryColor,
+                  validator: (value) =>
+                      MyValidator.validatePassword(context, value),
+                  controller: _passwordController,
+                  obscureText: true,
+                  decoration: InputDecoration(
+                    hintText: 'password',
+                    enabledBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(12),
+                      borderSide: BorderSide(color: MyColors.primaryShade800),
+                    ),
+                    focusedBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(12),
+                      borderSide: BorderSide(color: MyColors.primaryShade800),
+                    ),
                   ),
                 ),
-              ),
-            ),
 
-            TextButton(
-              onPressed: passwordController.text.isNotEmpty
-                  ? () {
-                      if (widget.nextRoute == RouteNames.deactiveAccount) {
-                        context.push(widget.nextRoute);
-                      } else if (widget.nextRoute == RouteNames.deleteAccount) {
-                        context.push(widget.nextRoute);
-                      }
-                      context.push(widget.nextRoute);
-                    }
-                  : null,
-              style: TextButton.styleFrom(
-                backgroundColor: passwordController.text.isNotEmpty
-                    ? MyColors.primaryShade800
-                    : MyColors.primaryShade800.withAlpha((255 * 0.5).toInt()),
-              ),
-              child: Text(
-                'Verify your identity',
-                style: context.bodyLarge.copyWith(color: MyColors.white),
-              ),
+                SizedBox(height: MySizes.spaceMd(context)),
+                Align(
+                  alignment: Alignment.centerRight,
+                  child: GestureDetector(
+                    onTap: () {
+                      context.push(RouteNames.forgetPassword);
+                    },
+                    child: Text(
+                      S.of(context).forgot_password,
+                      style: context.bodyMedium.copyWith(
+                        fontWeight: FontWeight.w700,
+                        decoration: TextDecoration.underline,
+                      ),
+                    ),
+                  ),
+                ),
+                SizedBox(height: MySizes.spaceMd(context)),
+                TextButton(
+                  onPressed: (!isValid || isLoading)
+                      ? () {
+                          if (widget.nextRoute == RouteNames.deactiveAccount) {
+                            context.push(
+                              widget.nextRoute,
+                              extra: _passwordController.text.trim(),
+                            );
+                          } else if (widget.nextRoute ==
+                              RouteNames.deleteAccount) {
+                            context.push(
+                              widget.nextRoute,
+                              extra: _passwordController.text.trim(),
+                            );
+                          }
+                          context.push(
+                            widget.nextRoute,
+                            extra: _passwordController.text.trim(),
+                          );
+                        }
+                      : null,
+                  style: TextButton.styleFrom(
+                    backgroundColor: _passwordController.text.isNotEmpty
+                        ? MyColors.primaryShade800
+                        : MyColors.primaryShade800.withAlpha(
+                            (255 * 0.5).toInt(),
+                          ),
+                  ),
+                  child: Text(
+                    'Verify your identity',
+                    style: context.bodyLarge.copyWith(color: MyColors.white),
+                  ),
+                ),
+              ],
             ),
-          ],
-        ),
+          );
+        },
       ),
     );
   }

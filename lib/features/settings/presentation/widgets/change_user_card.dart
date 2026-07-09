@@ -13,13 +13,17 @@ class ChangeUserCard extends StatelessWidget {
     required this.controller,
     required this.onPressed,
     required this.validator,
+    this.text,
+    this.icon,
   });
   final String label;
+  final String? text;
   final String hintText;
   final String btnName;
   final TextEditingController controller;
   final String? Function(String?)? validator;
   final VoidCallback onPressed;
+  final IconData? icon;
 
   @override
   Widget build(BuildContext context) {
@@ -29,11 +33,13 @@ class ChangeUserCard extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           Text(label, style: context.bodyLarge.copyWith(fontSize: 24)),
+          Text(text ?? '', style: context.bodyLarge.copyWith(fontSize: 16)),
           SizedBox(height: MySizes.spaceXl(context)),
           SettingsTextField(
             controller: controller,
             hintText: hintText,
             validator: validator,
+            icon: icon,
           ),
           SizedBox(height: MySizes.spaceXl(context)),
           TextButton(

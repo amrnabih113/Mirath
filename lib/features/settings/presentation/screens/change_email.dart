@@ -8,7 +8,8 @@ import 'package:mirath/features/settings/presentation/cubit/settings_cubit.dart'
 import 'package:mirath/features/settings/presentation/widgets/change_user_card.dart';
 
 class ChangeEmail extends StatefulWidget {
-  const ChangeEmail({super.key});
+  const ChangeEmail({super.key, required this.oldEmail});
+  final String oldEmail;
 
   @override
   State<ChangeEmail> createState() => _ChangeEmailState();
@@ -17,22 +18,11 @@ class ChangeEmail extends StatefulWidget {
 class _ChangeEmailState extends State<ChangeEmail> {
   final _formKey = GlobalKey<FormState>();
   final TextEditingController _emailController = TextEditingController();
-
   bool isValid = false;
 
   @override
   void initState() {
     super.initState();
-
-    _emailController.addListener(() {
-      final valid = _formKey.currentState?.validate() ?? false;
-
-      if (valid != isValid) {
-        setState(() {
-          isValid = valid;
-        });
-      }
-    });
   }
 
   @override
@@ -45,27 +35,44 @@ class _ChangeEmailState extends State<ChangeEmail> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(leading: MyBackIcon()),
-      body: Form(
-        key: _formKey,
-        child: ChangeUserCard(
-          label: 'Change Email',
-          hintText: 'Enter your new email',
-          controller: _emailController,
-          btnName: 'Change Email',
-          validator: (value) => MyValidator.validateEmail(context, value),
-          onPressed: () {
-            if (!isValid) return;
-
-            context.read<SettingsCubit>().changeEmail(
-              newEmail: _emailController.text.trim(),
-            );
-
+      body: BlocConsumer<SettingsCubit, SettingsState>(
+        listener: (context, state) {
+          if (state is SettingsSuccess<String>) {
             context.push(
-              RouteNames.verifyAccount,
-              extra: RouteNames.changeEmail,
+              RouteNames.confirmEmail,
+              extra: _emailController.text.trim(),
             );
-          },
-        ),
+          } else if (state is SettingsFailure) {
+            ScaffoldMessenger.of(
+              context,
+            ).showSnackBar(SnackBar(content: Text(state.errormessage)));
+          }
+        },
+        builder: (context, state) {
+          final isLoading = state is SettingsLoading;
+          return Form(
+            key: _formKey,
+            child: ChangeUserCard(
+              label: 'Change Email',
+              text: 'Your previous email is ${widget.oldEmail}',
+              hintText: 'Enter your new email',
+              controller: _emailController,
+              btnName: 'Change Email',
+              validator: (value) => MyValidator.validateEmail(context, value),
+              onPressed: () {
+                if (isLoading) return;
+
+                final isValid = _formKey.currentState!.validate();
+
+                if (!isValid) return;
+
+                context.read<SettingsCubit>().changeEmail(
+                  newEmail: _emailController.text.trim(),
+                );
+              },
+            ),
+          );
+        },
       ),
     );
   }

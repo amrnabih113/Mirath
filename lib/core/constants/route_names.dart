@@ -33,6 +33,7 @@ class RouteNames {
   static const String supportLegal = '/support-legal';
   static const String accountManagement = '/account-management';
   static const String changeEmail = '/change-email';
+  static const String confirmEmail = '/confirm-email';
   static const String changeUsername = '/change-username';
 
   // ===================== MAIN LAYOUT ROUTES =====================
