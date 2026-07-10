@@ -51,7 +51,6 @@ class _ChangeUsernameState extends State<ChangeUsername> {
           }
         },
         builder: (context, state) {
-          final isLoading = state is SettingsLoading;
           return Form(
             key: _formKey,
             child: ChangeUserCard(
@@ -61,11 +60,9 @@ class _ChangeUsernameState extends State<ChangeUsername> {
               hintText: 'Enter your new username',
               controller: _usernameController,
               onPressed: () {
-                if (isLoading) return;
-                final username = _usernameController.text.trim();
-                if (username.isEmpty) return;
+                if (!_formKey.currentState!.validate()) return;
                 context.read<SettingsCubit>().changeUsername(
-                  newUsername: username,
+                  newUsername: _usernameController.text.trim(),
                 );
               },
               btnName: 'Change Username',

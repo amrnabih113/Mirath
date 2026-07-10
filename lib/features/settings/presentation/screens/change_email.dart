@@ -23,6 +23,11 @@ class _ChangeEmailState extends State<ChangeEmail> {
   @override
   void initState() {
     super.initState();
+
+    super.initState();
+    _emailController.addListener(() {
+      setState(() {});
+    });
   }
 
   @override
@@ -59,13 +64,8 @@ class _ChangeEmailState extends State<ChangeEmail> {
               controller: _emailController,
               btnName: 'Change Email',
               validator: (value) => MyValidator.validateEmail(context, value),
-              onPressed: () {
-                if (isLoading) return;
-
-                final isValid = _formKey.currentState!.validate();
-
-                if (!isValid) return;
-
+              onPressed: () {              
+                if (!_formKey.currentState!.validate()) return;
                 context.read<SettingsCubit>().changeEmail(
                   newEmail: _emailController.text.trim(),
                 );

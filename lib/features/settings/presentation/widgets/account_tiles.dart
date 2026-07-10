@@ -17,6 +17,7 @@ class AccountTiles extends StatelessWidget {
     this.titleWidget,
     this.isClicked = false,
     this.buttonIcon,
+    this.isCurrent = false,
   });
   final List<List<dynamic>>? icon;
   final List<List<dynamic>>? buttonIcon;
@@ -28,6 +29,7 @@ class AccountTiles extends StatelessWidget {
   final VoidCallback? onTap;
   final Color? textColor;
   final bool isClicked;
+  final bool isCurrent;
 
   @override
   Widget build(BuildContext context) {
@@ -46,7 +48,6 @@ class AccountTiles extends StatelessWidget {
                   ),
                 )
               : null),
-
       subtitle:
           subtitleWidget ??
           (subtitle != null
@@ -59,8 +60,9 @@ class AccountTiles extends StatelessWidget {
                   ),
                 )
               : null),
-      trailing: btnName != null
-          ? TextButton(
+      trailing: isCurrent
+          ? SizedBox.shrink()
+          : TextButton(
               style: TextButton.styleFrom(
                 minimumSize: Size(64, 28),
                 backgroundColor: isClicked
@@ -95,8 +97,7 @@ class AccountTiles extends StatelessWidget {
                   ],
                 ],
               ),
-            )
-          : null,
+            ),
     );
   }
 }

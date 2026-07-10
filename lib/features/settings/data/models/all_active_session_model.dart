@@ -1,4 +1,3 @@
-import 'package:intl/intl.dart';
 import 'package:mirath/features/settings/domain/entities/all_active_session_entity.dart';
 
 class AllActiveSessionModel extends AllActiveSessionEntity {

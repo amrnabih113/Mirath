@@ -210,6 +210,7 @@ class AccountSecurity extends StatelessWidget {
                         context
                             .read<SettingsCubit>()
                             .revokeAllActiveSessionsExceptCurrent();
+                        context.pop(context);
                       },
                     );
                   },
@@ -237,12 +238,14 @@ class DeviceLocation extends StatelessWidget {
           size: MySizes.iconSmall(context) * .8,
         ),
         SizedBox(width: 4),
-        Text(
-          title,
-          style: context.bodyLarge.copyWith(
-            fontSize: 14,
-            fontWeight: FontWeight.w400,
-            color: const Color(0xff333333),
+        Expanded(
+          child: Text(
+            title,
+            style: context.bodyLarge.copyWith(
+              fontSize: 14,
+              fontWeight: FontWeight.w400,
+              color: const Color(0xff333333),
+            ),
           ),
         ),
       ],
@@ -265,7 +268,7 @@ class AccountSettings extends StatelessWidget {
           subtitle: data.username,
           btnName: 'change',
           onTap: () {
-            context.push(RouteNames.changeUsername,extra: data.username);
+            context.push(RouteNames.changeUsername, extra: data.username);
           },
         ),
         Divider(color: MyColors.grey, thickness: 2),
@@ -274,7 +277,7 @@ class AccountSettings extends StatelessWidget {
           title: 'Email address',
           subtitle: data.email,
           onTap: () {
-            context.push(RouteNames.changeEmail,extra:data.email );
+            context.push(RouteNames.changeEmail, extra: data.email);
           },
           btnName: 'change',
         ),
@@ -320,7 +323,7 @@ class LoggedDevices extends StatelessWidget {
           ),
           subtitleWidget: DeviceLocation(
             title:
-                'CreatedAt:${formatDateTime(session.createdAt)} \n ExpiresAt:${formatDateTime(session.expiresAt)}',
+                'CreatedAt:${formatDateTime(session.createdAt)}\nExpiresAt:${formatDateTime(session.expiresAt)}',
           ),
 
           onTap: session.isCurrent
@@ -331,15 +334,19 @@ class LoggedDevices extends StatelessWidget {
                     title: 'Log out of device?',
                     content:
                         'Are you sure you want to log out of this session?',
-                    fTextBtn: 'Log out',
+                    fTextBtn: 'Log Out',
                     sTextBtn: 'Cancel',
                     ontap: () {
                       context
                           .read<SettingsCubit>()
                           .revokeAllActiveSessionsExceptCurrent();
+                      context.pop(context);
                     },
                   );
                 },
+          btnName: session.isCurrent ? '' : 'Log Out',
+          textColor: MyColors.error,
+          isCurrent: session.isCurrent,
         );
       },
     );

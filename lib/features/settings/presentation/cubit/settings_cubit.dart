@@ -101,8 +101,7 @@ class SettingsCubit extends Cubit<SettingsState> {
     var result = await changeUserNameUsecase.call(newUsername);
     result.fold(
       (failure) => emit(SettingsFailure(errormessage: failure.message)),
-      (_) =>
-          emit(SettingsSuccess<String>(data: 'Username updated successfully')),
+      (message) => emit(SettingsSuccess<String>(data: message)),
     );
   }
 
@@ -111,11 +110,7 @@ class SettingsCubit extends Cubit<SettingsState> {
     var result = await changeEmailUsecase.call(newEmail);
     result.fold(
       (failure) => emit(SettingsFailure(errormessage: failure.message)),
-      (_) => emit(
-        SettingsSuccess<String>(
-          data: 'A verification code has been sent to your new email address',
-        ),
-      ),
+      (message) => emit(SettingsSuccess<String>(data: message)),
     );
   }
 
@@ -127,8 +122,7 @@ class SettingsCubit extends Cubit<SettingsState> {
     var result = await confirmEmailUsecase.call(Tuple2(newEmail, otpCode));
     result.fold(
       (failure) => emit(SettingsFailure(errormessage: failure.message)),
-      (_) =>
-          emit(SettingsSuccess<String>(data: 'Email confirmed successfully')),
+      (message) => emit(SettingsSuccess<String>(data: message)),
     );
   }
 
@@ -143,12 +137,7 @@ class SettingsCubit extends Cubit<SettingsState> {
     );
     result.fold(
       (failure) => emit(SettingsFailure(errormessage: failure.message)),
-      (_) => emit(
-        SettingsSuccess<String>(
-          data:
-              'Password updated successfully. You have been logged out of all other devices.',
-        ),
-      ),
+      (message) => emit(SettingsSuccess<String>(data: message)),
     );
   }
 
@@ -157,11 +146,9 @@ class SettingsCubit extends Cubit<SettingsState> {
     var result = await disconnectGoogleAccountUsecase.call(NoParams());
     result.fold(
       (failure) => emit(SettingsFailure(errormessage: failure.message)),
-      (_) {
+      (message) {
         isGoogleConnected = false;
-        emit(
-          SettingsSuccess<String>(data: 'Google account unlinked successfully'),
-        );
+        emit(SettingsSuccess<String>(data: message));
       },
     );
   }
@@ -189,18 +176,9 @@ class SettingsCubit extends Cubit<SettingsState> {
     var result = await revokeAllActiveSessionExceptCurrentUsecase.call(
       NoParams(),
     );
-    result.fold(
-      (failure) {
-        emit(SettingsFailure(errormessage: failure.message));
-      },
-      (_) {
-        emit(
-          SettingsSuccess<String>(
-            data: 'Successfully logged out from all other devices',
-          ),
-        );
-      },
-    );
+    result.fold((failure) {
+      emit(SettingsFailure(errormessage: failure.message));
+    }, (message) => emit(SettingsSuccess<String>(data: message)));
   }
 
   // Feed AI Preference
@@ -401,8 +379,7 @@ class SettingsCubit extends Cubit<SettingsState> {
     var result = await initiateFullAccountDataExportUsecase.call(NoParams());
     result.fold(
       (failure) => emit(SettingsFailure(errormessage: failure.message)),
-      (message) =>
-          SettingsSuccess<String>(data: 'Data export requested successfully'),
+      (message) => SettingsSuccess<String>(data: message),
     );
   }
 
@@ -438,12 +415,7 @@ class SettingsCubit extends Cubit<SettingsState> {
 
     result.fold(
       (failure) => emit(SettingsFailure(errormessage: failure.message)),
-      (_) => emit(
-        SettingsSuccess<String>(
-          data:
-              'Account successfully deactivated. You can log in anytime to reactivate.',
-        ),
-      ),
+      (message) => emit(SettingsSuccess<String>(data: message)),
     );
   }
 
@@ -458,12 +430,7 @@ class SettingsCubit extends Cubit<SettingsState> {
 
     result.fold(
       (failure) => emit(SettingsFailure(errormessage: failure.message)),
-      (_) => emit(
-        SettingsSuccess(
-          data:
-              'Account will be deleted permanently in 30 days. You can log in anytime before to reactivate.',
-        ),
-      ),
+      (message) => emit(SettingsSuccess<String>(data: message)),
     );
   }
 }

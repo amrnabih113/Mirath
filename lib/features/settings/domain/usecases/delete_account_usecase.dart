@@ -3,12 +3,12 @@ import 'package:mirath/core/error/failuors.dart';
 import 'package:mirath/core/usecases/usecase.dart';
 import 'package:mirath/features/settings/domain/repositories/setting_repository.dart';
 
-class DeleteAccountUsecase extends UseCase<void, String> {
+class DeleteAccountUsecase extends UseCase<String, String> {
   final SettingsRepository repository;
 
   DeleteAccountUsecase(this.repository);
   @override
-  Future<Either<Failure, void>> call(String password) {
+  Future<Either<Failure, String>> call(String password) {
     return repository.deleteUserAccount(password: password);
   }
 }

@@ -4,13 +4,13 @@ import 'package:mirath/core/usecases/usecase.dart';
 import 'package:mirath/features/settings/domain/repositories/setting_repository.dart';
 
 class UpdatePasswordUsecase
-    extends UseCase<void, Tuple3<String, String, String>> {
+    extends UseCase<String, Tuple3<String, String, String>> {
   final SettingsRepository repository;
 
   UpdatePasswordUsecase(this.repository);
 
   @override
-  Future<Either<Failure, void>> call(
+  Future<Either<Failure, String>> call(
     Tuple3<String, String, String> params,
   ) async {
     return await repository.updatePassword(

@@ -1,4 +1,3 @@
-import 'package:flutter/widgets.dart';
 import 'package:mirath/features/settings/domain/entities/privacy_settings_entitiy.dart';
 
 class PrivacySettingsModel extends PrivacySettingsEntitiy {
@@ -8,12 +7,14 @@ class PrivacySettingsModel extends PrivacySettingsEntitiy {
     required super.allowPublicComments,
     required super.useReadingBehaviorForRecommendations,
     required super.blockedAccounts,
+    required super.message,
   });
 
   factory PrivacySettingsModel.fromJson(Map<String, dynamic> json) {
     final data = json['data'] as Map<String, dynamic>? ?? {};
     print(data['allowProfileSearch']);
     return PrivacySettingsModel(
+      message: json['message'],
       isPrivateAccount: data['isPrivateAccount'] ?? false,
       allowProfileSearch: data['allowProfileSearch'] ?? false,
       allowPublicComments: data['allowPublicComments'] ?? false,
@@ -34,6 +35,7 @@ class PrivacySettingsModel extends PrivacySettingsEntitiy {
       useReadingBehaviorForRecommendations:
           entity.useReadingBehaviorForRecommendations,
       blockedAccounts: entity.blockedAccounts,
+      message: entity.message,
     );
   }
 

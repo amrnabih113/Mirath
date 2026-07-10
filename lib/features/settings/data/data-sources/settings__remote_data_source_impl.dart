@@ -16,39 +16,42 @@ class SettingsRemoteDataSourceImpl extends SettingsRemoteDataSource {
     : _dioClient = dioClient;
 
   @override
-  Future<void> changeEmail({required String newEmail}) async {
-    await _dioClient.post(
+  Future<String> changeEmail({required String newEmail}) async {
+    final response = await _dioClient.post(
       MyConstants.changeEmail,
       data: {'newEmail': newEmail},
     );
+    return response.data['message'];
   }
 
   @override
-  Future<void> confirmEmail({
+  Future<String> confirmEmail({
     required String newEmail,
     required String otpCode,
   }) async {
-    await _dioClient.post(
+    final response = await _dioClient.post(
       MyConstants.confirmEmail,
       data: {'newEmail': newEmail, 'otp': otpCode},
     );
+    return response.data['message'];
   }
 
   @override
-  Future<void> changeUsername({required String newUsername}) async {
-    await _dioClient.patch(
+  Future<String> changeUsername({required String newUsername}) async {
+    final response = await _dioClient.patch(
       MyConstants.changeUsername,
       data: {'newUsername': newUsername},
     );
+    return response.data['message'];
   }
 
   @override
-  Future<void> updatePassword({
+  Future<String> updatePassword({
     required String currentPassword,
     required String newPassword,
     required String confirmNewPassword,
   }) async {
-    await _dioClient.patch(
+    final response = await _dioClient.patch(
       MyConstants.updateAccountPassword,
       data: {
         'currentPassword': currentPassword,
@@ -56,27 +59,33 @@ class SettingsRemoteDataSourceImpl extends SettingsRemoteDataSource {
         'confirmNewPassword': confirmNewPassword,
       },
     );
+    return response.data['message'];
   }
 
   @override
-  Future<void> deactivateUserAccount({required String password}) async {
-    await _dioClient.post(
+  Future<String> deactivateUserAccount({required String password}) async {
+    final response = await _dioClient.post(
       MyConstants.deactivateUserAccount,
       data: {'password': password},
     );
+    return response.data['message'];
   }
 
   @override
-  Future<void> deleteUserAccount({required String password}) async {
-    await _dioClient.post(
+  Future<String> deleteUserAccount({required String password}) async {
+    final response = await _dioClient.post(
       MyConstants.deleteUserAccount,
       data: {'password': password},
     );
+    return response.data['message'];
   }
 
   @override
-  Future<void> disconnectGoogleAccount() async {
-    await _dioClient.delete(MyConstants.disconnectLinkedGoogleAccount);
+  Future<String> disconnectGoogleAccount() async {
+    final response = await _dioClient.delete(
+      MyConstants.disconnectLinkedGoogleAccount,
+    );
+    return response.data['message'];
   }
 
   @override
@@ -143,7 +152,6 @@ class SettingsRemoteDataSourceImpl extends SettingsRemoteDataSource {
       MyConstants.retrieveResearchInterests,
     );
     final List<dynamic> interests = response.data['data'];
-    print(response.data);
     return interests
         .map(
           (item) =>
@@ -153,8 +161,11 @@ class SettingsRemoteDataSourceImpl extends SettingsRemoteDataSource {
   }
 
   @override
-  Future<void> initiateFullAccountDataExport() async {
-    await _dioClient.post(MyConstants.initiateFullAccountDataExport);
+  Future<String> initiateFullAccountDataExport() async {
+    final response = await _dioClient.post(
+      MyConstants.initiateFullAccountDataExport,
+    );
+    return response.data['message'];
   }
 
   @override
@@ -171,8 +182,11 @@ class SettingsRemoteDataSourceImpl extends SettingsRemoteDataSource {
   }
 
   @override
-  Future<void> revokeAllActiveSessionExceptCurrent() async {
-    await _dioClient.delete(MyConstants.revokeAllSessionsExceptTheCurrentOne);
+  Future<String> revokeAllActiveSessionExceptCurrent() async {
+    final response = await _dioClient.delete(
+      MyConstants.revokeAllSessionsExceptTheCurrentOne,
+    );
+    return response.data['message'];
   }
 
   @override
@@ -205,7 +219,7 @@ class SettingsRemoteDataSourceImpl extends SettingsRemoteDataSource {
       MyConstants.updatePrivacySettings,
       data: settings.toJson(),
     );
-    return PrivacySettingsModel.fromJson(response.data['data']);
+    return PrivacySettingsModel.fromJson(response.data);
   }
 
   @override

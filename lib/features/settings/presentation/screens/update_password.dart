@@ -106,28 +106,23 @@ class _UpdatePasswordState extends State<UpdatePassword> {
                     ),
                     SizedBox(height: MySizes.spaceSm(context)),
                     TextButton(
-                      onPressed: isLoading
-                          ? null
-                          : () {
-                              final isValid = _formKey.currentState!.validate();
+                      onPressed: () {
+                        if (!_formKey.currentState!.validate()) {
+                          setState(() {
+                            _autoValidateMode =
+                                AutovalidateMode.onUserInteraction;
+                          });
+                          return;
+                        }
 
-                              if (!isValid) {
-                                setState(() {
-                                  _autoValidateMode =
-                                      AutovalidateMode.onUserInteraction;
-                                });
-                                return;
-                              }
-
-                              context.read<SettingsCubit>().updatePassword(
-                                currentPassword: _currentPasswordController.text
-                                    .trim(),
-                                newPassword: _newPasswordController.text.trim(),
-                                confirmNewpassword: _confirmPasswordController
-                                    .text
-                                    .trim(),
-                              );
-                            },
+                        context.read<SettingsCubit>().updatePassword(
+                          currentPassword: _currentPasswordController.text
+                              .trim(),
+                          newPassword: _newPasswordController.text.trim(),
+                          confirmNewpassword: _confirmPasswordController.text
+                              .trim(),
+                        );
+                      },
                       style: TextButton.styleFrom(
                         backgroundColor:
                             _newPasswordController.text ==

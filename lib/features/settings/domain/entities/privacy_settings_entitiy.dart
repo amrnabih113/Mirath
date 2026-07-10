@@ -1,6 +1,7 @@
 import 'package:equatable/equatable.dart';
 
 class PrivacySettingsEntitiy extends Equatable {
+  final String message;
   final bool isPrivateAccount;
   final bool allowProfileSearch;
   final bool allowPublicComments;
@@ -12,7 +13,7 @@ class PrivacySettingsEntitiy extends Equatable {
     required this.allowProfileSearch,
     required this.allowPublicComments,
     required this.useReadingBehaviorForRecommendations,
-    required this.blockedAccounts,
+    required this.blockedAccounts, required this.message,
   });
   PrivacySettingsEntitiy copyWith({
     bool? isPrivateAccount,
@@ -22,13 +23,14 @@ class PrivacySettingsEntitiy extends Equatable {
     List<String>? blockedAccounts,
   }) {
     return PrivacySettingsEntitiy(
+      message: message,
       isPrivateAccount: isPrivateAccount ?? this.isPrivateAccount,
       allowProfileSearch: allowProfileSearch ?? this.allowProfileSearch,
       allowPublicComments: allowPublicComments ?? this.allowPublicComments,
       useReadingBehaviorForRecommendations:
           useReadingBehaviorForRecommendations ??
           this.useReadingBehaviorForRecommendations,
-      blockedAccounts: [],
+      blockedAccounts: [], 
     );
   }
 

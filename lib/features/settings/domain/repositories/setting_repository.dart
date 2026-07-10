@@ -10,20 +10,20 @@ import 'package:mirath/features/settings/domain/entities/research_interests_enti
 
 abstract class SettingsRepository {
   // Account & Security
-  Future<Either<Failure, void>> changeUsername({required String newUsername});
-  Future<Either<Failure, void>> changeEmail({required String newEmail});
-  Future<Either<Failure, void>> confirmEmail({
+  Future<Either<Failure, String>> changeUsername({required String newUsername});
+  Future<Either<Failure, String>> changeEmail({required String newEmail});
+  Future<Either<Failure, String>> confirmEmail({
     required String newEmail,
     required String otpCode,
   });
-  Future<Either<Failure, void>> updatePassword({
+  Future<Either<Failure, String>> updatePassword({
     required String currentPassword,
     required String newPassword,
     required String confirmNewPassword,
   });
-  Future<Either<Failure, void>> disconnectGoogleAccount();
+  Future<Either<Failure, String>> disconnectGoogleAccount();
   Future<Either<Failure, List<AllActiveSessionEntity>>> getAllActiveSession();
-  Future<Either<Failure, void>> revokeAllActiveSessionExceptCurrent();
+  Future<Either<Failure, String>> revokeAllActiveSessionExceptCurrent();
   // Feed & AI Preferences
   Future<Either<Failure, FeedAndAiPreferenceEntity>> getFeedAndAiPreference();
   Future<Either<Failure, FeedAndAiPreferenceEntity>> updateFeedAndAiPreference({
@@ -58,7 +58,7 @@ abstract class SettingsRepository {
   Future<Either<Failure, PrivacySettingsEntitiy>> updatePrivacySettings({
     required PrivacySettingsEntitiy settings,
   });
-  Future<Either<Failure, void>> initiateFullAccountDataExport();
+  Future<Either<Failure, String>> initiateFullAccountDataExport();
   Future<Either<Failure, void>> exportReadingListsAsAFile({
     required ExportListFormate formate,
   });
@@ -66,8 +66,8 @@ abstract class SettingsRepository {
     required ExportAnnotationsFormate formate,
   });
   //Account Management
-  Future<Either<Failure, void>> deactivateUserAccount({
+  Future<Either<Failure, String>> deactivateUserAccount({
     required String password,
   });
-  Future<Either<Failure, void>> deleteUserAccount({required String password});
+  Future<Either<Failure, String>> deleteUserAccount({required String password});
 }

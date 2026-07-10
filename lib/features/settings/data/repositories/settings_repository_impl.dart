@@ -27,12 +27,14 @@ class SettingsRepositoryImpl extends SettingsRepository {
     required this.cacheService,
   });
   @override
-  Future<Either<Failure, void>> changeUsername({
+  Future<Either<Failure, String>> changeUsername({
     required String newUsername,
   }) async {
     try {
-      await remoteDataSource.changeUsername(newUsername: newUsername);
-      return right(null);
+      final result = await remoteDataSource.changeUsername(
+        newUsername: newUsername,
+      );
+      return right(result);
     } on ServerException catch (e) {
       return Left(ServerFailure(e.message!));
     } on NetworkException catch (e) {
@@ -43,23 +45,28 @@ class SettingsRepositoryImpl extends SettingsRepository {
   }
 
   @override
-  Future<Either<Failure, void>> changeEmail({required String newEmail}) async {
+  Future<Either<Failure, String>> changeEmail({
+    required String newEmail,
+  }) async {
     try {
-      await remoteDataSource.changeEmail(newEmail: newEmail);
-      return right(null);
+      final result = await remoteDataSource.changeEmail(newEmail: newEmail);
+      return right(result);
     } catch (e) {
       return left(ServerFailure(e.toString()));
     }
   }
 
   @override
-  Future<Either<Failure, void>> confirmEmail({
+  Future<Either<Failure, String>> confirmEmail({
     required String newEmail,
     required String otpCode,
   }) async {
     try {
-      await remoteDataSource.confirmEmail(newEmail: newEmail, otpCode: otpCode);
-      return right(null);
+      final result = await remoteDataSource.confirmEmail(
+        newEmail: newEmail,
+        otpCode: otpCode,
+      );
+      return right(result);
     } on ServerException catch (e) {
       return Left(ServerFailure(e.message!));
     } on NetworkException catch (e) {
@@ -70,18 +77,18 @@ class SettingsRepositoryImpl extends SettingsRepository {
   }
 
   @override
-  Future<Either<Failure, void>> updatePassword({
+  Future<Either<Failure, String>> updatePassword({
     required String currentPassword,
     required String newPassword,
     required String confirmNewPassword,
   }) async {
     try {
-      await remoteDataSource.updatePassword(
+      final result = await remoteDataSource.updatePassword(
         currentPassword: currentPassword,
         newPassword: newPassword,
         confirmNewPassword: confirmNewPassword,
       );
-      return right(null);
+      return right(result);
     } on ServerException catch (e) {
       return Left(ServerFailure(e.message!));
     } on NetworkException catch (e) {
@@ -92,10 +99,10 @@ class SettingsRepositoryImpl extends SettingsRepository {
   }
 
   @override
-  Future<Either<Failure, void>> disconnectGoogleAccount() async {
+  Future<Either<Failure, String>> disconnectGoogleAccount() async {
     try {
-      await remoteDataSource.disconnectGoogleAccount();
-      return right(null);
+      final result = await remoteDataSource.disconnectGoogleAccount();
+      return right(result);
     } on ServerException catch (e) {
       return Left(ServerFailure(e.message!));
     } on NetworkException catch (e) {
@@ -121,10 +128,11 @@ class SettingsRepositoryImpl extends SettingsRepository {
   }
 
   @override
-  Future<Either<Failure, void>> revokeAllActiveSessionExceptCurrent() async {
+  Future<Either<Failure, String>> revokeAllActiveSessionExceptCurrent() async {
     try {
-      await remoteDataSource.revokeAllActiveSessionExceptCurrent();
-      return right(null);
+      final result = await remoteDataSource
+          .revokeAllActiveSessionExceptCurrent();
+      return right(result);
     } on ServerException catch (e) {
       return Left(ServerFailure(e.message!));
     } on NetworkException catch (e) {
@@ -137,10 +145,10 @@ class SettingsRepositoryImpl extends SettingsRepository {
   }
 
   @override
-  Future<Either<Failure, void>> initiateFullAccountDataExport() async {
+  Future<Either<Failure, String>> initiateFullAccountDataExport() async {
     try {
-      await remoteDataSource.initiateFullAccountDataExport();
-      return right(null);
+      final result = await remoteDataSource.initiateFullAccountDataExport();
+      return right(result);
     } on ServerException catch (e) {
       return Left(ServerFailure(e.message!));
     } on NetworkException catch (e) {
@@ -430,12 +438,12 @@ class SettingsRepositoryImpl extends SettingsRepository {
   }
 
   @override
-  Future<Either<Failure, void>> deactivateUserAccount({
+  Future<Either<Failure, String>> deactivateUserAccount({
     required String password,
   }) async {
     try {
-      await remoteDataSource.deactivateUserAccount(password: password);
-      return right(null);
+       final result=await remoteDataSource.deactivateUserAccount(password: password);
+      return right(result);
     } on ServerException catch (e) {
       return Left(ServerFailure(e.message!));
     } on NetworkException catch (e) {
@@ -446,12 +454,12 @@ class SettingsRepositoryImpl extends SettingsRepository {
   }
 
   @override
-  Future<Either<Failure, void>> deleteUserAccount({
+  Future<Either<Failure, String>> deleteUserAccount({
     required String password,
   }) async {
     try {
-      await remoteDataSource.deleteUserAccount(password: password);
-      return right(null);
+       final result=await remoteDataSource.deleteUserAccount(password: password);
+      return right(result);
     } on ServerException catch (e) {
       return Left(ServerFailure(e.message!));
     } on NetworkException catch (e) {

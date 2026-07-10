@@ -8,20 +8,20 @@ import 'package:mirath/features/settings/data/models/research_interests_model.da
 
 abstract class SettingsRemoteDataSource {
   // Account & Security
-  Future<void> changeUsername({required String newUsername});
-  Future<void> changeEmail({required String newEmail});
-  Future<void> confirmEmail({
+  Future<String> changeUsername({required String newUsername});
+  Future<String> changeEmail({required String newEmail});
+  Future<String> confirmEmail({
     required String newEmail,
     required String otpCode,
   });
-  Future<void> updatePassword({
+  Future<String> updatePassword({
     required String currentPassword,
     required String newPassword,
     required String confirmNewPassword,
   });
-  Future<void> disconnectGoogleAccount();
+  Future<String> disconnectGoogleAccount();
   Future<List<AllActiveSessionModel>> getAllActiveSession();
-  Future<void> revokeAllActiveSessionExceptCurrent();
+  Future<String> revokeAllActiveSessionExceptCurrent();
   // Feed & AI Preferences
   Future<FeedAndAiPreferenceModel> getFeedAndAiPreference();
   Future<FeedAndAiPreferenceModel> updateFeedAndAiPreference({
@@ -52,12 +52,12 @@ abstract class SettingsRemoteDataSource {
   Future<PrivacySettingsModel> updatePrivacySettings({
     required PrivacySettingsModel settings,
   });
-  Future<void> initiateFullAccountDataExport();
+  Future<String> initiateFullAccountDataExport();
   Future<void> exportReadingListsAsAFile({required ExportListFormate formate});
   Future<void> exportAnnotationsAndNotes({
     required ExportAnnotationsFormate formate,
   });
   //Account Management
-  Future<void> deactivateUserAccount({required String password});
-  Future<void> deleteUserAccount({required String password});
+  Future<String> deactivateUserAccount({required String password});
+  Future<String> deleteUserAccount({required String password});
 }

@@ -1,23 +1,24 @@
 part of 'settings_cubit.dart';
 
-abstract class SettingsState extends Equatable {}
+abstract class SettingsState extends Equatable {
+  const SettingsState();
+  @override
+  List<Object?> get props => [];
+}
 
 class SettingsInitial extends SettingsState {
-  @override
-  List<Object?> get props => throw UnimplementedError();
+  const SettingsInitial();
 }
 
 class SettingsLoading extends SettingsState {
-  @override
-  List<Object?> get props => throw UnimplementedError();
+  const SettingsLoading();
 }
 
 class SettingsSuccess<T> extends SettingsState {
   final T data;
   final bool isUpdating;
-  
 
-  SettingsSuccess({required this.data, this.isUpdating = false});
+  const SettingsSuccess({required this.data, this.isUpdating = false});
 
   SettingsSuccess<T> copyWith({T? data, bool? isUpdating}) {
     return SettingsSuccess<T>(
@@ -32,10 +33,9 @@ class SettingsSuccess<T> extends SettingsState {
 
 class SettingsFailure<T> extends SettingsState {
   final String errormessage;
-  final String? request;
 
-  SettingsFailure({required this.errormessage, this.request});
+  const SettingsFailure({required this.errormessage});
 
   @override
-  List<Object?> get props => throw UnimplementedError();
+  List<Object?> get props => [errormessage];
 }
