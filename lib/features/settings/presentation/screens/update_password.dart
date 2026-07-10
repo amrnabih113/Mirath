@@ -46,7 +46,6 @@ class _UpdatePasswordState extends State<UpdatePassword> {
           }
         },
         builder: (context, state) {
-          final isLoading = state is SettingsLoading;
           return SingleChildScrollView(
             child: Form(
               key: _formKey,
