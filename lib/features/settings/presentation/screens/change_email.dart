@@ -54,7 +54,6 @@ class _ChangeEmailState extends State<ChangeEmail> {
           }
         },
         builder: (context, state) {
-          final isLoading = state is SettingsLoading;
           return Form(
             key: _formKey,
             child: ChangeUserCard(
@@ -64,7 +63,7 @@ class _ChangeEmailState extends State<ChangeEmail> {
               controller: _emailController,
               btnName: 'Change Email',
               validator: (value) => MyValidator.validateEmail(context, value),
-              onPressed: () {              
+              onPressed: () {
                 if (!_formKey.currentState!.validate()) return;
                 context.read<SettingsCubit>().changeEmail(
                   newEmail: _emailController.text.trim(),
