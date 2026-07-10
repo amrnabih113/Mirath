@@ -951,8 +951,11 @@ final appRouter = GoRouter(
       path: RouteNames.updatePassword,
       pageBuilder: (context, state) {
         return PageTransitions.smoothTransition(
-          BlocProvider.value(
-            value: sl<SettingsCubit>(),
+          MultiBlocProvider(
+            providers: [
+              BlocProvider.value(value: sl<SettingsCubit>()),
+              BlocProvider.value(value: sl<ProfileCubit>()),
+            ],
             child: const UpdatePassword(),
           ),
         );
