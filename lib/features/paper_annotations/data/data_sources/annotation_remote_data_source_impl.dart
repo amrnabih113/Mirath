@@ -127,4 +127,70 @@ class AnnotationRemoteDataSourceImpl implements AnnotationRemoteDataSource {
 
     throw const FormatException('Unable to parse highlight response');
   }
+
+  @override
+  Future<String> explainText({
+    required String paperId,
+    required String text,
+  }) async {
+    final response = await dioClient.post(
+      MyConstants.paperAnnotationExplanation.replaceAll('{id}', paperId),
+      data: {'selectedText': text},
+    );
+
+    if (response.data is Map<String, dynamic>) {
+      final data = response.data['data'];
+      if (data is Map<String, dynamic>) {
+        return data['answer'] as String;
+      }
+    }
+    throw const FormatException('Unable to parse explain text response');
+  }
+
+  @override
+  Future<String> summarizeText({
+    required String paperId,
+    required String text,
+  }) async {
+    return await dioClient
+        .post(
+          MyConstants.paperAnnotationSummarization.replaceAll('{id}', paperId),
+          data: {'selectedText': text},
+        )
+        .then((response) {
+          if (response.data is Map<String, dynamic>) {
+            final data = response.data['data'];
+            if (data is Map<String, dynamic>) {
+              return data['answer'] as String;
+            }
+          }
+          throw const FormatException(
+            'Unable to parse summarize text response',
+          );
+        });
+  }
+
+  @override
+  Future<String> translateText({
+    required String paperId,
+    required String text,
+    required String targetLanguage,
+  }) async {
+    return await dioClient
+        .post(
+          MyConstants.paperAnnotationTranslation.replaceAll('{id}', paperId),
+          data: {'selectedText': text, 'targetLanguage': targetLanguage},
+        )
+        .then((response) {
+          if (response.data is Map<String, dynamic>) {
+            final data = response.data['data'];
+            if (data is Map<String, dynamic>) {
+              return data['answer'] as String;
+            }
+          }
+          throw const FormatException(
+            'Unable to parse translate text response',
+          );
+        });
+  }
 }

@@ -17,6 +17,7 @@ class AnnotationSelectionOverlay extends StatelessWidget {
   final VoidCallback onHighlightPressed;
   final VoidCallback onNote;
   final VoidCallback onExplain;
+  final VoidCallback onSummarize;
   final VoidCallback onTranslate;
   final VoidCallback? onRemove;
   final String noteActionLabel;
@@ -31,6 +32,7 @@ class AnnotationSelectionOverlay extends StatelessWidget {
     required this.onHighlightPressed,
     required this.onNote,
     required this.onExplain,
+    required this.onSummarize,
     required this.onTranslate,
     this.onRemove,
     this.noteActionLabel = 'Add Note',
@@ -76,9 +78,9 @@ class AnnotationSelectionOverlay extends StatelessWidget {
   double _menuWidth(BuildContext context, AnnotationDialogMode mode) {
     switch (mode) {
       case AnnotationDialogMode.selectionActions:
-        return ResponsiveHelper.responsiveValue(context, 300);
+        return ResponsiveHelper.responsiveValue(context, 280);
       case AnnotationDialogMode.selectionColors:
-        return ResponsiveHelper.responsiveValue(context, 250);
+        return ResponsiveHelper.responsiveValue(context, 230);
       case AnnotationDialogMode.highlightColors:
         return ResponsiveHelper.responsiveValue(context, 320);
     }
@@ -191,6 +193,15 @@ class AnnotationSelectionOverlay extends StatelessWidget {
             color: MyColors.black,
           ),
           _buildDivider(context, separator),
+
+          _buildActionItem(
+            context: context,
+            label: "Summarize",
+            onTap: onSummarize,
+            color: MyColors.black,
+          ),
+          _buildDivider(context, separator),
+
           _buildActionItem(
             context: context,
             label: S.of(context).translate_button,

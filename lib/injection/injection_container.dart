@@ -1,6 +1,13 @@
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:get_it/get_it.dart';
 import 'package:dio/dio.dart';
+import '../features/chatbot/domain/usecases/create_temporary_session_usecase.dart';
+import '../features/chatbot/domain/usecases/delete_session_usecase.dart';
+import '../features/chatbot/domain/usecases/delete_temporary_session_usecase.dart';
+import '../features/chatbot/domain/usecases/get_session_by_id_usecase.dart';
+import '../features/chatbot/domain/usecases/get_session_messages_usecase.dart';
+import '../features/chatbot/domain/usecases/get_sessions_usecase.dart';
+import '../features/chatbot/presentation/cubit/sessions_cubit.dart';
 import 'package:mirath/features/settings/data/data-sources/settings__remote_data_source_impl.dart';
 import 'package:mirath/features/settings/data/data-sources/settings_remote_data_source.dart';
 import 'package:mirath/features/settings/data/repositories/settings_repository_impl.dart';
@@ -41,94 +48,105 @@ import '../features/library/domain/usecases/remove_paper_from_reading_history.da
 import '../features/library/domain/usecases/update_reading_history.dart';
 import '../features/library/presentation/cubit/library_cubit.dart';
 import '../features/Layout/presentation/cubit/layout_cubit.dart';
+import '../features/paper_annotations/domain/usecases/explain_text_usecase.dart';
+import '../features/paper_annotations/domain/usecases/summarize_text_usecase.dart';
+import '../features/paper_annotations/domain/usecases/translate_text_use_case.dart';
 import '../features/reading_lists/domain/usecases/delete_reading_list_usecase.dart';
 import '../features/reading_lists/domain/usecases/reading_list_cache_usecases.dart';
 import '../features/reading_lists/domain/usecases/save_reading_list_usecase.dart';
 import '../features/reading_lists/domain/usecases/unsave_reading_list_usecase.dart';
 import '../features/reading_lists/domain/usecases/update_reading_list_usecase.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-// ignore: unused_import
-import 'package:mirath/features/auth/data/repositories/fake_auth_repository_impl.dart';
-import 'package:mirath/features/discussions/data/data_sources/community_remote_data_source.dart';
-import 'package:mirath/features/discussions/data/data_sources/community_remote_data_source_impl.dart';
-import 'package:mirath/features/discussions/data/repositories/community_repository_impl.dart';
-import 'package:mirath/features/discussions/domain/repositories/community_repository.dart';
-import 'package:mirath/features/discussions/domain/usecases/create_comment_usecase.dart';
-import 'package:mirath/features/discussions/domain/entities/create_comment_params.dart';
-import 'package:mirath/features/discussions/domain/usecases/create_discussion_usecase.dart';
-import 'package:mirath/features/discussions/domain/entities/create_discussion_params.dart';
-import 'package:mirath/features/discussions/domain/usecases/community_cache_usecases.dart';
-import 'package:mirath/features/discussions/domain/usecases/delete_comment_vote_usecase.dart';
-import 'package:mirath/features/discussions/domain/usecases/delete_discussion_usecase.dart';
-import 'package:mirath/features/discussions/domain/usecases/delete_discussion_vote_usecase.dart';
-import 'package:mirath/features/discussions/domain/usecases/get_all_discussions_usecase.dart';
-import 'package:mirath/features/discussions/domain/usecases/get_discussion_by_id_usecase.dart';
-import 'package:mirath/features/discussions/domain/usecases/get_discussion_comments_usecase.dart';
-import 'package:mirath/features/discussions/domain/usecases/vote_on_comment_usecase.dart';
-import 'package:mirath/features/discussions/domain/entities/vote_params.dart';
-import 'package:mirath/features/discussions/domain/usecases/vote_on_discussion_usecase.dart';
-import 'package:mirath/features/discussions/presentation/cubit/community_cubit.dart';
-import 'package:mirath/features/discussions/presentation/cubit/discussion_details_cubit.dart';
-import 'package:mirath/features/discussions/presentation/cubit/global_search_cubit.dart';
+import '../features/discussions/data/data_sources/community_remote_data_source.dart';
+import '../features/discussions/data/data_sources/community_remote_data_source_impl.dart';
+import '../features/discussions/data/repositories/community_repository_impl.dart';
+import '../features/discussions/domain/repositories/community_repository.dart';
+import '../features/discussions/domain/usecases/create_comment_usecase.dart';
+import '../features/discussions/domain/entities/create_comment_params.dart';
+import '../features/discussions/domain/usecases/create_discussion_usecase.dart';
+import '../features/discussions/domain/entities/create_discussion_params.dart';
+import '../features/discussions/domain/usecases/community_cache_usecases.dart';
+import '../features/discussions/domain/usecases/delete_comment_vote_usecase.dart';
+import '../features/discussions/domain/usecases/delete_discussion_usecase.dart';
+import '../features/discussions/domain/usecases/delete_discussion_vote_usecase.dart';
+import '../features/discussions/domain/usecases/get_all_discussions_usecase.dart';
+import '../features/discussions/domain/usecases/get_discussion_by_id_usecase.dart';
+import '../features/discussions/domain/usecases/get_discussion_comments_usecase.dart';
+import '../features/discussions/domain/usecases/vote_on_comment_usecase.dart';
+import '../features/discussions/domain/entities/vote_params.dart';
+import '../features/discussions/domain/usecases/vote_on_discussion_usecase.dart';
+import '../features/discussions/presentation/cubit/community_cubit.dart';
+import '../features/discussions/presentation/cubit/discussion_details_cubit.dart';
+import '../features/discussions/presentation/cubit/global_search_cubit.dart';
 import '../features/home/domain/usecases/get_paper_categories_usecase.dart';
 import '../features/home/domain/usecases/home_cache_usecases.dart';
-import 'package:mirath/features/paper_annotations/data/data_sources/annotation_local_data_source.dart';
-import 'package:mirath/features/paper_annotations/data/data_sources/annotation_local_data_source_impl.dart';
-import 'package:mirath/features/paper_annotations/data/data_sources/annotation_remote_data_source.dart';
-import 'package:mirath/features/paper_annotations/data/data_sources/annotation_remote_data_source_impl.dart';
-import 'package:mirath/features/paper_annotations/data/repositories/annotation_repository_impl.dart';
-import 'package:mirath/features/paper_annotations/domain/repositories/annotation_repository.dart';
-import 'package:mirath/features/paper_annotations/domain/usecases/add_highlight_note_usecase.dart';
-import 'package:mirath/features/paper_annotations/domain/usecases/delete_highlight_usecase.dart';
-import 'package:mirath/features/paper_annotations/domain/usecases/delete_highlight_note_usecase.dart';
-import 'package:mirath/features/paper_annotations/domain/usecases/get_annotated_highlights_usecase.dart';
-import 'package:mirath/features/paper_annotations/domain/usecases/get_highlights_usecase.dart';
-import 'package:mirath/features/paper_annotations/domain/usecases/save_highlight_usecase.dart';
-import 'package:mirath/features/paper_annotations/domain/usecases/update_highlight_note_usecase.dart';
-import 'package:mirath/features/paper_annotations/domain/usecases/update_highlight_usecase.dart';
-import 'package:mirath/features/paper_annotations/presentation/cubit/paper_reading_cubit.dart';
-import 'package:mirath/features/papers/data/data_sources/paper_remote_data_source.dart';
-import 'package:mirath/features/papers/data/repository/paper_repository_impl.dart';
-import 'package:mirath/features/papers/domain/repository/paper_repository.dart';
-import 'package:mirath/features/papers/domain/usecases/get_paper_by_id_usecase.dart';
-import 'package:mirath/features/reading_lists/presentation/cubit/reading_list_cubit.dart';
-import 'package:mirath/features/reading_lists/data/data_sources/reading_list_remote_data_source.dart';
-import 'package:mirath/features/reading_lists/data/data_sources/reading_list_remote_data_source_impl.dart';
-import 'package:mirath/features/reading_lists/data/repositories/reading_list_repository_impl.dart';
-import 'package:mirath/features/users/domain/usecases/update_profile_usecase.dart';
-import 'package:mirath/features/profile/presentation/cubit/profile_cubit.dart';
-import 'package:mirath/features/reading_lists/domain/repositories/reading_list_repository.dart';
-import 'package:mirath/features/reading_lists/domain/usecases/add_paper_to_list_usecase.dart';
-import 'package:mirath/features/reading_lists/domain/usecases/create_reading_list_usecase.dart';
-import 'package:mirath/features/reading_lists/domain/usecases/get_reading_list_by_id_usecase.dart';
-import 'package:mirath/features/reading_lists/domain/usecases/get_reading_lists_usecase.dart';
-import 'package:mirath/features/reading_lists/domain/usecases/remove_paper_from_list_usecase.dart';
-import 'package:mirath/features/home/data/data_sources/home_remote_data_source.dart';
-import 'package:mirath/features/home/data/data_sources/home_remote_data_source_impl.dart';
-import 'package:mirath/features/home/data/repositories/home_repository_impl.dart';
-import 'package:mirath/features/home/domain/repositories/home_repository.dart';
-import 'package:mirath/features/home/domain/usecases/get_recent_papers_usecase.dart';
-import 'package:mirath/features/home/domain/usecases/get_recommendations_usecase.dart';
-import 'package:mirath/features/home/domain/usecases/get_search_history_usecase.dart';
-import 'package:mirath/features/home/domain/usecases/delete_search_history_usecase.dart';
-import 'package:mirath/features/home/domain/usecases/clear_search_history_usecase.dart';
-import 'package:mirath/features/home/domain/usecases/search_discussions_usecase.dart';
-import 'package:mirath/features/home/domain/usecases/search_global_usecase.dart';
-import 'package:mirath/features/home/domain/usecases/search_reading_lists_usecase.dart';
-import 'package:mirath/features/home/domain/usecases/search_researchers_usecase.dart';
-import 'package:mirath/features/home/domain/usecases/search_papers_usecase.dart';
-import 'package:mirath/features/home/domain/usecases/save_paper_usecase.dart';
-import 'package:mirath/features/home/domain/usecases/unsave_paper_usecase.dart';
-import 'package:mirath/features/home/presentation/cubit/home_cubit.dart';
-import 'package:mirath/features/home/presentation/cubit/search_cubit.dart';
-import 'package:mirath/features/chatbot/presentation/cubit/chatbot_cubit.dart';
+import '../features/paper_annotations/data/data_sources/annotation_local_data_source.dart';
+import '../features/paper_annotations/data/data_sources/annotation_local_data_source_impl.dart';
+import '../features/paper_annotations/data/data_sources/annotation_remote_data_source.dart';
+import '../features/paper_annotations/data/data_sources/annotation_remote_data_source_impl.dart';
+import '../features/paper_annotations/data/repositories/annotation_repository_impl.dart';
+import '../features/paper_annotations/domain/repositories/annotation_repository.dart';
+import '../features/paper_annotations/domain/usecases/add_highlight_note_usecase.dart';
+import '../features/paper_annotations/domain/usecases/delete_highlight_usecase.dart';
+import '../features/paper_annotations/domain/usecases/delete_highlight_note_usecase.dart';
+import '../features/paper_annotations/domain/usecases/get_annotated_highlights_usecase.dart';
+import '../features/paper_annotations/domain/usecases/get_highlights_usecase.dart';
+import '../features/paper_annotations/domain/usecases/save_highlight_usecase.dart';
+import '../features/paper_annotations/domain/usecases/update_highlight_note_usecase.dart';
+import '../features/paper_annotations/domain/usecases/update_highlight_usecase.dart';
+import '../features/paper_annotations/presentation/cubit/paper_reading_cubit.dart';
+import '../features/papers/data/data_sources/paper_remote_data_source.dart';
+import '../features/papers/data/repository/paper_repository_impl.dart';
+import '../features/papers/domain/repository/paper_repository.dart';
+import '../features/papers/domain/usecases/get_paper_by_id_usecase.dart';
+import '../features/reading_lists/presentation/cubit/reading_list_cubit.dart';
+import '../features/reading_lists/data/data_sources/reading_list_remote_data_source.dart';
+import '../features/reading_lists/data/data_sources/reading_list_remote_data_source_impl.dart';
+import '../features/reading_lists/data/repositories/reading_list_repository_impl.dart';
+import '../features/users/domain/usecases/update_profile_usecase.dart';
+import '../features/profile/presentation/cubit/profile_cubit.dart';
+import '../features/reading_lists/domain/repositories/reading_list_repository.dart';
+import '../features/reading_lists/domain/usecases/add_paper_to_list_usecase.dart';
+import '../features/reading_lists/domain/usecases/create_reading_list_usecase.dart';
+import '../features/reading_lists/domain/usecases/get_reading_list_by_id_usecase.dart';
+import '../features/reading_lists/domain/usecases/get_reading_lists_usecase.dart';
+import '../features/reading_lists/domain/usecases/remove_paper_from_list_usecase.dart';
+import '../features/home/data/data_sources/home_remote_data_source.dart';
+import '../features/home/data/data_sources/home_remote_data_source_impl.dart';
+import '../features/home/data/repositories/home_repository_impl.dart';
+import '../features/home/domain/repositories/home_repository.dart';
+import '../features/home/domain/usecases/get_recent_papers_usecase.dart';
+import '../features/home/domain/usecases/get_recommendations_usecase.dart';
+import '../features/home/domain/usecases/get_search_history_usecase.dart';
+import '../features/home/domain/usecases/delete_search_history_usecase.dart';
+import '../features/home/domain/usecases/clear_search_history_usecase.dart';
+import '../features/home/domain/usecases/search_discussions_usecase.dart';
+import '../features/home/domain/usecases/search_global_usecase.dart';
+import '../features/home/domain/usecases/search_reading_lists_usecase.dart';
+import '../features/home/domain/usecases/search_researchers_usecase.dart';
+import '../features/home/domain/usecases/search_papers_usecase.dart';
+import '../features/home/domain/usecases/save_paper_usecase.dart';
+import '../features/home/domain/usecases/unsave_paper_usecase.dart';
+import '../features/home/presentation/cubit/home_cubit.dart';
+import '../features/home/presentation/cubit/search_cubit.dart';
+import '../features/chatbot/presentation/cubit/chatbot_cubit.dart';
+import '../features/chatbot/data/data_sources/chatbot_remote_data_source.dart';
+import '../features/chatbot/data/data_sources/chatbot_remote_data_source_impl.dart';
+import '../features/chatbot/data/repositories/chatbot_repository_impl.dart';
+import '../features/chatbot/domain/repositories/chatbot_repository.dart';
+import '../features/chatbot/domain/usecases/upload_files_usecase.dart';
+import '../features/chatbot/domain/usecases/create_session_usecase.dart';
+import '../features/chatbot/domain/usecases/send_message_usecase.dart';
+import '../features/chatbot/domain/usecases/stream_messages_usecase.dart';
+import '../features/chatbot/domain/usecases/submit_feedback_usecase.dart';
 
 import '../core/network/dio_client.dart';
 import '../core/network/network_manager.dart';
 import '../core/cache/hive_cache_service.dart';
 import '../core/cache/cache_keys.dart';
-import 'package:mirath/features/discussions/data/models/comment_model.dart';
-import 'package:mirath/core/sync/retry_queue.dart';
+import '../core/services/audio_recorder_service.dart';
+import '../features/discussions/data/models/comment_model.dart';
+import '../core/sync/retry_queue.dart';
 import '../core/services/image_picker_service.dart';
 import '../core/services/local_storage_service.dart';
 import '../core/services/secure_storage_service.dart';
@@ -219,6 +237,7 @@ class DI {
 
     final hiveCacheService = await HiveCacheService.init();
     sl.registerLazySingleton<HiveCacheService>(() => hiveCacheService);
+    sl.registerLazySingleton(() => AudioRecorderService());
 
     // Retry queue (persistent)
     sl.registerLazySingleton<RetryQueue>(
@@ -771,7 +790,57 @@ class DI {
     );
 
     /// Chatbot ///
-    sl.registerFactory(() => ChatbotCubit());
+    // Chatbot data source & repository
+    sl.registerLazySingleton<ChatbotRemoteDataSource>(
+      () => ChatbotRemoteDataSourceImpl(dioClient: sl()),
+    );
+
+    sl.registerLazySingleton<ChatbotRepository>(
+      () => ChatbotRepositoryImpl(
+        remoteDataSource: sl(),
+        networkManager: sl(),
+        cacheService: sl(),
+      ),
+    );
+
+    // Chatbot UseCases
+    sl.registerLazySingleton(() => UploadFilesUseCase(sl()));
+    sl.registerLazySingleton(() => CreateSessionUseCase(sl()));
+    sl.registerLazySingleton(() => SendMessageUseCase(sl()));
+    sl.registerLazySingleton(() => StreamMessagesUseCase(sl()));
+    sl.registerLazySingleton(() => GetSessionMessagesUseCase(sl()));
+    sl.registerLazySingleton(() => GetSessionsUseCase(sl()));
+    sl.registerLazySingleton(() => DeleteSessionUseCase(sl()));
+    sl.registerLazySingleton(() => CreateTemporarySessionUseCase(sl()));
+    sl.registerLazySingleton(() => DeleteTemporarySessionUseCase(sl()));
+    sl.registerLazySingleton(() => GetSessionByIdUseCase(sl()));
+    sl.registerLazySingleton(() => SubmitFeedbackUseCase(sl()));
+
+    sl.registerFactory(
+      () => ChatbotCubit(
+        uploadFilesUseCase: sl(),
+        createSessionUseCase: sl(),
+        createTemporarySessionUseCase: sl(),
+        getSessionMessagesUseCase: sl(),
+        sendMessageUseCase: sl(),
+        streamMessagesUseCase: sl(),
+        submitFeedbackUseCase: sl(),
+        cacheService: sl(),
+        retryService: sl(),
+        networkManager: sl(),
+      ),
+    );
+
+    // Sessions cubit
+    sl.registerFactory(
+      () => SessionsCubit(
+        getSessionsUseCase: sl(),
+        deleteSessionUseCase: sl(),
+        createTemporarySessionUseCase: sl(),
+        deleteTemporarySessionUseCase: sl(),
+        getSessionByIdUseCase: sl(),
+      ),
+    );
 
     /// Layout Cubit ///
     sl.registerLazySingleton(() => LayoutCubit());
@@ -821,6 +890,9 @@ class DI {
     sl.registerLazySingleton(() => AddHighlightNoteUseCase(sl()));
     sl.registerLazySingleton(() => UpdateHighlightNoteUseCase(sl()));
     sl.registerLazySingleton(() => DeleteHighlightNoteUseCase(sl()));
+    sl.registerLazySingleton(() => TranslateTextUseCase(sl()));
+    sl.registerLazySingleton(() => ExplainTextUseCase(sl()));
+    sl.registerLazySingleton(() => SummarizeTextUseCase(sl()));
 
     // Cubit
     sl.registerFactory(
@@ -834,6 +906,9 @@ class DI {
         addHighlightNoteUseCase: sl(),
         updateHighlightNoteUseCase: sl(),
         deleteHighlightNoteUseCase: sl(),
+        translateTextUseCase: sl(),
+        explainTextUseCase: sl(),
+        summarizeTextUseCase: sl(),
       ),
     );
     //================ User Settings =======================

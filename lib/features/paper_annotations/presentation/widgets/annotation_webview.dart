@@ -152,7 +152,18 @@ class AnnotationWebViewState extends State<AnnotationWebView> {
   late final WebViewController _controller;
   bool _isLoaded = false;
   String? _webHtml;
+ Future<void> clearSelection() async {
+    await _controller.runJavaScript(r'''
+      (() => {
+        const sel = window.getSelection();
+        if (sel) sel.removeAllRanges();
 
+        if (document.activeElement) {
+          document.activeElement.blur();
+        }
+      })();
+    ''');
+  }
   @override
   void initState() {
     super.initState();

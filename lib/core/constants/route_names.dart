@@ -84,6 +84,7 @@ class RouteNames {
   static const String projects = '/projects';
   static const String otherUserReadingList = '/other-user-reading-list';
   static const String chatbot = '/chatbot';
+  static const String chatbotSessions = '/chatbot/sessions';
 
   // ===================== HELPER METHODS =====================
   /// Generate paper details route with paperId

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:hugeicons/hugeicons.dart';
+import 'package:hugeicons/styles/stroke_rounded.dart';
 
 import '../../../../core/helpers/responsive_helper.dart';
 import '../../../../core/utils/my_colors.dart';
@@ -23,52 +24,13 @@ class MessagesList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    if (state is ChatbotInitial) {
-      return const Center(child: CircularProgressIndicator());
-    }
-
-    List<ChatMessage> messages = [];
-    if (state is ChatbotLoaded) {
-      messages = (state as ChatbotLoaded).messages;
-    } else if (state is ChatbotMessageSending) {
-      messages = (state as ChatbotMessageSending).messages;
-      messages = List.from(messages)
-        ..add(
-          ChatMessage(
-            id: 'typing',
-            text: '',
-            isUser: false,
-            timestamp: DateTime.now(),
-          ),
-        );
-    }
+    final messages = switch (state) {
+      ChatbotLoaded(:final messages) => messages,
+      _ => const <ChatMessage>[],
+    };
 
     if (messages.isEmpty) {
-      return Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            HugeIcon(
-              icon: HugeIcons.strokeRoundedComment01,
-              size: ResponsiveHelper.responsiveValue(context, 64),
-              color: MyColors.primaryShade300,
-            ),
-            SizedBox(height: MySizes.spaceMd(context)),
-            Text(
-              'Hi ${userName ?? 'User'}',
-              style: context.headlineSmall.copyWith(
-                fontWeight: FontWeight.w700,
-                color: MyColors.textPrimary,
-              ),
-            ),
-            SizedBox(height: MySizes.spaceXs(context)),
-            Text(
-              'How can I help you today?',
-              style: context.bodyLarge.copyWith(color: MyColors.textSecondary),
-            ),
-          ],
-        ),
-      );
+      return _ChatbotGreeting(userName: userName);
     }
 
     return ListView.builder(
@@ -78,6 +40,35 @@ class MessagesList extends StatelessWidget {
       itemBuilder: (context, index) {
         return MessageBubble(message: messages[index]);
       },
+    );
+  }
+}
+
+class _ChatbotGreeting extends StatelessWidget {
+  final String? userName;
+
+  const _ChatbotGreeting({this.userName});
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: MySizes.paddingMd(context),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          SizedBox(height: MySizes.spaceLg(context) * 5),
+          HugeIcon(
+            icon: HugeIconsStrokeRounded.strokeRoundedBubbleChat,
+            size: ResponsiveHelper.responsiveValue(context, 64),
+            color: MyColors.primaryShade300,
+          ),
+          SizedBox(height: MySizes.spaceMd(context)),
+          Text('Hi ${userName ?? 'User'}', style: context.bodyMedium),
+          SizedBox(height: MySizes.spaceXs(context)),
+          Text('How can I help you today?', style: context.titleLarge),
+        ],
+      ),
     );
   }
 }

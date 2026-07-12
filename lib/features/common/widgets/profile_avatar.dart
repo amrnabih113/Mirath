@@ -20,12 +20,14 @@ class ProfileAvatar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final responsiveSize = ResponsiveHelper.responsiveValue(
-      context,
-      ResponsiveHelper.deviceTypeFromContext(context) != DeviceType.phone
-          ? 35
-          : 40,
-    );
+    final responsiveSize =
+        size ??
+        ResponsiveHelper.responsiveValue(
+          context,
+          ResponsiveHelper.deviceTypeFromContext(context) != DeviceType.phone
+              ? 35
+              : 40,
+        );
     final effectiveBorderWidth = borderWidth ?? 0;
     final contentSize = responsiveSize - (effectiveBorderWidth * 2);
 
@@ -45,7 +47,7 @@ class ProfileAvatar extends StatelessWidget {
         radius: contentSize / 2,
         backgroundColor: Colors.transparent,
         backgroundImage: imageUrl != null && imageUrl!.isNotEmpty
-            ? CachedNetworkImageProvider(imageUrl!,)
+            ? CachedNetworkImageProvider(imageUrl!)
             : null,
         child: imageUrl == null || imageUrl!.isEmpty
             ? SvgPicture.asset(

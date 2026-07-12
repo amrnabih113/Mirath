@@ -103,13 +103,13 @@ class LibraryScreen extends StatelessWidget {
                 context.push(RouteNames.readLater);
               },
             ),
-            SizedBox(height: MySizes.spaceMd(context)),
-            LibTiles(
-              title: S.of(context).projects,
-              onTap: () {
-                context.push(RouteNames.projects);
-              },
-            ),
+            // SizedBox(height: MySizes.spaceMd(context)),
+            // LibTiles(
+            //   title: S.of(context).projects,
+            //   onTap: () {
+            //     context.push(RouteNames.projects);
+            //   },
+            // ),
             SizedBox(height: MySizes.spaceMd(context)),
             LibTiles(
               title: S.of(context).reading_lists,

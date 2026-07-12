@@ -51,8 +51,6 @@ class SavedPapersTab extends StatelessWidget {
 
             return ListView.separated(
               padding: EdgeInsets.only(
-                left: MySizes.spaceMd(context),
-                right: MySizes.spaceMd(context),
                 top: MySizes.spaceSm(context),
                 bottom:
                     kBottomNavigationBarHeight +

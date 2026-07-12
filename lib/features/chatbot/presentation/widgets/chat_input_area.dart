@@ -1,5 +1,6 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
-import 'package:image_picker/image_picker.dart';
 
 import '../../../../core/utils/my_colors.dart';
 import 'chat_input_field.dart';
@@ -7,20 +8,28 @@ import 'images_preview.dart';
 
 class ChatInputArea extends StatelessWidget {
   final TextEditingController messageController;
-  final List<XFile> selectedImages;
-  final Function(AttachmentType) onPickAttachment;
+
+  final List<File> selectedFiles;
+
+  final Function(InputAttachmentType) onPickAttachment;
+
   final VoidCallback onSendMessage;
+
   final Function(int) onRemoveImage;
+
   final VoidCallback onTextChanged;
+
+  final Future<void> Function(File, int)? onVoiceRecorded;
 
   const ChatInputArea({
     super.key,
     required this.messageController,
-    required this.selectedImages,
+    required this.selectedFiles,
     required this.onPickAttachment,
     required this.onSendMessage,
     required this.onRemoveImage,
     required this.onTextChanged,
+    this.onVoiceRecorded,
   });
 
   @override
@@ -39,20 +48,19 @@ class ChatInputArea extends StatelessWidget {
       ),
       child: Column(
         children: [
-          // Selected images preview
-          if (selectedImages.isNotEmpty)
+          if (selectedFiles.isNotEmpty)
             ImagesPreview(
-              selectedImages: selectedImages,
+              selectedFiles: selectedFiles,
               onRemoveImage: onRemoveImage,
             ),
 
-          // Input field
           ChatInputField(
             messageController: messageController,
-            selectedImages: selectedImages,
+            selectedFiles: selectedFiles,
             onPickAttachment: onPickAttachment,
             onSendMessage: onSendMessage,
             onTextChanged: onTextChanged,
+            onVoiceRecorded: onVoiceRecorded,
           ),
         ],
       ),

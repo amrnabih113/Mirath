@@ -77,8 +77,8 @@ class _WelcomeHeaderState extends State<WelcomeHeader> {
   Widget build(BuildContext context) {
     return AppBar(
       backgroundColor: Colors.transparent,
-      toolbarHeight: ResponsiveHelper.responsiveValue(context, 70),
-      leadingWidth: ResponsiveHelper.responsiveValue(context, 70),
+      toolbarHeight: ResponsiveHelper.responsiveValue(context, 60),
+      leadingWidth: ResponsiveHelper.responsiveValue(context, 60),
       leading: Padding(
         padding: EdgeInsets.only(
           left: ResponsiveHelper.responsiveValue(context, 8),
@@ -87,7 +87,11 @@ class _WelcomeHeaderState extends State<WelcomeHeader> {
           right: 0,
         ),
         child: GestureDetector(
-          child: ProfileAvatar(imageUrl: _getUserPhoto(), size: 50),
+          child: SizedBox(
+            height: ResponsiveHelper.responsiveValue(context, 30),
+            width: ResponsiveHelper.responsiveValue(context, 30),
+            child: ProfileAvatar(imageUrl: _getUserPhoto()),
+          ),
         ),
       ),
       actions: [

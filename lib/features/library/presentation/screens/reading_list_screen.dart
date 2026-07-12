@@ -48,11 +48,8 @@ class ReadingListScreen extends StatelessWidget {
                 ],
               ),
               Expanded(
-                child: Padding(
-                  padding: MySizes.paddingSm(context),
-                  child: const TabBarView(
-                    children: [YourListsTab(), SavedPapersTab()],
-                  ),
+                child: const TabBarView(
+                  children: [YourListsTab(), SavedPapersTab()],
                 ),
               ),
             ],

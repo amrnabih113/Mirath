@@ -10,6 +10,7 @@ class MyImages {
 
   // logos
   //static const String appLogo = 'assets/images/logo/app_logo.svg';
+  static const String appLogo = 'assets/images/logo.png';
   static const String appleLogo = 'assets/icons/apple_logo.png';
   static const String googleLogo = 'assets/icons/google_logo.png';
 }

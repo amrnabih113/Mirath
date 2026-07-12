@@ -161,6 +161,14 @@ class AuthRepositoryImpl implements AuthRepository {
 
       GoogleSignInAccount? account;
 
+      // Clear any cached Google session first so we request a fresh ID token.
+      // This avoids reusing a stale credential that the backend can reject.
+      try {
+        await googleSignIn.signOut();
+      } catch (_) {
+        // Best effort only.
+      }
+
       // Use the standard signIn() method
       MyLogger.debug("Attempting Google Sign-In with user interaction...");
       account = await googleSignIn.signIn();
@@ -183,6 +191,10 @@ class AuthRepositoryImpl implements AuthRepository {
         MyLogger.debug("Failed to get ID token");
         return const Left(ServerFailure('Failed to get Google ID token'));
       }
+
+      MyLogger.debug(
+        "Google ID token acquired for ${account.email}; sending to backend",
+      );
 
       MyLogger.debug("ID token obtained successfully");
       // Authenticate with backend
