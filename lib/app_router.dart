@@ -1,7 +1,21 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
-
+import 'package:mirath/features/settings/presentation/cubit/settings_cubit.dart';
+import 'package:mirath/features/settings/presentation/screens/account_management.dart';
+import 'package:mirath/features/settings/presentation/screens/account_security.dart';
+import 'package:mirath/features/settings/presentation/screens/change_email.dart';
+import 'package:mirath/features/settings/presentation/screens/change_username.dart';
+import 'package:mirath/features/settings/presentation/screens/confirm_email.dart';
+import 'package:mirath/features/settings/presentation/screens/deactive_account.dart';
+import 'package:mirath/features/settings/presentation/screens/verify_identity.dart';
+import 'package:mirath/features/settings/presentation/screens/delete_account.dart';
+import 'package:mirath/features/settings/presentation/screens/feed_AI_preferences.dart';
+import 'package:mirath/features/settings/presentation/screens/notifications.dart';
+import 'package:mirath/features/settings/presentation/screens/privacy_data_control.dart';
+import 'package:mirath/features/settings/presentation/screens/reading_appearance.dart';
+import 'package:mirath/features/settings/presentation/screens/support_legal.dart';
+import 'package:mirath/features/settings/presentation/screens/update_password.dart';
 import 'core/constants/route_names.dart';
 import 'core/services/local_storage_service.dart';
 import 'core/utils/my_logger.dart';
@@ -54,7 +68,7 @@ import 'features/profile/presentation/screens/edit_profile_screen.dart';
 import 'features/profile/presentation/screens/follower_following_screen.dart';
 import 'features/profile/presentation/screens/other_users_profile.dart';
 import 'features/profile/presentation/screens/profile_screen.dart';
-import 'features/profile/presentation/screens/setting_screen.dart';
+import 'features/settings/presentation/screens/setting_screen.dart';
 import 'features/reading_lists/presentation/cubit/reading_list_cubit.dart';
 import 'features/reading_lists/presentation/screens/reading_list_details_screen.dart';
 import 'features/splash/presentation/screens/splash_screen.dart';
@@ -764,13 +778,6 @@ final appRouter = GoRouter(
       },
     ),
 
-    GoRoute(
-      path: RouteNames.settingsScreen,
-      pageBuilder: (context, state) {
-        return PageTransitions.smoothTransition(const SettingScreen());
-      },
-    ),
-
     // ===================== OTHER ROUTES =====================
     GoRoute(
       path: RouteNames.projects,
@@ -783,6 +790,213 @@ final appRouter = GoRouter(
       path: RouteNames.otherUserReadingList,
       pageBuilder: (context, state) {
         return PageTransitions.smoothTransition(const OtherUserReadingList());
+      },
+    ),
+    // ===================== Settings ROUTES =====================
+    GoRoute(
+      path: RouteNames.settingsScreen,
+      pageBuilder: (context, state) {
+        return PageTransitions.smoothTransition(
+          BlocProvider(
+            create: (context) => sl<SettingsCubit>(),
+            child: const SettingScreen(),
+          ),
+        );
+      },
+    ),
+    GoRoute(
+      path: RouteNames.accountSecurity,
+      pageBuilder: (context, state) {
+        return PageTransitions.smoothTransition(
+          MultiBlocProvider(
+            providers: [
+              BlocProvider.value(
+                value: sl<SettingsCubit>()..getAllActiveSessions(),
+              ),
+              BlocProvider.value(value: sl<AuthCubit>()),
+              BlocProvider.value(value: sl<ProfileCubit>()),
+            ],
+            child: const AccountSecurity(),
+          ),
+        );
+      },
+    ),
+    GoRoute(
+      path: RouteNames.feedAiPreferences,
+      pageBuilder: (context, state) {
+        return PageTransitions.smoothTransition(
+          MultiBlocProvider(
+            providers: [
+              BlocProvider.value(
+                value: sl<SettingsCubit>()
+                  ..getFeedAipreference()
+                  ..getResearchInterests(),
+              ),
+              BlocProvider.value(
+                value: sl<SearchCubit>()..clearSearchHistory(),
+              ),
+            ],
+            child: const FeedAiPreferences(),
+          ),
+        );
+      },
+    ),
+    GoRoute(
+      path: RouteNames.readingAppearance,
+      pageBuilder: (context, state) {
+        return PageTransitions.smoothTransition(
+          BlocProvider.value(
+            value: sl<SettingsCubit>()..getReadingAndAppearanceSettings(),
+            child: const ReadingAppearance(),
+          ),
+        );
+      },
+    ),
+
+    GoRoute(
+      path: RouteNames.notifications,
+      pageBuilder: (context, state) {
+        return PageTransitions.smoothTransition(
+          BlocProvider.value(
+            value: sl<SettingsCubit>()..getNotificationPreferences(),
+            child: const Notifications(),
+          ),
+        );
+      },
+    ),
+    GoRoute(
+      path: RouteNames.privacyDataControl,
+      pageBuilder: (context, state) {
+        return PageTransitions.smoothTransition(
+          BlocProvider.value(
+            value: sl<SettingsCubit>()
+              ..getPrivacySettings()
+              ..initiateFullAccountDataExport(),
+            child: const PrivacyDataControl(),
+          ),
+        );
+      },
+    ),
+    GoRoute(
+      path: RouteNames.supportLegal,
+      pageBuilder: (context, state) {
+        return PageTransitions.smoothTransition(
+          BlocProvider.value(
+            value: sl<SettingsCubit>(),
+            child: const SupportLegal(),
+          ),
+        );
+      },
+    ),
+    GoRoute(
+      path: RouteNames.accountManagement,
+      pageBuilder: (context, state) {
+        return PageTransitions.smoothTransition(
+          BlocProvider.value(
+            value: sl<SettingsCubit>()
+              ..getAllActiveSessions()
+              ..revokeAllActiveSessionsExceptCurrent()
+              ..disconnectGoogleAccount(),
+            child: const AccountManagement(),
+          ),
+        );
+      },
+    ),
+    GoRoute(
+      path: RouteNames.changeUsername,
+      pageBuilder: (context, state) {
+        final oldUsername = state.extra as String? ?? '';
+        return PageTransitions.smoothTransition(
+          MultiBlocProvider(
+            providers: [
+              BlocProvider.value(value: sl<SettingsCubit>()),
+              BlocProvider.value(value: sl<ProfileCubit>()),
+            ],
+            child: ChangeUsername(oldUserName: oldUsername),
+          ),
+        );
+      },
+    ),
+    GoRoute(
+      path: RouteNames.changeEmail,
+      pageBuilder: (context, state) {
+        final oldEmail = state.extra as String? ?? '';
+        return PageTransitions.smoothTransition(
+          MultiBlocProvider(
+            providers: [
+              BlocProvider.value(value: sl<SettingsCubit>()),
+              BlocProvider.value(value: sl<ProfileCubit>()),
+            ],
+            child: ChangeEmail(oldEmail: oldEmail),
+          ),
+        );
+      },
+    ),
+    GoRoute(
+      path: RouteNames.confirmEmail,
+      pageBuilder: (context, state) {
+        final newEmail = state.extra as String? ?? '';
+        return PageTransitions.smoothTransition(
+          MultiBlocProvider(
+            providers: [
+              BlocProvider.value(value: sl<SettingsCubit>()),
+              BlocProvider.value(value: sl<ProfileCubit>()),
+            ],
+            child: ConfirmEmail(newEmail: newEmail),
+          ),
+        );
+      },
+    ),
+    GoRoute(
+      path: RouteNames.updatePassword,
+      pageBuilder: (context, state) {
+        return PageTransitions.smoothTransition(
+          MultiBlocProvider(
+            providers: [
+              BlocProvider.value(value: sl<SettingsCubit>()),
+              BlocProvider.value(value: sl<ProfileCubit>()),
+            ],
+            child: const UpdatePassword(),
+          ),
+        );
+      },
+    ),
+    GoRoute(
+      path: RouteNames.verifyIdentity,
+      pageBuilder: (context, state) {
+        final nextRoute =
+            state.extra as String? ?? RouteNames.privacyDataControl;
+
+        return PageTransitions.smoothTransition(
+          BlocProvider.value(
+            value: sl<SettingsCubit>(),
+            child: VerifyIdentity(nextRoute: nextRoute),
+          ),
+        );
+      },
+    ),
+    GoRoute(
+      path: RouteNames.deleteAccount,
+      pageBuilder: (context, state) {
+        final password = state.extra as String? ?? '';
+        return PageTransitions.smoothTransition(
+          BlocProvider.value(
+            value: sl<SettingsCubit>(),
+            child: DeleteAccount(pass: password),
+          ),
+        );
+      },
+    ),
+    GoRoute(
+      path: RouteNames.deactiveAccount,
+      pageBuilder: (context, state) {
+        final password = state.extra as String? ?? '';
+        return PageTransitions.smoothTransition(
+          BlocProvider.value(
+            value: sl<SettingsCubit>(),
+            child: DeactiveAccount(pass: password),
+          ),
+        );
       },
     ),
 
