@@ -172,6 +172,7 @@ class ChatbotRemoteDataSourceImpl implements ChatbotRemoteDataSource {
         if (parsed is Map<String, dynamic>) return parsed;
       } catch (_) {
         // not JSON — fall through
+        MyLogger.error('[ChatbotRemote] sendMessage response is not valid JSON');
       }
     }
 
