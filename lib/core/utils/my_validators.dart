@@ -77,4 +77,20 @@ class MyValidator {
     }
     return null;
   }
+
+  static String? usernameValidator(BuildContext context, String? value) {
+    if (value == null || value.trim().isEmpty) {
+      return 'Username is required';
+    }
+
+    if (value.contains('@')) {
+      return 'Username cannot contain @';
+    }
+
+    if (value.trim().length < 3) {
+      return 'Username must be at least 3 characters';
+    }
+
+    return null;
+  }
 }

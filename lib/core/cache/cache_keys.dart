@@ -5,6 +5,7 @@ class CacheKeys {
   static const String discussionsPrefix = 'community:discussions';
   static const String readingListsPrefix = 'reading_lists:lists';
   static const String profilePrefix = 'profile:user';
+  static const String settingsPrefix = 'settings_';
 
   static String homeRecent({String? category, int page = 1, int limit = 10}) {
     return '$homeRecentPrefix|category=${category ?? 'all'}|page=$page|limit=$limit';
@@ -54,6 +55,16 @@ class CacheKeys {
   static String libraryStats() {
     return 'library:stats';
   }
+
+  // Settings cache keys
+  static const kFeedAndAi = '${settingsPrefix}settings_feed_and_ai_preference';
+  static const kNotificationPrefs =
+      '${settingsPrefix}settings_notification_preferences';
+  static const kPrivacy = '${settingsPrefix}settings_privacy_settings';
+  static const kReadingAppearance =
+      '${settingsPrefix}settings_reading_and_appearance';
+  static const kResearchInterests =
+      '${settingsPrefix}settings_research_interests';
 
   // Messaging cache keys
   static const String messagesPrefix = 'messages:conversation';

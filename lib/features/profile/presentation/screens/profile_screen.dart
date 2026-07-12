@@ -6,7 +6,6 @@ import '../../../../core/constants/route_names.dart';
 import '../../../../core/services/sharing_service.dart';
 import '../../../../core/utils/my_colors.dart';
 import '../../../../core/utils/my_sizes.dart';
-import '../../../auth/presentation/cubit/auth_cubit.dart';
 import '../cubit/profile_cubit.dart';
 import '../widgets/user_data.dart';
 import '../widgets/user_tabs.dart';
@@ -27,16 +26,6 @@ class ProfileScreen extends StatelessWidget {
         appBar: MyAppBar(
           title: Text(S.of(context).profile),
           actions: [
-            IconButton(
-              icon: HugeIcon(
-                icon: HugeIcons.strokeRoundedLogout02,
-                size: MySizes.iconMedium(context),
-                color: Colors.black,
-              ),
-              onPressed: () {
-                _showLogoutDialog(context);
-              },
-            ),
             BlocBuilder<ProfileCubit, ProfileState>(
               builder: (context, state) {
                 return IconButton(
@@ -170,29 +159,6 @@ class ProfileScreen extends StatelessWidget {
             );
           },
         ),
-      ),
-    );
-  }
-
-  void _showLogoutDialog(BuildContext context) {
-    showDialog(
-      context: context,
-      builder: (dialogContext) => AlertDialog(
-        title: Text(S.of(context).sign_out),
-        content: Text(S.of(context).are_you_sure_you_want_to_sign_out),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(dialogContext),
-            child: Text(S.of(context).cancel),
-          ),
-          TextButton(
-            onPressed: () {
-              Navigator.pop(dialogContext);
-              context.read<AuthCubit>().signOut();
-            },
-            child: Text(S.of(context).sign_out),
-          ),
-        ],
       ),
     );
   }

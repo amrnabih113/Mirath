@@ -219,4 +219,48 @@ class MyConstants {
       "api/v1/library/reading-history/{paperId}";
   static const String getReadingHistory = "api/v1/library/reading-history";
   static const String clearAllReadingHistory = "api/v1/library/reading-history";
+
+  // ***Settings endpoints***
+  static const String reteieveReadingAndAppearance =
+      "api/v1/users/settings/appearance";
+  static const String updateThemeAndFontDisplayPreferences =
+      "api/v1/users/settings/appearance/display";
+  static const String updateReadingListVisibilityAndAnnotationColorPalette =
+      "api/v1/users/settings/appearance/reading";
+  static const String changeUsername = "api/v1/users/settings/account/username";
+  static const String changeEmail =
+      "api/v1/users/settings/account/email/request-change";
+  static const String confirmEmail =
+      "api/v1/users/settings/account/email/confirm-change";
+  static const String updateAccountPassword =
+      "api/v1/users/settings/account/password";
+  static const String disconnectLinkedGoogleAccount =
+      "api/v1/users/settings/account/linked/google";
+  static const String retriveAllActiveSessions =
+      "api/v1/users/settings/account/sessions";
+  static const String revokeAllSessionsExceptTheCurrentOne =
+      "api/v1/users/settings/account/sessions";
+  static const String deactivateUserAccount =
+      "api/v1/users/settings/account/deactivate";
+  static const String deleteUserAccount =
+      "api/v1/users/settings/account/delete";
+  static const String retrieveFeedAndAiPreferences =
+      "api/v1/users/settings/feed";
+  static const String updateFeedAndAiPreferences = "api/v1/users/settings/feed";
+  static const String retrieveResearchInterests =
+      "api/v1/users/settings/feed/interests";
+  static const String replaceResearchInterests =
+      "api/v1/users/settings/feed/interests";
+  static const String retrieveNotificationPreferences =
+      "api/v1/users/settings/notifications";
+  static const String updateNotificationPreferences =
+      "api/v1/users/settings/notifications";
+  static const String retrievePrivacySettings = "api/v1/users/settings/privacy";
+  static const String updatePrivacySettings = "api/v1/users/settings/privacy";
+  static const String initiateFullAccountDataExport =
+      "api/v1/users/settings/privacy/export/data";
+  static const String exportReadingListsAsAFile =
+      "api/v1/users/settings/privacy/export/reading-lists";
+  static const String exportAnnotationsAndNotes =
+      "api/v1/users/settings/privacy/export/annotations";
 }

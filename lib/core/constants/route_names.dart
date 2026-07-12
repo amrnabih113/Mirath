@@ -12,6 +12,10 @@ class RouteNames {
   static const String forgetPassword = '/forget-password';
   static const String verifyResetOtp = '/verify-reset-otp';
   static const String resetPassword = '/reset-password';
+  static const String updatePassword = '/update-password';
+  static const String verifyIdentity = '/verify-identity';
+  static const String deleteAccount = '/delete-account';
+  static const String deactiveAccount = '/deactive-account';
 
   // ===================== PROFILE SETUP =====================
   static const String setupProfile = '/set-up-profile';
@@ -19,6 +23,18 @@ class RouteNames {
   static const String editProfile = '/edit-profile';
   static const String editInterests = '/edit-interests';
   static const String settingsScreen = '/settings';
+  // ===================== SETTINGS =====================
+  static const String accountSettings = '/account-settings';
+  static const String accountSecurity = '/account-security';
+  static const String feedAiPreferences = '/feed-ai-preferences';
+  static const String readingAppearance = '/reading-appearance';
+  static const String notifications = '/notifications';
+  static const String privacyDataControl = '/privacy-data-control';
+  static const String supportLegal = '/support-legal';
+  static const String accountManagement = '/account-management';
+  static const String changeEmail = '/change-email';
+  static const String confirmEmail = '/confirm-email';
+  static const String changeUsername = '/change-username';
 
   // ===================== MAIN LAYOUT ROUTES =====================
   static const String home = '/home';
