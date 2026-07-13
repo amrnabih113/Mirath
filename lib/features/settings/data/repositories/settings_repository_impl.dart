@@ -1,4 +1,5 @@
 import 'package:dartz/dartz.dart';
+import 'package:dio/dio.dart';
 import 'package:mirath/core/cache/cache_keys.dart';
 import 'package:mirath/core/cache/hive_cache_service.dart';
 import 'package:mirath/core/error/exceptions.dart';
@@ -39,8 +40,11 @@ class SettingsRepositoryImpl extends SettingsRepository {
       return Left(ServerFailure(e.message!));
     } on NetworkException catch (e) {
       return Left(NetworkFailure(e.message!));
+    } on DioException catch (e) {
+      final message = e.response?.data['message'] ?? 'Unknown error';
+      return Left(ServerFailure(message));
     } catch (e) {
-      return Left(ServerFailure('Failed to change username'));
+      return Left(ServerFailure());
     }
   }
 
@@ -71,6 +75,9 @@ class SettingsRepositoryImpl extends SettingsRepository {
       return Left(ServerFailure(e.message!));
     } on NetworkException catch (e) {
       return Left(NetworkFailure(e.message!));
+    } on DioException catch (e) {
+      final message = e.response?.data['message'] ?? 'Unknown error';
+      return Left(ServerFailure(message));
     } catch (e) {
       return Left(ServerFailure('Failed to confirm email'));
     }
@@ -93,6 +100,9 @@ class SettingsRepositoryImpl extends SettingsRepository {
       return Left(ServerFailure(e.message!));
     } on NetworkException catch (e) {
       return Left(NetworkFailure(e.message!));
+    } on DioException catch (e) {
+      final message = e.response?.data['message'] ?? 'Unknown error';
+      return Left(ServerFailure(message));
     } catch (e) {
       return Left(ServerFailure('Failed to update password'));
     }
@@ -107,6 +117,9 @@ class SettingsRepositoryImpl extends SettingsRepository {
       return Left(ServerFailure(e.message!));
     } on NetworkException catch (e) {
       return Left(NetworkFailure(e.message!));
+    } on DioException catch (e) {
+      final message = e.response?.data['message'] ?? 'Unknown error';
+      return Left(ServerFailure(message));
     } catch (e) {
       return Left(ServerFailure('Failed to disconnect Google account'));
     }
@@ -122,6 +135,9 @@ class SettingsRepositoryImpl extends SettingsRepository {
       return Left(ServerFailure(e.message!));
     } on NetworkException catch (e) {
       return Left(NetworkFailure(e.message!));
+    } on DioException catch (e) {
+      final message = e.response?.data['message'] ?? 'Unknown error';
+      return Left(ServerFailure(message));
     } catch (e) {
       return Left(ServerFailure('Failed to get all active sessions'));
     }
@@ -137,6 +153,9 @@ class SettingsRepositoryImpl extends SettingsRepository {
       return Left(ServerFailure(e.message!));
     } on NetworkException catch (e) {
       return Left(NetworkFailure(e.message!));
+    } on DioException catch (e) {
+      final message = e.response?.data['message'] ?? 'Unknown error';
+      return Left(ServerFailure(message));
     } catch (e) {
       return Left(
         ServerFailure('Failed to revoke all active sessions except current'),
@@ -153,6 +172,9 @@ class SettingsRepositoryImpl extends SettingsRepository {
       return Left(ServerFailure(e.message!));
     } on NetworkException catch (e) {
       return Left(NetworkFailure(e.message!));
+    } on DioException catch (e) {
+      final message = e.response?.data['message'] ?? 'Unknown error';
+      return Left(ServerFailure(message));
     } catch (e) {
       return Left(ServerFailure('Failed to initiate full account data export'));
     }
@@ -169,6 +191,9 @@ class SettingsRepositoryImpl extends SettingsRepository {
       return Left(ServerFailure(e.message!));
     } on NetworkException catch (e) {
       return Left(NetworkFailure(e.message!));
+    } on DioException catch (e) {
+      final message = e.response?.data['message'] ?? 'Unknown error';
+      return Left(ServerFailure(message));
     } catch (e) {
       return Left(ServerFailure('Failed to export annotations and notes'));
     }
@@ -185,6 +210,9 @@ class SettingsRepositoryImpl extends SettingsRepository {
       return Left(ServerFailure(e.message!));
     } on NetworkException catch (e) {
       return Left(NetworkFailure(e.message!));
+    } on DioException catch (e) {
+      final message = e.response?.data['message'] ?? 'Unknown error';
+      return Left(ServerFailure(message));
     } catch (e) {
       return Left(ServerFailure('Failed to export reading lists as a file'));
     }
@@ -292,6 +320,9 @@ class SettingsRepositoryImpl extends SettingsRepository {
       return Left(ServerFailure(e.message!));
     } on NetworkException catch (e) {
       return Left(NetworkFailure(e.message!));
+    } on DioException catch (e) {
+      final message = e.response?.data['message'] ?? 'Unknown error';
+      return Left(ServerFailure(message));
     } catch (e) {
       return Left(ServerFailure('Failed to get research interests'));
     }
@@ -316,6 +347,9 @@ class SettingsRepositoryImpl extends SettingsRepository {
       return Left(ServerFailure(e.message!));
     } on NetworkException catch (e) {
       return Left(NetworkFailure(e.message!));
+    } on DioException catch (e) {
+      final message = e.response?.data['message'] ?? 'Unknown error';
+      return Left(ServerFailure(message));
     } catch (e) {
       return Left(ServerFailure('Failed to replace research interests'));
     }
@@ -335,6 +369,9 @@ class SettingsRepositoryImpl extends SettingsRepository {
       return Left(ServerFailure(e.message!));
     } on NetworkException catch (e) {
       return Left(NetworkFailure(e.message!));
+    } on DioException catch (e) {
+      final message = e.response?.data['message'] ?? 'Unknown error';
+      return Left(ServerFailure(message));
     } catch (e) {
       return Left(ServerFailure('Failed to update feed and AI preference'));
     }
@@ -355,6 +392,9 @@ class SettingsRepositoryImpl extends SettingsRepository {
       return Left(ServerFailure(e.message!));
     } on NetworkException catch (e) {
       return Left(NetworkFailure(e.message!));
+    } on DioException catch (e) {
+      final message = e.response?.data['message'] ?? 'Unknown error';
+      return Left(ServerFailure(message));
     } catch (e) {
       return Left(ServerFailure('User not logged in'));
     }
@@ -374,6 +414,9 @@ class SettingsRepositoryImpl extends SettingsRepository {
       return Left(ServerFailure(e.message!));
     } on NetworkException catch (e) {
       return Left(NetworkFailure(e.message!));
+    } on DioException catch (e) {
+      final message = e.response?.data['message'] ?? 'Unknown error';
+      return Left(ServerFailure(message));
     } catch (e) {
       return Left(ServerFailure('Failed to update privacy settings'));
     }
@@ -400,6 +443,9 @@ class SettingsRepositoryImpl extends SettingsRepository {
       return Left(ServerFailure(e.message!));
     } on NetworkException catch (e) {
       return Left(NetworkFailure(e.message!));
+    } on DioException catch (e) {
+      final message = e.response?.data['message'] ?? 'Unknown error';
+      return Left(ServerFailure(message));
     } catch (e) {
       return Left(
         ServerFailure(
@@ -430,6 +476,9 @@ class SettingsRepositoryImpl extends SettingsRepository {
       return Left(ServerFailure(e.message!));
     } on NetworkException catch (e) {
       return Left(NetworkFailure(e.message!));
+    } on DioException catch (e) {
+      final message = e.response?.data['message'] ?? 'Unknown error';
+      return Left(ServerFailure(message));
     } catch (e) {
       return Left(
         ServerFailure('Failed to update theme and display preferences'),
@@ -442,12 +491,17 @@ class SettingsRepositoryImpl extends SettingsRepository {
     required String password,
   }) async {
     try {
-       final result=await remoteDataSource.deactivateUserAccount(password: password);
+      final result = await remoteDataSource.deactivateUserAccount(
+        password: password,
+      );
       return right(result);
     } on ServerException catch (e) {
       return Left(ServerFailure(e.message!));
     } on NetworkException catch (e) {
       return Left(NetworkFailure(e.message!));
+    } on DioException catch (e) {
+      final message = e.response?.data['message'] ?? 'Unknown error';
+      return Left(ServerFailure(message));
     } catch (e) {
       return Left(ServerFailure('Failed to deactivate user account'));
     }
@@ -458,12 +512,17 @@ class SettingsRepositoryImpl extends SettingsRepository {
     required String password,
   }) async {
     try {
-       final result=await remoteDataSource.deleteUserAccount(password: password);
+      final result = await remoteDataSource.deleteUserAccount(
+        password: password,
+      );
       return right(result);
     } on ServerException catch (e) {
       return Left(ServerFailure(e.message!));
     } on NetworkException catch (e) {
       return Left(NetworkFailure(e.message!));
+    } on DioException catch (e) {
+      final message = e.response?.data['message'] ?? 'Unknown error';
+      return Left(ServerFailure(message));
     } catch (e) {
       return Left(ServerFailure('Failed to delete user account'));
     }

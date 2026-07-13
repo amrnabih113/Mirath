@@ -45,7 +45,7 @@ class ChangeUserCard extends StatelessWidget {
           TextButton(
             onPressed: controller.text.isEmpty ? null : onPressed,
             style: TextButton.styleFrom(
-              backgroundColor: ؤ
+              backgroundColor: controller.text.isEmpty
                   ? MyColors.primaryShade800.withAlpha((255 * 0.5).toInt())
                   : MyColors.primaryShade800,
             ),

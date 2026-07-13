@@ -30,7 +30,7 @@ class MyConstants {
     return definedBaseUrl.isNotEmpty
         ? definedBaseUrl
         // : "http://localhost:3000/";
-        : 'http://192.168.1.6:3000/';
+        : 'http://192.168.88.90:3000/';
   }
 
   // ***Chatbot endpoints***

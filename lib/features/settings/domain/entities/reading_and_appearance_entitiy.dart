@@ -13,7 +13,14 @@ class ReadingAndAppearanceEntitiy extends Equatable {
     required this.defaultReadingListVisibility,
     required this.annotationHighlightColors,
   });
-
+factory ReadingAndAppearanceEntitiy.empty() {
+    return const ReadingAndAppearanceEntitiy(
+      colorMode: ColorMode.SYSTEM,
+      defaultFontSize: FontSize.MEDIUM,
+      defaultReadingListVisibility: Visible.PUBLIC,
+      annotationHighlightColors: [],
+    );
+  }
   ReadingAndAppearanceEntitiy copyWith({
     ColorMode? colorMode,
     FontSize? defaultFontSize,
@@ -29,6 +36,7 @@ class ReadingAndAppearanceEntitiy extends Equatable {
           annotationHighlightColors ?? this.annotationHighlightColors,
     );
   }
+  
 
   @override
   List<Object?> get props => [
